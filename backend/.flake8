@@ -1,0 +1,7 @@
+# vim: ft=cfg
+[flake8]
+max-line-length = 88
+docstring-convention=google
+
+# Required to be compatible with black
+extend-ignore = E203
