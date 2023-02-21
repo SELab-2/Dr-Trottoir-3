@@ -1,0 +1,22 @@
+site_name: Dr Trottoir Backend Documentation
+# TODO repo_url: https://github.com/SELab-2/Dr-Trottoir-3
+
+theme:
+  name: "readthedocs"
+  local: en
+
+plugins:
+  - mkdocstrings:
+
+watch:
+  - frontend
+  - backend
+
+
+nav:
+  - Home: index.md
+  - Backend: 
+    - Test calculation: 'backend/testcalc.md'
+    - Test class: 'backend/testclass.md'
+  - Frontend:
+    - Test greet: 'frontend/testgreet.md'

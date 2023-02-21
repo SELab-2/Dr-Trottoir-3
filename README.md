@@ -25,3 +25,25 @@
 **Personal development branches**: use the following naming convention: "firstnamelastname/githubissuenumber-description". 
 A branch created by Maxim Stockmans for creating the domain model (issue #2) would be the following: "maximstockmans/2-create-domain-model".
 After this is done and the branch is finished, a pull request from this branch to development should be made, where it will be reviewed by at least two other developers.
+
+## Documentation
+
+### Requirements
+
+Install the following python packages:
+- ```pip install mkdocs```
+- ```pip install mkdocstrings-python```
+
+### Viewing docs
+
+You can view the docs using 
+
+`python -m mkdocs serve`
+
+which will start a local server. This server automatically relaunches as you change the documentation, so the docs will be up to date.
+
+You can also build a static version of the website using
+
+```python -m mkdocs build```
+
+which will create files in the site/ folder.
