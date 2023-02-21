@@ -1,8 +1,3 @@
-"""
-This file contains some basic functions to test documentation.
-"""
-
-
 def add(a: float, b: float) -> float:
     """Add two numbers to each other.
 

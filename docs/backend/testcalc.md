@@ -1,5 +1,3 @@
 # Calculation testing
 
-::: backend.drtrottoir.testcalc
-    handler: python
-    
+## ::: backend.drtrottoir.testcalc

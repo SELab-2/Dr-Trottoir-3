@@ -3,10 +3,20 @@ site_name: Dr Trottoir Backend Documentation
 
 theme:
   name: "readthedocs"
+  local: en
 
 plugins:
-  - mkdocstrings
+  - mkdocstrings:
+
+watch:
+  - frontend
+  - backend
+
 
 nav:
   - Home: index.md
-  - Backend: 'backend\testcalc.md'
+  - Backend: 
+    - Test calculation: 'backend/testcalc.md'
+    - Test class: 'backend/testclass.md'
+  - Frontend:
+    - Test greet: 'frontend/testgreet.md'
