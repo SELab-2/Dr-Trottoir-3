@@ -1,0 +1,11 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "Dr Trottoir Frontend",
+  "entryPointStrategy": "expand",
+  "out": "_build",
+  "readme": "README.md",
+  "entryPoints": ["../src/"],
+  "exclude": [
+    "../src/pages/**/*.ts*",
+  ]
+}

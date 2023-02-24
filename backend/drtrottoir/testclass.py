@@ -2,6 +2,10 @@ class DocsTesting:
     """A class for testing docs generation
     """
 
+    """ A string contained in the class
+    """
+    string: str
+
     def __init__(self, string: str) -> None:
         """The constructor of the class.
 

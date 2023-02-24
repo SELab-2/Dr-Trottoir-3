@@ -28,22 +28,4 @@ After this is done and the branch is finished, a pull request from this branch t
 
 ## Documentation
 
-### Requirements
-
-Install the following python packages:
-- ```pip install mkdocs```
-- ```pip install mkdocstrings-python```
-
-### Viewing docs
-
-You can view the docs using 
-
-`python -m mkdocs serve`
-
-which will start a local server. This server automatically relaunches as you change the documentation, so the docs will be up to date.
-
-You can also build a static version of the website using
-
-```python -m mkdocs build```
-
-which will create files in the site/ folder.
+The documentation for both the backend and frontend are automatically generated based on the comments in the files. The docs of the backend and frontend are seperated, so you will need to build them independently. For generating and reading them, see the README.md files in `backend/docs` and `frontend/docs`.

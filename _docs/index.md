@@ -19,6 +19,7 @@ It's possible to automatically write the Python documentation based on the docum
 Install the following python packages:
 - ```pip install mkdocs```
 - ```pip install mkdocstrings-python```
+- ```pip install mkdocs-material```
 
 ## Viewing documentation
 
