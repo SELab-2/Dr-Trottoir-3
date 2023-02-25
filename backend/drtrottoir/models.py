@@ -2,17 +2,17 @@ from django.db import models
 
 
 class LocationGroup(models.Model):
-    location_group_name = models.CharField()
+    location_group_name = models.CharField(max_length=255)
 
 
 class Building(models.Model):
-    address = models.CharField()
-    building_guide_pdf_path = models.CharField()
+    address = models.CharField(max_length=255)
+    building_guide_pdf_path = models.CharField(max_length=255)
     location_group = models.ForeignKey(LocationGroup, on_delete=models.RESTRICT)
 
 
 class ScheduleDefinition(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=255)
     version = models.IntegerField()
     location_group = models.ForeignKey(LocationGroup, on_delete=models.RESTRICT)
     buildings = models.ManyToManyField(Building)
@@ -28,13 +28,17 @@ class User(models.Model):
 
 
 class Issue(models.Model):
-    message = models.CharField()
-    from_user = models.ForeignKey(User, on_delete=models.RESTRICT)
-    approval_user = models.ForeignKey(User, on_delete=models.RESTRICT)
+    message = models.TextField()
+    from_user = models.ForeignKey(
+        User, on_delete=models.RESTRICT, related_name="issues_created"
+    )
+    approval_user = models.ForeignKey(
+        User, on_delete=models.RESTRICT, related_name="issues_to_approve"
+    )
 
 
 class IssueImage(models.Model):
-    image_path = models.CharField()
+    image_path = models.CharField(max_length=255)
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE)
 
 
@@ -48,7 +52,7 @@ class ScheduleAssignment(models.Model):
 
 class ScheduleWorkEntry(models.Model):
     creation_timestamp = models.DateTimeField()
-    image_path = models.CharField()
+    image_path = models.CharField(max_length=255)
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
     schedule_definition = models.ForeignKey(
@@ -57,7 +61,7 @@ class ScheduleWorkEntry(models.Model):
 
 
 class GarbageCollectionScheduleTemplate(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=255)
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
 
 
