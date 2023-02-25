@@ -2,12 +2,12 @@ from django.db import models
 
 
 class LocationGroup(models.Model):
-    location_group_name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
 
 
 class Building(models.Model):
     address = models.CharField(max_length=255)
-    building_guide_pdf_path = models.CharField(max_length=255)
+    guide_pdf_path = models.CharField(max_length=255)
     location_group = models.ForeignKey(LocationGroup, on_delete=models.RESTRICT)
 
 
