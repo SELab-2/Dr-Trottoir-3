@@ -15,6 +15,7 @@ class ScheduleDefinition(models.Model):
     name = models.CharField()
     version = models.IntegerField()
     location_group = models.ForeignKey(LocationGroup, on_delete=models.RESTRICT)
+    buildings = models.ManyToManyField(Building)
 
 
 class Role(models.Model):
@@ -53,3 +54,26 @@ class ScheduleWorkEntry(models.Model):
     schedule_definition = models.ForeignKey(
         ScheduleDefinition, on_delete=models.CASCADE
     )
+
+
+class GarbageCollectionScheduleTemplate(models.Model):
+    name = models.CharField()
+    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+
+
+class GarbageType(models.Model):
+    name = models.CharField(max_length=255)
+
+
+class GarbageCollectionScheduleTemplateEntry(models.Model):
+    day = models.DateField()
+    garbage_type = models.ForeignKey(GarbageType, on_delete=models.RESTRICT)
+    garbage_collection_schedule_template = models.ForeignKey(
+        GarbageCollectionScheduleTemplate, on_delete=models.CASCADE
+    )
+
+
+class GarbageCollectionSchedule(models.Model):
+    for_day = models.DateField()
+    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    garbage_type = models.ForeignKey(GarbageType, on_delete=models.RESTRICT)
