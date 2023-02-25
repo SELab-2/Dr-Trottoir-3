@@ -5,3 +5,6 @@ docstring-convention=google
 
 # Required to be compatible with black
 extend-ignore = E203
+
+exclude = 
+    migrations

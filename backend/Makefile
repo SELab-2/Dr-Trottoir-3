@@ -38,8 +38,8 @@ fmt:
 ### Lint using black & flake8
 .PHONY: lint
 lint:
-	@ '$(VENV)'/bin/flake8 $(SRC)
 	@ '$(VENV)'/bin/black --check $(SRC)
+	@ '$(VENV)'/bin/flake8 $(SRC)
 	@ '$(VENV)'/bin/isort --check $(SRC)
 	@ '$(VENV)'/bin/mypy  $(SRC)
 

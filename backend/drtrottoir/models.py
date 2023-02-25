@@ -1,3 +1,5 @@
+import typing
+
 from django.db import models
 
 
@@ -15,7 +17,7 @@ class ScheduleDefinition(models.Model):
     name = models.CharField(max_length=255)
     version = models.IntegerField()
     location_group = models.ForeignKey(LocationGroup, on_delete=models.RESTRICT)
-    buildings = models.ManyToManyField(Building)
+    buildings = models.ManyToManyField[Building, typing.Any](Building)
 
 
 class Role(models.Model):
