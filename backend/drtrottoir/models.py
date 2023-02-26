@@ -17,7 +17,15 @@ class ScheduleDefinition(models.Model):
     name = models.CharField(max_length=255)
     version = models.IntegerField()
     location_group = models.ForeignKey(LocationGroup, on_delete=models.RESTRICT)
-    buildings = models.ManyToManyField(Building)
+    buildings = models.ManyToManyField(Building, through="ScheduleDefinitionBuilding")
+
+
+class ScheduleDefinitionBuilding(models.Model):
+    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    schedule_definition = models.ForeignKey(
+        ScheduleDefinition, on_delete=models.CASCADE
+    )
+    position = models.IntegerField()
 
 
 class User(AbstractUser):
