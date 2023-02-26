@@ -62,7 +62,8 @@ class Issue(models.Model):
         User, on_delete=models.RESTRICT, related_name="issues_created"
     )
     approval_user = models.ForeignKey(
-        User, on_delete=models.RESTRICT, related_name="issues_to_approve"
+        User, on_delete=models.RESTRICT, related_name="issues_to_approve",
+        null=True
     )
 
 
