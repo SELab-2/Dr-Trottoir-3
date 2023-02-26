@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
@@ -18,13 +19,8 @@ class ScheduleDefinition(models.Model):
     buildings = models.ManyToManyField(Building)
 
 
-class Role(models.Model):
-    name = models.CharField(max_length=255)
-
-
-class User(models.Model):
+class User(AbstractUser):
     location_group = models.ForeignKey(LocationGroup, on_delete=models.RESTRICT)
-    role = models.ForeignKey(Role, on_delete=models.RESTRICT)
 
 
 class Issue(models.Model):

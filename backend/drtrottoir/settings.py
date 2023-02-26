@@ -28,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS: List[str] = []
 
+AUTH_USER_MODEL = "drtrottoir.User"
+
 
 # Application definition
 
