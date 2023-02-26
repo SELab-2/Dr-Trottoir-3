@@ -10,7 +10,7 @@ class Building(models.Model):
     address = models.CharField(max_length=255)
     guide_pdf_path = models.CharField(max_length=255)
     location_group = models.ForeignKey(LocationGroup, on_delete=models.RESTRICT)
-    inactive = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
 
 
 class ScheduleDefinition(models.Model):
@@ -60,7 +60,7 @@ class Issue(models.Model):
 
 class IssueImage(models.Model):
     image_path = models.CharField(max_length=255)
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE)
+    issue = models.ForeignKey(Issue, on_delete=models.RESTRICT)
 
 
 class ScheduleAssignment(models.Model):
