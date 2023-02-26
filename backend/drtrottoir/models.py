@@ -21,7 +21,29 @@ class ScheduleDefinition(models.Model):
 
 
 class User(AbstractUser):
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    email = models.EmailField(max_length=255, unique=True)
+
+    USERNAME_FIELD = "email"
+
+    # email is explicitely *not* allowed to be in REQUIRED_FIELDS
+    REQUIRED_FIELDS = ["first_name", "last_name"]
+
+
+class Admin(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+
+class Student(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     location_group = models.ForeignKey(LocationGroup, on_delete=models.RESTRICT)
+    is_super_student = models.BooleanField(default=False)
+
+
+class Syndicus(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    building = models.ForeignKey(Building, on_delete=models.RESTRICT)
 
 
 class Issue(models.Model):
