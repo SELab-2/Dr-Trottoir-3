@@ -51,7 +51,7 @@ class Student(models.Model):
 
 class Syndicus(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    building = models.ForeignKey(Building, on_delete=models.RESTRICT)
+    buildings = models.ManyToManyField(Building)
 
 
 class Issue(models.Model):
