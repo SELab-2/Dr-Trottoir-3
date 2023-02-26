@@ -10,6 +10,7 @@ class Building(models.Model):
     address = models.CharField(max_length=255)
     guide_pdf_path = models.CharField(max_length=255)
     location_group = models.ForeignKey(LocationGroup, on_delete=models.RESTRICT)
+    inactive = models.BooleanField(default=False)
 
 
 class ScheduleDefinition(models.Model):
@@ -24,6 +25,8 @@ class User(AbstractUser):
 
 
 class Issue(models.Model):
+    building = models.ForeignKey(Building, on_delete=models.RESTRICT)
+    resolved = models.BooleanField(default=False)
     message = models.TextField()
     from_user = models.ForeignKey(
         User, on_delete=models.RESTRICT, related_name="issues_created"
@@ -49,16 +52,16 @@ class ScheduleAssignment(models.Model):
 class ScheduleWorkEntry(models.Model):
     creation_timestamp = models.DateTimeField()
     image_path = models.CharField(max_length=255)
-    creator = models.ForeignKey(User, on_delete=models.CASCADE)
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    creator = models.ForeignKey(User, on_delete=models.RESTRICT)
+    building = models.ForeignKey(Building, on_delete=models.RESTRICT)
     schedule_definition = models.ForeignKey(
-        ScheduleDefinition, on_delete=models.CASCADE
+        ScheduleDefinition, on_delete=models.RESTRICT
     )
 
 
 class GarbageCollectionScheduleTemplate(models.Model):
     name = models.CharField(max_length=255)
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    building = models.ForeignKey(Building, on_delete=models.RESTRICT)
 
 
 class GarbageType(models.Model):
@@ -66,7 +69,7 @@ class GarbageType(models.Model):
 
 
 class GarbageCollectionScheduleTemplateEntry(models.Model):
-    day = models.DateField()
+    day = models.SmallIntegerField()
     garbage_type = models.ForeignKey(GarbageType, on_delete=models.RESTRICT)
     garbage_collection_schedule_template = models.ForeignKey(
         GarbageCollectionScheduleTemplate, on_delete=models.CASCADE
@@ -75,5 +78,5 @@ class GarbageCollectionScheduleTemplateEntry(models.Model):
 
 class GarbageCollectionSchedule(models.Model):
     for_day = models.DateField()
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    building = models.ForeignKey(Building, on_delete=models.RESTRICT)
     garbage_type = models.ForeignKey(GarbageType, on_delete=models.RESTRICT)
