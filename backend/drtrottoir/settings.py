@@ -28,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS: List[str] = []
 
+AUTH_USER_MODEL = "drtrottoir.User"
+
 
 # Application definition
 
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "drtrottoir",
 ]
 
 MIDDLEWARE = [

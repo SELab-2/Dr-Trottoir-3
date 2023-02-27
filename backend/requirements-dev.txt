@@ -17,4 +17,7 @@ exceptiongroup==1.1.0
 iniconfig==2.0.0
 pluggy==1.0.0
 pytest==7.2.1
-
+django-stubs==1.15.0
+django-stubs-ext==0.7.0
+types-PyYAML==6.0.12.8
+types-pytz==2022.7.1.2
