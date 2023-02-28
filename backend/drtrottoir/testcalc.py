@@ -12,13 +12,14 @@ def add(a: float, b: float) -> float:
     Returns:
         float: The sum of the two given numbers.
     """
-    return a+b
+    return a + b
+
 
 def divide(a: float, b: float) -> float:
     """Divide two numbers with each other.
 
     Args:
-        a (float): The numerator of the operation. 
+        a (float): The numerator of the operation.
         b (float): The denominator of the operation.
 
     Raises:
@@ -27,6 +28,6 @@ def divide(a: float, b: float) -> float:
     Returns:
         float: The result of the division.
     """
-    if (b == 0):
+    if b == 0:
         raise ValueError("Cannot divide by zero!")
     return a / b

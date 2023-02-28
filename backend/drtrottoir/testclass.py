@@ -1,6 +1,5 @@
 class DocsTesting:
-    """A class for testing docs generation
-    """
+    """A class for testing docs generation"""
 
     """ A string contained in the class
     """
