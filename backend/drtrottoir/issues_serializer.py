@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from backend.drtrottoir.models import Issue
+from drtrottoir.models import Issue
 
 
 class IssueSerializer(serializers.ModelSerializer):

@@ -2,8 +2,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from backend.drtrottoir.issues_serializer import IssueSerializer
-from backend.drtrottoir.models import Issue, Building
+from drtrottoir.issues_serializer import IssueSerializer
+from drtrottoir.models import Issue, Building
 
 
 class IssuesListApiView(APIView):
@@ -29,12 +29,12 @@ class IssuesListApiView(APIView):
         # TODO - check user permissions
 
         building_id = request.data.get('building_id')
-        building_instance = Building.objects.get(id=building_id)
+        # building_instance = Building.objects.get(id=building_id)
 
         data = {
-            'building': building_instance,
+            'building': building_id,
             'message': request.data.get('message'),
-            'from_user': request_user
+            'from_user': request_user.id
         }
 
         serializer = IssueSerializer(data=data, partial=True)
