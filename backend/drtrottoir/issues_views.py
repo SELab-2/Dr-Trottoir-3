@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from drtrottoir.issues_serializer import IssueSerializer
+from drtrottoir.serializers import IssueSerializer
 from drtrottoir.models import Issue, Building
 
 

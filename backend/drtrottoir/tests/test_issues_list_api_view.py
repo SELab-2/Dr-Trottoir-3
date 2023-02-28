@@ -1,14 +1,11 @@
 import pytest
 import json
 
-from drtrottoir.buildings_serializer import BuildingSerializer
-from drtrottoir.location_groups_serializer import LocationGroupSerializer
+from drtrottoir.serializers import BuildingSerializer, LocationGroupSerializer, IssueSerializer
 from drtrottoir.models import User, Building, LocationGroup
 from rest_framework.test import force_authenticate, APIRequestFactory
 
 from drtrottoir.issues_views import IssuesListApiView
-
-from drtrottoir.issues_serializer import IssueSerializer
 
 
 def insert_dummy_building() -> int:
