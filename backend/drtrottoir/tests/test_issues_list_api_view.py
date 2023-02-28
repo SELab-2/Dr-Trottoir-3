@@ -4,14 +4,14 @@ import json
 from drtrottoir.buildings_serializer import BuildingSerializer
 from drtrottoir.location_groups_serializer import LocationGroupSerializer
 from drtrottoir.models import User, Building, LocationGroup
-from django.test.client import encode_multipart, RequestFactory
 from rest_framework.test import force_authenticate, APIRequestFactory
 
 from drtrottoir.issues_views import IssuesListApiView
 
+from drtrottoir.issues_serializer import IssueSerializer
 
-@pytest.mark.django_db
-def test_issues_list_api_view_post():
+
+def insert_dummy_building() -> int:
     dummy_location_group_data = {
         'name': 'dummy location group name'
     }
@@ -32,10 +32,31 @@ def test_issues_list_api_view_post():
     assert building_serializer.is_valid()
     building_serializer.save()
 
-    dummy_building_instance_id = building_serializer.data['id']
+    return building_serializer.data['id']
+
+
+def insert_dummy_issue(dummy_user_id: int) -> int:
+    dummy_building_id = insert_dummy_building()
 
     dummy_issue_data = {
-        'building_id': dummy_building_instance_id,
+        'building': dummy_building_id,
+        'message': 'dummy issue message',
+        'from_user': dummy_user_id
+    }
+
+    issue_serializer = IssueSerializer(data=dummy_issue_data)
+    assert issue_serializer.is_valid()
+    issue_serializer.save()
+
+    return issue_serializer.data['id']
+
+
+@pytest.mark.django_db
+def test_issues_list_api_view_post():
+    dummy_building_id = insert_dummy_building()
+
+    dummy_issue_data = {
+        'building_id': dummy_building_id,
         'message': 'dummy message'
     }
 
@@ -59,3 +80,25 @@ def test_issues_list_api_view_post():
         'approval_user': None
     }
     assert response.status_code == 201
+
+
+@pytest.mark.django_db
+def test_issues_list_api_view_get():
+    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+
+    dummy_issue_id_1 = insert_dummy_issue(dummy_user.id)
+    dummy_issue_id_2 = insert_dummy_issue(dummy_user.id)
+    non_existing_issue_id = dummy_issue_id_1 + dummy_issue_id_2
+
+    factory = APIRequestFactory()
+    view = IssuesListApiView.as_view()
+
+    request = factory.get(f'/issues/')
+    response = view(request)
+
+    response_data_ids = [e['id'] for e in response.data]
+
+    assert dummy_issue_id_1 in response_data_ids
+    assert dummy_issue_id_2 in response_data_ids
+    assert non_existing_issue_id not in response_data_ids
+    assert response.status_code == 200
