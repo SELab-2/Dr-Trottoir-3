@@ -1,0 +1,24 @@
+# get the base node image
+FROM node:alpine as builder
+
+# set the working dir for container
+WORKDIR /frontend
+
+# copy the json file first
+COPY --chown=node:node ./package.json /frontend
+#COPY package-lock.json ./
+
+# install npm dependencies
+RUN npm install
+
+# copy other project files
+#COPY . .
+COPY --chown=node:node . .
+USER node
+
+#RUN chown -R node:node /frontend/node_modules
+#USER node
+
+
+# build the folder
+CMD [ "npm", "run", "start" ]
