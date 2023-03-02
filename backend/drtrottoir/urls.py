@@ -14,8 +14,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, register_converter
+from drtrottoir.converters import DateConverter
+
+from drtrottoir.schedule_assignment_views import ScheduleAssignmentApiView, ScheduleAssignmentDateUserApiView, ScheduleAssignmentListApiView, ScheduleAssignmentsByScheduleDefinition
+
+register_converter(DateConverter, 'date')
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("schedule_assignments/", ScheduleAssignmentListApiView.as_view()),
+    path("schedule_assignments/<uuid:schedule_assignment_id/",
+         ScheduleAssignmentApiView.as_view()),
+    path("schedule_assignments/date/<date:schedule_assignment_date>/user/<uuid:schedule_assignment_id>/",
+         ScheduleAssignmentDateUserApiView.as_view()),
+    path("schedule_assignments/schedule_definitions/<uuid:schedule_definition_id>/",
+         ScheduleAssignmentsByScheduleDefinition.as_view())
 ]
