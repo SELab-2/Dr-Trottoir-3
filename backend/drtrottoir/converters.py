@@ -2,8 +2,8 @@ import datetime
 
 
 class DateConverter:
-    regex: str = '\d{1,2}-\d{1,2}-\d{4}'
-    format: str = '%d-%m-%Y'
+    regex: str = "\d{4}-\d{1,2}-\d{1,2}"
+    format: str = "%Y-%m-%d"
 
     def to_python(self, value):
         return datetime.strptime(value, self.format).date()

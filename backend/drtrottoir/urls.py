@@ -15,19 +15,52 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, register_converter
+
 from drtrottoir.converters import DateConverter
+from drtrottoir.schedule_assignment_views import (
+    ScheduleAssignmentApiView,
+    ScheduleAssignmentDateUserApiView,
+    ScheduleAssignmentListApiView,
+    ScheduleAssignmentsByScheduleDefinition,
+)
+from drtrottoir.schedule_work_entry_views import (
+    ScheduleWorkEntryApiView,
+    ScheduleWorkEntryByCreatorApiView,
+    ScheduleWorkEntryByScheduleDefinitionApiView,
+    ScheduleWorkEntryListApiView,
+)
 
-from drtrottoir.schedule_assignment_views import ScheduleAssignmentApiView, ScheduleAssignmentDateUserApiView, ScheduleAssignmentListApiView, ScheduleAssignmentsByScheduleDefinition
-
-register_converter(DateConverter, 'date')
+# Dates follow the format YYYY-MM-DD
+register_converter(DateConverter, "date")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    # Schedule assignments
     path("schedule_assignments/", ScheduleAssignmentListApiView.as_view()),
-    path("schedule_assignments/<uuid:schedule_assignment_id/",
-         ScheduleAssignmentApiView.as_view()),
-    path("schedule_assignments/date/<date:schedule_assignment_date>/user/<uuid:schedule_assignment_id>/",
-         ScheduleAssignmentDateUserApiView.as_view()),
-    path("schedule_assignments/schedule_definitions/<uuid:schedule_definition_id>/",
-         ScheduleAssignmentsByScheduleDefinition.as_view())
+    path(
+        "schedule_assignments/date/<date:schedule_assignment_date>/user/<uuid:schedule_assignment_user>/",
+        ScheduleAssignmentDateUserApiView.as_view(),
+    ),
+    path(
+        "schedule_assignments/schedule_definitions/<uuid:schedule_definition_id>/",
+        ScheduleAssignmentsByScheduleDefinition.as_view(),
+    ),
+    path(
+        "schedule_assignments/<uuid:schedule_assignment_id>/",
+        ScheduleAssignmentApiView.as_view(),
+    ),
+    # Schedule work entries
+    path("schedule_work_entries/", ScheduleWorkEntryListApiView.as_view()),
+    path(
+        "schedule_work_entries/schedule_definitions/<uuid:schedule_definition_id>/",
+        ScheduleWorkEntryByScheduleDefinitionApiView.as_view(),
+    ),
+    path(
+        "schedule_work_entries/users/<uuid:user_id>/",
+        ScheduleWorkEntryByCreatorApiView.as_view(),
+    ),
+    path(
+        "schedule_work_entries/<uuid:schedule_work_entry_id>/",
+        ScheduleWorkEntryApiView.as_view(),
+    ),
 ]
