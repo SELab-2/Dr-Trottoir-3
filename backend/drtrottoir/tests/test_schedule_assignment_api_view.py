@@ -23,16 +23,17 @@ from drtrottoir.serializers import (
 DUMMY_SCHEDULE_ASSIGNMENT_DATE: str = "2022-01-26"
 
 
-def insert_dummy_location_group():
+def insert_dummy_location_group() -> int:
     dummy_location_group_data = {"name": "dummy_location_group_name"}
 
     location_group_serializer = LocationGroupSerializer(data=dummy_location_group_data)
     assert location_group_serializer.is_valid()
     location_group_serializer.save()
-    return location_group_serializer.data["id"]
+    location_group_id: int = location_group_serializer.data["id"]
+    return location_group_id
 
 
-def insert_dummy_building(dummy_location_group_instance_id: int):
+def insert_dummy_building(dummy_location_group_instance_id: int) -> int:
     dummy_building_data = {
         "address": "dummy street",
         "guide_pdf_path": "dummy pdf path",
@@ -42,12 +43,13 @@ def insert_dummy_building(dummy_location_group_instance_id: int):
     assert building_serializer.is_valid()
     building_serializer.save()
 
-    return building_serializer.data["id"]
+    building_id: int = building_serializer.data["id"]
+    return building_id
 
 
 def insert_dummy_schedule_definition(
-        dummy_building_instances_ids: list[int], dummy_location_group_instance_id: int
-):
+    dummy_building_instances_ids: list[int], dummy_location_group_instance_id: int
+) -> int:
     dummy_schedule_definition_data = {
         "name": "dummy schedule definition name",
         "version": 1,
@@ -60,10 +62,11 @@ def insert_dummy_schedule_definition(
     assert schedule_definition_serializer.is_valid()
     schedule_definition_serializer.save()
 
-    return schedule_definition_serializer.data["id"]
+    schedule_definition_id: int = schedule_definition_serializer.data["id"]
+    return schedule_definition_id
 
 
-def insert_dummy_user(name="test"):
+def insert_dummy_user(name: str = "test") -> int:
     email = f"{name}@gmail.com"
     dummy_user: User = User.objects.create_user(
         username=email, password="test", email=email
@@ -71,7 +74,7 @@ def insert_dummy_user(name="test"):
     return dummy_user.id
 
 
-def insert_dummy_schedule_assignment(user_id: int, schedule_definition_id: int):
+def insert_dummy_schedule_assignment(user_id: int, schedule_definition_id: int) -> int:
     dummy_schedule_assignment_data = {
         "assigned_date": DUMMY_SCHEDULE_ASSIGNMENT_DATE,  # Format must be YYYY-MM-DD
         "schedule_definition": schedule_definition_id,
@@ -83,7 +86,8 @@ def insert_dummy_schedule_assignment(user_id: int, schedule_definition_id: int):
     assert schedule_assignment_serializer.is_valid()
     schedule_assignment_serializer.save()
 
-    return schedule_assignment_serializer.data["id"]
+    schedule_assignment_id: int = schedule_assignment_serializer.data["id"]
+    return schedule_assignment_id
 
 
 # endregion Insert dummies
@@ -92,7 +96,7 @@ def insert_dummy_schedule_assignment(user_id: int, schedule_definition_id: int):
 
 
 @pytest.mark.django_db
-def test_schedule_assignment_list_api_view_get():
+def test_schedule_assignment_list_api_view_get() -> None:
     dummy_user = insert_dummy_user()
     dummy_location_group = insert_dummy_location_group()
     dummy_building_1 = insert_dummy_building(dummy_location_group)
@@ -110,7 +114,7 @@ def test_schedule_assignment_list_api_view_get():
         dummy_user, dummy_schedule_definition
     )
     dummy_schedule_assignment_nonexistent = (
-            dummy_schedule_assignment_1 + dummy_schedule_assignment_2 + 3
+        dummy_schedule_assignment_1 + dummy_schedule_assignment_2 + 3
     )
 
     factory = RequestFactory()
@@ -129,7 +133,7 @@ def test_schedule_assignment_list_api_view_get():
 
 
 @pytest.mark.django_db
-def test_schedule_assignment_list_api_view_post():
+def test_schedule_assignment_list_api_view_post() -> None:
     dummy_user = insert_dummy_user()
     dummy_location_group = insert_dummy_location_group()
     dummy_building_1 = insert_dummy_building(dummy_location_group)
@@ -163,13 +167,16 @@ def test_schedule_assignment_list_api_view_post():
     result_id = response.data["id"]
 
     # Verify that resource actually exists
+    view_single = ScheduleAssignmentApiView.as_view()
     request = factory.get(f"/schedule_assignments/{result_id}/")
-    response = view(request, schedule_assignment_id=result_id)
+    response = view_single(request, schedule_assignment_id=result_id)
     assert response.status_code == 200
+    assert response.data["id"] == result_id
+    assert response.data["schedule_definition"] == dummy_schedule_definition
 
 
 @pytest.mark.django_db
-def test_schedule_assignment_api_view_get():
+def test_schedule_assignment_api_view_get() -> None:
     dummy_user = insert_dummy_user()
     dummy_location_group = insert_dummy_location_group()
     dummy_building_1 = insert_dummy_building(dummy_location_group)
@@ -202,7 +209,7 @@ def test_schedule_assignment_api_view_get():
 
 
 @pytest.mark.django_db
-def test_schedule_assignment_api_view_delete():
+def test_schedule_assignment_api_view_delete() -> None:
     dummy_user = insert_dummy_user()
     dummy_location_group = insert_dummy_location_group()
     dummy_building_1 = insert_dummy_building(dummy_location_group)
@@ -246,7 +253,7 @@ def test_schedule_assignment_api_view_delete():
 
 
 @pytest.mark.django_db
-def test_schedule_assignment_api_view_patch():
+def test_schedule_assignment_api_view_patch() -> None:
     dummy_user_1 = insert_dummy_user(name="test1")
     dummy_user_2 = insert_dummy_user(name="test2")
     dummy_location_group = insert_dummy_location_group()
@@ -279,7 +286,7 @@ def test_schedule_assignment_api_view_patch():
 
 
 @pytest.mark.django_db
-def test_schedule_assignment_by_date_api_view_get():
+def test_schedule_assignment_by_date_api_view_get() -> None:
     dummy_user = insert_dummy_user()
     dummy_location_group = insert_dummy_location_group()
     dummy_building_1 = insert_dummy_building(dummy_location_group)
@@ -323,7 +330,7 @@ def test_schedule_assignment_by_date_api_view_get():
 
 
 @pytest.mark.django_db
-def test_schedule_assignment_by_schedule_definition_api_view_get():
+def test_schedule_assignment_by_schedule_definition_api_view_get() -> None:
     dummy_user = insert_dummy_user()
     dummy_location_group = insert_dummy_location_group()
     dummy_building_1 = insert_dummy_building(dummy_location_group)
@@ -348,5 +355,6 @@ def test_schedule_assignment_by_schedule_definition_api_view_get():
 
     response_ids = [response_data["id"] for response_data in response.data]
     assert dummy_schedule_assignment in response_ids
+
 
 # endregion Schedule assignment tests

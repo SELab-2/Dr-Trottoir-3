@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -10,15 +11,15 @@ from drtrottoir.serializers import ScheduleWorkEntrySerializer
 
 
 class ScheduleWorkEntryListApiView(APIView):
-    permission_classes: list = []
+    # TODO permission_classes: list = []
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: Request) -> Response:
         """ """
         schedule_work_entries = ScheduleWorkEntry.objects
         serializer = ScheduleWorkEntrySerializer(schedule_work_entries, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request) -> Response:
         """ """
         request_user = request.user
         if request_user is None:
@@ -43,14 +44,13 @@ class ScheduleWorkEntryListApiView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        a = serializer.errors
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ScheduleWorkEntryApiView(APIView):
-    permission_classes: list = []
+    # TODO permission_classes: list = []
 
-    def get(self, request, schedule_work_entry_id, *args, **kwargs):
+    def get(self, request: Request, schedule_work_entry_id: int) -> Response:
         """"""
         try:
             schedule_work_entry: ScheduleWorkEntry = ScheduleWorkEntry.objects.get(
@@ -64,7 +64,8 @@ class ScheduleWorkEntryApiView(APIView):
 
 
 class ScheduleWorkEntryByScheduleDefinitionApiView(APIView):
-    def get(self, request, schedule_definition_id, *args, **kwargs):
+    # TODO permission_classes = []
+    def get(self, request: Request, schedule_definition_id: int) -> Response:
         """"""
         schedule_work_entries = ScheduleWorkEntry.objects.filter(
             schedule_definition=schedule_definition_id
@@ -74,10 +75,10 @@ class ScheduleWorkEntryByScheduleDefinitionApiView(APIView):
 
 
 class ScheduleWorkEntryByCreatorApiView(APIView):
-    def get(self, request, creator_id, *args, **kwargs):
+    # TODO permission_classes = []
+
+    def get(self, request: Request, creator_id: int) -> Response:
         """"""
-        schedule_work_entries = ScheduleWorkEntry.objects.filter(
-            creator=creator_id
-        )
+        schedule_work_entries = ScheduleWorkEntry.objects.filter(creator=creator_id)
         serializer = ScheduleWorkEntrySerializer(schedule_work_entries, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

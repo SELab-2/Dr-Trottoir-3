@@ -1,6 +1,8 @@
 import django
 import django.utils.dateparse
+from django.db.models import QuerySet
 from rest_framework import status
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -12,18 +14,18 @@ from drtrottoir.serializers import ScheduleAssignmentSerializer
 
 
 class ScheduleAssignmentListApiView(APIView):
-    permission_classes: list = []
+    # TODO permission_classes: list = []
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: Request) -> Response:
         """
-        Note: According to the specs, this shouldn't be added. It's currently here for testing purposes, and should be
-        removed later on.
+        Note: According to the specs, this shouldn't be added. It's currently here
+        for testing purposes, and should be removed later on.
         """
         schedule_assignments = ScheduleAssignment.objects.all()
         serializer = ScheduleAssignmentSerializer(schedule_assignments, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request) -> Response:
         """ """
         # TODO permissions
 
@@ -47,9 +49,9 @@ class ScheduleAssignmentListApiView(APIView):
 
 
 class ScheduleAssignmentApiView(APIView):
-    permission_classes: list = []
+    # TODO permission_classes: list = []
 
-    def get(self, request, schedule_assignment_id, *args, **kwargs):
+    def get(self, request: Request, schedule_assignment_id: int) -> Response:
         """ """
         try:
             schedule_assignment = ScheduleAssignment.objects.get(
@@ -60,7 +62,7 @@ class ScheduleAssignmentApiView(APIView):
         serializer = ScheduleAssignmentSerializer(schedule_assignment)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def delete(self, request, schedule_assignment_id, *args, **kwargs):
+    def delete(self, request: Request, schedule_assignment_id: int) -> Response:
         """ """
         # TODO permissions
         try:
@@ -72,7 +74,7 @@ class ScheduleAssignmentApiView(APIView):
         schedule_assignment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def patch(self, request, schedule_assignment_id, *args, **kwargs):
+    def patch(self, request: Request, schedule_assignment_id: int) -> Response:
         try:
             schedule_assignment = ScheduleAssignment.objects.get(
                 id=schedule_assignment_id
@@ -89,24 +91,24 @@ class ScheduleAssignmentApiView(APIView):
 
 
 class ScheduleAssignmentDateUserApiView(APIView):
-    permission_classes: list = []
+    # TODO permission_classes: list = []
 
-    def get(
-            self,
-            _request,
-            schedule_assignment_date,
-            schedule_assignment_user,
-            *_args,
-            **_kwargs
-    ):
+    def get(self, request: Request,
+            schedule_assignment_date: str,
+            schedule_assignment_user: int,
+            ) -> Response:
         """ """
         # Handle invalid date error
         try:
             parsed_date = django.utils.dateparse.parse_date(schedule_assignment_date)
         except ValueError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        if parsed_date is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            schedule_assignments = ScheduleAssignment.objects.filter(
+            schedule_assignments: QuerySet[
+                ScheduleAssignment] = ScheduleAssignment.objects.filter(
                 user=schedule_assignment_user, assigned_date=parsed_date
             )
         except ScheduleAssignment.DoesNotExist:
@@ -117,9 +119,9 @@ class ScheduleAssignmentDateUserApiView(APIView):
 
 
 class ScheduleAssignmentsByScheduleDefinition(APIView):
-    permission_classes: list = []
+    # TODO permission_classes: list = []
 
-    def get(self, request, schedule_definition_id, *args, **kwargs):
+    def get(self, request: Request, schedule_definition_id: int) -> Response:
         """ """
         try:
             schedule_assignments = ScheduleAssignment.objects.filter(
