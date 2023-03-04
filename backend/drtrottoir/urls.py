@@ -14,23 +14,25 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
 from drtrottoir.views import (
-    GarbageCollectionScheduleTemplateApiView,
-    GarbageCollectionScheduleTemplateEntryApiView,
-    GarbageTypesApiView,
+    GarbageCollectionScheduleTemplateEntryViewSet,
+    GarbageCollectionScheduleTemplateViewSet,
+)
+
+router = DefaultRouter()
+router.register(
+    r"garbage_collection_schedule_template_entries",
+    GarbageCollectionScheduleTemplateEntryViewSet,
+)
+router.register(
+    r"garbage_collection_schedule_templates",
+    GarbageCollectionScheduleTemplateViewSet,
 )
 
 urlpatterns = [
+    path("", include(router.urls)),
     path("admin/", admin.site.urls),
-    path(
-        "garbage-collection-schedule-template-entries/",
-        GarbageCollectionScheduleTemplateEntryApiView.as_view(),
-    ),
-    path(
-        "garbage-collection-schedule-templates/",
-        GarbageCollectionScheduleTemplateApiView.as_view(),
-    ),
-    path("garbage_type/", GarbageTypesApiView.as_view())
 ]
