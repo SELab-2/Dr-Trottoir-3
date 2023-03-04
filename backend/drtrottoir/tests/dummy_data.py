@@ -1,4 +1,4 @@
-from drtrottoir.models import Building, GarbageType, LocationGroup
+from drtrottoir.models import Building, GarbageType, LocationGroup, Issue, User
 
 
 def insert_dummy_garbage_type() -> GarbageType:
@@ -26,3 +26,17 @@ def insert_dummy_building() -> Building:
     building.save()
 
     return building
+
+
+def insert_dummy_issue(dummy_user: User) -> Issue:
+    building = insert_dummy_building()
+
+    issue = Issue(
+        building=building,
+        message="dummy message",
+        from_user=dummy_user
+    )
+
+    issue.save()
+
+    return issue

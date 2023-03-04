@@ -3,7 +3,12 @@ from .garbage_collection_schedule_template import (
     GarbageCollectionScheduleTemplateSerializer,
 )
 
+from .issue_serializer import (
+    IssueSerializer
+)
+
 __all__ = [
     "GarbageCollectionScheduleTemplateEntrySerializer",
     "GarbageCollectionScheduleTemplateSerializer",
+    "IssueSerializer"
 ]
