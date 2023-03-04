@@ -24,6 +24,7 @@ from drtrottoir.views import (
     IssueDetailApiView,
     IssueNotApprovedApiView,
     IssuesListApiView,
+    BuildingListViewSet,
 )
 
 router = DefaultRouter()
@@ -38,7 +39,12 @@ router.register(
 
 router.register(
     r"location_groups",
-    LocationGroupViewSet
+    LocationGroupViewSet,
+)
+
+router.register(
+    r"buildings",
+    BuildingListViewSet,
 )
 
 

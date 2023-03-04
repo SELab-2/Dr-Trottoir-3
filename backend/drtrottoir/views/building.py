@@ -1,10 +1,19 @@
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 
 from drtrottoir.serializers import BuildingSerializer
 from drtrottoir.models import Building
+
+
+class BuildingListViewSet(ModelViewSet):
+    permission_classes = []
+
+    queryset = Building.objects.all()
+    serializer_class = BuildingSerializer
 
 
 class BuildingListApiView(APIView):

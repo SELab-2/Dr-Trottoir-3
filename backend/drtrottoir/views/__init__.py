@@ -11,12 +11,14 @@ from .location_group import (
 )
 
 from .building import (
+    BuildingListViewSet,
     BuildingListApiView,
 )
 
 __all__ = [
     "LocationGroupViewSet",
     "BuildingListApiView",
+    "BuildingListViewSet",
     "GarbageCollectionScheduleTemplateEntryViewSet",
     "GarbageCollectionScheduleTemplateViewSet",
     "IssuesListApiView",

@@ -22,6 +22,10 @@ class LocationGroupViewSet(ModelViewSet):
         serializer = BuildingSerializer(buildings, many=True)
         return Response(serializer.data)
 
+    @action(detail=True)
+    def schedule_definitions(self, request, pk=None):
+        pass
+
 
 class LocationGroupListApiView(APIView):
     permission_classes = []
