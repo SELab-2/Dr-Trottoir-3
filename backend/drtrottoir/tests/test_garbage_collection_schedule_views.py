@@ -88,3 +88,12 @@ def test_garbage_collection_schedule_delete():
 
     response = client.get(f"/garbage_collection_schedules/{entry.id}/")
     assert response.status_code == 404
+
+
+def test_garbage_collection_schedule_forbidden_methods():
+    client = APIClient()
+
+    assert client.get("/garbage_collection_schedules/").status_code == 405
+    assert client.patch("/garbage_collection_schedules/").status_code == 405
+    assert client.delete("/garbage_collection_schedules/").status_code == 405
+    assert client.put("/garbage_collection_schedules/").status_code == 405

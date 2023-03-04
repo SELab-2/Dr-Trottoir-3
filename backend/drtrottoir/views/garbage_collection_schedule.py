@@ -1,10 +1,16 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import mixins, viewsets
 
 from drtrottoir.models import GarbageCollectionSchedule
 from drtrottoir.serializers import GarbageCollectionScheduleSerializer
 
 
-class GarbageCollectionScheduleViewSet(ModelViewSet):
+class GarbageCollectionScheduleViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
     permission_classes = []
 
     queryset = GarbageCollectionSchedule.objects.all()
