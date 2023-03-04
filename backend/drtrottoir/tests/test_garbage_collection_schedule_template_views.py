@@ -1,13 +1,9 @@
 import json
 
 import pytest
-from rest_framework.test import APIRequestFactory, force_authenticate
+from rest_framework.test import APIClient
 
 from drtrottoir.models import User
-from drtrottoir.views import (
-    GarbageCollectionScheduleTemplateEntryViewSet,
-    GarbageCollectionScheduleTemplateViewSet,
-)
 
 from .dummy_data import (
     insert_dummy_building,
@@ -25,16 +21,14 @@ def test_garbage_collection_schedule_template_post():
 
     user = User.objects.create_user(username="test@gmail.com", password="test")
 
-    factory = APIRequestFactory()
-    view = GarbageCollectionScheduleTemplateViewSet.as_view({"post": "create"})
+    client = APIClient()
+    client.force_login(user)
 
-    request = factory.post(
-        "/garbage-collection-schedule-templates/",
+    response = client.post(
+        "/garbage_collection_schedule_templates/",
         json.dumps(data),
         content_type="application/json",
     )
-    force_authenticate(request, user=user)
-    response = view(request)
 
     assert response.data == {"id": 1, "name": "dummy schedule", "building": building.id}
     assert response.status_code == 201
@@ -45,11 +39,8 @@ def test_garbage_collection_schedule_template_get():
     template_1 = insert_dummy_garbage_collection_schedule_template()
     template_2 = insert_dummy_garbage_collection_schedule_template()
 
-    factory = APIRequestFactory()
-    view = GarbageCollectionScheduleTemplateViewSet.as_view({"get": "list"})
-
-    request = factory.get("/garbage-collection-schedule-templates/")
-    response = view(request)
+    client = APIClient()
+    response = client.get("/garbage_collection_schedule_templates/")
 
     response_ids = [e["id"] for e in response.data]
 
@@ -69,18 +60,13 @@ def test_garbage_collection_schedule_template_entry_post():
 
     user = User.objects.create_user(username="test@gmail.com", password="test")
 
-    factory = APIRequestFactory()
-    view = GarbageCollectionScheduleTemplateEntryViewSet.as_view(
-        {"get": "list", "post": "create"}
-    )
-
-    request = factory.post(
+    client = APIClient()
+    client.force_login(user)
+    response = client.post(
         "/garbage_collection_schedule_template_entries/",
         json.dumps(data),
         content_type="application/json",
     )
-    force_authenticate(request, user=user)
-    response = view(request)
 
     assert response.data == {
         "id": 1,
@@ -96,11 +82,8 @@ def test_garbage_collection_schedule_template_entry_get():
     entry_1 = insert_dummy_garbage_collection_schedule_template_entry()
     entry_2 = insert_dummy_garbage_collection_schedule_template_entry()
 
-    factory = APIRequestFactory()
-    view = GarbageCollectionScheduleTemplateEntryViewSet.as_view({"get": "list"})
-
-    request = factory.get("/garbage_collection_schedule_template_entries/")
-    response = view(request)
+    client = APIClient()
+    response = client.get("/garbage_collection_schedule_template_entries/")
 
     response_ids = [e["id"] for e in response.data]
 
