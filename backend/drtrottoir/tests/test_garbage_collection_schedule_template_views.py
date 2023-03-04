@@ -5,8 +5,8 @@ from rest_framework.test import APIRequestFactory, force_authenticate
 
 from drtrottoir.models import User
 from drtrottoir.views import (
-    GarbageCollectionScheduleTemplateApiView,
-    GarbageCollectionScheduleTemplateEntryApiView,
+    GarbageCollectionScheduleTemplateEntryViewSet,
+    GarbageCollectionScheduleTemplateViewSet,
 )
 
 from .dummy_data import (
@@ -26,7 +26,7 @@ def test_garbage_collection_schedule_template_post():
     user = User.objects.create_user(username="test@gmail.com", password="test")
 
     factory = APIRequestFactory()
-    view = GarbageCollectionScheduleTemplateApiView.as_view()
+    view = GarbageCollectionScheduleTemplateViewSet.as_view({"post": "create"})
 
     request = factory.post(
         "/garbage-collection-schedule-templates/",
@@ -46,7 +46,7 @@ def test_garbage_collection_schedule_template_get():
     template_2 = insert_dummy_garbage_collection_schedule_template()
 
     factory = APIRequestFactory()
-    view = GarbageCollectionScheduleTemplateApiView.as_view()
+    view = GarbageCollectionScheduleTemplateViewSet.as_view({"get": "list"})
 
     request = factory.get("/garbage-collection-schedule-templates/")
     response = view(request)
@@ -70,10 +70,12 @@ def test_garbage_collection_schedule_template_entry_post():
     user = User.objects.create_user(username="test@gmail.com", password="test")
 
     factory = APIRequestFactory()
-    view = GarbageCollectionScheduleTemplateEntryApiView.as_view()
+    view = GarbageCollectionScheduleTemplateEntryViewSet.as_view(
+        {"get": "list", "post": "create"}
+    )
 
     request = factory.post(
-        "/garbage-collection-schedule-template-entries/",
+        "/garbage_collection_schedule_template_entries/",
         json.dumps(data),
         content_type="application/json",
     )
@@ -95,9 +97,9 @@ def test_garbage_collection_schedule_template_entry_get():
     entry_2 = insert_dummy_garbage_collection_schedule_template_entry()
 
     factory = APIRequestFactory()
-    view = GarbageCollectionScheduleTemplateEntryApiView.as_view()
+    view = GarbageCollectionScheduleTemplateEntryViewSet.as_view({"get": "list"})
 
-    request = factory.get("/garbage-collection-schedule-template-entries/")
+    request = factory.get("/garbage_collection_schedule_template_entries/")
     response = view(request)
 
     response_ids = [e["id"] for e in response.data]
