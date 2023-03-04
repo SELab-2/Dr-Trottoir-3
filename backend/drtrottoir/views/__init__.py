@@ -3,9 +3,10 @@ from .garbage_collection_schedule_template import (
     GarbageCollectionScheduleTemplateViewSet,
 )
 
-from .garbage_type import GarbageTypesApiView
+from .garbage_type import GarbageTypeViewSet
 
 __all__ = [
     "GarbageCollectionScheduleTemplateEntryViewSet",
     "GarbageCollectionScheduleTemplateViewSet",
+    "GarbageTypeViewSet"
 ]

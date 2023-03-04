@@ -1,53 +1,49 @@
 import json
-
 import pytest
-
-from drtrottoir.serializers import GarbageTypeSerializer
-from drtrottoir.views import GarbageTypesApiView
+import os
+import django
 
 from rest_framework.test import APIRequestFactory
+from drtrottoir.views import GarbageTypeViewSet
+from .dummy_data import insert_dummy_garbage_type
 
 
-def insert_dummy_garbage_type() -> int:
-    dummy_garbage_type_data = {
-        'name': 'garbageType'
-    }
-
-    garbage_type_serializer = GarbageTypeSerializer(data=dummy_garbage_type_data)
-    assert garbage_type_serializer.is_valid()
-    garbage_type_serializer.save()
-
-    return garbage_type_serializer.data['id']
+def initialize_django():
+    pass
 
 
 @pytest.mark.django_db
-def test_garbage_type_api_view_post():
+def test_garbage_type_post():
     dummy_garbage_type_data = {
-        'name': 'PMD'
+        'name': 'dummy garbage type'
     }
 
     factory = APIRequestFactory()
-    view = GarbageTypesApiView.as_view()
+    view = GarbageTypeViewSet.as_view({"post": "create"})
 
-    request = factory.post('/garbage_type/', json.dumps(dummy_garbage_type_data), content_type="application/json")
+    request = factory.post(
+        '/garbage_type/',
+        json.dumps(dummy_garbage_type_data),
+        content_type="application/json"
+    )
     response = view(request)
 
+    assert response.data == {"id": 1, "name": "dummy garbage type"}
     assert response.status_code == 201
 
 
 @pytest.mark.django_db
 def test_garbage_type_api_view_get():
-    dummy_garbage_type_id_1 = insert_dummy_garbage_type()
-    dummy_garbage_type_id_2 = insert_dummy_garbage_type()
+    dummy_entry_1 = insert_dummy_garbage_type()
+    dummy_entry_2 = insert_dummy_garbage_type()
 
     factory = APIRequestFactory()
-    view = GarbageTypesApiView.as_view()
+    view = GarbageTypeViewSet.as_view({"get": "list"})
 
     request = factory.get('/garbage_type/')
     response = view(request)
 
     response_data_ids = [e['id'] for e in response.data]
 
-    assert dummy_garbage_type_id_1 in response_data_ids
-    assert dummy_garbage_type_id_2 in response_data_ids
+    assert sorted(response_data_ids) == sorted([dummy_entry_1.id, dummy_entry_2.id])
     assert response.status_code == 200
