@@ -3,10 +3,8 @@ import json
 import pytest
 from rest_framework.test import APIRequestFactory, force_authenticate
 
-from drtrottoir.garbage_collection_schedule_template_views import (
-    GarbageCollectionScheduleTemplateApiView,
-)
 from drtrottoir.models import User
+from drtrottoir.views import GarbageCollectionScheduleTemplateApiView
 
 from .dummy_data import insert_dummy_building
 

@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from drtrottoir.garbage_collection_schedule_template_views import (
+from drtrottoir.views import (
     GarbageCollectionScheduleTemplateApiView,
     GarbageCollectionScheduleTemplateEntryApiView,
 )
