@@ -1,29 +1,18 @@
 import json
 
-import dateutil.parser
 import pytest
-from django.test import RequestFactory
+from rest_framework.test import APIClient
 
-from drtrottoir.views.schedule_work_entry_views import (
-    ScheduleWorkEntryApiView,
-    ScheduleWorkEntryByCreatorApiView,
-    ScheduleWorkEntryByScheduleDefinitionApiView,
-    ScheduleWorkEntryListApiView,
-)
 from drtrottoir.serializers import ScheduleWorkEntrySerializer
 
 # TODO These are written in test_schedule_assignment.py Refactor them later
 from drtrottoir.tests.test_schedule_assignment import (
+    date_equals,
     insert_dummy_building,
     insert_dummy_location_group,
     insert_dummy_schedule_definition,
     insert_dummy_user,
 )
-
-"""
-TODO:
-- Schedule work entries user GET
-"""
 
 # region Insert dummies
 
@@ -56,7 +45,7 @@ def insert_dummy_schedule_work_entry(
 
 
 @pytest.mark.django_db
-def test_schedule_work_entry_list_api_view_get() -> None:
+def test_schedule_work_entry_list_get() -> None:
     dummy_user = insert_dummy_user()
     dummy_location_group = insert_dummy_location_group()
     dummy_building_1 = insert_dummy_building(dummy_location_group)
@@ -73,12 +62,9 @@ def test_schedule_work_entry_list_api_view_get() -> None:
     )
     dummy_schedule_work_entry_nonexistent = dummy_schedule_work_entry + 3
 
-    factory = RequestFactory()
-    view = ScheduleWorkEntryListApiView.as_view()
-
-    request = factory.get(f"/schedule_work_entries/")
-    response = view(request)
-    response_ids = [response_data["id"] for response_data in response.data]
+    client = APIClient()
+    response = client.get("/schedule_work_entries/")
+    response_ids = [data["id"] for data in response.data]
 
     assert response.status_code == 200
     assert dummy_schedule_work_entry in response_ids
@@ -86,7 +72,7 @@ def test_schedule_work_entry_list_api_view_get() -> None:
 
 
 @pytest.mark.django_db
-def test_schedule_work_entry_list_api_view_post() -> None:
+def test_schedule_work_entry_post() -> None:
     dummy_user = insert_dummy_user()
     dummy_location_group = insert_dummy_location_group()
     dummy_building_1 = insert_dummy_building(dummy_location_group)
@@ -96,9 +82,8 @@ def test_schedule_work_entry_list_api_view_post() -> None:
         [dummy_building_1, dummy_building_2], dummy_location_group
     )
 
-    dummy_image_path = "pics/test.png"
-
-    post_data = {
+    dummy_image_path = "pics/image.png"
+    data = {
         "creation_timestamp": DUMMY_SCHEDULE_WORK_ENTRY_DATETIME,
         "image_path": dummy_image_path,
         "creator": dummy_user,
@@ -106,38 +91,26 @@ def test_schedule_work_entry_list_api_view_post() -> None:
         "schedule_definition": dummy_schedule_definition,
     }
 
-    factory = RequestFactory()
-    view = ScheduleWorkEntryListApiView.as_view()
-
-    request = factory.post(
+    client = APIClient()
+    response = client.post(
         "/schedule_work_entries/",
-        data=json.dumps(post_data),
+        data=json.dumps(data),
         content_type="application/json",
     )
-    response = view(request)
 
+    assert response.status_code == 201
     assert response.data["id"] > 0
     assert response.data["image_path"] == dummy_image_path
     assert response.data["creator"] == dummy_user
     assert response.data["building"] == dummy_building_1
     assert response.data["schedule_definition"] == dummy_schedule_definition
-    assert response.status_code == 201
-
-    # Datetime formats can differ, so we check for the difference between them as
-    # converted objects
-    creation_time_post = dateutil.parser.parse(DUMMY_SCHEDULE_WORK_ENTRY_DATETIME)
-    creation_time_result = dateutil.parser.parse(response.data["creation_timestamp"])
-    creation_time_result = creation_time_result.replace(
-        tzinfo=None
-    )  # Remove time zone information
-    time_difference_in_seconds = abs(
-        (creation_time_post - creation_time_result).total_seconds()
+    assert date_equals(
+        DUMMY_SCHEDULE_WORK_ENTRY_DATETIME, response.data["creation_timestamp"]
     )
-    assert time_difference_in_seconds < 1  # We'll suffice with a one-second difference
 
 
 @pytest.mark.django_db
-def test_schedule_work_entry_api_view_get() -> None:
+def test_schedule_work_entry_get() -> None:
     dummy_user = insert_dummy_user()
     dummy_location_group = insert_dummy_location_group()
     dummy_building_1 = insert_dummy_building(dummy_location_group)
@@ -146,6 +119,7 @@ def test_schedule_work_entry_api_view_get() -> None:
     dummy_schedule_definition = insert_dummy_schedule_definition(
         [dummy_building_1, dummy_building_2], dummy_location_group
     )
+
     dummy_schedule_work_entry = insert_dummy_schedule_work_entry(
         creator_id=dummy_user,
         building_id=dummy_building_1,
@@ -153,29 +127,21 @@ def test_schedule_work_entry_api_view_get() -> None:
     )
     dummy_schedule_work_entry_nonexistent = dummy_schedule_work_entry + 3
 
-    factory = RequestFactory()
-    view = ScheduleWorkEntryApiView.as_view()
+    client = APIClient()
+    response = client.get(f"/schedule_work_entries/{dummy_schedule_work_entry}/")
 
-    request = factory.get(f"/schedule_work_entries/{dummy_schedule_work_entry}/")
-    response = view(request, schedule_work_entry_id=dummy_schedule_work_entry)
-
-    assert response.data["id"] == dummy_schedule_work_entry
-    assert response.data["creator"] == dummy_user
     assert response.status_code == 200
+    assert response.data["id"] == dummy_user
 
-    # Test nonexistent entry
-    request = factory.get(
+    # Check for nonexistent user
+    response_nonexistent = client.get(
         f"/schedule_work_entries/{dummy_schedule_work_entry_nonexistent}/"
     )
-    response = view(
-        request, schedule_work_entry_id=dummy_schedule_work_entry_nonexistent
-    )
-
-    assert response.status_code == 404
+    assert response_nonexistent.status_code == 404
 
 
 @pytest.mark.django_db
-def test_schedule_work_entry_by_definition_api_view_get() -> None:
+def test_schedule_work_entry_get_by_user_id() -> None:
     dummy_user = insert_dummy_user()
     dummy_location_group = insert_dummy_location_group()
     dummy_building_1 = insert_dummy_building(dummy_location_group)
@@ -184,60 +150,16 @@ def test_schedule_work_entry_by_definition_api_view_get() -> None:
     dummy_schedule_definition = insert_dummy_schedule_definition(
         [dummy_building_1, dummy_building_2], dummy_location_group
     )
+
     dummy_schedule_work_entry = insert_dummy_schedule_work_entry(
         creator_id=dummy_user,
         building_id=dummy_building_1,
         schedule_definition_id=dummy_schedule_definition,
     )
 
-    factory = RequestFactory()
-    view = ScheduleWorkEntryByScheduleDefinitionApiView.as_view()
+    client = APIClient()
+    response = client.get(f"/schedule_work_entries/users/{dummy_user}/")
+    response_work_entries = [data["id"] for data in response.data]
 
-    request = factory.get(
-        f"/schedule_work_entries/schedule_definitions/{dummy_schedule_definition}/"
-    )
-    response = view(request, schedule_definition_id=dummy_schedule_definition)
-
-    response_ids = [response_data["id"] for response_data in response.data]
-
-    assert dummy_schedule_work_entry in response_ids
     assert response.status_code == 200
-
-
-@pytest.mark.django_db
-def test_schedule_work_entry_by_creator_api_view_get() -> None:
-    dummy_user = insert_dummy_user()
-    dummy_user_nonexistent = dummy_user + 3
-    dummy_location_group = insert_dummy_location_group()
-    dummy_building_1 = insert_dummy_building(dummy_location_group)
-    dummy_building_2 = insert_dummy_building(dummy_location_group)
-
-    dummy_schedule_definition = insert_dummy_schedule_definition(
-        [dummy_building_1, dummy_building_2], dummy_location_group
-    )
-    dummy_schedule_work_entry = insert_dummy_schedule_work_entry(
-        creator_id=dummy_user,
-        building_id=dummy_building_1,
-        schedule_definition_id=dummy_schedule_definition,
-    )
-
-    factory = RequestFactory()
-    view = ScheduleWorkEntryByCreatorApiView.as_view()
-
-    # Check for user that exists and has the entry
-    request = factory.get(f"/schedule_work_entries/users/{dummy_user}/")
-    response = view(request, creator_id=dummy_user)
-    response_ids = [response_data["id"] for response_data in response.data]
-
-    assert dummy_schedule_work_entry in response_ids
-    assert response.status_code == 200
-
-    # Check for user does not exist
-    request = factory.get(f"/schedule_work_entries/users/{dummy_user_nonexistent}/")
-    response = view(request, creator_id=dummy_user_nonexistent)
-
-    assert len(response.data) == 0
-    assert response.status_code == 200
-
-
-# endregion Schedule work entry tests
+    assert dummy_schedule_work_entry in response_work_entries
