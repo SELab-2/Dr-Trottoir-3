@@ -19,6 +19,7 @@ from django.urls import path
 from drtrottoir.views import (
     GarbageCollectionScheduleTemplateApiView,
     GarbageCollectionScheduleTemplateEntryApiView,
+    GarbageTypesApiView,
 )
 
 urlpatterns = [
@@ -31,4 +32,5 @@ urlpatterns = [
         "garbage-collection-schedule-templates/",
         GarbageCollectionScheduleTemplateApiView.as_view(),
     ),
+    path("garbage_type/", GarbageTypesApiView.as_view())
 ]
