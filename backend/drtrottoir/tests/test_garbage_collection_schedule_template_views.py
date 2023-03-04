@@ -35,7 +35,7 @@ def test_garbage_collection_schedule_template_post():
 
 
 @pytest.mark.django_db
-def test_garbage_collection_schedule_template_get():
+def test_garbage_collection_schedule_template_get_list():
     template_1 = insert_dummy_garbage_collection_schedule_template()
     template_2 = insert_dummy_garbage_collection_schedule_template()
 
@@ -45,6 +45,19 @@ def test_garbage_collection_schedule_template_get():
     response_ids = [e["id"] for e in response.data]
 
     assert sorted(response_ids) == sorted([template_1.id, template_2.id])
+
+
+@pytest.mark.django_db
+def test_garbage_collection_schedule_template_get_detail():
+    template = insert_dummy_garbage_collection_schedule_template()
+
+    client = APIClient()
+    response = client.get(f"/garbage_collection_schedule_templates/{template.id}/")
+
+    assert (
+        response.data["id"] == template.id
+        and response.data["building"] == template.building.id
+    )
 
 
 @pytest.mark.django_db
@@ -78,7 +91,7 @@ def test_garbage_collection_schedule_template_entry_post():
 
 
 @pytest.mark.django_db
-def test_garbage_collection_schedule_template_entry_get():
+def test_garbage_collection_schedule_template_entry_get_list():
     entry_1 = insert_dummy_garbage_collection_schedule_template_entry()
     entry_2 = insert_dummy_garbage_collection_schedule_template_entry()
 
@@ -88,3 +101,18 @@ def test_garbage_collection_schedule_template_entry_get():
     response_ids = [e["id"] for e in response.data]
 
     assert sorted(response_ids) == sorted([entry_1.id, entry_2.id])
+
+
+@pytest.mark.django_db
+def test_garbage_collection_schedule_template_entry_get_detail():
+    entry = insert_dummy_garbage_collection_schedule_template_entry()
+
+    client = APIClient()
+    response = client.get(f"/garbage_collection_schedule_template_entries/{entry.id}/")
+
+    assert (
+        response.data["id"] == entry.id
+        and response.data["garbage_type"] == entry.garbage_type.id
+        and response.data["garbage_collection_schedule_template"]
+        == entry.garbage_collection_schedule_template.id
+    )
