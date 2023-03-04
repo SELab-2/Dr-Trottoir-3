@@ -62,9 +62,7 @@ def insert_dummy_garbage_collection_schedule_template_entry() -> (
     return entry
 
 
-def insert_dummy_garbage_collection_schedule() -> (
-    GarbageCollectionSchedule
-):
+def insert_dummy_garbage_collection_schedule() -> GarbageCollectionSchedule:
     garbage_type = insert_dummy_garbage_type()
     building = insert_dummy_building()
     entry = GarbageCollectionSchedule(

@@ -50,8 +50,7 @@ def test_garbage_collection_schedule_template_entry_get_detail():
     assert (
         response.data["id"] == entry.id
         and response.data["garbage_type"] == entry.garbage_type.id
-        and response.data["building"]
-        == entry.building.id
+        and response.data["building"] == entry.building.id
     )
 
 
@@ -83,9 +82,7 @@ def test_garbage_collection_schedule_delete():
     client = APIClient()
     client.force_login(user)
 
-    response = client.delete(
-        f"/garbage_collection_schedules/{entry.id}/"
-    )
+    response = client.delete(f"/garbage_collection_schedules/{entry.id}/")
     assert response.status_code == 204
 
     response = client.get(f"/garbage_collection_schedules/{entry.id}/")

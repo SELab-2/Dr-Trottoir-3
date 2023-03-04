@@ -1,8 +1,6 @@
 from rest_framework import serializers
 
-from drtrottoir.models import (
-    GarbageCollectionSchedule
-)
+from drtrottoir.models import GarbageCollectionSchedule
 
 
 class GarbageCollectionScheduleSerializer(serializers.ModelSerializer):
