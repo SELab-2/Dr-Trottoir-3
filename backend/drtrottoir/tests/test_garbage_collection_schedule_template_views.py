@@ -1,17 +1,35 @@
-import pytest
 import json
 
-from drtrottoir.serializers import GarbageCollectionScheduleTemplateEntrySerializer, GarbageCollectionScheduleTemplateSerializer
-from drtrottoir.models import GarbageType
+import pytest
+from rest_framework.test import APIRequestFactory, force_authenticate
 
+from drtrottoir.garbage_collection_schedule_template_views import (
+    GarbageCollectionScheduleTemplateApiView,
+)
+from drtrottoir.models import User
 
-def insert_dummy_garbage_type() -> int:
-    gt = GarbageType(name="dummy garbage type")
-    gt.save()
-
-    return gt.id
+from .dummy_data import insert_dummy_building
 
 
 @pytest.mark.django_db
-def test_garbage_collection_schedule_template_entry_post():
-    pass
+def test_garbage_collection_schedule_template_post():
+    building = insert_dummy_building()
+
+    data = {"name": "dummy schedule", "building": building.id}
+
+    User.objects.create_user(username="test@gmail.com", password="test")
+    user = User.objects.get(username="test@gmail.com")
+
+    factory = APIRequestFactory()
+    view = GarbageCollectionScheduleTemplateApiView.as_view()
+
+    request = factory.post(
+        "/garbage-collection-schedule-templates/",
+        json.dumps(data),
+        content_type="application/json",
+    )
+    force_authenticate(request, user=user)
+    response = view(request)
+
+    assert response.data == {"id": 1, "name": "dummy schedule", "building": building.id}
+    assert response.status_code == 201
