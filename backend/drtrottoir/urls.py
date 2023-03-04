@@ -14,23 +14,37 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path, register_converter
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from drtrottoir.converters import DateConverter
-from drtrottoir.views.schedule_assignment_views import ScheduleAssignmentViewSet
-from drtrottoir.views.schedule_work_entry_views import ScheduleWorkEntryViewSet
+from drtrottoir.views import (
+    GarbageCollectionScheduleTemplateEntryViewSet,
+    GarbageCollectionScheduleTemplateViewSet,
+    IssueDetailApiView,
+    IssueNotApprovedApiView,
+    IssuesListApiView,
+)
 
 # Dates follow the format YYYY-MM-DD
 register_converter(DateConverter, "date")
 
 router = DefaultRouter()
+router.register(
+    r"garbage_collection_schedule_template_entries",
+    GarbageCollectionScheduleTemplateEntryViewSet,
+)
+router.register(
+    r"garbage_collection_schedule_templates",
+    GarbageCollectionScheduleTemplateViewSet,
+)
+
 router.register(r"schedule_assignments", ScheduleAssignmentViewSet)
 router.register(r"schedule_work_entries", ScheduleWorkEntryViewSet)
 
+
 urlpatterns = [
-    path("admin/", admin.site.urls),
     path("", include(router.urls)),
+    path("admin/", admin.site.urls),
     path(
         "schedule_assignments/date/<date:assigned_date>/user/<int:user_id>/",
         ScheduleAssignmentViewSet.retrieve_list_by_date_and_user,
