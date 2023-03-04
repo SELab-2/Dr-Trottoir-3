@@ -1,12 +1,12 @@
-import pytest
 import json
 
-from drtrottoir.models import User
+import pytest
 from rest_framework.test import force_authenticate, APIRequestFactory, APIClient
+
+from drtrottoir.models import User
 from drtrottoir.views import (
     LocationGroupListApiView,
     LocationGroupDetailApiView,
-    LocationGroupViewSet,
 )
 from .dummy_data import insert_dummy_location_group
 
@@ -111,7 +111,7 @@ def test_location_groups_api_view_get():
     factory = APIRequestFactory()
     view = LocationGroupListApiView.as_view()
 
-    request = factory.get(f"/location_groups/")
+    request = factory.get("/location_groups/")
     force_authenticate(request, user=user)
     response = view(request)
 
@@ -172,17 +172,17 @@ def test_location_groups_detail_api_view_get():
     User.objects.create_user(username="test@gmail.com", password="test")
     user = User.objects.get(username="test@gmail.com")
 
-    request = factory.get(f"/location_groups/1/")
+    request = factory.get("/location_groups/1/")
     force_authenticate(request, user=user)
     response = view(request, dummy_location_group_id_1)
     assert response.data == {"id": 1, "name": "location 1"}
 
-    request = factory.get(f"/location_groups/2/")
+    request = factory.get("/location_groups/2/")
     force_authenticate(request, user=user)
     response = view(request, dummy_location_group_id_2)
     assert response.data == {"id": 2, "name": "location 2"}
 
-    request = factory.get(f"/location_groups/3/")
+    request = factory.get("/location_groups/3/")
     response = view(request, non_existing_location_group_id)
     assert response.status_code == 404
 

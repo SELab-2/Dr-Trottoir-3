@@ -1,10 +1,9 @@
 import pytest
-import json
+from rest_framework.test import force_authenticate, APIRequestFactory
 
 from drtrottoir.models import User
-from rest_framework.test import force_authenticate, APIRequestFactory
 from drtrottoir.views import BuildingListApiView
-from .dummy_data import insert_dummy_location_group, insert_dummy_building
+from .dummy_data import insert_dummy_building
 
 
 @pytest.mark.django_db
