@@ -9,46 +9,6 @@ from drtrottoir.views.issues_views import IssuesListApiView
 from .dummy_data import insert_dummy_building, insert_dummy_issue
 
 
-# def insert_dummy_building() -> int:
-#     dummy_location_group_data = {
-#         'name': 'dummy location group name'
-#     }
-#
-#     location_group_serializer = LocationGroupSerializer(data=dummy_location_group_data)
-#     assert location_group_serializer.is_valid()
-#     location_group_serializer.save()
-#
-#     dummy_location_group_instance_id = location_group_serializer.data['id']
-#
-#     dummy_building_data = {
-#         'address': 'dummy street',
-#         'guide_pdf_path': 'dummy pdf path',
-#         'location_group': dummy_location_group_instance_id
-#     }
-#
-#     building_serializer = BuildingSerializer(data=dummy_building_data)
-#     assert building_serializer.is_valid()
-#     building_serializer.save()
-#
-#     return building_serializer.data['id']
-
-
-# def insert_dummy_issue(dummy_user_id: int) -> int:
-#     dummy_building_id = insert_dummy_building()
-#
-#     dummy_issue_data = {
-#         'building': dummy_building_id,
-#         'message': 'dummy issue message',
-#         'from_user': dummy_user_id
-#     }
-#
-#     issue_serializer = IssueSerializer(data=dummy_issue_data)
-#     assert issue_serializer.is_valid()
-#     issue_serializer.save()
-#
-#     return issue_serializer.data['id']
-
-
 @pytest.mark.django_db
 def test_issues_list_api_view_post():
     dummy_building = insert_dummy_building()
