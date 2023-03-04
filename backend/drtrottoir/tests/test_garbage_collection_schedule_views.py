@@ -42,7 +42,7 @@ def test_garbage_collection_schedule_post():
 
 
 @pytest.mark.django_db
-def test_garbage_collection_schedule_template_entry_get_detail():
+def test_garbage_collection_schedule_get_detail():
     entry = insert_dummy_garbage_collection_schedule()
 
     client = APIClient()
