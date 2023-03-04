@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from drtrottoir.models import ScheduleWorkEntry
 from drtrottoir.serializers import ScheduleWorkEntrySerializer
 
-
 # TODO permissions
 
 

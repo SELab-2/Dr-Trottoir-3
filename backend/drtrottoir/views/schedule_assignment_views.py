@@ -41,8 +41,9 @@ class ScheduleAssignmentViewSet(
 
         return Response(serializer.data)
 
+    @staticmethod
     @api_view(["GET"])
-    def retrieve_list_by_date_and_user(self, assigned_date, user_id):
+    def retrieve_list_by_date_and_user(request, assigned_date, user_id):
         schedule_assignments = ScheduleAssignment.objects.filter(
             assigned_date=assigned_date, user_id=user_id
         )
