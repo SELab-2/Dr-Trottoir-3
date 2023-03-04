@@ -59,7 +59,6 @@ class IssueDetailApiView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Issue.DoesNotExist:
             return Response(
-                {"res": "Object with id does not exist"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -76,7 +75,6 @@ class IssueDetailApiView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Issue.DoesNotExist:
             return Response(
-                {"res": "Object with id does not exist"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -95,7 +93,6 @@ class IssueDetailApiView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Issue.DoesNotExist:
             return Response(
-                {"res": "Object with id does not exist"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
