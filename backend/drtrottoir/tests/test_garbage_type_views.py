@@ -36,7 +36,7 @@ def test_garbage_type_api_view_get():
 
 
 @pytest.mark.django_db
-def test_garbage_collection_schedule_template_entry_get_detail():
+def test_garbage_type_get_detail():
     dummy_entry = insert_dummy_garbage_type()
 
     client = APIClient()
