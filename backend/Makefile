@@ -45,4 +45,4 @@ lint:
 
 .PHONY: test
 test:
-	'$(VENV)/bin/pytest' test
+	'$(VENV)/bin/pytest'
