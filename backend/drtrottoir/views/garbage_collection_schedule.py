@@ -1,11 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
-from drtrottoir.models import (
-    GarbageCollectionSchedule,
-)
-from drtrottoir.serializers import (
-    GarbageCollectionScheduleSerializer,
-)
+from drtrottoir.models import GarbageCollectionSchedule
+from drtrottoir.serializers import GarbageCollectionScheduleSerializer
 
 
 class GarbageCollectionScheduleViewSet(ModelViewSet):

@@ -1,11 +1,11 @@
 from drtrottoir.models import (
     Building,
+    GarbageCollectionSchedule,
     GarbageCollectionScheduleTemplate,
     GarbageCollectionScheduleTemplateEntry,
     GarbageType,
     Issue,
     LocationGroup,
-    GarbageCollectionSchedule,
     User,
 )
 
