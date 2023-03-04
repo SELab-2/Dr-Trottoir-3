@@ -17,8 +17,11 @@ from django.contrib import admin
 from django.urls import path
 
 from drtrottoir.issues_views import IssuesListApiView
+from drtrottoir.location_groups_views import LocationGroupListApiView, LocationGroupDetailApiView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("issues/", IssuesListApiView.as_view())
+    path("issues/", IssuesListApiView.as_view()),
+    path("location_groups/", LocationGroupListApiView.as_view()),
+    path("location_groups/<int:location_group_id>", LocationGroupDetailApiView.as_view())
 ]
