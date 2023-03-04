@@ -50,17 +50,15 @@ class IssueDetailApiView(APIView):
         """
 
         """
-        instance = Issue.objects.get(id=issue_id)
-
-        if instance is None:
+        try:
+            instance = Issue.objects.get(id=issue_id)
+            serializer = IssueSerializer(instance)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Issue.DoesNotExist:
             return Response(
                 {"res": "Object with id does not exist"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-        serializer = IssueSerializer(instance)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request, issue_id, *args, **kwargs):
         """
