@@ -50,13 +50,6 @@ class IssueDetailApiView(APIView):
         """
 
         """
-        request_user = request.user
-
-        if request_user is None:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-
-        # TODO - check user permissions
-
         instance = Issue.objects.get(id=issue_id)
 
         if instance is None:
@@ -73,11 +66,40 @@ class IssueDetailApiView(APIView):
         """
 
         """
+        instance = Issue.objects.get(id=issue_id)
+
+        if instance is None:
+            return Response(
+                {"res": "Object with id does not exist"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer = IssueSerializer(instance, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, issue_id, *args, **kwargs):
         """
 
         """
+        instance = Issue.objects.get(id=issue_id)
+
+        if instance is None:
+            return Response(
+                {"res": "Object with id does not exist"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        instance.delete()
+
+        return Response(
+            {"res": "Object deleted"},
+            status=status.HTTP_200_OK
+        )
 
 
 class IssueBuildingApiView(APIView):
@@ -85,6 +107,7 @@ class IssueBuildingApiView(APIView):
         """
 
         """
+
 
 
 class IssueNotApprovedApiView(APIView):
