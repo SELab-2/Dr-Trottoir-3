@@ -1,7 +1,6 @@
 import pytest
 import json
 
-from drtrottoir.serializers import LocationGroupSerializer
 from drtrottoir.models import User
 from rest_framework.test import force_authenticate, APIRequestFactory
 from drtrottoir.views import LocationGroupListApiView, LocationGroupDetailApiView

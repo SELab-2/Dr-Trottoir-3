@@ -3,9 +3,13 @@ from .garbage_collection_schedule_template import (
     GarbageCollectionScheduleTemplateEntryApiView,
 )
 
-from .location_groups_views import (
+from .location_group import (
     LocationGroupListApiView,
     LocationGroupDetailApiView,
+)
+
+from .building import (
+    BuildingListApiView,
 )
 
 __all__ = [
@@ -13,4 +17,5 @@ __all__ = [
     "GarbageCollectionScheduleTemplateEntryApiView",
     "LocationGroupListApiView",
     "LocationGroupDetailApiView",
+    "BuildingListApiView",
 ]

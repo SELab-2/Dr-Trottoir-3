@@ -17,11 +17,13 @@ from django.contrib import admin
 from django.urls import path
 
 from drtrottoir.issues_views import IssuesListApiView
-from drtrottoir.views.location_groups_views import LocationGroupListApiView, LocationGroupDetailApiView
 
 from drtrottoir.views import (
     GarbageCollectionScheduleTemplateApiView,
     GarbageCollectionScheduleTemplateEntryApiView,
+    LocationGroupListApiView,
+    LocationGroupDetailApiView,
+    BuildingListApiView,
 )
 
 urlpatterns = [
@@ -36,5 +38,8 @@ urlpatterns = [
     ),
     path("issues/", IssuesListApiView.as_view()),
     path("location_groups/", LocationGroupListApiView.as_view()),
-    path("location_groups/<int:location_group_id>", LocationGroupDetailApiView.as_view())
+    path(
+        "location_groups/<int:location_group_id>", LocationGroupDetailApiView.as_view()
+    ),
+    path("buildings/", BuildingListApiView.as_view()),
 ]
