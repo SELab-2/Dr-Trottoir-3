@@ -1,12 +1,11 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
 
 from drtrottoir.serializers import IssueSerializer
 from drtrottoir.models import Issue
 
-
+# TODO - maybe move logic implemented in views (necessary since we use the request user id on creation) to ViewSet.
 # class IssueCreateListRetrieveDestroyViewSet(
 #     mixins.CreateModelMixin,
 #     mixins.ListModelMixin,
