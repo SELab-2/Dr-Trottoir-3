@@ -13,9 +13,9 @@ from .building import (
 )
 
 __all__ = [
-    "GarbageCollectionScheduleTemplateApiView",
-    "GarbageCollectionScheduleTemplateEntryApiView",
     "LocationGroupListApiView",
     "LocationGroupDetailApiView",
     "BuildingListApiView",
+    "GarbageCollectionScheduleTemplateEntryViewSet",
+    "GarbageCollectionScheduleTemplateViewSet",
 ]

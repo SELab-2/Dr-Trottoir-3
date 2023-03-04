@@ -14,32 +14,30 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
 from drtrottoir.issues_views import IssuesListApiView
 
 from drtrottoir.views import (
-    GarbageCollectionScheduleTemplateApiView,
-    GarbageCollectionScheduleTemplateEntryApiView,
     LocationGroupListApiView,
     LocationGroupDetailApiView,
     BuildingListApiView,
+    GarbageCollectionScheduleTemplateEntryViewSet,
+    GarbageCollectionScheduleTemplateViewSet,
+)
+
+router = DefaultRouter()
+router.register(
+    r"garbage_collection_schedule_template_entries",
+    GarbageCollectionScheduleTemplateEntryViewSet,
+)
+router.register(
+    r"garbage_collection_schedule_templates",
+    GarbageCollectionScheduleTemplateViewSet,
 )
 
 urlpatterns = [
+    path("", include(router.urls)),
     path("admin/", admin.site.urls),
-    path(
-        "garbage-collection-schedule-template-entries/",
-        GarbageCollectionScheduleTemplateEntryApiView.as_view(),
-    ),
-    path(
-        "garbage-collection-schedule-templates/",
-        GarbageCollectionScheduleTemplateApiView.as_view(),
-    ),
-    path("issues/", IssuesListApiView.as_view()),
-    path("location_groups/", LocationGroupListApiView.as_view()),
-    path(
-        "location_groups/<int:location_group_id>", LocationGroupDetailApiView.as_view()
-    ),
-    path("buildings/", BuildingListApiView.as_view()),
 ]
