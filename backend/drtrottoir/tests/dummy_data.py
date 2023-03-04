@@ -71,3 +71,4 @@ def insert_dummy_issue(dummy_user: User) -> Issue:
     issue.save()
 
     return issue
+
