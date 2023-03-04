@@ -1,10 +1,9 @@
 import pytest
-import json
 
 from drtrottoir.models import User
-from rest_framework.test import force_authenticate, APIRequestFactory, APIClient
+from rest_framework.test import APIClient
 
-from .dummy_data import insert_dummy_building, insert_dummy_issue
+from .dummy_data import insert_dummy_issue
 
 
 @pytest.mark.django_db

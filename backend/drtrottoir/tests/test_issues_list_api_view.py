@@ -2,7 +2,7 @@ import pytest
 import json
 
 from drtrottoir.models import User
-from rest_framework.test import force_authenticate, APIRequestFactory, APIClient
+from rest_framework.test import APIClient
 
 
 from .dummy_data import insert_dummy_building, insert_dummy_issue
@@ -21,8 +21,6 @@ def test_issues_list_api_view_post():
 
     user = User.objects.get(username='test@gmail.com')
 
-    # Make an authenticated request to the view...
-    # request = factory.post('/issues/', json.dumps(dummy_issue_data), content_type="application/json")
     client = APIClient()
     client.force_login(user)
     response = client.post(f'/issues/', json.dumps(dummy_issue_data), content_type="application/json")
