@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 
 from drtrottoir.models import (
     GarbageCollectionScheduleTemplate,
@@ -10,6 +11,20 @@ from drtrottoir.serializers import (
     GarbageCollectionScheduleTemplateEntrySerializer,
     GarbageCollectionScheduleTemplateSerializer,
 )
+
+
+class GarbageCollectionScheduleTemplateEntryViewSet(ModelViewSet):
+    permission_classes = []
+
+    queryset = GarbageCollectionScheduleTemplateEntry.objects.all()
+    serializer_class = GarbageCollectionScheduleTemplateEntrySerializer
+
+
+class GarbageCollectionScheduleTemplateViewSet(ModelViewSet):
+    permission_classes = []
+
+    queryset = GarbageCollectionScheduleTemplate.objects.all()
+    serializer_class = GarbageCollectionScheduleTemplateSerializer
 
 
 class GarbageCollectionScheduleTemplateEntryApiView(APIView):
