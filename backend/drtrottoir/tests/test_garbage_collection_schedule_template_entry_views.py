@@ -12,6 +12,25 @@ from .dummy_data import (
 )
 
 
+def test_garbage_collection_schedule_template_forbidden_methods():
+    client = APIClient()
+
+    assert (
+        client.get("/garbage_collection_schedule_template_entries/").status_code == 405
+    )
+    assert (
+        client.patch("/garbage_collection_schedule_template_entries/").status_code
+        == 405
+    )
+    assert (
+        client.delete("/garbage_collection_schedule_template_entries/").status_code
+        == 405
+    )
+    assert (
+        client.put("/garbage_collection_schedule_template_entries/").status_code == 405
+    )
+
+
 @pytest.mark.django_db
 def test_garbage_collection_schedule_template_entry_get_detail():
     entry = insert_dummy_garbage_collection_schedule_template_entry()
