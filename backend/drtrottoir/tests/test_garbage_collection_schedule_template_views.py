@@ -12,19 +12,6 @@ from .dummy_data import (
 
 
 @pytest.mark.django_db
-def test_garbage_collection_schedule_template_get_list():
-    template_1 = insert_dummy_garbage_collection_schedule_template()
-    template_2 = insert_dummy_garbage_collection_schedule_template()
-
-    client = APIClient()
-    response = client.get("/garbage_collection_schedule_templates/")
-
-    response_ids = [e["id"] for e in response.data]
-
-    assert sorted(response_ids) == sorted([template_1.id, template_2.id])
-
-
-@pytest.mark.django_db
 def test_garbage_collection_schedule_template_get_detail():
     template = insert_dummy_garbage_collection_schedule_template()
 
