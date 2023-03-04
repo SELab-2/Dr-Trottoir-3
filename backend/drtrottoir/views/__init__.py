@@ -2,6 +2,7 @@ from .garbage_collection_schedule_template import (
     GarbageCollectionScheduleTemplateEntryViewSet,
     GarbageCollectionScheduleTemplateViewSet,
 )
+from .issue import IssueDetailApiView, IssueNotApprovedApiView, IssuesListApiView
 
 from .location_group import (
     LocationGroupViewSet,
@@ -18,6 +19,9 @@ __all__ = [
     "BuildingListApiView",
     "GarbageCollectionScheduleTemplateEntryViewSet",
     "GarbageCollectionScheduleTemplateViewSet",
+    "IssuesListApiView",
+    "IssueDetailApiView",
+    "IssueNotApprovedApiView",
     "LocationGroupDetailApiView",
     "LocationGroupListApiView",
 ]

@@ -17,11 +17,13 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-
 from drtrottoir.views import (
     LocationGroupViewSet,
     GarbageCollectionScheduleTemplateEntryViewSet,
     GarbageCollectionScheduleTemplateViewSet,
+    IssueDetailApiView,
+    IssueNotApprovedApiView,
+    IssuesListApiView,
 )
 
 router = DefaultRouter()
@@ -43,4 +45,7 @@ router.register(
 urlpatterns = [
     path("", include(router.urls)),
     path("admin/", admin.site.urls),
+    path("issues/", IssuesListApiView.as_view()),
+    path("issues/<int:issue_id>/", IssueDetailApiView.as_view()),
+    path("issues/not_approved/", IssueNotApprovedApiView.as_view()),
 ]

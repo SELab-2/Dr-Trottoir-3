@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from drtrottoir.models import LocationGroup, Building, Issue
+from drtrottoir.models import Issue
 
 
 class IssueSerializer(serializers.ModelSerializer):
