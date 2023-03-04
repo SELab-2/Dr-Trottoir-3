@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from drtrottoir.serializers import IssueSerializer
-from drtrottoir.models import Issue, Building
+from drtrottoir.models import Issue
 
 
 # class IssueCreateListRetrieveDestroyViewSet(
@@ -74,48 +74,39 @@ class IssueDetailApiView(APIView):
         """
 
         """
-        instance = Issue.objects.get(id=issue_id)
+        try:
+            instance = Issue.objects.get(id=issue_id)
+            serializer = IssueSerializer(instance, data=request.data, partial=True)
 
-        if instance is None:
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Issue.DoesNotExist:
             return Response(
                 {"res": "Object with id does not exist"},
                 status=status.HTTP_404_NOT_FOUND
             )
-
-        serializer = IssueSerializer(instance, data=request.data, partial=True)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, issue_id, *args, **kwargs):
         """
 
         """
-        instance = Issue.objects.get(id=issue_id)
+        try:
+            instance = Issue.objects.get(id=issue_id)
+            serializer = IssueSerializer(instance, data={'resolved': True}, partial=True)
 
-        if instance is None:
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Issue.DoesNotExist:
             return Response(
                 {"res": "Object with id does not exist"},
                 status=status.HTTP_404_NOT_FOUND
             )
-
-        instance.delete()
-
-        return Response(
-            {"res": "Object deleted"},
-            status=status.HTTP_200_OK
-        )
-
-
-class IssueBuildingApiView(APIView):
-    def get(self, request, building_id, *args, **kwargs):
-        """
-
-        """
-
 
 
 class IssueNotApprovedApiView(APIView):

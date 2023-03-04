@@ -23,7 +23,6 @@ from drtrottoir.views import (
     # IssueCreateListRetrieveDestroyViewSet
     IssuesListApiView,
     IssueDetailApiView,
-    IssueBuildingApiView,
     IssueNotApprovedApiView
 )
 
@@ -42,6 +41,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("issues/", IssuesListApiView.as_view()),
     path("issues/<int:issue_id>/", IssueDetailApiView.as_view()),
-    path("issues/buildings/<int:building_id>/", IssueBuildingApiView.as_view()),
     path("issues/not_approved/", IssueNotApprovedApiView.as_view())
 ]

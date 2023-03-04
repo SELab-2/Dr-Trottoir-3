@@ -6,7 +6,6 @@ from .garbage_collection_schedule_template import (
 from .issues_views import (
     IssuesListApiView,
     IssueDetailApiView,
-    IssueBuildingApiView,
     IssueNotApprovedApiView
 )
 
@@ -15,6 +14,5 @@ __all__ = [
     "GarbageCollectionScheduleTemplateViewSet",
     "IssuesListApiView",
     "IssueDetailApiView",
-    "IssueBuildingApiView",
     "IssueNotApprovedApiView"
 ]
