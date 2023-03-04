@@ -102,7 +102,7 @@ class GarbageCollectionScheduleTemplateEntry(models.Model):
     day = models.SmallIntegerField()
     garbage_type = models.ForeignKey(GarbageType, on_delete=models.RESTRICT)
     garbage_collection_schedule_template = models.ForeignKey(
-        GarbageCollectionScheduleTemplate, on_delete=models.CASCADE
+        GarbageCollectionScheduleTemplate, on_delete=models.CASCADE, related_name='entries'
     )
 
 
