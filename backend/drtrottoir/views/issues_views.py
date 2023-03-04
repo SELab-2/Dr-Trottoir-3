@@ -114,3 +114,7 @@ class IssueNotApprovedApiView(APIView):
         """
 
         """
+        issues = Issue.objects.filter(approval_user=None)
+        serializer = IssueSerializer(issues, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
