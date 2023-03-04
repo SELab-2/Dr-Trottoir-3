@@ -3,7 +3,9 @@ from drtrottoir.models import (
     GarbageCollectionScheduleTemplate,
     GarbageCollectionScheduleTemplateEntry,
     GarbageType,
+    Issue,
     LocationGroup,
+    User,
 )
 
 
@@ -59,3 +61,13 @@ def insert_dummy_garbage_collection_schedule_template_entry() -> (
     entry.save()
 
     return entry
+
+
+def insert_dummy_issue(dummy_user: User) -> Issue:
+    building = insert_dummy_building()
+
+    issue = Issue(building=building, message="dummy message", from_user=dummy_user)
+
+    issue.save()
+
+    return issue
