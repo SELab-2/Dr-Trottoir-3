@@ -43,3 +43,52 @@ class IssuesListApiView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class IssueDetailApiView(APIView):
+    def get(self, request, issue_id, *args, **kwargs):
+        """
+
+        """
+        request_user = request.user
+
+        if request_user is None:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        # TODO - check user permissions
+
+        instance = Issue.objects.get(id=issue_id)
+
+        if instance is None:
+            return Response(
+                {"res": "Object with id does not exist"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer = IssueSerializer(instance)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, issue_id, *args, **kwargs):
+        """
+
+        """
+
+    def delete(self, request, issue_id, *args, **kwargs):
+        """
+
+        """
+
+
+class IssueBuildingApiView(APIView):
+    def get(self, request, building_id, *args, **kwargs):
+        """
+
+        """
+
+
+class IssueNotApprovedApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        """
+
+        """

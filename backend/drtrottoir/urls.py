@@ -20,6 +20,10 @@ from rest_framework.routers import DefaultRouter
 from drtrottoir.views import (
     GarbageCollectionScheduleTemplateEntryViewSet,
     GarbageCollectionScheduleTemplateViewSet,
+    IssuesListApiView,
+    IssueDetailApiView,
+    IssueBuildingApiView,
+    IssueNotApprovedApiView
 )
 
 router = DefaultRouter()
@@ -35,4 +39,8 @@ router.register(
 urlpatterns = [
     path("", include(router.urls)),
     path("admin/", admin.site.urls),
+    path("issues/", IssuesListApiView.as_view()),
+    path("issues/<int:issue_id>/", IssueDetailApiView.as_view()),
+    path("issues/buildings/<int:building_id>/", IssueBuildingApiView.as_view()),
+    path("issues/not_approved/", IssueNotApprovedApiView.as_view())
 ]
