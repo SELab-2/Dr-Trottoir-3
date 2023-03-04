@@ -1,13 +1,12 @@
 import json
 
 import pytest
-from rest_framework.test import force_authenticate, APIRequestFactory, APIClient
-
 from drtrottoir.models import User
-from drtrottoir.views import (
-    LocationGroupListApiView,
-    LocationGroupDetailApiView,
-)
+from drtrottoir.views import (LocationGroupDetailApiView,
+                              LocationGroupListApiView)
+from rest_framework.test import (APIClient, APIRequestFactory,
+                                 force_authenticate)
+
 from .dummy_data import insert_dummy_location_group
 
 

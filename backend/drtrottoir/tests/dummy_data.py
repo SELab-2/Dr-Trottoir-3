@@ -1,12 +1,6 @@
-from drtrottoir.models import (
-    Building,
-    GarbageCollectionScheduleTemplate,
-    GarbageCollectionScheduleTemplateEntry,
-    GarbageType,
-    Issue,
-    LocationGroup,
-    User,
-)
+from drtrottoir.models import (Building, GarbageCollectionScheduleTemplate,
+                               GarbageCollectionScheduleTemplateEntry,
+                               GarbageType, Issue, LocationGroup, User)
 
 
 def insert_dummy_garbage_type() -> GarbageType:

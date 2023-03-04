@@ -1,6 +1,5 @@
-from rest_framework import serializers
-
 from drtrottoir.models import Building
+from rest_framework import serializers
 
 
 class BuildingSerializer(serializers.ModelSerializer):

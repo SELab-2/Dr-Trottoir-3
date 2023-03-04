@@ -1,6 +1,5 @@
-from rest_framework import serializers
-
 from drtrottoir.models import LocationGroup
+from rest_framework import serializers
 
 
 class LocationGroupSerializer(serializers.ModelSerializer):

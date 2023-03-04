@@ -15,18 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from rest_framework.routers import DefaultRouter
 
-from drtrottoir.views import (
-    LocationGroupViewSet,
-    GarbageCollectionScheduleTemplateEntryViewSet,
-    GarbageCollectionScheduleTemplateViewSet,
-    GarbageTypeViewSet,
-    IssueDetailApiView,
-    IssueNotApprovedApiView,
-    IssuesListApiView,
-    BuildingListViewSet,
-)
+from drtrottoir.views import (BuildingListViewSet,
+                              GarbageCollectionScheduleTemplateEntryViewSet,
+                              GarbageCollectionScheduleTemplateViewSet,
+                              GarbageTypeViewSet, IssueDetailApiView,
+                              IssueNotApprovedApiView, IssuesListApiView,
+                              LocationGroupViewSet)
+from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(

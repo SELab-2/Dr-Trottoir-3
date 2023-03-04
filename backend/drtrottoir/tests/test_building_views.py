@@ -1,8 +1,8 @@
 import pytest
-from rest_framework.test import force_authenticate, APIRequestFactory
-
 from drtrottoir.models import User
 from drtrottoir.views import BuildingListApiView
+from rest_framework.test import APIRequestFactory, force_authenticate
+
 from .dummy_data import insert_dummy_building
 
 
