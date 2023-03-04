@@ -1,15 +1,8 @@
 import json
 import pytest
-import os
-import django
 
-from rest_framework.test import APIRequestFactory
-from drtrottoir.views import GarbageTypeViewSet
+from rest_framework.test import APIClient
 from .dummy_data import insert_dummy_garbage_type
-
-
-def initialize_django():
-    pass
 
 
 @pytest.mark.django_db
@@ -18,15 +11,12 @@ def test_garbage_type_post():
         'name': 'dummy garbage type'
     }
 
-    factory = APIRequestFactory()
-    view = GarbageTypeViewSet.as_view({"post": "create"})
-
-    request = factory.post(
-        '/garbage_type/',
+    client = APIClient()
+    response = client.post(
+        "/garbage_type/",
         json.dumps(dummy_garbage_type_data),
-        content_type="application/json"
+        content_type="application/json",
     )
-    response = view(request)
 
     assert response.data == {"id": 1, "name": "dummy garbage type"}
     assert response.status_code == 201
@@ -37,13 +27,22 @@ def test_garbage_type_api_view_get():
     dummy_entry_1 = insert_dummy_garbage_type()
     dummy_entry_2 = insert_dummy_garbage_type()
 
-    factory = APIRequestFactory()
-    view = GarbageTypeViewSet.as_view({"get": "list"})
+    client = APIClient()
 
-    request = factory.get('/garbage_type/')
-    response = view(request)
+    response = client.get('/garbage_type/')
+    response_ids = [e["id"] for e in response.data]
 
-    response_data_ids = [e['id'] for e in response.data]
-
-    assert sorted(response_data_ids) == sorted([dummy_entry_1.id, dummy_entry_2.id])
+    assert sorted(response_ids) == sorted([dummy_entry_1.id, dummy_entry_2.id])
     assert response.status_code == 200
+
+@pytest.mark.django_db
+def test_garbage_collection_schedule_template_entry_get_detail():
+    dummy_entry = insert_dummy_garbage_type()
+
+    client = APIClient()
+    response = client.get(f"/garbage_type/{dummy_entry.id}/")
+
+    assert (
+        response.data["id"] == dummy_entry.id
+        and response.data["name"] == dummy_entry.name
+    )
