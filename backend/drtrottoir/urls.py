@@ -20,6 +20,7 @@ from rest_framework.routers import DefaultRouter
 from drtrottoir.views import (
     GarbageCollectionScheduleTemplateEntryViewSet,
     GarbageCollectionScheduleTemplateViewSet,
+    GarbageTypeViewSet,
     IssueDetailApiView,
     IssueNotApprovedApiView,
     IssuesListApiView,
@@ -34,6 +35,7 @@ router.register(
     r"garbage_collection_schedule_templates",
     GarbageCollectionScheduleTemplateViewSet,
 )
+router.register(r"garbage_type", GarbageTypeViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
