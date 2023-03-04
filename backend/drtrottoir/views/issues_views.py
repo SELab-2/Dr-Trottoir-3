@@ -1,9 +1,18 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 
 from drtrottoir.serializers import IssueSerializer
 from drtrottoir.models import Issue, Building
+
+
+class IssueViewSet(ModelViewSet):
+    permission_classes = []
+
+    queryset = Issue.objects.all()
+    serializer_class = IssueSerializer
+
 
 
 class IssuesListApiView(APIView):

@@ -40,7 +40,7 @@ def test_issues_detail_api_view_get_invalid_id():
     """
     client = APIClient()
     response = client.get(f'/issues/1/')
-    assert response.status_code == 400
+    assert response.status_code == 404
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_patch_valid():
