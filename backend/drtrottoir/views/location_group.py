@@ -1,10 +1,26 @@
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 
-from drtrottoir.serializers import LocationGroupSerializer
+from drtrottoir.serializers import LocationGroupSerializer, BuildingSerializer
 from drtrottoir.models import LocationGroup
+
+
+class LocationGroupViewSet(ModelViewSet):
+    permission_classes = []
+
+    queryset = LocationGroup.objects.all()
+    serializer_class = LocationGroupSerializer
+
+    @action(detail=True)
+    def buildings(self, request, pk=None) -> Response:
+        location_group: LocationGroup = self.get_object()
+        buildings = location_group.buildings.all()
+        serializer = BuildingSerializer(buildings, many=True)
+        return Response(serializer.data)
 
 
 class LocationGroupListApiView(APIView):

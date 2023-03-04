@@ -17,12 +17,9 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from drtrottoir.issues_views import IssuesListApiView
 
 from drtrottoir.views import (
-    LocationGroupListApiView,
-    LocationGroupDetailApiView,
-    BuildingListApiView,
+    LocationGroupViewSet,
     GarbageCollectionScheduleTemplateEntryViewSet,
     GarbageCollectionScheduleTemplateViewSet,
 )
@@ -36,6 +33,12 @@ router.register(
     r"garbage_collection_schedule_templates",
     GarbageCollectionScheduleTemplateViewSet,
 )
+
+router.register(
+    r"location_groups",
+    LocationGroupViewSet
+)
+
 
 urlpatterns = [
     path("", include(router.urls)),
