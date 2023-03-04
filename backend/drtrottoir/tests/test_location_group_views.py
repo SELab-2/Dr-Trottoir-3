@@ -82,9 +82,9 @@ def test_location_groups_delete_detail():
     response = client.get(f"/location_groups/{dummy_location_group.id}/")
 
     assert (
-            dummy_location_group.id == response.data["id"]
-            and dummy_location_group.name == response.data["name"]
-            and response.status_code == 200
+        dummy_location_group.id == response.data["id"]
+        and dummy_location_group.name == response.data["name"]
+        and response.status_code == 200
     )
 
     response = client.delete(f"/location_groups/{dummy_location_group.id}/")

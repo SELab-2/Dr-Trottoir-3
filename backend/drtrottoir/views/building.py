@@ -37,7 +37,7 @@ class BuildingListApiView(APIView):
             "address": request.data.get("address"),
             "guide_pdf_path": request.data.get("guide_pdf_path"),
             "is_active": request.data.get("is_active"),
-            "location_group": request.data.get("location_group")
+            "location_group": request.data.get("location_group"),
         }
 
         serializer = BuildingSerializer(data=data, partial=True)

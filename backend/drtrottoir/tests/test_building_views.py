@@ -14,7 +14,7 @@ def test_building_api_view_get():
     non_exiting_building_id = building_id_1 + building_id_2
 
     User.objects.create_user(username="test@gmail.com", password="test")
-    user = User.objects.get(username='test@gmail.com')
+    user = User.objects.get(username="test@gmail.com")
 
     factory = APIRequestFactory()
     view = BuildingListApiView.as_view()
