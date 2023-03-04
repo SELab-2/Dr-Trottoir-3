@@ -4,8 +4,6 @@ import json
 from drtrottoir.models import User
 from rest_framework.test import force_authenticate, APIRequestFactory, APIClient
 
-from drtrottoir.views.issues_views import IssueDetailApiView
-
 from .dummy_data import insert_dummy_building, insert_dummy_issue
 
 

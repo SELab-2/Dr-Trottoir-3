@@ -7,12 +7,22 @@ from drtrottoir.serializers import IssueSerializer
 from drtrottoir.models import Issue, Building
 
 
-class IssueViewSet(ModelViewSet):
-    permission_classes = []
+# class IssueCreateListRetrieveDestroyViewSet(
+#     mixins.CreateModelMixin,
+#     mixins.ListModelMixin,
+#     mixins.RetrieveModelMixin,
+#     viewsets.GenericViewSet,
+# ):
+#     permission_classes = []
+#
+#     queryset = Issue.objects.all()
+#     serializer_class = IssueSerializer
 
-    queryset = Issue.objects.all()
-    serializer_class = IssueSerializer
-
+# class IssueViewSet(ModelViewSet):
+#     permission_classes = []
+#
+#     queryset = Issue.objects.all()
+#     serializer_class = IssueSerializer
 
 
 class IssuesListApiView(APIView):
@@ -35,18 +45,9 @@ class IssuesListApiView(APIView):
         if request_user is None:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-        # TODO - check user permissions
+        request.data['from_user'] = request_user.id
 
-        building_id = request.data.get('building_id')
-        # building_instance = Building.objects.get(id=building_id)
-
-        data = {
-            'building': building_id,
-            'message': request.data.get('message'),
-            'from_user': request_user.id
-        }
-
-        serializer = IssueSerializer(data=data, partial=True)
+        serializer = IssueSerializer(data=request.data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
@@ -66,7 +67,7 @@ class IssueDetailApiView(APIView):
         except Issue.DoesNotExist:
             return Response(
                 {"res": "Object with id does not exist"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_404_NOT_FOUND
             )
 
     def patch(self, request, issue_id, *args, **kwargs):
@@ -78,7 +79,7 @@ class IssueDetailApiView(APIView):
         if instance is None:
             return Response(
                 {"res": "Object with id does not exist"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_404_NOT_FOUND
             )
 
         serializer = IssueSerializer(instance, data=request.data, partial=True)
@@ -98,7 +99,7 @@ class IssueDetailApiView(APIView):
         if instance is None:
             return Response(
                 {"res": "Object with id does not exist"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_404_NOT_FOUND
             )
 
         instance.delete()
