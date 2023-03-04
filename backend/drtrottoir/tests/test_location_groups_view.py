@@ -4,24 +4,15 @@ import json
 from drtrottoir.serializers import LocationGroupSerializer
 from drtrottoir.models import User
 from rest_framework.test import force_authenticate, APIRequestFactory
-from drtrottoir.location_groups_views import LocationGroupListApiView, LocationGroupDetailApiView
-
-
-def insert_dummy_location_group(name: str) -> int:
-    dummy_location_group_data = {"name": name}
-
-    location_group_serializer = LocationGroupSerializer(data=dummy_location_group_data)
-    assert location_group_serializer.is_valid()
-    location_group_serializer.save()
-
-    return location_group_serializer.data["id"]
+from drtrottoir.views import LocationGroupListApiView, LocationGroupDetailApiView
+from .dummy_data import insert_dummy_location_group
 
 
 @pytest.mark.django_db
 def test_location_groups_api_view_get():
-    dummy_location_group_id_1 = insert_dummy_location_group("location 1")
-    dummy_location_group_id_2 = insert_dummy_location_group("location 2")
-    dummy_location_group_id_3 = insert_dummy_location_group("location 3")
+    dummy_location_group_id_1 = insert_dummy_location_group("location 1").id
+    dummy_location_group_id_2 = insert_dummy_location_group("location 2").id
+    dummy_location_group_id_3 = insert_dummy_location_group("location 3").id
     non_existing_location_group_id = (
         dummy_location_group_id_1
         + dummy_location_group_id_2
@@ -82,8 +73,8 @@ def test_location_groups_api_view_post():
 
 @pytest.mark.django_db
 def test_location_groups_detail_api_view_get():
-    dummy_location_group_id_1 = insert_dummy_location_group("location 1")
-    dummy_location_group_id_2 = insert_dummy_location_group("location 2")
+    dummy_location_group_id_1 = insert_dummy_location_group("location 1").id
+    dummy_location_group_id_2 = insert_dummy_location_group("location 2").id
     non_existing_location_group_id = (
         dummy_location_group_id_1
         + dummy_location_group_id_2
@@ -118,7 +109,7 @@ def test_location_groups_detail_api_view_get():
 
 @pytest.mark.django_db
 def test_location_groups_detail_api_view_patch():
-    dummy_location_group_id_1 = insert_dummy_location_group("location 1")
+    dummy_location_group_id_1 = insert_dummy_location_group("location 1").id
 
     dummy_location_group_data = {
         "name": "city 1"
@@ -153,7 +144,7 @@ def test_location_groups_detail_api_view_patch():
 
 @pytest.mark.django_db
 def test_location_group_detail_api_delete():
-    dummy_location_group_id_1 = insert_dummy_location_group("location 1")
+    dummy_location_group_id_1 = insert_dummy_location_group("location 1").id
 
     User.objects.create_user(username="test@gmail.com", password="test")
 

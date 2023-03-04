@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 
 from drtrottoir.issues_views import IssuesListApiView
-from drtrottoir.location_groups_views import LocationGroupListApiView, LocationGroupDetailApiView
+from drtrottoir.views.location_groups_views import LocationGroupListApiView, LocationGroupDetailApiView
 
 from drtrottoir.views import (
     GarbageCollectionScheduleTemplateApiView,

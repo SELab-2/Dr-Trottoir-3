@@ -8,8 +8,8 @@ def insert_dummy_garbage_type() -> GarbageType:
     return gt
 
 
-def insert_dummy_location_group() -> LocationGroup:
-    lg = LocationGroup(name="some dummy group")
+def insert_dummy_location_group(name: str = "dummy location group") -> LocationGroup:
+    lg = LocationGroup(name=name)
     lg.save()
 
     return lg
