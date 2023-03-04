@@ -37,11 +37,6 @@ router.register(
     GarbageCollectionScheduleTemplateViewSet,
 )
 
-# router.register(
-#     r"issues",
-#     IssueCreateListRetrieveDestroyViewSet,
-# )
-
 urlpatterns = [
     path("", include(router.urls)),
     path("admin/", admin.site.urls),
