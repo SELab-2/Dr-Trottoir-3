@@ -6,7 +6,6 @@ from rest_framework.views import APIView
 from drtrottoir.models import ScheduleWorkEntry
 from drtrottoir.serializers import ScheduleWorkEntrySerializer
 
-
 # TODO permissions
 
 

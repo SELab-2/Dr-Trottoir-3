@@ -4,7 +4,7 @@ import dateutil.parser
 import pytest
 from django.test import RequestFactory
 
-from drtrottoir.schedule_work_entry_views import (
+from drtrottoir.views.schedule_work_entry_views import (
     ScheduleWorkEntryApiView,
     ScheduleWorkEntryByCreatorApiView,
     ScheduleWorkEntryByScheduleDefinitionApiView,
@@ -12,8 +12,8 @@ from drtrottoir.schedule_work_entry_views import (
 )
 from drtrottoir.serializers import ScheduleWorkEntrySerializer
 
-# TODO These are written in test_schedule_assignment_api_view.py Refactor them later
-from drtrottoir.tests.test_schedule_assignment_api_view import (
+# TODO These are written in test_schedule_assignment.py Refactor them later
+from drtrottoir.tests.test_schedule_assignment import (
     insert_dummy_building,
     insert_dummy_location_group,
     insert_dummy_schedule_definition,

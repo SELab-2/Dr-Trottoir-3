@@ -14,16 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, register_converter
+from django.urls import include, path, register_converter
+from rest_framework.routers import DefaultRouter
 
 from drtrottoir.converters import DateConverter
-from drtrottoir.schedule_assignment_views import (
-    ScheduleAssignmentApiView,
-    ScheduleAssignmentDateUserApiView,
-    ScheduleAssignmentListApiView,
-    ScheduleAssignmentsByScheduleDefinition,
-)
-from drtrottoir.schedule_work_entry_views import (
+from drtrottoir.views.schedule_assignment_views import ScheduleAssignmentViewSet
+from drtrottoir.views.schedule_work_entry_views import (
     ScheduleWorkEntryApiView,
     ScheduleWorkEntryByCreatorApiView,
     ScheduleWorkEntryByScheduleDefinitionApiView,
@@ -33,6 +29,17 @@ from drtrottoir.schedule_work_entry_views import (
 # Dates follow the format YYYY-MM-DD
 register_converter(DateConverter, "date")
 
+router = DefaultRouter()
+router.register(r"schedule_assignments", ScheduleAssignmentViewSet)
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("", include(router.urls)),
+    path("schedule_assignments/date/<date:assigned_date>/user/<int:user_id>/",
+         ScheduleAssignmentViewSet.retrieve_list_by_date_and_user)
+]
+
+"""
 urlpatterns = [
     path("admin/", admin.site.urls),
     # Schedule assignments
@@ -64,3 +71,4 @@ urlpatterns = [
         ScheduleWorkEntryApiView.as_view(),
     ),
 ]
+"""
