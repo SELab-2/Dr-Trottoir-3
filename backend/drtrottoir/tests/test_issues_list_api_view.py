@@ -21,7 +21,7 @@ def test_issues_list_api_view_post():
     client = APIClient()
     client.force_login(user)
     response = client.post(
-        f"/issues/", json.dumps(dummy_issue_data), content_type="application/json"
+        "/issues/", json.dumps(dummy_issue_data), content_type="application/json"
     )
 
     assert response.data == {
@@ -44,7 +44,7 @@ def test_issues_list_api_view_get():
     non_existing_issue_id = dummy_issue_id_1 + dummy_issue_id_2
 
     client = APIClient()
-    response = client.get(f"/issues/")
+    response = client.get("/issues/")
 
     response_data_ids = [e["id"] for e in response.data]
 

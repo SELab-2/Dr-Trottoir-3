@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from drtrottoir.models import Issue
 from drtrottoir.serializers import IssueSerializer
 
-# TODO - maybe move logic implemented in views (necessary since we use the request user id on creation) to ViewSet.
+# TODO - maybe move logic implemented in views to ViewSet.
 # class IssueCreateListRetrieveDestroyViewSet(
 #     mixins.CreateModelMixin,
 #     mixins.ListModelMixin,

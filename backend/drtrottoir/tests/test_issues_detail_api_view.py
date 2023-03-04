@@ -35,7 +35,7 @@ def test_issues_detail_api_view_get_valid_one_present():
 def test_issues_detail_api_view_get_invalid_id():
     """ """
     client = APIClient()
-    response = client.get(f"/issues/1/")
+    response = client.get("/issues/1/")
     assert response.status_code == 404
 
 
@@ -74,7 +74,7 @@ def test_issues_detail_api_view_patch_invalid_id():
 
     client = APIClient()
     response = client.patch(
-        f"/issues/1/", json.dumps(dummy_issue_data), content_type="application/json"
+        "/issues/1/", json.dumps(dummy_issue_data), content_type="application/json"
     )
 
     assert response.status_code == 404
@@ -106,6 +106,6 @@ def test_issues_detail_api_view_delete_valid():
 def test_issues_detail_api_view_delete_invalid_id():
     """ """
     client = APIClient()
-    response = client.delete(f"/issues/1/")
+    response = client.delete("/issues/1/")
 
     assert response.status_code == 404

@@ -15,7 +15,7 @@ def test_issues_all_not_approved():
     dummy_issue_id_2 = insert_dummy_issue(dummy_user).id
 
     client = APIClient()
-    response = client.get(f"/issues/not_approved/")
+    response = client.get("/issues/not_approved/")
 
     response_data_ids = [e["id"] for e in response.data]
 
@@ -39,7 +39,7 @@ def test_issues_all_approved():
     dummy_issue_2.save()
 
     client = APIClient()
-    response = client.get(f"/issues/not_approved/")
+    response = client.get("/issues/not_approved/")
 
     response_data_ids = [e["id"] for e in response.data]
 
@@ -59,7 +59,7 @@ def test_issues_some_approved():
     dummy_issue_1.save()
 
     client = APIClient()
-    response = client.get(f"/issues/not_approved/")
+    response = client.get("/issues/not_approved/")
 
     response_data_ids = [e["id"] for e in response.data]
 
