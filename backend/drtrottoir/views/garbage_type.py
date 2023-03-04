@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
-from drtrottoir.serializers.garbage_type import GarbageTypeSerializer
 from drtrottoir.models import GarbageType
+from drtrottoir.serializers.garbage_type import GarbageTypeSerializer
 
 
 class GarbageTypeViewSet(ModelViewSet):

@@ -1,15 +1,14 @@
 import json
-import pytest
 
+import pytest
 from rest_framework.test import APIClient
+
 from .dummy_data import insert_dummy_garbage_type
 
 
 @pytest.mark.django_db
 def test_garbage_type_post():
-    dummy_garbage_type_data = {
-        'name': 'dummy garbage type'
-    }
+    dummy_garbage_type_data = {"name": "dummy garbage type"}
 
     client = APIClient()
     response = client.post(
@@ -29,11 +28,12 @@ def test_garbage_type_api_view_get():
 
     client = APIClient()
 
-    response = client.get('/garbage_type/')
+    response = client.get("/garbage_type/")
     response_ids = [e["id"] for e in response.data]
 
     assert sorted(response_ids) == sorted([dummy_entry_1.id, dummy_entry_2.id])
     assert response.status_code == 200
+
 
 @pytest.mark.django_db
 def test_garbage_collection_schedule_template_entry_get_detail():

@@ -35,10 +35,7 @@ router.register(
     r"garbage_collection_schedule_templates",
     GarbageCollectionScheduleTemplateViewSet,
 )
-router.register(
-    r"garbage_type",
-    GarbageTypeViewSet
-)
+router.register(r"garbage_type", GarbageTypeViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),

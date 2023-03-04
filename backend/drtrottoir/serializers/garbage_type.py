@@ -6,4 +6,4 @@ from drtrottoir.models import GarbageType
 class GarbageTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = GarbageType
-        fields = '__all__'
+        fields = "__all__"
