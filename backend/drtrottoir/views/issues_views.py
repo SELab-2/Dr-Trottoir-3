@@ -2,8 +2,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from drtrottoir.serializers import IssueSerializer
 from drtrottoir.models import Issue
+from drtrottoir.serializers import IssueSerializer
 
 # TODO - maybe move logic implemented in views (necessary since we use the request user id on creation) to ViewSet.
 # class IssueCreateListRetrieveDestroyViewSet(
@@ -28,23 +28,19 @@ class IssuesListApiView(APIView):
     permission_classes = []
 
     def get(self, request, *args, **kwargs):
-        """
-
-        """
+        """ """
         issues = Issue.objects
         serializer = IssueSerializer(issues, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
-        """
-
-        """
+        """ """
         request_user = request.user
 
         if request_user is None:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-        request.data['from_user'] = request_user.id
+        request.data["from_user"] = request_user.id
 
         serializer = IssueSerializer(data=request.data, partial=True)
 
@@ -56,9 +52,7 @@ class IssuesListApiView(APIView):
 
 class IssueDetailApiView(APIView):
     def get(self, request, issue_id, *args, **kwargs):
-        """
-
-        """
+        """ """
         try:
             instance = Issue.objects.get(id=issue_id)
             serializer = IssueSerializer(instance)
@@ -66,13 +60,11 @@ class IssueDetailApiView(APIView):
         except Issue.DoesNotExist:
             return Response(
                 {"res": "Object with id does not exist"},
-                status=status.HTTP_404_NOT_FOUND
+                status=status.HTTP_404_NOT_FOUND,
             )
 
     def patch(self, request, issue_id, *args, **kwargs):
-        """
-
-        """
+        """ """
         try:
             instance = Issue.objects.get(id=issue_id)
             serializer = IssueSerializer(instance, data=request.data, partial=True)
@@ -85,16 +77,16 @@ class IssueDetailApiView(APIView):
         except Issue.DoesNotExist:
             return Response(
                 {"res": "Object with id does not exist"},
-                status=status.HTTP_404_NOT_FOUND
+                status=status.HTTP_404_NOT_FOUND,
             )
 
     def delete(self, request, issue_id, *args, **kwargs):
-        """
-
-        """
+        """ """
         try:
             instance = Issue.objects.get(id=issue_id)
-            serializer = IssueSerializer(instance, data={'resolved': True}, partial=True)
+            serializer = IssueSerializer(
+                instance, data={"resolved": True}, partial=True
+            )
 
             if serializer.is_valid():
                 serializer.save()
@@ -104,16 +96,13 @@ class IssueDetailApiView(APIView):
         except Issue.DoesNotExist:
             return Response(
                 {"res": "Object with id does not exist"},
-                status=status.HTTP_404_NOT_FOUND
+                status=status.HTTP_404_NOT_FOUND,
             )
 
 
 class IssueNotApprovedApiView(APIView):
     def get(self, request, *args, **kwargs):
-        """
-
-        """
+        """ """
         issues = Issue.objects.filter(approval_user=None)
         serializer = IssueSerializer(issues, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
