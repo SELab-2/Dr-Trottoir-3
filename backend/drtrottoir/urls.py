@@ -43,4 +43,5 @@ urlpatterns = [
     path("issues/", IssuesListApiView.as_view()),
     path("issues/<int:issue_id>/", IssueDetailApiView.as_view()),
     path("issues/not_approved/", IssueNotApprovedApiView.as_view()),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]

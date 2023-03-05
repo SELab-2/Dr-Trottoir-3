@@ -1,4 +1,4 @@
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -6,6 +6,7 @@ from drtrottoir.models import (
     GarbageCollectionScheduleTemplate,
     GarbageCollectionScheduleTemplateEntry,
 )
+from drtrottoir.permissions import IsSuperstudentOrAdmin
 from drtrottoir.serializers import (
     GarbageCollectionScheduleTemplateEntrySerializer,
     GarbageCollectionScheduleTemplateSerializer,
@@ -19,7 +20,7 @@ class GarbageCollectionScheduleTemplateEntryViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
-    permission_classes = []
+    permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
 
     queryset = GarbageCollectionScheduleTemplateEntry.objects.all()
     serializer_class = GarbageCollectionScheduleTemplateEntrySerializer
