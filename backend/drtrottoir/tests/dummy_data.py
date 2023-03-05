@@ -1,6 +1,8 @@
 from drtrottoir.models import (Building, GarbageCollectionScheduleTemplate,
                                GarbageCollectionScheduleTemplateEntry,
-                               GarbageType, Issue, LocationGroup, User)
+                               GarbageType, Issue, LocationGroup, User,
+                               ScheduleDefinition,
+                               )
 
 
 def insert_dummy_garbage_type() -> GarbageType:
@@ -18,9 +20,10 @@ def insert_dummy_location_group(name: str = "dummy location group") -> LocationG
 
 
 def insert_dummy_building(
-    adress: str = "dummy adress", path: str = "dummy path"
+    adress: str = "dummy adress", path: str = "dummy path", lg=None
 ) -> Building:
-    lg = insert_dummy_location_group()
+    if lg is None:
+        lg = insert_dummy_location_group()
 
     building = Building(
         address=adress,
@@ -30,6 +33,20 @@ def insert_dummy_building(
     building.save()
 
     return building
+
+
+def insert_dummy_schedule_definition(
+        name: str = "dummy schedule definition", verion=0, lg=None
+) -> ScheduleDefinition:
+    if lg is None:
+        lg = insert_dummy_location_group()
+    schedule_definiton = ScheduleDefinition(
+        name=name,
+        version=verion,
+        location_group=lg,
+    )
+    schedule_definiton.save()
+    return schedule_definiton
 
 
 def insert_dummy_garbage_collection_schedule_template() -> (

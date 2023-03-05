@@ -6,6 +6,8 @@ from rest_framework.test import APIClient
 
 from .dummy_data import (
     insert_dummy_location_group,
+    insert_dummy_building,
+    insert_dummy_schedule_definition,
 )
 
 
@@ -97,3 +99,43 @@ def test_location_groups_delete_detail():
     assert response.status_code == 204
     response = client.get(f"/location_groups/{dummy_location_group.id}/")
     assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_location_group_get_buildings_list():
+    location_group_1 = insert_dummy_location_group()
+    location_group_2 = insert_dummy_location_group()
+    building_1 = insert_dummy_building(lg=location_group_1)
+    building_2 = insert_dummy_building(lg=location_group_1)
+    building_3 = insert_dummy_building(lg=location_group_2)
+
+    user = User.objects.create_user(username="test@gmail.com", password="test")
+    client = APIClient()
+    client.force_login(user)
+    response = client.get(f"/location_groups/{location_group_1.id}/buildings/")
+
+    response_ids = [e["id"] for e in response.data]
+
+    assert building_1.id in response_ids
+    assert building_2.id in response_ids
+    assert building_3.id not in response_ids
+
+
+@pytest.mark.django_db
+def test_location_group_get_buildings_list():
+    location_group_1 = insert_dummy_location_group()
+    location_group_2 = insert_dummy_location_group()
+    sched_definition_1 = insert_dummy_schedule_definition(lg=location_group_1)
+    sched_definition_2 = insert_dummy_schedule_definition(lg=location_group_1)
+    sched_definition_3 = insert_dummy_schedule_definition(lg=location_group_2)
+
+    user = User.objects.create_user(username="test@gmail.com", password="test")
+    client = APIClient()
+    client.force_login(user)
+    response = client.get(f"/location_groups/{location_group_1.id}/schedule_definitions/")
+
+    response_ids = [e["id"] for e in response.data]
+
+    assert sched_definition_1.id in response_ids
+    assert sched_definition_2.id in response_ids
+    assert sched_definition_3.id not in response_ids
