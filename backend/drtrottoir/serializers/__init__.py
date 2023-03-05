@@ -1,4 +1,4 @@
-from .building import BuildingSerializer
+from .building import BuildingSerializer, ScheduleDefinitionBuildingSerializer
 from .garbage_collection_schedule_template import (
     GarbageCollectionScheduleTemplateEntrySerializer,
     GarbageCollectionScheduleTemplateSerializer,
@@ -16,4 +16,5 @@ __all__ = [
     "GarbageTypeSerializer",
     "IssueSerializer",
     "ScheduleDefinitionSerializer",
+    "ScheduleDefinitionBuildingSerializer",
 ]

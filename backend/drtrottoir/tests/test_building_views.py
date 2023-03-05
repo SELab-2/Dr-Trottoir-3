@@ -4,7 +4,12 @@ import pytest
 from drtrottoir.models import User
 from rest_framework.test import APIClient
 
-from .dummy_data import insert_dummy_building, insert_dummy_location_group
+from .dummy_data import (
+    insert_dummy_location_group,
+    insert_dummy_building,
+    insert_dummy_schedule_definition,
+    insert_dummy_schedule_definition_building,
+)
 
 
 @pytest.mark.django_db
@@ -114,3 +119,26 @@ def test_building_delete_detail():
     assert response.status_code == 204
     response = client.get(f"/buildings/{dummy_building.id}/")
     assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_building_get_schedule_definitions_list():
+    dummy_schedule_definition_1 = insert_dummy_schedule_definition()
+    dummy_schedule_definition_2 = insert_dummy_schedule_definition()
+    dummy_schedule_definition_3 = insert_dummy_schedule_definition()
+    dummy_building_1 = insert_dummy_building()
+    dummy_building_2 = insert_dummy_building()
+    insert_dummy_schedule_definition_building(dummy_building_1, dummy_schedule_definition_1)
+    insert_dummy_schedule_definition_building(dummy_building_1, dummy_schedule_definition_2)
+    insert_dummy_schedule_definition_building(dummy_building_2, dummy_schedule_definition_3)
+
+    user = User.objects.create_user(username="test@gmail.com", password="test")
+    client = APIClient()
+    client.force_login(user)
+    response = client.get(f"/buildings/{dummy_building_1.id}/schedule_definitions/")
+
+    response_ids = [e["id"] for e in response.data]
+
+    assert dummy_schedule_definition_1.id in response_ids
+    assert dummy_schedule_definition_2.id in response_ids
+    assert dummy_schedule_definition_3.id not in response_ids
