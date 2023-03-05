@@ -1,5 +1,9 @@
 from drtrottoir.models import LocationGroup
-from drtrottoir.serializers import BuildingSerializer, LocationGroupSerializer
+from drtrottoir.serializers import (
+    BuildingSerializer,
+    LocationGroupSerializer,
+    ScheduleDefinitionSerializer,
+)
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -20,4 +24,7 @@ class LocationGroupViewSet(ModelViewSet):
 
     @action(detail=True)
     def schedule_definitions(self, request, pk=None):
-        pass
+        location_group: LocationGroup = self.get_object()
+        schedule_definitions = location_group.schedule_definitions.all()
+        serializer = ScheduleDefinitionSerializer(schedule_definitions, many=True)
+        return Response(serializer.data)

@@ -7,18 +7,14 @@ from .issue import IssueDetailApiView, IssueNotApprovedApiView, IssuesListApiVie
 
 from .location_group import (
     LocationGroupViewSet,
-    LocationGroupDetailApiView,
-    LocationGroupListApiView,
 )
 
 from .building import (
     BuildingListViewSet,
-    BuildingListApiView,
 )
 
 __all__ = [
     "LocationGroupViewSet",
-    "BuildingListApiView",
     "BuildingListViewSet",
     "GarbageCollectionScheduleTemplateEntryViewSet",
     "GarbageCollectionScheduleTemplateViewSet",
@@ -26,6 +22,4 @@ __all__ = [
     "IssuesListApiView",
     "IssueDetailApiView",
     "IssueNotApprovedApiView",
-    "LocationGroupDetailApiView",
-    "LocationGroupListApiView",
 ]

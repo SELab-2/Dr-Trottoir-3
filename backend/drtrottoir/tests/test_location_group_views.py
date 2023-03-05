@@ -4,7 +4,18 @@ import pytest
 from drtrottoir.models import User
 from rest_framework.test import APIClient
 
-from .dummy_data import insert_dummy_location_group
+from .dummy_data import (
+    insert_dummy_location_group,
+    insert_dummy_building,
+)
+
+
+@pytest.mark.django_db
+def test_location_groups_forbidden_methods():
+    client = APIClient()
+    assert client.patch("/location_groups/").status_code == 405
+    assert client.delete("/location_groups/").status_code == 405
+    assert client.put("/location_groups/").status_code == 405
 
 
 @pytest.mark.django_db
