@@ -75,7 +75,7 @@ class Issue(models.Model):
 
 
 class IssueImage(models.Model):
-    image_path = models.CharField(max_length=255)
+    image = models.ImageField(upload_to="issue_images")
     issue = models.ForeignKey(Issue, on_delete=models.RESTRICT, related_name="images")
 
 
