@@ -77,16 +77,7 @@ def insert_dummy_issue(dummy_user: User) -> Issue:
     return issue
 
 
-user_counter = 0
-
-
-def insert_dummy_user() -> User:
-    # Global variable, allows us to easily keep creating users when
-    # we need more than one in our tests
-    global user_counter
-
-    user_counter += 1
-    email = f"test{user_counter}@gmail.com"
+def insert_dummy_user(email: str = "test@gmail.com") -> User:
     dummy_user: User = User.objects.create_user(
         username=email, password="test", email=email
     )
@@ -118,8 +109,7 @@ def insert_dummy_schedule_definition() -> ScheduleDefinition:
     return definition
 
 
-def insert_dummy_schedule_assignment() -> ScheduleAssignment:
-    user: User = insert_dummy_user()
+def insert_dummy_schedule_assignment(user: User) -> ScheduleAssignment:
     schedule_definition: ScheduleDefinition = insert_dummy_schedule_definition()
     assignment = ScheduleAssignment(
         assigned_date="2022-01-26", schedule_definition=schedule_definition, user=user
@@ -128,8 +118,7 @@ def insert_dummy_schedule_assignment() -> ScheduleAssignment:
     return assignment
 
 
-def insert_dummy_schedule_work_entry() -> ScheduleWorkEntry:
-    creator = insert_dummy_user()
+def insert_dummy_schedule_work_entry(creator: User) -> ScheduleWorkEntry:
     building = insert_dummy_building()
     schedule_definition = insert_dummy_schedule_definition()
     work_entry = ScheduleWorkEntry(

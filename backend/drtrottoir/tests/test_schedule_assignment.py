@@ -14,14 +14,15 @@ from drtrottoir.tests.util import date_equals
 
 @pytest.mark.django_db
 def test_schedule_assignment_get_by_id() -> None:
-    assignment: ScheduleAssignment = insert_dummy_schedule_assignment()
+    user = insert_dummy_user()
+    assignment: ScheduleAssignment = insert_dummy_schedule_assignment(user)
 
     client = APIClient()
     response = client.get(f"/schedule_assignments/{assignment.id}/")
 
     assert response.status_code == 200
     assert response.data["schedule_definition"] == assignment.schedule_definition.id
-    assert response.data["user"] == assignment.user.id
+    assert response.data["user"] == user.id
     assert date_equals(response.data["assigned_date"], str(assignment.assigned_date))
 
     # Test nonexistent id
@@ -60,7 +61,8 @@ def test_schedule_assignment_post() -> None:
 
 @pytest.mark.django_db
 def test_schedule_assignment_delete() -> None:
-    assignment = insert_dummy_schedule_assignment()
+    user = insert_dummy_user()
+    assignment = insert_dummy_schedule_assignment(user)
 
     client = APIClient()
     response = client.delete(f"/schedule_assignments/{assignment.id}/")
@@ -73,10 +75,11 @@ def test_schedule_assignment_delete() -> None:
 
 @pytest.mark.django_db
 def test_schedule_assignment_patch_user() -> None:
-    assignment = insert_dummy_schedule_assignment()
+    user_1 = insert_dummy_user("test1@gmail.com")
+    user_2 = insert_dummy_user("test2@gmail.com")
+    assignment = insert_dummy_schedule_assignment(user_1)
 
-    dummy_user = insert_dummy_user()
-    data = {"user": dummy_user.id}
+    data = {"user": user_2.id}
 
     client = APIClient()
     response = client.patch(
@@ -86,7 +89,7 @@ def test_schedule_assignment_patch_user() -> None:
     )
 
     assert response.status_code == 200
-    assert response.data["user"] == dummy_user.id
+    assert response.data["user"] == user_2.id
     assert response.data["schedule_definition"] == assignment.schedule_definition.id
 
 
@@ -94,8 +97,8 @@ def test_schedule_assignment_patch_user() -> None:
 def test_schedule_assignment_patch_other() -> None:
     # Tests whether changing something other than the user affects the data.
     # It shouldn't, as only the user can be changed.
-
-    assignment = insert_dummy_schedule_assignment()
+    user = insert_dummy_user()
+    assignment = insert_dummy_schedule_assignment(user)
 
     dummy_schedule = insert_dummy_schedule_definition()
     dummy_date = "2222-02-02"
@@ -109,19 +112,19 @@ def test_schedule_assignment_patch_other() -> None:
     )
 
     assert response.status_code == 200
-    assert response.data["user"] == assignment.user.id
+    assert response.data["user"] == user.id
     assert response.data["schedule_definition"] == assignment.schedule_definition.id
     assert date_equals(response.data["assigned_date"], str(assignment.assigned_date))
 
 
 @pytest.mark.django_db
 def test_schedule_assignment_by_date_and_user() -> None:
-    assignment = insert_dummy_schedule_assignment()
+    user = insert_dummy_user()
+    assignment = insert_dummy_schedule_assignment(user)
 
     client = APIClient()
     date = assignment.assigned_date
-    user = assignment.user.id
-    response = client.get(f"/schedule_assignments/date/{date}/user/{user}/")
+    response = client.get(f"/schedule_assignments/date/{date}/user/{user.id}/")
     response_ids = [data["id"] for data in response.data]
 
     assert response.status_code == 200

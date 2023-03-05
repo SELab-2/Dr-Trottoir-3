@@ -14,8 +14,9 @@ from drtrottoir.tests.util import date_equals
 
 @pytest.mark.django_db
 def test_schedule_work_entry_list_get() -> None:
-    work_entry1 = insert_dummy_schedule_work_entry().id
-    work_entry2 = insert_dummy_schedule_work_entry().id
+    user = insert_dummy_user()
+    work_entry1 = insert_dummy_schedule_work_entry(user).id
+    work_entry2 = insert_dummy_schedule_work_entry(user).id
     work_entry_nonexistent = work_entry1 + work_entry2 + 3
 
     client = APIClient()
@@ -60,7 +61,8 @@ def test_schedule_work_entry_post() -> None:
 
 @pytest.mark.django_db
 def test_schedule_work_entry_get() -> None:
-    work_entry = insert_dummy_schedule_work_entry()
+    user = insert_dummy_user()
+    work_entry = insert_dummy_schedule_work_entry(user)
 
     client = APIClient()
     response = client.get(f"/schedule_work_entries/{work_entry.id}/")
@@ -77,11 +79,11 @@ def test_schedule_work_entry_get() -> None:
 
 @pytest.mark.django_db
 def test_schedule_work_entry_get_by_user_id() -> None:
-    work_entry = insert_dummy_schedule_work_entry()
-    user = work_entry.creator.id
+    user = insert_dummy_user()
+    work_entry = insert_dummy_schedule_work_entry(user)
 
     client = APIClient()
-    response = client.get(f"/schedule_work_entries/users/{user}/")
+    response = client.get(f"/schedule_work_entries/users/{user.id}/")
     response_ids = [data["id"] for data in response.data]
 
     assert response.status_code == 200
