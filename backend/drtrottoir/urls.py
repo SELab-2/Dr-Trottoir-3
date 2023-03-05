@@ -14,10 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path, register_converter
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from drtrottoir.converters import DateConverter
 from drtrottoir.views import (
     GarbageCollectionScheduleTemplateEntryViewSet,
     GarbageCollectionScheduleTemplateViewSet,
@@ -28,9 +27,6 @@ from drtrottoir.views import (
     ScheduleAssignmentViewSet,
     ScheduleWorkEntryViewSet,
 )
-
-# Dates follow the format YYYY-MM-DD
-register_converter(DateConverter, "date")
 
 router = DefaultRouter()
 router.register(
@@ -56,7 +52,7 @@ urlpatterns = [
     # Schedule assignments uses ViewSet, but this particular url has
     # two ids, so it's easier to do it like this
     path(
-        "schedule_assignments/date/<date:assigned_date>/user/<int:user_id>/",
+        "schedule_assignments/date/<str:assigned_date>/user/<int:user_id>/",
         ScheduleAssignmentViewSet.retrieve_list_by_date_and_user,
     ),
 ]
