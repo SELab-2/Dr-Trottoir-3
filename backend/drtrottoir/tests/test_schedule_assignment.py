@@ -22,7 +22,7 @@ def test_schedule_assignment_get_by_id() -> None:
     assert response.status_code == 200
     assert response.data["schedule_definition"] == assignment.schedule_definition.id
     assert response.data["user"] == assignment.user.id
-    assert date_equals(response.data["assigned_date"], assignment.assigned_date)
+    assert date_equals(response.data["assigned_date"], str(assignment.assigned_date))
 
     # Test nonexistent id
     assignment_id_nonexistent = assignment.id + 3
@@ -111,7 +111,7 @@ def test_schedule_assignment_patch_other() -> None:
     assert response.status_code == 200
     assert response.data["user"] == assignment.user.id
     assert response.data["schedule_definition"] == assignment.schedule_definition.id
-    assert date_equals(response.data["assigned_date"], assignment.assigned_date)
+    assert date_equals(response.data["assigned_date"], str(assignment.assigned_date))
 
 
 @pytest.mark.django_db
@@ -119,9 +119,9 @@ def test_schedule_assignment_by_date_and_user() -> None:
     assignment = insert_dummy_schedule_assignment()
 
     client = APIClient()
-    response = client.get(
-        f"/schedule_assignments/date/{assignment.assigned_date}/user/{assignment.user.id}/"
-    )
+    date = assignment.assigned_date
+    user = assignment.user.id
+    response = client.get(f"/schedule_assignments/date/{date}/user/{user}/")
     response_ids = [data["id"] for data in response.data]
 
     assert response.status_code == 200

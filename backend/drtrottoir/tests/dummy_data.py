@@ -8,7 +8,8 @@ from drtrottoir.models import (
     ScheduleAssignment,
     ScheduleDefinition,
     ScheduleDefinitionBuilding,
-    User, ScheduleWorkEntry,
+    ScheduleWorkEntry,
+    User,
 )
 
 
@@ -40,7 +41,7 @@ def insert_dummy_building() -> Building:
 
 
 def insert_dummy_garbage_collection_schedule_template() -> (
-        GarbageCollectionScheduleTemplate
+    GarbageCollectionScheduleTemplate
 ):
     building = insert_dummy_building()
     template = GarbageCollectionScheduleTemplate(
@@ -52,7 +53,7 @@ def insert_dummy_garbage_collection_schedule_template() -> (
 
 
 def insert_dummy_garbage_collection_schedule_template_entry() -> (
-        GarbageCollectionScheduleTemplateEntry
+    GarbageCollectionScheduleTemplateEntry
 ):
     garbage_type = insert_dummy_garbage_type()
     template = insert_dummy_garbage_collection_schedule_template()
@@ -76,22 +77,24 @@ def insert_dummy_issue(dummy_user: User) -> Issue:
     return issue
 
 
-def insert_dummy_user() -> User:
-    # Static variable, allows us to easily keep creating users when we need more than one
-    insert_dummy_user.counter += 1
+user_counter = 0
 
-    email = f"test{insert_dummy_user.counter}@gmail.com"
+
+def insert_dummy_user() -> User:
+    # Global variable, allows us to easily keep creating users when
+    # we need more than one in our tests
+    global user_counter
+
+    user_counter += 1
+    email = f"test{user_counter}@gmail.com"
     dummy_user: User = User.objects.create_user(
         username=email, password="test", email=email
     )
     return dummy_user
 
 
-insert_dummy_user.counter = 0
-
-
-# The ScheduleDefinition API is being written by Lander, but I need it for the ScheduleAssignment API
-# Replace this when finished
+# The ScheduleDefinition API is being written by Lander, but I  need
+# it for the ScheduleAssignment API. Replace this when finished.
 # - Pim
 def insert_dummy_schedule_definition() -> ScheduleDefinition:
     location_group = insert_dummy_location_group()
@@ -134,7 +137,7 @@ def insert_dummy_schedule_work_entry() -> ScheduleWorkEntry:
         image_path="pics/image.png",
         creator=creator,
         building=building,
-        schedule_definition=schedule_definition
+        schedule_definition=schedule_definition,
     )
     work_entry.save()
     return work_entry

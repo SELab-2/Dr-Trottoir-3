@@ -1,11 +1,14 @@
 import json
 
 import pytest
-
 from rest_framework.test import APIClient
 
-from drtrottoir.tests.dummy_data import insert_dummy_schedule_work_entry, insert_dummy_user, insert_dummy_building, \
-    insert_dummy_schedule_definition
+from drtrottoir.tests.dummy_data import (
+    insert_dummy_building,
+    insert_dummy_schedule_definition,
+    insert_dummy_schedule_work_entry,
+    insert_dummy_user,
+)
 from drtrottoir.tests.util import date_equals
 
 
@@ -38,11 +41,13 @@ def test_schedule_work_entry_post() -> None:
         "building": building.id,
         "schedule_definition": schedule_definition.id,
         "creation_timestamp": creation_timestamp,
-        "image_path": image_path
+        "image_path": image_path,
     }
 
     client = APIClient()
-    response = client.post("/schedule_work_entries/", json.dumps(data), content_type="application/json")
+    response = client.post(
+        "/schedule_work_entries/", json.dumps(data), content_type="application/json"
+    )
 
     assert response.status_code == 201
     assert response.data["id"] > 0
