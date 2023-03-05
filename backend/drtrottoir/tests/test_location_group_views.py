@@ -122,7 +122,7 @@ def test_location_group_get_buildings_list():
 
 
 @pytest.mark.django_db
-def test_location_group_get_buildings_list():
+def test_location_group_get_schedule_definitions_list():
     location_group_1 = insert_dummy_location_group()
     location_group_2 = insert_dummy_location_group()
     sched_definition_1 = insert_dummy_schedule_definition(lg=location_group_1)
