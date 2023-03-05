@@ -1,7 +1,7 @@
 from drtrottoir.models import (Building, GarbageCollectionScheduleTemplate,
                                GarbageCollectionScheduleTemplateEntry,
                                GarbageType, Issue, LocationGroup, User,
-                               ScheduleDefinition, ScheduleDefinitionBuilding,
+                               ScheduleDefinition, ScheduleDefinitionBuilding, Syndicus,
                                )
 
 
@@ -48,6 +48,26 @@ def insert_dummy_schedule_definition(
 
     schedule_definiton.save()
     return schedule_definiton
+
+
+def insert_dummy_syndicus(
+        user: User,
+        buildings=None,
+):
+    syndicus = Syndicus(
+        user=user,
+    )
+    syndicus.save()
+
+    if buildings is None:
+        building = insert_dummy_building()
+        syndicus.buildings.add(building)
+    else:
+        for building in buildings:
+            syndicus.buildings.add(building)
+
+    syndicus.save()
+    return syndicus
 
 
 def insert_dummy_schedule_definition_building(building=None, sd=None, pos: int = 0) -> ScheduleDefinitionBuilding:

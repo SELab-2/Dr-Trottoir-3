@@ -9,6 +9,7 @@ from .dummy_data import (
     insert_dummy_building,
     insert_dummy_schedule_definition,
     insert_dummy_schedule_definition_building,
+    insert_dummy_syndicus,
 )
 
 
@@ -119,6 +120,25 @@ def test_building_delete_detail():
     assert response.status_code == 204
     response = client.get(f"/buildings/{dummy_building.id}/")
     assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_get_buildings_from_syndicus():
+    dummy_building_1 = insert_dummy_building()
+    dummy_building_2 = insert_dummy_building()
+    dummy_building_3 = insert_dummy_building()
+
+    user = User.objects.create_user(username="test@gmail.com", password="test")
+    client = APIClient()
+    client.force_login(user)
+    dummy_syndicus_1 = insert_dummy_syndicus(user=user, buildings=[dummy_building_1, dummy_building_2])
+
+    response = client.get(f"/buildings/users/{dummy_syndicus_1.user_id}/")
+
+    response_ids = [e["id"] for e in response.data]
+    assert dummy_building_1.id in response_ids
+    assert dummy_building_2.id in response_ids
+    assert dummy_building_3.id not in response_ids
 
 
 @pytest.mark.django_db

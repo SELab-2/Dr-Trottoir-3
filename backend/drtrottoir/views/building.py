@@ -1,7 +1,9 @@
 from rest_framework.decorators import action
 
-from drtrottoir.models import Building, ScheduleDefinitionBuilding, ScheduleDefinition
-from drtrottoir.serializers import BuildingSerializer, ScheduleDefinitionSerializer, ScheduleDefinitionBuildingSerializer
+from drtrottoir.models import Building, ScheduleDefinitionBuilding, ScheduleDefinition, Syndicus
+from drtrottoir.serializers import (BuildingSerializer,
+                                    ScheduleDefinitionSerializer,
+                                    )
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 
@@ -26,4 +28,12 @@ class BuildingListViewSet(ModelViewSet):
     # get all buildings of syndicus with user id
     @action(detail=False, methods=["GET"], url_path=r"users/(?P<user_id>\w+)")
     def syndicus_buildings(self, request, user_id=-1):
-        buildings = Building.objects.filter()
+        syndicus = Syndicus.objects.get(user=user_id)
+
+        # buildings = []
+        # for query in syndici:
+        #     buildings.append(query.buildings.id)
+        # buildings = [query.buildings.id for query in syndici]
+        buildings = syndicus.buildings.all()
+        serializer = BuildingSerializer(buildings, many=True)
+        return Response(serializer.data)
