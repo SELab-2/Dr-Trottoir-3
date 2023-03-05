@@ -45,4 +45,4 @@ lint:
 
 .PHONY: test
 test:
-	'$(VENV)/bin/pytest'
+	'$(VENV)'/bin/pytest --cov --cov-config=.coveragerc drtrottoir/tests
