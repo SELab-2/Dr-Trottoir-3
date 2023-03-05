@@ -132,7 +132,9 @@ def test_location_group_get_schedule_definitions_list():
     user = User.objects.create_user(username="test@gmail.com", password="test")
     client = APIClient()
     client.force_login(user)
-    response = client.get(f"/location_groups/{location_group_1.id}/schedule_definitions/")
+    response = client.get(
+        f"/location_groups/{location_group_1.id}/schedule_definitions/"
+    )
 
     response_ids = [e["id"] for e in response.data]
 

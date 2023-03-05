@@ -1,9 +1,15 @@
 from rest_framework.decorators import action
 
-from drtrottoir.models import Building, ScheduleDefinitionBuilding, ScheduleDefinition, Syndicus
-from drtrottoir.serializers import (BuildingSerializer,
-                                    ScheduleDefinitionSerializer,
-                                    )
+from drtrottoir.models import (
+    Building,
+    ScheduleDefinitionBuilding,
+    ScheduleDefinition,
+    Syndicus,
+)
+from drtrottoir.serializers import (
+    BuildingSerializer,
+    ScheduleDefinitionSerializer,
+)
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 

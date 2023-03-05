@@ -17,9 +17,7 @@ from .dummy_data import (
 def test_buildings_get_list():
     dummy_building_1 = insert_dummy_building()
     dummy_building_2 = insert_dummy_building()
-    non_existent_building_id = (
-        dummy_building_1.id + dummy_building_2.id
-    )
+    non_existent_building_id = dummy_building_1.id + dummy_building_2.id
     client = APIClient()
     response = client.get("/buildings/")
 
@@ -65,11 +63,11 @@ def test_building_get_detail():
     response = client.get(f"/buildings/{dummy_building.id}/")
 
     assert (
-            dummy_building.id == response.data["id"]
-            and dummy_building.address == response.data["address"]
-            and dummy_building.guide_pdf_path == response.data["guide_pdf_path"]
-            and dummy_building.is_active == response.data["is_active"]
-            and dummy_building.location_group.id == response.data["location_group"]
+        dummy_building.id == response.data["id"]
+        and dummy_building.address == response.data["address"]
+        and dummy_building.guide_pdf_path == response.data["guide_pdf_path"]
+        and dummy_building.is_active == response.data["is_active"]
+        and dummy_building.location_group.id == response.data["location_group"]
     )
 
 
@@ -88,7 +86,11 @@ def test_building_patch_detail():
     user = User.objects.create_user(username="test@gmail.com", password="test")
     client = APIClient()
     client.force_login(user)
-    response = client.patch(f"/buildings/{dummy_building.id}/", json.dumps(data), content_type="application/json")
+    response = client.patch(
+        f"/buildings/{dummy_building.id}/",
+        json.dumps(data),
+        content_type="application/json",
+    )
 
     assert response.data == {
         "id": 1,
@@ -109,11 +111,11 @@ def test_building_delete_detail():
     response = client.get(f"/buildings/{dummy_building.id}/")
 
     assert (
-            dummy_building.id == response.data["id"]
-            and dummy_building.address == response.data["address"]
-            and dummy_building.guide_pdf_path == response.data["guide_pdf_path"]
-            and dummy_building.is_active == response.data["is_active"]
-            and dummy_building.location_group.id == response.data["location_group"]
+        dummy_building.id == response.data["id"]
+        and dummy_building.address == response.data["address"]
+        and dummy_building.guide_pdf_path == response.data["guide_pdf_path"]
+        and dummy_building.is_active == response.data["is_active"]
+        and dummy_building.location_group.id == response.data["location_group"]
     )
 
     response = client.delete(f"/buildings/{dummy_building.id}/")
@@ -131,7 +133,9 @@ def test_get_buildings_from_syndicus():
     user = User.objects.create_user(username="test@gmail.com", password="test")
     client = APIClient()
     client.force_login(user)
-    dummy_syndicus_1 = insert_dummy_syndicus(user=user, buildings=[dummy_building_1, dummy_building_2])
+    dummy_syndicus_1 = insert_dummy_syndicus(
+        user=user, buildings=[dummy_building_1, dummy_building_2]
+    )
 
     response = client.get(f"/buildings/users/{dummy_syndicus_1.user_id}/")
 
@@ -148,9 +152,15 @@ def test_building_get_schedule_definitions_list():
     dummy_schedule_definition_3 = insert_dummy_schedule_definition()
     dummy_building_1 = insert_dummy_building()
     dummy_building_2 = insert_dummy_building()
-    insert_dummy_schedule_definition_building(dummy_building_1, dummy_schedule_definition_1)
-    insert_dummy_schedule_definition_building(dummy_building_1, dummy_schedule_definition_2)
-    insert_dummy_schedule_definition_building(dummy_building_2, dummy_schedule_definition_3)
+    insert_dummy_schedule_definition_building(
+        dummy_building_1, dummy_schedule_definition_1
+    )
+    insert_dummy_schedule_definition_building(
+        dummy_building_1, dummy_schedule_definition_2
+    )
+    insert_dummy_schedule_definition_building(
+        dummy_building_2, dummy_schedule_definition_3
+    )
 
     user = User.objects.create_user(username="test@gmail.com", password="test")
     client = APIClient()
