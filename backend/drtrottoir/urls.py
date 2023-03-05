@@ -24,9 +24,9 @@ from drtrottoir.views import (
     IssueDetailApiView,
     IssueNotApprovedApiView,
     IssuesListApiView,
+    ScheduleAssignmentViewSet,
+    ScheduleWorkEntryViewSet,
 )
-from drtrottoir.views import ScheduleAssignmentViewSet
-from drtrottoir.views import ScheduleWorkEntryViewSet
 
 # Dates follow the format YYYY-MM-DD
 register_converter(DateConverter, "date")

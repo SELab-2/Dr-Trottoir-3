@@ -23,6 +23,10 @@ class ScheduleAssignmentViewSet(
     def update(self, request, *args, **kwargs):
         """
         Patch only allows the user field to be updated, so this is manually overwritten.
+
+        TODO replace this with read_only_fields
+        For the moment I've tried using read_only_fields, but I get some Assertion sql errors. I don't know why yet, but
+        I'm looking into it
         """
         allowed_fields = ["user"]
         filtered_data = {k: v for (k, v) in request.data.items() if k in allowed_fields}

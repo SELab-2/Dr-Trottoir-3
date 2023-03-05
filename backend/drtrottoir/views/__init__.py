@@ -13,6 +13,5 @@ __all__ = [
     "IssueDetailApiView",
     "IssueNotApprovedApiView",
     "ScheduleAssignmentViewSet",
-    "ScheduleWorkEntryViewSet"
+    "ScheduleWorkEntryViewSet",
 ]
-
