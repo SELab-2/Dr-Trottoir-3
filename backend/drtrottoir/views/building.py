@@ -36,7 +36,7 @@ class BuildingListViewSet(ModelViewSet):
 
     # get all buildings of syndicus with user id
     @action(detail=False, url_path=r"users/(?P<user_id>\w+)")
-    def syndicus_buildings(self, request, user_id=-1):
+    def syndicus_buildings(self, request, user_id=None):
         syndicus = Syndicus.objects.get(user=user_id)
         buildings = syndicus.buildings.all()
         serializer = BuildingSerializer(buildings, many=True)
@@ -67,12 +67,10 @@ class BuildingListViewSet(ModelViewSet):
         detail=True, url_path=r"for_day/(?P<date>[^/.]+)/garbage_collection_schedules"
     )
     def retrieve_garbage_collection_schedule_list_by_building_and_date(
-        self, request, pk=None, date=-1
+        self, request, pk=None, date=None
     ) -> Response:
-        print(f"DATE HEREEEEEEEEE: {date}")
         building: Building = self.get_object()
         schedules = building.garbage_collection_schedules.filter(for_day=date)
-        # schedules = building.garbage_collection_schedules.all()
 
         serializer = GarbageCollectionScheduleSerializer(schedules, many=True)
         return Response(serializer.data)
