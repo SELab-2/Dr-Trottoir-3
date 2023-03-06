@@ -1,4 +1,5 @@
 import json
+import datetime
 
 import pytest
 from drtrottoir.models import User
@@ -10,6 +11,9 @@ from .dummy_data import (
     insert_dummy_schedule_definition,
     insert_dummy_schedule_definition_building,
     insert_dummy_syndicus,
+    insert_dummy_issue,
+    insert_dummy_garbage_collection_schedule_template,
+    insert_dummy_garbage_collection_schedule,
 )
 
 
@@ -172,3 +176,83 @@ def test_building_get_schedule_definitions_list():
     assert dummy_schedule_definition_1.id in response_ids
     assert dummy_schedule_definition_2.id in response_ids
     assert dummy_schedule_definition_3.id not in response_ids
+
+
+@pytest.mark.django_db
+def test_building_get_issues_list():
+    user = User.objects.create_user(username="test@gmail.com", password="test")
+    building_1 = insert_dummy_building()
+    building_2 = insert_dummy_building()
+    issue_1 = insert_dummy_issue(user, building_1)
+    issue_2 = insert_dummy_issue(user, building_1)
+    issue_3 = insert_dummy_issue(user, building_2)
+
+    client = APIClient()
+    response = client.get(f"/buildings/{building_1.id}/issues/")
+    response_ids = [e["id"] for e in response.data]
+
+    assert issue_1.id in response_ids
+    assert issue_2.id in response_ids
+    assert issue_3.id not in response_ids
+
+
+@pytest.mark.django_db
+def test_building_get_schedule_templates_list():
+    building_1 = insert_dummy_building()
+    building_2 = insert_dummy_building()
+    template_1 = insert_dummy_garbage_collection_schedule_template(building_1)
+    template_2 = insert_dummy_garbage_collection_schedule_template(building_1)
+    template_3 = insert_dummy_garbage_collection_schedule_template(building_2)
+
+    client = APIClient()
+    response = client.get(
+        f"/buildings/{building_1.id}/garbage_collection_schedule_templates/"
+    )
+    response_ids = [e["id"] for e in response.data]
+
+    assert template_1.id in response_ids
+    assert template_2.id in response_ids
+    assert template_3.id not in response_ids
+
+
+@pytest.mark.django_db
+def test_building_get_schedules_list():
+    building_1 = insert_dummy_building()
+    building_2 = insert_dummy_building()
+    schedule_1 = insert_dummy_garbage_collection_schedule(building_1)
+    schedule_2 = insert_dummy_garbage_collection_schedule(building_1)
+    schedule_3 = insert_dummy_garbage_collection_schedule(building_2)
+
+    client = APIClient()
+    response = client.get(f"/buildings/{building_1.id}/garbage_collection_schedules/")
+    response_ids = [e["id"] for e in response.data]
+
+    assert schedule_1.id in response_ids
+    assert schedule_2.id in response_ids
+    assert schedule_3.id not in response_ids
+
+
+@pytest.mark.django_db
+def test_building_get_schedules_by_date_list():
+    building_1 = insert_dummy_building()
+    schedule_1 = insert_dummy_garbage_collection_schedule(
+        building_1, date=datetime.date(2023, 1, 3)
+    )
+    schedule_2 = insert_dummy_garbage_collection_schedule(
+        building_1, date=datetime.date(2023, 1, 3)
+    )
+    schedule_3 = insert_dummy_garbage_collection_schedule(
+        building_1, date=datetime.date(2023, 2, 3)
+    )
+
+    client = APIClient()
+    tmp = schedule_1.for_day
+    print(tmp)
+    response = client.get(
+        f"/buildings/{building_1.id}/for_day/{schedule_1.for_day}/garbage_collection_schedules/"
+    )
+    response_ids = [e["id"] for e in response.data]
+
+    assert schedule_1.id in response_ids
+    assert schedule_2.id in response_ids
+    assert schedule_3.id not in response_ids

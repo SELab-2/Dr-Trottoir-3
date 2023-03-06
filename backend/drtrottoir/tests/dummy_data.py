@@ -1,5 +1,7 @@
+import datetime
 from drtrottoir.models import (
     Building,
+    GarbageCollectionSchedule,
     GarbageCollectionScheduleTemplate,
     GarbageCollectionScheduleTemplateEntry,
     GarbageType,
@@ -91,10 +93,26 @@ def insert_dummy_schedule_definition_building(
     return schedule_definition_building
 
 
-def insert_dummy_garbage_collection_schedule_template() -> (
-    GarbageCollectionScheduleTemplate
-):
-    building = insert_dummy_building()
+def insert_dummy_garbage_collection_schedule(building=None, date=None):
+    if building is None:
+        building = insert_dummy_building()
+    if date is None:
+        date = datetime.date(2000, 1, 1)
+    garbage_type = insert_dummy_garbage_type()
+    schedule = GarbageCollectionSchedule(
+        for_day=date,
+        garbage_type=garbage_type,
+        building=building,
+    )
+    schedule.save()
+    return schedule
+
+
+def insert_dummy_garbage_collection_schedule_template(
+    building=None,
+) -> GarbageCollectionScheduleTemplate:
+    if building is None:
+        building = insert_dummy_building()
     template = GarbageCollectionScheduleTemplate(
         name="dummy template", building=building
     )
@@ -118,10 +136,18 @@ def insert_dummy_garbage_collection_schedule_template_entry() -> (
     return entry
 
 
-def insert_dummy_issue(dummy_user: User) -> Issue:
-    building = insert_dummy_building()
+def insert_dummy_issue(dummy_user=None, dummy_building=None) -> Issue:
+    if dummy_building is None:
+        dummy_building = insert_dummy_building()
 
-    issue = Issue(building=building, message="dummy message", from_user=dummy_user)
+    if dummy_user is None:
+        dummy_user = User.objects.create_user(
+            username="test@gmail.com", password="test"
+        )
+
+    issue = Issue(
+        building=dummy_building, message="dummy message", from_user=dummy_user
+    )
 
     issue.save()
 
