@@ -4,10 +4,14 @@ from .garbage_collection_schedule_template import (
 )
 from .garbage_type import GarbageTypeSerializer
 from .issue import IssueSerializer
+from .schedule_assignment import ScheduleAssignmentSerializer
+from .schedule_work_entry import ScheduleWorkEntrySerializer
 
 __all__ = [
     "GarbageCollectionScheduleTemplateEntrySerializer",
     "GarbageCollectionScheduleTemplateSerializer",
     "GarbageTypeSerializer",
     "IssueSerializer",
+    "ScheduleAssignmentSerializer",
+    "ScheduleWorkEntrySerializer",
 ]
