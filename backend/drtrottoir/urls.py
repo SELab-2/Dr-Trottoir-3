@@ -24,6 +24,8 @@ from drtrottoir.views import (
     IssueDetailApiView,
     IssueNotApprovedApiView,
     IssuesListApiView,
+    ScheduleAssignmentViewSet,
+    ScheduleWorkEntryViewSet,
 )
 
 router = DefaultRouter()
@@ -37,10 +39,20 @@ router.register(
 )
 router.register(r"garbage_type", GarbageTypeViewSet)
 
+router.register(r"schedule_assignments", ScheduleAssignmentViewSet)
+router.register(r"schedule_work_entries", ScheduleWorkEntryViewSet)
+
+
 urlpatterns = [
     path("", include(router.urls)),
     path("admin/", admin.site.urls),
     path("issues/", IssuesListApiView.as_view()),
     path("issues/<int:issue_id>/", IssueDetailApiView.as_view()),
     path("issues/not_approved/", IssueNotApprovedApiView.as_view()),
+    # Schedule assignments uses ViewSet, but this particular url has
+    # two ids, so it's easier to do it like this
+    path(
+        "schedule_assignments/date/<str:assigned_date>/user/<int:user_id>/",
+        ScheduleAssignmentViewSet.retrieve_list_by_date_and_user,
+    ),
 ]

@@ -5,6 +5,10 @@ from drtrottoir.models import (
     GarbageType,
     Issue,
     LocationGroup,
+    ScheduleAssignment,
+    ScheduleDefinition,
+    ScheduleDefinitionBuilding,
+    ScheduleWorkEntry,
     User,
 )
 
@@ -71,3 +75,58 @@ def insert_dummy_issue(dummy_user: User) -> Issue:
     issue.save()
 
     return issue
+
+
+def insert_dummy_user(email: str = "test@gmail.com") -> User:
+    dummy_user: User = User.objects.create_user(
+        username=email, password="test", email=email
+    )
+    return dummy_user
+
+
+# The ScheduleDefinition API is being written by Lander, but I  need
+# it for the ScheduleAssignment API. Replace this when finished.
+# - Pim
+def insert_dummy_schedule_definition() -> ScheduleDefinition:
+    location_group = insert_dummy_location_group()
+    definition = ScheduleDefinition(
+        name="dummy schedule definition name",
+        version=1,
+        location_group=location_group,
+    )
+    definition.save()
+
+    # Populate with some buildings
+    building1 = insert_dummy_building()
+    building2 = insert_dummy_building()
+    ScheduleDefinitionBuilding(
+        schedule_definition=definition, building=building1, position=1
+    ).save()
+    ScheduleDefinitionBuilding(
+        schedule_definition=definition, building=building2, position=2
+    ).save()
+
+    return definition
+
+
+def insert_dummy_schedule_assignment(user: User) -> ScheduleAssignment:
+    schedule_definition: ScheduleDefinition = insert_dummy_schedule_definition()
+    assignment = ScheduleAssignment(
+        assigned_date="2022-01-26", schedule_definition=schedule_definition, user=user
+    )
+    assignment.save()
+    return assignment
+
+
+def insert_dummy_schedule_work_entry(creator: User) -> ScheduleWorkEntry:
+    building = insert_dummy_building()
+    schedule_definition = insert_dummy_schedule_definition()
+    work_entry = ScheduleWorkEntry(
+        creation_timestamp="2022-01-26 06:00",
+        image_path="pics/image.png",
+        creator=creator,
+        building=building,
+        schedule_definition=schedule_definition,
+    )
+    work_entry.save()
+    return work_entry

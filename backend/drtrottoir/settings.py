@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "drtrottoir",
     "rest_framework",
+    "drtrottoir",
 ]
 
 MIDDLEWARE = [
@@ -114,7 +114,7 @@ TIME_ZONE = "UTC"
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
