@@ -78,8 +78,9 @@ class Issue(models.Model):
 
 
 def get_file_path_issue_image(instance, filename):
-    filename = str(uuid.uuid4()) + ".jpg"
-    return os.path.join(f"issue_images/{instance.issue.id}/", filename)
+    extension = filename.split(".")[-1]
+    filename = str(uuid.uuid4()) + "." + extension
+    return os.path.join(f"issue_images/", filename)
 
 
 class IssueImage(models.Model):

@@ -10,7 +10,7 @@ from .dummy_data import insert_dummy_issue, insert_dummy_issue_image, insert_dum
 
 
 @pytest.mark.django_db
-def test_issue_images_api_view_post():
+def test_issue_images_api_view_post_jpg():
     """
     This test inserts an image in the /media/issue_images folder
     and does not remove this file.
@@ -32,6 +32,50 @@ def test_issue_images_api_view_post():
 
     assert response.status_code == 201
 
+
+@pytest.mark.django_db
+def test_issue_images_api_view_post_png():
+    """
+    This test inserts an image in the /media/issue_images folder
+    and does not remove this file.
+    """
+    dummy_user = insert_dummy_user()
+    dummy_issue = insert_dummy_issue(dummy_user)
+    image = Image.new("RGB", (100, 100))
+
+    tmp_file = tempfile.NamedTemporaryFile(suffix=".png")
+    image.save(tmp_file)
+    tmp_file.seek(0)
+
+    client = APIClient()
+    response = client.post(
+        "/issue_images/",
+        {"image": tmp_file, "issue": dummy_issue.id},
+        format="multipart",
+    )
+
+    assert response.status_code == 201
+
+
+@pytest.mark.django_db
+def test_issue_images_api_view_no_file_extension():
+    dummy_user = insert_dummy_user()
+    dummy_issue = insert_dummy_issue(dummy_user)
+    image = Image.new("RGB", (100, 100))
+
+    tmp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
+    image.save(tmp_file)
+    tmp_file.seek(0)
+    tmp_file.name = "temp_file"
+
+    client = APIClient()
+    response = client.post(
+        "/issue_images/",
+        {"image": tmp_file, "issue": dummy_issue.id},
+        format="multipart",
+    )
+
+    assert response.status_code == 400
 
 @pytest.mark.django_db
 def test_issue_images_api_view_get_all_one_present():
