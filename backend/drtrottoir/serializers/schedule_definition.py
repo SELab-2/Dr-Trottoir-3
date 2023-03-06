@@ -1,5 +1,6 @@
-from drtrottoir.models import ScheduleDefinition
 from rest_framework import serializers
+
+from drtrottoir.models import ScheduleDefinition
 
 
 class ScheduleDefinitionSerializer(serializers.ModelSerializer):

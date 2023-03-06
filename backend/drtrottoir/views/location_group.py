@@ -1,12 +1,13 @@
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+
 from drtrottoir.models import LocationGroup
 from drtrottoir.serializers import (
     BuildingSerializer,
     LocationGroupSerializer,
     ScheduleDefinitionSerializer,
 )
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
 
 
 class LocationGroupViewSet(ModelViewSet):

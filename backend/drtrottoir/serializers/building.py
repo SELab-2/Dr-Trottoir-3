@@ -1,5 +1,6 @@
-from drtrottoir.models import Building, ScheduleDefinitionBuilding
 from rest_framework import serializers
+
+from drtrottoir.models import Building, ScheduleDefinitionBuilding
 
 
 class BuildingSerializer(serializers.ModelSerializer):
