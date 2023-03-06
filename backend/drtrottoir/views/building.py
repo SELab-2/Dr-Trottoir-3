@@ -1,3 +1,7 @@
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+
 from drtrottoir.models import (
     Building,
     ScheduleDefinition,
@@ -11,9 +15,6 @@ from drtrottoir.serializers import (
     IssueSerializer,
     ScheduleDefinitionSerializer,
 )
-from rest_framework.decorators import action, api_view
-from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
 
 
 class BuildingListViewSet(ModelViewSet):

@@ -249,7 +249,8 @@ def test_building_get_schedules_by_date_list():
     tmp = schedule_1.for_day
     print(tmp)
     response = client.get(
-        f"/buildings/{building_1.id}/for_day/{schedule_1.for_day}/garbage_collection_schedules/"
+        f"/buildings/{building_1.id}/for_day/{schedule_1.for_day}"
+        f"/garbage_collection_schedules/"
     )
     response_ids = [e["id"] for e in response.data]
 
