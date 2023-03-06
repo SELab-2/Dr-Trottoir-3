@@ -1,4 +1,3 @@
-import json
 import tempfile
 
 import pytest
@@ -7,24 +6,29 @@ from rest_framework.test import APIClient
 
 from drtrottoir.models import User
 
-from .dummy_data import insert_dummy_issue, insert_dummy_user, insert_dummy_issue_image
+from .dummy_data import insert_dummy_issue, insert_dummy_issue_image, insert_dummy_user
 
 
 @pytest.mark.django_db
 def test_file_is_accepted():
     """
-    This test inserts an image in the /media/issue_images folder and does not remove this file.
+    This test inserts an image in the /media/issue_images folder
+    and does not remove this file.
     """
     dummy_user = insert_dummy_user()
     dummy_issue = insert_dummy_issue(dummy_user)
-    image = Image.new('RGB', (100, 100))
+    image = Image.new("RGB", (100, 100))
 
-    tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
+    tmp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
     image.save(tmp_file)
     tmp_file.seek(0)
 
     client = APIClient()
-    response = client.post('/issue_images/', {'image': tmp_file, 'issue': dummy_issue.id}, format='multipart')
+    response = client.post(
+        "/issue_images/",
+        {"image": tmp_file, "issue": dummy_issue.id},
+        format="multipart",
+    )
 
     assert response.status_code == 201
 
@@ -73,7 +77,7 @@ def test_issue_images_detail_api_view_get_valid_one_present():
     response = client.get(f"/issue_images/{dummy_issue_image.id}/")
 
     assert response.status_code == 200
-    assert response.data['id'] == dummy_issue_image.id
+    assert response.data["id"] == dummy_issue_image.id
 
 
 @pytest.mark.django_db
@@ -87,7 +91,7 @@ def test_issue_images_detail_api_view_get_valid_multiple_present():
     response = client.get(f"/issue_images/{dummy_issue_image.id}/")
 
     assert response.status_code == 200
-    assert response.data['id'] == dummy_issue_image.id
+    assert response.data["id"] == dummy_issue_image.id
 
 
 @pytest.mark.django_db
@@ -110,13 +114,6 @@ def test_issue_images_detail_api_view_get_invalid_one_present():
     assert response.status_code == 404
 
 
-
-
-
-
-
-
-
 @pytest.mark.django_db
 def test_issue_images_detail_api_view_delete_valid_one_present():
     dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
@@ -131,7 +128,6 @@ def test_issue_images_detail_api_view_delete_valid_one_present():
     response = client.get(f"/issue_images/{dummy_issue_image.id}/")
 
     assert response.status_code == 404
-
 
 
 @pytest.mark.django_db

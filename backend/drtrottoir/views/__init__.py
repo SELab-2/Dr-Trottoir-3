@@ -4,11 +4,9 @@ from .garbage_collection_schedule_template import (
 )
 from .garbage_type import GarbageTypeViewSet
 from .issue import IssueDetailApiView, IssueNotApprovedApiView, IssuesListApiView
+from .issue_image import IssueImageDetailView, IssueImageView
 from .schedule_assignment_views import ScheduleAssignmentViewSet
 from .schedule_work_entry_views import ScheduleWorkEntryViewSet
-from .issue_image import (
-    IssueImageView, IssueImageDetailView
-)
 
 __all__ = [
     "GarbageCollectionScheduleTemplateEntryViewSet",
@@ -20,5 +18,5 @@ __all__ = [
     "ScheduleAssignmentViewSet",
     "ScheduleWorkEntryViewSet",
     "IssueImageView",
-    "IssueImageDetailView"
+    "IssueImageDetailView",
 ]

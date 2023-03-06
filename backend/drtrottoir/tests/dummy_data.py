@@ -1,7 +1,3 @@
-import tempfile
-
-from PIL import Image
-
 from drtrottoir.models import (
     Building,
     GarbageCollectionScheduleTemplate,
@@ -85,13 +81,7 @@ def insert_dummy_issue(dummy_user: User) -> Issue:
 def insert_dummy_issue_image(dummy_user: User) -> IssueImage:
     issue = insert_dummy_issue(dummy_user)
 
-    image = Image.new('RGB', (100, 100))
-    # tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
-    # image.save(tmp_file)
-    # tmp_file.seek(0)
-
     issue_image = IssueImage(issue=issue, image="test_path.jpg")
-
     issue_image.save()
 
     return issue_image

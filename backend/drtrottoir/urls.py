@@ -24,12 +24,12 @@ from drtrottoir.views import (
     GarbageCollectionScheduleTemplateViewSet,
     GarbageTypeViewSet,
     IssueDetailApiView,
+    IssueImageDetailView,
+    IssueImageView,
     IssueNotApprovedApiView,
     IssuesListApiView,
     ScheduleAssignmentViewSet,
     ScheduleWorkEntryViewSet,
-    IssueImageView,
-    IssueImageDetailView,
 )
 
 router = DefaultRouter()
