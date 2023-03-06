@@ -47,21 +47,6 @@ def insert_dummy_building(
     return building
 
 
-def insert_dummy_schedule_definition(
-    name: str = "dummy schedule definition", verion=0, lg=None
-) -> ScheduleDefinition:
-    if lg is None:
-        lg = insert_dummy_location_group()
-    schedule_definiton = ScheduleDefinition(
-        name=name,
-        version=verion,
-        location_group=lg,
-    )
-
-    schedule_definiton.save()
-    return schedule_definiton
-
-
 def insert_dummy_syndicus(
     user: User,
     buildings=None,
@@ -80,20 +65,6 @@ def insert_dummy_syndicus(
 
     syndicus.save()
     return syndicus
-
-
-def insert_dummy_schedule_definition_building(
-    building=None, sd=None, pos: int = 0
-) -> ScheduleDefinitionBuilding:
-    if building is None:
-        building = insert_dummy_building()
-    if sd is None:
-        sd = insert_dummy_schedule_definition()
-    schedule_definition_building = ScheduleDefinitionBuilding(
-        building=building, schedule_definition=sd, position=pos
-    )
-    schedule_definition_building.save()
-    return schedule_definition_building
 
 
 def insert_dummy_garbage_collection_schedule(building=None, date=None):
@@ -167,24 +138,34 @@ def insert_dummy_user(email: str = "test@gmail.com") -> User:
 # The ScheduleDefinition API is being written by Lander, but I  need
 # it for the ScheduleAssignment API. Replace this when finished.
 # - Pim
-def insert_dummy_schedule_definition() -> ScheduleDefinition:
-    location_group = insert_dummy_location_group()
+def insert_dummy_schedule_definition(
+    buildings=None, name="dummy schedule definition name", lg=None, version=1
+) -> ScheduleDefinition:
+    if lg is None:
+        lg = insert_dummy_location_group()
     definition = ScheduleDefinition(
-        name="dummy schedule definition name",
-        version=1,
-        location_group=location_group,
+        name=name,
+        version=version,
+        location_group=lg,
     )
     definition.save()
 
     # Populate with some buildings
-    building1 = insert_dummy_building()
-    building2 = insert_dummy_building()
-    ScheduleDefinitionBuilding(
-        schedule_definition=definition, building=building1, position=1
-    ).save()
-    ScheduleDefinitionBuilding(
-        schedule_definition=definition, building=building2, position=2
-    ).save()
+    if buildings is None:
+        building1 = insert_dummy_building()
+        building2 = insert_dummy_building()
+        ScheduleDefinitionBuilding(
+            schedule_definition=definition, building=building1, position=1
+        ).save()
+        ScheduleDefinitionBuilding(
+            schedule_definition=definition, building=building2, position=2
+        ).save()
+
+    else:
+        for b in buildings:
+            ScheduleDefinitionBuilding(
+                schedule_definition=definition, building=b, position=1
+            ).save()
 
     return definition
 

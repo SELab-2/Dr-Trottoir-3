@@ -13,7 +13,6 @@ from .dummy_data import (
     insert_dummy_issue,
     insert_dummy_location_group,
     insert_dummy_schedule_definition,
-    insert_dummy_schedule_definition_building,
     insert_dummy_syndicus,
 )
 
@@ -152,19 +151,16 @@ def test_get_buildings_from_syndicus():
 
 @pytest.mark.django_db
 def test_building_get_schedule_definitions_list():
-    dummy_schedule_definition_1 = insert_dummy_schedule_definition()
-    dummy_schedule_definition_2 = insert_dummy_schedule_definition()
-    dummy_schedule_definition_3 = insert_dummy_schedule_definition()
     dummy_building_1 = insert_dummy_building()
     dummy_building_2 = insert_dummy_building()
-    insert_dummy_schedule_definition_building(
-        dummy_building_1, dummy_schedule_definition_1
+    dummy_schedule_definition_1 = insert_dummy_schedule_definition(
+        buildings=[dummy_building_1]
     )
-    insert_dummy_schedule_definition_building(
-        dummy_building_1, dummy_schedule_definition_2
+    dummy_schedule_definition_2 = insert_dummy_schedule_definition(
+        buildings=[dummy_building_1]
     )
-    insert_dummy_schedule_definition_building(
-        dummy_building_2, dummy_schedule_definition_3
+    dummy_schedule_definition_3 = insert_dummy_schedule_definition(
+        buildings=[dummy_building_2]
     )
 
     user = User.objects.create_user(username="test@gmail.com", password="test")

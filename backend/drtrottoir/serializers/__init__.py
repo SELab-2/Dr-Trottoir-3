@@ -7,8 +7,8 @@ from .garbage_collection_schedule_template import (
 from .garbage_type import GarbageTypeSerializer
 from .issue import IssueSerializer
 from .location_group import LocationGroupSerializer
-from .schedule_definition import ScheduleDefinitionSerializer
 from .schedule_assignment import ScheduleAssignmentSerializer
+from .schedule_definition import ScheduleDefinitionSerializer
 from .schedule_work_entry import ScheduleWorkEntrySerializer
 
 __all__ = [
