@@ -1,3 +1,6 @@
+import os
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -74,8 +77,13 @@ class Issue(models.Model):
     )
 
 
+def get_file_path_issue_image(instance, filename):
+    filename = str(uuid.uuid4()) + ".jpg"
+    return os.path.join(f"issue_images/{instance.issue.id}/", filename)
+
+
 class IssueImage(models.Model):
-    image = models.ImageField(upload_to="issue_images")
+    image = models.ImageField(upload_to=get_file_path_issue_image)
     issue = models.ForeignKey(Issue, on_delete=models.RESTRICT, related_name="images")
 
 

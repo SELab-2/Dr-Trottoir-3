@@ -10,7 +10,7 @@ from .dummy_data import insert_dummy_issue, insert_dummy_issue_image, insert_dum
 
 
 @pytest.mark.django_db
-def test_file_is_accepted():
+def test_issue_images_api_view_post():
     """
     This test inserts an image in the /media/issue_images folder
     and does not remove this file.
