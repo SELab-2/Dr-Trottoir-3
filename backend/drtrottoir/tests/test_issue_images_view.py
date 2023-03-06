@@ -77,6 +77,7 @@ def test_issue_images_api_view_no_file_extension():
 
     assert response.status_code == 400
 
+
 @pytest.mark.django_db
 def test_issue_images_api_view_get_all_one_present():
     dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
