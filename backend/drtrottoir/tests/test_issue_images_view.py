@@ -4,8 +4,6 @@ import pytest
 from PIL import Image
 from rest_framework.test import APIClient
 
-from drtrottoir.models import User
-
 from .dummy_data import insert_dummy_issue, insert_dummy_issue_image, insert_dummy_user
 
 
@@ -80,7 +78,7 @@ def test_issue_images_api_view_no_file_extension():
 
 @pytest.mark.django_db
 def test_issue_images_api_view_get_all_one_present():
-    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+    dummy_user = insert_dummy_user()
 
     dummy_issue_image = insert_dummy_issue_image(dummy_user)
 
@@ -96,7 +94,7 @@ def test_issue_images_api_view_get_all_one_present():
 
 @pytest.mark.django_db
 def test_issue_images_api_view_get_all_multiple_present():
-    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+    dummy_user = insert_dummy_user()
 
     dummy_issue_image_1 = insert_dummy_issue_image(dummy_user)
     dummy_issue_image_2 = insert_dummy_issue_image(dummy_user)
@@ -114,7 +112,7 @@ def test_issue_images_api_view_get_all_multiple_present():
 
 @pytest.mark.django_db
 def test_issue_images_detail_api_view_get_valid_one_present():
-    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+    dummy_user = insert_dummy_user()
 
     dummy_issue_image = insert_dummy_issue_image(dummy_user)
 
@@ -127,7 +125,7 @@ def test_issue_images_detail_api_view_get_valid_one_present():
 
 @pytest.mark.django_db
 def test_issue_images_detail_api_view_get_valid_multiple_present():
-    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+    dummy_user = insert_dummy_user()
 
     dummy_issue_image = insert_dummy_issue_image(dummy_user)
     insert_dummy_issue_image(dummy_user)
@@ -149,7 +147,7 @@ def test_issue_images_detail_api_view_get_invalid_none_present():
 
 @pytest.mark.django_db
 def test_issue_images_detail_api_view_get_invalid_one_present():
-    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+    dummy_user = insert_dummy_user()
 
     dummy_issue_image = insert_dummy_issue_image(dummy_user)
 
@@ -161,7 +159,7 @@ def test_issue_images_detail_api_view_get_invalid_one_present():
 
 @pytest.mark.django_db
 def test_issue_images_detail_api_view_delete_valid_one_present():
-    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+    dummy_user = insert_dummy_user()
 
     dummy_issue_image = insert_dummy_issue_image(dummy_user)
 
@@ -177,7 +175,7 @@ def test_issue_images_detail_api_view_delete_valid_one_present():
 
 @pytest.mark.django_db
 def test_issue_images_detail_api_view_delete_valid_multiple_present():
-    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+    dummy_user = insert_dummy_user()
 
     dummy_issue_image_1 = insert_dummy_issue_image(dummy_user)
     dummy_issue_image_2 = insert_dummy_issue_image(dummy_user)
@@ -204,7 +202,7 @@ def test_issue_images_detail_api_view_delete_invalid_none_present():
 
 @pytest.mark.django_db
 def test_issue_images_detail_api_view_delete_invalid_one_present():
-    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+    dummy_user = insert_dummy_user()
 
     dummy_issue_image = insert_dummy_issue_image(dummy_user)
 
