@@ -1,4 +1,3 @@
-import json
 import tempfile
 
 import pytest
@@ -32,7 +31,7 @@ def test_schedule_work_entry_list_get() -> None:
 
 
 @pytest.mark.django_db
-def test_schedule_work_entry_post() -> None:
+def test_schedule_work_entry_post_jpg() -> None:
     creator = insert_dummy_user()
     building = insert_dummy_building()
     schedule_definition = insert_dummy_schedule_definition()
@@ -53,7 +52,9 @@ def test_schedule_work_entry_post() -> None:
 
     client = APIClient()
     response = client.post(
-        "/schedule_work_entries/", data, format="multipart",
+        "/schedule_work_entries/",
+        data,
+        format="multipart",
     )
 
     assert response.status_code == 201
@@ -63,6 +64,37 @@ def test_schedule_work_entry_post() -> None:
     assert response.data["schedule_definition"] == schedule_definition.id
     assert date_equals(response.data["creation_timestamp"], creation_timestamp)
     assert response.data["image"].endswith(".jpg")
+
+
+@pytest.mark.django_db
+def test_schedule_work_entry_post_no_extension() -> None:
+    creator = insert_dummy_user()
+    building = insert_dummy_building()
+    schedule_definition = insert_dummy_schedule_definition()
+    creation_timestamp = "2222-02-02 22:22"
+
+    image = Image.new("RGB", (100, 100))
+    tmp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
+    image.save(tmp_file)
+    tmp_file.seek(0)
+    tmp_file.name = "tmp_file_no_ext"
+
+    data = {
+        "creator": creator.id,
+        "building": building.id,
+        "schedule_definition": schedule_definition.id,
+        "creation_timestamp": creation_timestamp,
+        "image": tmp_file,
+    }
+
+    client = APIClient()
+    response = client.post(
+        "/schedule_work_entries/",
+        data,
+        format="multipart",
+    )
+
+    assert response.status_code == 400
 
 
 @pytest.mark.django_db
