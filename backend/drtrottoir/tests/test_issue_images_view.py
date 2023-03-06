@@ -7,7 +7,7 @@ from rest_framework.test import APIClient
 
 from drtrottoir.models import User
 
-from .dummy_data import insert_dummy_issue, insert_dummy_user
+from .dummy_data import insert_dummy_issue, insert_dummy_user, insert_dummy_issue_image
 
 
 @pytest.mark.django_db
@@ -29,104 +29,151 @@ def test_file_is_accepted():
     assert response.status_code == 201
 
 
-# @pytest.mark.django_db
-# def test_issues_detail_api_view_get_valid_one_present():
-#     """ """
-#     dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
-#
-#     dummy_issue_1 = insert_dummy_issue(dummy_user)
-#
-#     client = APIClient()
-#     response = client.get(f"/issues/{dummy_issue_1.id}/")
-#
-#     assert response.status_code == 200
-#     assert response.data == {
-#         "id": dummy_issue_1.id,
-#         "resolved": dummy_issue_1.resolved,
-#         "message": dummy_issue_1.message,
-#         "building": dummy_issue_1.building.id,
-#         "from_user": dummy_issue_1.from_user.id,
-#         "approval_user": None
-#         if dummy_issue_1.approval_user is None
-#         else dummy_issue_1.approval_user.id,
-#     }
-#
-#
-# @pytest.mark.django_db
-# def test_issues_detail_api_view_get_invalid_id():
-#     """ """
-#     client = APIClient()
-#     response = client.get("/issues/1/")
-#     assert response.status_code == 404
-#
-#
-# @pytest.mark.django_db
-# def test_issues_detail_api_view_patch_valid():
-#     """ """
-#     dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
-#     dummy_issue_1 = insert_dummy_issue(dummy_user)
-#
-#     dummy_issue_data = {"resolved": True, "message": "New message"}
-#
-#     client = APIClient()
-#     response = client.patch(
-#         f"/issues/{dummy_issue_1.id}/",
-#         json.dumps(dummy_issue_data),
-#         content_type="application/json",
-#     )
-#
-#     assert response.status_code == 200
-#     assert response.data == {
-#         "id": dummy_issue_1.id,
-#         "resolved": dummy_issue_data["resolved"],
-#         "message": dummy_issue_data["message"],
-#         "building": dummy_issue_1.building.id,
-#         "from_user": dummy_issue_1.from_user.id,
-#         "approval_user": None
-#         if dummy_issue_1.approval_user is None
-#         else dummy_issue_1.approval_user.id,
-#     }
-#
-#
-# @pytest.mark.django_db
-# def test_issues_detail_api_view_patch_invalid_id():
-#     """ """
-#     dummy_issue_data = {"resolved": True, "message": "New message"}
-#
-#     client = APIClient()
-#     response = client.patch(
-#         "/issues/1/", json.dumps(dummy_issue_data), content_type="application/json"
-#     )
-#
-#     assert response.status_code == 404
-#
-#
-# @pytest.mark.django_db
-# def test_issues_detail_api_view_delete_valid():
-#     """ """
-#     dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
-#     dummy_issue_1 = insert_dummy_issue(dummy_user)
-#
-#     client = APIClient()
-#     response = client.delete(f"/issues/{dummy_issue_1.id}/")
-#
-#     assert response.status_code == 200
-#     assert response.data == {
-#         "id": dummy_issue_1.id,
-#         "resolved": True,
-#         "message": dummy_issue_1.message,
-#         "building": dummy_issue_1.building.id,
-#         "from_user": dummy_issue_1.from_user.id,
-#         "approval_user": None
-#         if dummy_issue_1.approval_user is None
-#         else dummy_issue_1.approval_user.id,
-#     }
-#
-#
-# @pytest.mark.django_db
-# def test_issues_detail_api_view_delete_invalid_id():
-#     """ """
-#     client = APIClient()
-#     response = client.delete("/issues/1/")
-#
-#     assert response.status_code == 404
+@pytest.mark.django_db
+def test_issue_images_api_view_get_all_one_present():
+    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+
+    dummy_issue_image = insert_dummy_issue_image(dummy_user)
+
+    client = APIClient()
+    response = client.get("/issue_images/")
+
+    response_data_ids = [e["id"] for e in response.data]
+
+    assert response.status_code == 200
+    assert dummy_issue_image.id in response_data_ids
+    assert len(response_data_ids) == 1
+
+
+@pytest.mark.django_db
+def test_issue_images_api_view_get_all_multiple_present():
+    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+
+    dummy_issue_image_1 = insert_dummy_issue_image(dummy_user)
+    dummy_issue_image_2 = insert_dummy_issue_image(dummy_user)
+
+    client = APIClient()
+    response = client.get("/issue_images/")
+
+    response_data_ids = [e["id"] for e in response.data]
+
+    assert response.status_code == 200
+    assert dummy_issue_image_1.id in response_data_ids
+    assert dummy_issue_image_2.id in response_data_ids
+    assert len(response_data_ids) == 2
+
+
+@pytest.mark.django_db
+def test_issue_images_detail_api_view_get_valid_one_present():
+    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+
+    dummy_issue_image = insert_dummy_issue_image(dummy_user)
+
+    client = APIClient()
+    response = client.get(f"/issue_images/{dummy_issue_image.id}/")
+
+    assert response.status_code == 200
+    assert response.data['id'] == dummy_issue_image.id
+
+
+@pytest.mark.django_db
+def test_issue_images_detail_api_view_get_valid_multiple_present():
+    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+
+    dummy_issue_image = insert_dummy_issue_image(dummy_user)
+    insert_dummy_issue_image(dummy_user)
+
+    client = APIClient()
+    response = client.get(f"/issue_images/{dummy_issue_image.id}/")
+
+    assert response.status_code == 200
+    assert response.data['id'] == dummy_issue_image.id
+
+
+@pytest.mark.django_db
+def test_issue_images_detail_api_view_get_invalid_none_present():
+    client = APIClient()
+    response = client.get("/issue_images/1/")
+
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_issue_images_detail_api_view_get_invalid_one_present():
+    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+
+    dummy_issue_image = insert_dummy_issue_image(dummy_user)
+
+    client = APIClient()
+    response = client.get(f"/issue_images/{dummy_issue_image.id+1}/")
+
+    assert response.status_code == 404
+
+
+
+
+
+
+
+
+
+@pytest.mark.django_db
+def test_issue_images_detail_api_view_delete_valid_one_present():
+    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+
+    dummy_issue_image = insert_dummy_issue_image(dummy_user)
+
+    client = APIClient()
+    response = client.delete(f"/issue_images/{dummy_issue_image.id}/")
+
+    assert response.status_code == 200
+
+    response = client.get(f"/issue_images/{dummy_issue_image.id}/")
+
+    assert response.status_code == 404
+
+
+
+@pytest.mark.django_db
+def test_issue_images_detail_api_view_delete_valid_multiple_present():
+    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+
+    dummy_issue_image_1 = insert_dummy_issue_image(dummy_user)
+    dummy_issue_image_2 = insert_dummy_issue_image(dummy_user)
+
+    client = APIClient()
+
+    response = client.delete(f"/issue_images/{dummy_issue_image_1.id}/")
+    assert response.status_code == 200
+
+    response = client.get(f"/issue_images/{dummy_issue_image_1.id}/")
+    assert response.status_code == 404
+
+    response = client.get(f"/issue_images/{dummy_issue_image_2.id}/")
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_issue_images_detail_api_view_delete_invalid_none_present():
+    client = APIClient()
+    response = client.delete("/issue_images/1/")
+
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_issue_images_detail_api_view_delete_invalid_one_present():
+    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+
+    dummy_issue_image = insert_dummy_issue_image(dummy_user)
+
+    client = APIClient()
+
+    response = client.delete(f"/issue_images/{dummy_issue_image.id+1}/")
+    assert response.status_code == 404
+
+    response = client.get(f"/issue_images/{dummy_issue_image.id+1}/")
+    assert response.status_code == 404
+
+    response = client.get(f"/issue_images/{dummy_issue_image.id}/")
+    assert response.status_code == 200

@@ -36,10 +36,23 @@ class IssueImageDetailView(APIView):
     The files are not allowed to be deleted, only the entries from the database.
     The uploaded files are accessible at /media/issue_images/{filename}/
     """
-    def delete(self, request, *args, **kwargs):
+    def get(self, request, issue_image_id, *args, **kwargs):
+        try:
+            instance = IssueImage.objects.get(id=issue_image_id)
+            serializer = IssueImageSerializer(instance)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except IssueImage.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, issue_image_id, *args, **kwargs):
         """
 
         """
-        posts = IssueImage.objects.all()
-        serializer = IssueImageSerializer(posts, many=True)
-        return Response(serializer.data)
+        try:
+            instance = IssueImage.objects.get(id=issue_image_id)
+            instance.delete()
+            return Response(status=status.HTTP_200_OK)
+        except IssueImage.DoesNotExist:
+            return Response(
+                status=status.HTTP_404_NOT_FOUND,
+            )
