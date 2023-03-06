@@ -18,12 +18,14 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from drtrottoir.views import (
+    BuildingListViewSet,
     GarbageCollectionScheduleTemplateEntryViewSet,
     GarbageCollectionScheduleTemplateViewSet,
     GarbageTypeViewSet,
     IssueDetailApiView,
     IssueNotApprovedApiView,
     IssuesListApiView,
+    LocationGroupViewSet,
     ScheduleAssignmentViewSet,
     ScheduleWorkEntryViewSet,
 )
@@ -38,6 +40,17 @@ router.register(
     GarbageCollectionScheduleTemplateViewSet,
 )
 router.register(r"garbage_type", GarbageTypeViewSet)
+
+router.register(
+    r"location_groups",
+    LocationGroupViewSet,
+)
+
+router.register(
+    r"buildings",
+    BuildingListViewSet,
+)
+
 
 router.register(r"schedule_assignments", ScheduleAssignmentViewSet)
 router.register(r"schedule_work_entries", ScheduleWorkEntryViewSet)
