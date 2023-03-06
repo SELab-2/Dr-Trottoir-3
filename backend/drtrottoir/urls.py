@@ -21,6 +21,7 @@ from drtrottoir.views import (
     BuildingListViewSet,
     GarbageCollectionScheduleTemplateEntryViewSet,
     GarbageCollectionScheduleTemplateViewSet,
+    GarbageCollectionScheduleViewSet,
     GarbageTypeViewSet,
     IssueDetailApiView,
     IssueNotApprovedApiView,
@@ -40,6 +41,11 @@ router.register(
     GarbageCollectionScheduleTemplateViewSet,
 )
 router.register(r"garbage_type", GarbageTypeViewSet)
+
+router.register(
+    r"garbage_collection_schedules",
+    GarbageCollectionScheduleViewSet,
+)
 
 router.register(
     r"location_groups",
