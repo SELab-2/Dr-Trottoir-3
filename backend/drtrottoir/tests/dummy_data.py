@@ -1,3 +1,5 @@
+import datetime
+
 from drtrottoir.models import (
     Building,
     GarbageCollectionSchedule,
@@ -6,6 +8,11 @@ from drtrottoir.models import (
     GarbageType,
     Issue,
     LocationGroup,
+    ScheduleAssignment,
+    ScheduleDefinition,
+    ScheduleDefinitionBuilding,
+    ScheduleWorkEntry,
+    Syndicus,
     User,
 )
 
@@ -17,19 +24,22 @@ def insert_dummy_garbage_type() -> GarbageType:
     return gt
 
 
-def insert_dummy_location_group() -> LocationGroup:
-    lg = LocationGroup(name="some dummy group")
+def insert_dummy_location_group(name: str = "dummy location group") -> LocationGroup:
+    lg = LocationGroup(name=name)
     lg.save()
 
     return lg
 
 
-def insert_dummy_building() -> Building:
-    lg = insert_dummy_location_group()
+def insert_dummy_building(
+    address: str = "dummy address", path: str = "dummy path", lg=None
+) -> Building:
+    if lg is None:
+        lg = insert_dummy_location_group()
 
     building = Building(
-        address="address",
-        guide_pdf_path="path",
+        address=address,
+        guide_pdf_path=path,
         location_group=lg,
     )
     building.save()
@@ -37,10 +47,46 @@ def insert_dummy_building() -> Building:
     return building
 
 
-def insert_dummy_garbage_collection_schedule_template() -> (
-    GarbageCollectionScheduleTemplate
+def insert_dummy_syndicus(
+    user: User,
+    buildings=None,
 ):
-    building = insert_dummy_building()
+    syndicus = Syndicus(
+        user=user,
+    )
+    syndicus.save()
+
+    if buildings is None:
+        building = insert_dummy_building()
+        syndicus.buildings.add(building)
+    else:
+        for building in buildings:
+            syndicus.buildings.add(building)
+
+    syndicus.save()
+    return syndicus
+
+
+def insert_dummy_garbage_collection_schedule(building=None, date=None):
+    if building is None:
+        building = insert_dummy_building()
+    if date is None:
+        date = datetime.date(2000, 1, 1)
+    garbage_type = insert_dummy_garbage_type()
+    schedule = GarbageCollectionSchedule(
+        for_day=date,
+        garbage_type=garbage_type,
+        building=building,
+    )
+    schedule.save()
+    return schedule
+
+
+def insert_dummy_garbage_collection_schedule_template(
+    building=None,
+) -> GarbageCollectionScheduleTemplate:
+    if building is None:
+        building = insert_dummy_building()
     template = GarbageCollectionScheduleTemplate(
         name="dummy template", building=building
     )
@@ -64,24 +110,84 @@ def insert_dummy_garbage_collection_schedule_template_entry() -> (
     return entry
 
 
-def insert_dummy_garbage_collection_schedule() -> GarbageCollectionSchedule:
-    garbage_type = insert_dummy_garbage_type()
-    building = insert_dummy_building()
-    entry = GarbageCollectionSchedule(
-        for_day="2002-03-17",
-        garbage_type=garbage_type,
-        building=building,
+def insert_dummy_issue(dummy_user=None, dummy_building=None) -> Issue:
+    if dummy_building is None:
+        dummy_building = insert_dummy_building()
+
+    if dummy_user is None:
+        dummy_user = User.objects.create_user(
+            username="test@gmail.com", password="test"
+        )
+
+    issue = Issue(
+        building=dummy_building, message="dummy message", from_user=dummy_user
     )
-    entry.save()
-
-    return entry
-
-
-def insert_dummy_issue(dummy_user: User) -> Issue:
-    building = insert_dummy_building()
-
-    issue = Issue(building=building, message="dummy message", from_user=dummy_user)
 
     issue.save()
 
     return issue
+
+
+def insert_dummy_user(email: str = "test@gmail.com") -> User:
+    dummy_user: User = User.objects.create_user(
+        username=email, password="test", email=email
+    )
+    return dummy_user
+
+
+# The ScheduleDefinition API is being written by Lander, but I  need
+# it for the ScheduleAssignment API. Replace this when finished.
+# - Pim
+def insert_dummy_schedule_definition(
+    buildings=None, name="dummy schedule definition name", lg=None, version=1
+) -> ScheduleDefinition:
+    if lg is None:
+        lg = insert_dummy_location_group()
+    definition = ScheduleDefinition(
+        name=name,
+        version=version,
+        location_group=lg,
+    )
+    definition.save()
+
+    # Populate with some buildings
+    if buildings is None:
+        building1 = insert_dummy_building()
+        building2 = insert_dummy_building()
+        ScheduleDefinitionBuilding(
+            schedule_definition=definition, building=building1, position=1
+        ).save()
+        ScheduleDefinitionBuilding(
+            schedule_definition=definition, building=building2, position=2
+        ).save()
+
+    else:
+        for b in buildings:
+            ScheduleDefinitionBuilding(
+                schedule_definition=definition, building=b, position=1
+            ).save()
+
+    return definition
+
+
+def insert_dummy_schedule_assignment(user: User) -> ScheduleAssignment:
+    schedule_definition: ScheduleDefinition = insert_dummy_schedule_definition()
+    assignment = ScheduleAssignment(
+        assigned_date="2022-01-26", schedule_definition=schedule_definition, user=user
+    )
+    assignment.save()
+    return assignment
+
+
+def insert_dummy_schedule_work_entry(creator: User) -> ScheduleWorkEntry:
+    building = insert_dummy_building()
+    schedule_definition = insert_dummy_schedule_definition()
+    work_entry = ScheduleWorkEntry(
+        creation_timestamp="2022-01-26 06:00",
+        image_path="pics/image.png",
+        creator=creator,
+        building=building,
+        schedule_definition=schedule_definition,
+    )
+    work_entry.save()
+    return work_entry

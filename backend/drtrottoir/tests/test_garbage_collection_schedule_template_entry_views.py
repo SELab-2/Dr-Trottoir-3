@@ -12,17 +12,23 @@ from .dummy_data import (
 )
 
 
-@pytest.mark.django_db
-def test_garbage_collection_schedule_template_entry_get_list():
-    entry_1 = insert_dummy_garbage_collection_schedule_template_entry()
-    entry_2 = insert_dummy_garbage_collection_schedule_template_entry()
-
+def test_garbage_collection_schedule_template_forbidden_methods():
     client = APIClient()
-    response = client.get("/garbage_collection_schedule_template_entries/")
 
-    response_ids = [e["id"] for e in response.data]
-
-    assert sorted(response_ids) == sorted([entry_1.id, entry_2.id])
+    assert (
+        client.get("/garbage_collection_schedule_template_entries/").status_code == 405
+    )
+    assert (
+        client.patch("/garbage_collection_schedule_template_entries/").status_code
+        == 405
+    )
+    assert (
+        client.delete("/garbage_collection_schedule_template_entries/").status_code
+        == 405
+    )
+    assert (
+        client.put("/garbage_collection_schedule_template_entries/").status_code == 405
+    )
 
 
 @pytest.mark.django_db
