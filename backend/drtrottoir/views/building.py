@@ -1,20 +1,13 @@
+from drtrottoir.models import (Building, ScheduleDefinition,
+                               ScheduleDefinitionBuilding, Syndicus)
+from drtrottoir.serializers import (BuildingSerializer,
+                                    GarbageCollectionScheduleSerializer,
+                                    GarbageCollectionScheduleTemplateSerializer,
+                                    IssueSerializer,
+                                    ScheduleDefinitionSerializer)
 from rest_framework.decorators import action, api_view
-
-from drtrottoir.models import (
-    Building,
-    ScheduleDefinitionBuilding,
-    ScheduleDefinition,
-    Syndicus,
-)
-from drtrottoir.serializers import (
-    BuildingSerializer,
-    ScheduleDefinitionSerializer,
-    IssueSerializer,
-    GarbageCollectionScheduleTemplateSerializer,
-    GarbageCollectionScheduleSerializer,
-)
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
 
 class BuildingListViewSet(ModelViewSet):
