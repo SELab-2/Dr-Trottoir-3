@@ -19,7 +19,7 @@ class ScheduleWorkEntryViewSet(
 
     queryset = ScheduleWorkEntry.objects.all()
     serializer_class = ScheduleWorkEntrySerializer
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, )
 
     # Get schedule work entry by user id
     @action(detail=False, methods=["GET"], url_path=r"users/(?P<user_id>\w+)")

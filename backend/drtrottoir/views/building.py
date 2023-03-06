@@ -1,4 +1,5 @@
 from rest_framework.decorators import action
+from rest_framework.parsers import FormParser, MultiPartParser, FileUploadParser
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -22,6 +23,7 @@ class BuildingListViewSet(ModelViewSet):
 
     queryset = Building.objects.all()
     serializer_class = BuildingSerializer
+    parser_classes = (MultiPartParser, FileUploadParser,)
 
     @action(detail=True)
     def schedule_definitions(self, request, pk=None) -> Response:

@@ -8,7 +8,7 @@ from drtrottoir.serializers import IssueImageSerializer
 
 
 class IssueImageView(APIView):
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, )
 
     def get(self, request, *args, **kwargs):
         """ """
