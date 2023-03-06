@@ -4,8 +4,11 @@ import pytest
 from drtrottoir.models import User
 from rest_framework.test import APIClient
 
-from .dummy_data import (insert_dummy_building, insert_dummy_location_group,
-                         insert_dummy_schedule_definition)
+from .dummy_data import (
+    insert_dummy_building,
+    insert_dummy_location_group,
+    insert_dummy_schedule_definition,
+)
 
 
 @pytest.mark.django_db

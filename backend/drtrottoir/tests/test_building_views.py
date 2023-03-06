@@ -5,13 +5,16 @@ import pytest
 from drtrottoir.models import User
 from rest_framework.test import APIClient
 
-from .dummy_data import (insert_dummy_building,
-                         insert_dummy_garbage_collection_schedule,
-                         insert_dummy_garbage_collection_schedule_template,
-                         insert_dummy_issue, insert_dummy_location_group,
-                         insert_dummy_schedule_definition,
-                         insert_dummy_schedule_definition_building,
-                         insert_dummy_syndicus)
+from .dummy_data import (
+    insert_dummy_building,
+    insert_dummy_garbage_collection_schedule,
+    insert_dummy_garbage_collection_schedule_template,
+    insert_dummy_issue,
+    insert_dummy_location_group,
+    insert_dummy_schedule_definition,
+    insert_dummy_schedule_definition_building,
+    insert_dummy_syndicus,
+)
 
 
 @pytest.mark.django_db

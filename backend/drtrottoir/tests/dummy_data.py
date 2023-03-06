@@ -1,11 +1,18 @@
 import datetime
 
-from drtrottoir.models import (Building, GarbageCollectionSchedule,
-                               GarbageCollectionScheduleTemplate,
-                               GarbageCollectionScheduleTemplateEntry,
-                               GarbageType, Issue, LocationGroup,
-                               ScheduleDefinition, ScheduleDefinitionBuilding,
-                               Syndicus, User)
+from drtrottoir.models import (
+    Building,
+    GarbageCollectionSchedule,
+    GarbageCollectionScheduleTemplate,
+    GarbageCollectionScheduleTemplateEntry,
+    GarbageType,
+    Issue,
+    LocationGroup,
+    ScheduleDefinition,
+    ScheduleDefinitionBuilding,
+    Syndicus,
+    User,
+)
 
 
 def insert_dummy_garbage_type() -> GarbageType:
