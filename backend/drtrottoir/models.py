@@ -80,7 +80,7 @@ class Issue(models.Model):
 def get_file_path_issue_image(instance, filename):
     extension = filename.split(".")[-1]
     filename = str(uuid.uuid4()) + "." + extension
-    return os.path.join(f"issue_images/", filename)
+    return os.path.join("issue_images/", filename)
 
 
 class IssueImage(models.Model):
