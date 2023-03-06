@@ -1,6 +1,8 @@
 import json
+import tempfile
 
 import pytest
+from PIL import Image
 from rest_framework.test import APIClient
 
 from drtrottoir.tests.dummy_data import (
@@ -35,19 +37,23 @@ def test_schedule_work_entry_post() -> None:
     building = insert_dummy_building()
     schedule_definition = insert_dummy_schedule_definition()
     creation_timestamp = "2222-02-02 22:22"
-    image_path = "pics/image.jpg"
+
+    image = Image.new("RGB", (100, 100))
+    tmp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
+    image.save(tmp_file)
+    tmp_file.seek(0)
 
     data = {
         "creator": creator.id,
         "building": building.id,
         "schedule_definition": schedule_definition.id,
         "creation_timestamp": creation_timestamp,
-        "image_path": image_path,
+        "image": tmp_file,
     }
 
     client = APIClient()
     response = client.post(
-        "/schedule_work_entries/", json.dumps(data), content_type="application/json"
+        "/schedule_work_entries/", data, format="multipart",
     )
 
     assert response.status_code == 201
@@ -56,7 +62,7 @@ def test_schedule_work_entry_post() -> None:
     assert response.data["building"] == building.id
     assert response.data["schedule_definition"] == schedule_definition.id
     assert date_equals(response.data["creation_timestamp"], creation_timestamp)
-    assert response.data["image_path"] == image_path
+    assert response.data["image"].endswith(".jpg")
 
 
 @pytest.mark.django_db

@@ -194,7 +194,7 @@ def insert_dummy_schedule_work_entry(creator: User) -> ScheduleWorkEntry:
     schedule_definition = insert_dummy_schedule_definition()
     work_entry = ScheduleWorkEntry(
         creation_timestamp="2022-01-26 06:00",
-        image_path="pics/image.png",
+        image="image.png",
         creator=creator,
         building=building,
         schedule_definition=schedule_definition,
