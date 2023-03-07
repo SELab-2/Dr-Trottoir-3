@@ -14,8 +14,64 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
+
+from drtrottoir.views import (
+    BuildingListViewSet,
+    GarbageCollectionScheduleTemplateEntryViewSet,
+    GarbageCollectionScheduleTemplateViewSet,
+    GarbageCollectionScheduleViewSet,
+    GarbageTypeViewSet,
+    IssueDetailApiView,
+    IssueNotApprovedApiView,
+    IssuesListApiView,
+    LocationGroupViewSet,
+    ScheduleAssignmentViewSet,
+    ScheduleWorkEntryViewSet,
+)
+
+router = DefaultRouter()
+router.register(
+    r"garbage_collection_schedule_template_entries",
+    GarbageCollectionScheduleTemplateEntryViewSet,
+)
+router.register(
+    r"garbage_collection_schedule_templates",
+    GarbageCollectionScheduleTemplateViewSet,
+)
+router.register(r"garbage_type", GarbageTypeViewSet)
+
+router.register(
+    r"garbage_collection_schedules",
+    GarbageCollectionScheduleViewSet,
+)
+
+router.register(
+    r"location_groups",
+    LocationGroupViewSet,
+)
+
+router.register(
+    r"buildings",
+    BuildingListViewSet,
+)
+
+
+router.register(r"schedule_assignments", ScheduleAssignmentViewSet)
+router.register(r"schedule_work_entries", ScheduleWorkEntryViewSet)
+
 
 urlpatterns = [
+    path("", include(router.urls)),
     path("admin/", admin.site.urls),
+    path("issues/", IssuesListApiView.as_view()),
+    path("issues/<int:issue_id>/", IssueDetailApiView.as_view()),
+    path("issues/not_approved/", IssueNotApprovedApiView.as_view()),
+    # Schedule assignments uses ViewSet, but this particular url has
+    # two ids, so it's easier to do it like this
+    path(
+        "schedule_assignments/date/<str:assigned_date>/user/<int:user_id>/",
+        ScheduleAssignmentViewSet.retrieve_list_by_date_and_user,
+    ),
 ]
