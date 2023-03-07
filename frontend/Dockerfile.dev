@@ -5,7 +5,7 @@ FROM node:alpine as builder
 WORKDIR /frontend
 
 # copy the json file first
-COPY --chown=node:node ./package.json /frontend
+COPY --chown=node:node ./package.json .
 #COPY package-lock.json ./
 
 # install npm dependencies
@@ -21,4 +21,4 @@ USER node
 
 
 # build the folder
-CMD [ "npm", "run", "start" ]
+#CMD [ "npm", "run", "start" ]

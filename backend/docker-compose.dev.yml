@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  web:
+  backend:
     build:
       context: ./
       dockerfile: Dockerfile.dev
@@ -12,6 +12,11 @@ services:
       - "8000:8000"
 #    env_file:
 #      - ./.env.dev
+    environment:
+      - POSTGRES_USER=hello_django
+      - POSTGRES_PASSWORD=hello_django
+      - POSTGRES_DB=hello_django_dev
+      - POSTGRES_HOST=db
     depends_on:
       - db
   db:
