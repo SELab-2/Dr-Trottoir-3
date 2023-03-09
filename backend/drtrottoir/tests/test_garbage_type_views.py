@@ -11,17 +11,19 @@ def test_garbage_type_post():
     dummy_garbage_type_data = {"name": "dummy garbage type"}
 
     client = APIClient()
-    student = insert_dummy_student(is_super_student=False)
+    student = insert_dummy_student(is_super_student=True)
+
     client.force_login(student.user)
 
-    response = client.post(
+    client.force_login(student.user)
+    response_succes = client.post(
         "/garbage_type/",
         json.dumps(dummy_garbage_type_data),
         content_type="application/json",
     )
 
-    assert response.data == {"id": 1, "name": "dummy garbage type"}
-    assert response.status_code == 201
+    assert response_succes.data == {"id": 1, "name": "dummy garbage type"}
+    assert response_succes.status_code == 201
 
 
 @pytest.mark.django_db
@@ -57,17 +59,22 @@ def test_garbage_type_get_detail():
 
 
 @pytest.mark.django_db
-def test_garbage_type_no_auth():
+def test_garbage_type_no_post_auth():
     dummy_garbage_type_data = {"name": "dummy garbage type"}
 
     client = APIClient()
 
-    response_post = client.post(
+    response = client.post(
         "/garbage_type/",
         json.dumps(dummy_garbage_type_data),
         content_type="application/json",
     )
-    response_get = client.get("/garbage_type/")
 
-    assert response_post.status_code == 403
-    assert response_get.status_code == 403
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_garbage_type_no_get_auth():
+    client = APIClient()
+
+    assert client.get("/garbage_type/").status_code == 403
