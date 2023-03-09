@@ -72,16 +72,11 @@ def test_buildings_patch_with_file():
     client = APIClient()
     user = User.objects.create_user(username="test@gmail.com", password="test")
 
-    # dummy_location_group = insert_dummy_location_group()
-
     tmp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
     tmp_file.write(b'Hello world!')
     tmp_file.seek(0)
 
     data = {
-        # "address": "address 1",
-        # "is_active": True,
-        # "location_group": dummy_location_group.id,
         "pdf_guide": tmp_file,
     }
     client.force_login(user)
@@ -96,28 +91,6 @@ def test_buildings_patch_with_file():
     assert response.data['is_active'] == dummy_building.is_active
     assert response.data['pdf_guide'].endswith(".pdf")
     assert response.status_code == 200
-
-# @pytest.mark.django_db
-# def test_buildings_post_detail():
-#     dummy_building_1 = insert_dummy_building()
-#
-#     client = APIClient()
-#     user = User.objects.create_user(username="test@gmail.com", password="test")
-#
-#     tmp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
-#     tmp_file.write(b'Hello world!')
-#     tmp_file.seek(0)
-#
-#     data = {
-#         "file": tmp_file,
-#     }
-#     client.force_login(user)
-#     response = client.put(
-#         f"/buildings/upload/{dummy_building_1.id}/", data
-#     )
-#
-#     assert response.status_code == 201
-
 
 @pytest.mark.django_db
 def test_building_get_detail():

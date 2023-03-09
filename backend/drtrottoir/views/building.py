@@ -1,8 +1,5 @@
-from rest_framework import status
-from rest_framework.decorators import action, parser_classes
-from rest_framework.parsers import FormParser, MultiPartParser, FileUploadParser
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from drtrottoir.models import (
@@ -18,15 +15,12 @@ from drtrottoir.serializers import (
     IssueSerializer,
     ScheduleDefinitionSerializer,
 )
-from drtrottoir.serializers.pdf_upload import PdfUploadSerializer
-
 
 class BuildingListViewSet(ModelViewSet):
     permission_classes = []
 
     queryset = Building.objects.all()
     serializer_class = BuildingSerializer
-    # parser_classes = (MultiPartParser, )
 
     @action(detail=True)
     def schedule_definitions(self, request, pk=None) -> Response:
@@ -79,33 +73,3 @@ class BuildingListViewSet(ModelViewSet):
 
         serializer = GarbageCollectionScheduleSerializer(schedules, many=True)
         return Response(serializer.data)
-
-
-class PostDetailImageAPIView(APIView):
-    # parser_classes = (FileUploadParser, )
-    parser_class = (FileUploadParser,)
-
-
-    def put(self, request, building_id):
-        # file_obj = request.data['file']
-        # print(f"FILE: {file_obj}")
-        # print(building_id)
-        # return Response(status=status.HTTP_200_OK)
-
-        # serializer = PdfUploadSerializer(data=request.data)
-        # if serializer.is_valid():
-        #     return Response(status=status.HTTP_400_BAD_REQUEST)
-        file = request.FILES['file']
-        print(file)
-        instance = Building.objects.get(id=building_id)
-        data = {
-            'pdf_guide': file
-        }
-        serializer = BuildingSerializer(instance, data=data, partial=True)
-        if serializer.is_valid():
-            print("BADBAD")
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        serializer.save()
-        # print(file)
-        return Response(status=status.HTTP_201_CREATED)
-

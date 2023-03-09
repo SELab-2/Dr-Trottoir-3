@@ -1,4 +1,4 @@
-from .building import BuildingListViewSet, PostDetailImageAPIView
+from .building import BuildingListViewSet
 from .garbage_collection_schedule import GarbageCollectionScheduleViewSet
 from .garbage_collection_schedule_template import (
     GarbageCollectionScheduleTemplateEntryViewSet,
@@ -25,5 +25,4 @@ __all__ = [
     "ScheduleWorkEntryViewSet",
     "IssueImageView",
     "IssueImageDetailView",
-    "PostDetailImageAPIView",
 ]
