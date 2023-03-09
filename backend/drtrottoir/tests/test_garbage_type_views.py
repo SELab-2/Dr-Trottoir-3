@@ -3,7 +3,7 @@ import json
 import pytest
 from rest_framework.test import APIClient
 
-from .dummy_data import insert_dummy_garbage_type
+from .dummy_data import insert_dummy_garbage_type, insert_dummy_student
 
 
 @pytest.mark.django_db
@@ -11,6 +11,9 @@ def test_garbage_type_post():
     dummy_garbage_type_data = {"name": "dummy garbage type"}
 
     client = APIClient()
+    student = insert_dummy_student(is_super_student=False)
+    client.force_login(student.user)
+
     response = client.post(
         "/garbage_type/",
         json.dumps(dummy_garbage_type_data),
@@ -27,6 +30,8 @@ def test_garbage_type_api_view_get():
     dummy_entry_2 = insert_dummy_garbage_type()
 
     client = APIClient()
+    student = insert_dummy_student(is_super_student=False)
+    client.force_login(student.user)
 
     response = client.get("/garbage_type/")
     response_ids = [e["id"] for e in response.data]
@@ -36,13 +41,33 @@ def test_garbage_type_api_view_get():
 
 
 @pytest.mark.django_db
-def test_garbage_collection_schedule_template_entry_get_detail():
+def test_garbage_type_get_detail():
     dummy_entry = insert_dummy_garbage_type()
 
     client = APIClient()
+    student = insert_dummy_student(is_super_student=False)
+    client.force_login(student.user)
+
     response = client.get(f"/garbage_type/{dummy_entry.id}/")
 
     assert (
         response.data["id"] == dummy_entry.id
         and response.data["name"] == dummy_entry.name
     )
+
+
+@pytest.mark.django_db
+def test_garbage_type_no_auth():
+    dummy_garbage_type_data = {"name": "dummy garbage type"}
+
+    client = APIClient()
+
+    response_post = client.post(
+        "/garbage_type/",
+        json.dumps(dummy_garbage_type_data),
+        content_type="application/json",
+    )
+    response_get = client.get("/garbage_type/")
+
+    assert response_post.status_code == 403
+    assert response_get.status_code == 403
