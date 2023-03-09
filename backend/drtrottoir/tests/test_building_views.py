@@ -52,8 +52,6 @@ def test_buildings_post():
     client.force_login(user)
     response = client.post("/buildings/", data)
 
-    print(response.data)
-
     assert response.data["id"] == 1
     assert response.data["address"] == "address 1"
     assert response.data["is_active"]
@@ -78,8 +76,6 @@ def test_buildings_patch_with_file():
     }
     client.force_login(user)
     response = client.patch(f"/buildings/{dummy_building.id}/", data)
-
-    print(response.data)
 
     assert response.data["id"] == dummy_building.id
     assert response.data["address"] == dummy_building.address
@@ -268,8 +264,6 @@ def test_building_get_schedules_by_date_list():
     )
 
     client = APIClient()
-    tmp = schedule_1.for_day
-    print(tmp)
     response = client.get(
         f"/buildings/{building_1.id}/for_day/{schedule_1.for_day}"
         f"/garbage_collection_schedules/"
