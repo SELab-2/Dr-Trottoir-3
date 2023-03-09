@@ -13,7 +13,7 @@ from .dummy_data import (
     insert_dummy_issue,
     insert_dummy_location_group,
     insert_dummy_schedule_definition,
-    insert_dummy_syndicus,
+    insert_dummy_syndicus, insert_dummy_user,
 )
 
 
@@ -65,7 +65,7 @@ def test_buildings_patch_with_file():
     dummy_building = insert_dummy_building()
 
     client = APIClient()
-    user = User.objects.create_user(username="test@gmail.com", password="test")
+    user = insert_dummy_user()
 
     tmp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
     tmp_file.write(b"Hello world!")
@@ -115,7 +115,7 @@ def test_building_patch_detail():
         "location_group": dummy_location_group.id,
     }
 
-    user = User.objects.create_user(username="test@gmail.com", password="test")
+    user = insert_dummy_user()
     client = APIClient()
     client.force_login(user)
     response = client.patch(f"/buildings/{dummy_building.id}/", data)
@@ -131,7 +131,7 @@ def test_building_patch_detail():
 @pytest.mark.django_db
 def test_building_delete_detail():
     dummy_building = insert_dummy_building()
-    user = User.objects.create_user(username="test@gmail.com", password="test")
+    user = insert_dummy_user()
     client = APIClient()
     client.force_login(user)
     response = client.get(f"/buildings/{dummy_building.id}/")
@@ -155,7 +155,7 @@ def test_get_buildings_from_syndicus():
     dummy_building_2 = insert_dummy_building()
     dummy_building_3 = insert_dummy_building()
 
-    user = User.objects.create_user(username="test@gmail.com", password="test")
+    user = insert_dummy_user()
     client = APIClient()
     client.force_login(user)
     dummy_syndicus_1 = insert_dummy_syndicus(
@@ -184,7 +184,7 @@ def test_building_get_schedule_definitions_list():
         buildings=[dummy_building_2]
     )
 
-    user = User.objects.create_user(username="test@gmail.com", password="test")
+    user = insert_dummy_user()
     client = APIClient()
     client.force_login(user)
     response = client.get(f"/buildings/{dummy_building_1.id}/schedule_definitions/")
@@ -198,7 +198,7 @@ def test_building_get_schedule_definitions_list():
 
 @pytest.mark.django_db
 def test_building_get_issues_list():
-    user = User.objects.create_user(username="test@gmail.com", password="test")
+    user = insert_dummy_user()
     building_1 = insert_dummy_building()
     building_2 = insert_dummy_building()
     issue_1 = insert_dummy_issue(user, building_1)
