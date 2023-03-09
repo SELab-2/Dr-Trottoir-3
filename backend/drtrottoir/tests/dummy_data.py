@@ -7,6 +7,7 @@ from drtrottoir.models import (
     GarbageCollectionScheduleTemplateEntry,
     GarbageType,
     Issue,
+    IssueImage,
     LocationGroup,
     ScheduleAssignment,
     ScheduleDefinition,
@@ -127,6 +128,15 @@ def insert_dummy_issue(dummy_user=None, dummy_building=None) -> Issue:
     issue.save()
 
     return issue
+
+
+def insert_dummy_issue_image(dummy_user: User) -> IssueImage:
+    issue = insert_dummy_issue(dummy_user)
+
+    issue_image = IssueImage(issue=issue, image="test_path.jpg")
+    issue_image.save()
+
+    return issue_image
 
 
 def insert_dummy_user(email: str = "test@gmail.com") -> User:

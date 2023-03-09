@@ -6,6 +6,7 @@ from .garbage_collection_schedule_template import (
 )
 from .garbage_type import GarbageTypeSerializer
 from .issue import IssueSerializer
+from .issue_image import IssueImageSerializer
 from .location_group import LocationGroupSerializer
 from .schedule_assignment import ScheduleAssignmentSerializer
 from .schedule_definition import ScheduleDefinitionSerializer
@@ -21,6 +22,7 @@ __all__ = [
     "IssueSerializer",
     "ScheduleAssignmentSerializer",
     "ScheduleWorkEntrySerializer",
+    "IssueImageSerializer",
     "ScheduleDefinitionSerializer",
     "ScheduleDefinitionBuildingSerializer",
 ]
