@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -8,7 +8,7 @@ from drtrottoir.serializers import IssueImageSerializer
 
 
 class IssueImageView(APIView):
-    parser_classes = (MultiPartParser, )
+    parser_classes = (MultiPartParser,)
 
     def get(self, request, *args, **kwargs):
         """ """

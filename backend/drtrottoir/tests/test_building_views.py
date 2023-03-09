@@ -1,5 +1,4 @@
 import datetime
-import json
 import tempfile
 
 import pytest
@@ -41,7 +40,7 @@ def test_buildings_post():
     dummy_location_group = insert_dummy_location_group()
 
     tmp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
-    tmp_file.write(b'Hello world!')
+    tmp_file.write(b"Hello world!")
     tmp_file.seek(0)
 
     data = {
@@ -51,17 +50,15 @@ def test_buildings_post():
         "pdf_guide": tmp_file,
     }
     client.force_login(user)
-    response = client.post(
-        "/buildings/", data
-    )
+    response = client.post("/buildings/", data)
 
     print(response.data)
 
-    assert response.data['id'] == 1
-    assert response.data['address'] == "address 1"
-    assert response.data['is_active'] == True
-    assert response.data['location_group'] == dummy_location_group.id
-    assert response.data['pdf_guide'].endswith(".pdf")
+    assert response.data["id"] == 1
+    assert response.data["address"] == "address 1"
+    assert response.data["is_active"]
+    assert response.data["location_group"] == dummy_location_group.id
+    assert response.data["pdf_guide"].endswith(".pdf")
     assert response.status_code == 201
 
 
@@ -73,24 +70,23 @@ def test_buildings_patch_with_file():
     user = User.objects.create_user(username="test@gmail.com", password="test")
 
     tmp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
-    tmp_file.write(b'Hello world!')
+    tmp_file.write(b"Hello world!")
     tmp_file.seek(0)
 
     data = {
         "pdf_guide": tmp_file,
     }
     client.force_login(user)
-    response = client.patch(
-        f"/buildings/{dummy_building.id}/", data
-    )
+    response = client.patch(f"/buildings/{dummy_building.id}/", data)
 
     print(response.data)
 
-    assert response.data['id'] == dummy_building.id
-    assert response.data['address'] == dummy_building.address
-    assert response.data['is_active'] == dummy_building.is_active
-    assert response.data['pdf_guide'].endswith(".pdf")
+    assert response.data["id"] == dummy_building.id
+    assert response.data["address"] == dummy_building.address
+    assert response.data["is_active"] == dummy_building.is_active
+    assert response.data["pdf_guide"].endswith(".pdf")
     assert response.status_code == 200
+
 
 @pytest.mark.django_db
 def test_building_get_detail():
@@ -113,7 +109,7 @@ def test_building_patch_detail():
     dummy_location_group = insert_dummy_location_group()
 
     tmp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
-    tmp_file.write(b'Hello world!')
+    tmp_file.write(b"Hello world!")
     tmp_file.seek(0)
 
     data = {
@@ -126,16 +122,13 @@ def test_building_patch_detail():
     user = User.objects.create_user(username="test@gmail.com", password="test")
     client = APIClient()
     client.force_login(user)
-    response = client.patch(
-        f"/buildings/{dummy_building.id}/",
-        data
-    )
+    response = client.patch(f"/buildings/{dummy_building.id}/", data)
 
-    assert response.data['id'] == 1
-    assert response.data['address'] == 'address 1'
-    assert response.data['is_active']
-    assert response.data['location_group'] == dummy_location_group.id
-    assert response.data['pdf_guide'].endswith('.pdf')
+    assert response.data["id"] == 1
+    assert response.data["address"] == "address 1"
+    assert response.data["is_active"]
+    assert response.data["location_group"] == dummy_location_group.id
+    assert response.data["pdf_guide"].endswith(".pdf")
     assert response.status_code == 200
 
 

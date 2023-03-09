@@ -16,6 +16,7 @@ from drtrottoir.serializers import (
     ScheduleDefinitionSerializer,
 )
 
+
 class BuildingListViewSet(ModelViewSet):
     permission_classes = []
 

@@ -33,9 +33,7 @@ def insert_dummy_location_group(name: str = "dummy location group") -> LocationG
     return lg
 
 
-def insert_dummy_building(
-    address: str = "dummy address", lg=None
-) -> Building:
+def insert_dummy_building(address: str = "dummy address", lg=None) -> Building:
     if lg is None:
         lg = insert_dummy_location_group()
 
