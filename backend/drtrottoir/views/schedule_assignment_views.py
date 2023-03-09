@@ -1,11 +1,38 @@
-from rest_framework import mixins, status, viewsets
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import api_view
+from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from drtrottoir.models import ScheduleAssignment
+from drtrottoir import models
+from drtrottoir.models import ScheduleAssignment, Student
+from drtrottoir.permissions import IsSuperStudentOrAdmin
 from drtrottoir.serializers import ScheduleAssignmentSerializer
 
 # TODO permissions
+
+
+class ScheduleAssignmentPermission(permissions.BasePermission):
+    """
+    ScheduleAssignment has a special case for accessing a schedule
+    """
+
+    def has_permission(self, request: Request, view: APIView) -> bool:
+        if request.method == "GET":
+            if isinstance(request.user, models.User):
+                student = request.user.student
+            else:
+                return False
+            schedule_assignment_id = int(view.kwargs["pk"])
+            try:
+                schedule_assignment = ScheduleAssignment.objects.get(
+                    pk=schedule_assignment_id
+                )
+            except ScheduleAssignment.DoesNotExist:
+                return False
+            return schedule_assignment.user.id == student.user.id
+        return False
 
 
 class ScheduleAssignmentViewSet(
@@ -15,10 +42,13 @@ class ScheduleAssignmentViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
-    permission_classes = []
-
     queryset = ScheduleAssignment.objects.all()
     serializer_class = ScheduleAssignmentSerializer
+
+    permission_classes = [
+        (ScheduleAssignmentPermission | IsSuperStudentOrAdmin),
+        permissions.IsAuthenticated,
+    ]
 
     def update(self, request, *args, **kwargs):
         """
@@ -48,6 +78,29 @@ class ScheduleAssignmentViewSet(
     @staticmethod
     @api_view(["GET"])
     def retrieve_list_by_date_and_user(request, assigned_date, user_id):
+        # Permissions:
+        # A user is allowed to access the resources if:
+        # - They are an admin or a super student
+        # - They are a student and the student's user.id is the same as user_id
+
+        # Check if admin or super student
+
+        user_is_admin_or_super_student = IsSuperStudentOrAdmin().has_object_permission(
+            request, ScheduleAssignment, None
+        )
+        try:
+            request_id = request.user.id
+            request_student = Student.objects.get(user=request_id)
+            user_is_student_and_id_matches = request_student.id == user_id
+        except ObjectDoesNotExist:
+            user_is_student_and_id_matches = False
+        except AttributeError:
+            user_is_student_and_id_matches = False
+
+        if not (user_is_admin_or_super_student or user_is_student_and_id_matches):
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # If permission is granted, return the objects
         schedule_assignments = ScheduleAssignment.objects.filter(
             assigned_date=assigned_date, user_id=user_id
         )

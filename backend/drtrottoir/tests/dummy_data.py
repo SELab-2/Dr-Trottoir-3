@@ -12,6 +12,7 @@ from drtrottoir.models import (
     ScheduleDefinition,
     ScheduleDefinitionBuilding,
     ScheduleWorkEntry,
+    Student,
     Syndicus,
     User,
 )
@@ -135,6 +136,23 @@ def insert_dummy_user(email: str = "test@gmail.com") -> User:
     return dummy_user
 
 
+# These are added temporarily until we have a proper insert_student function
+def insert_dummy_super_student(email: str = "superstudent@gmail.com") -> Student:
+    user = insert_dummy_user(email)
+    lg = insert_dummy_location_group()
+    student = Student(user=user, location_group=lg, is_super_student=True)
+    student.save()
+    return student
+
+
+def insert_dummy_student(email: str = "student@gmail.com") -> Student:
+    user = insert_dummy_user(email)
+    lg = insert_dummy_location_group()
+    student = Student(user=user, location_group=lg, is_super_student=False)
+    student.save()
+    return student
+
+
 # The ScheduleDefinition API is being written by Lander, but I  need
 # it for the ScheduleAssignment API. Replace this when finished.
 # - Pim
@@ -170,8 +188,11 @@ def insert_dummy_schedule_definition(
     return definition
 
 
-def insert_dummy_schedule_assignment(user: User) -> ScheduleAssignment:
-    schedule_definition: ScheduleDefinition = insert_dummy_schedule_definition()
+def insert_dummy_schedule_assignment(
+    user: User, schedule_definition: ScheduleDefinition = None
+) -> ScheduleAssignment:
+    if schedule_definition is None:
+        schedule_definition: ScheduleDefinition = insert_dummy_schedule_definition()
     assignment = ScheduleAssignment(
         assigned_date="2022-01-26", schedule_definition=schedule_definition, user=user
     )

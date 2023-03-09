@@ -7,7 +7,10 @@ from drtrottoir.tests.dummy_data import (
     insert_dummy_building,
     insert_dummy_schedule_definition,
     insert_dummy_schedule_work_entry,
+    insert_dummy_student,
+    insert_dummy_super_student,
     insert_dummy_user,
+    insert_dummy_schedule_assignment,
 )
 from drtrottoir.tests.util import date_equals
 
@@ -20,6 +23,9 @@ def test_schedule_work_entry_list_get() -> None:
     work_entry_nonexistent = work_entry1 + work_entry2 + 3
 
     client = APIClient()
+    super_student = insert_dummy_super_student()
+    client.force_login(super_student.user)
+
     response = client.get("/schedule_work_entries/")
     response_ids = [data["id"] for data in response.data]
 
@@ -30,15 +36,19 @@ def test_schedule_work_entry_list_get() -> None:
 
 
 @pytest.mark.django_db
-def test_schedule_work_entry_post() -> None:
-    creator = insert_dummy_user()
+def test_schedule_work_entry_post_creator() -> None:
+    creator = insert_dummy_student()
     building = insert_dummy_building()
-    schedule_definition = insert_dummy_schedule_definition()
+    schedule_definition = insert_dummy_schedule_definition(buildings=[building])
     creation_timestamp = "2222-02-02 22:22"
     image_path = "pics/image.jpg"
 
+    schedule_assignment = insert_dummy_schedule_assignment(
+        creator.user, schedule_definition
+    )
+
     data = {
-        "creator": creator.id,
+        "creator": creator.user.id,
         "building": building.id,
         "schedule_definition": schedule_definition.id,
         "creation_timestamp": creation_timestamp,
@@ -46,17 +56,50 @@ def test_schedule_work_entry_post() -> None:
     }
 
     client = APIClient()
+    client.force_login(creator.user)
+
     response = client.post(
         "/schedule_work_entries/", json.dumps(data), content_type="application/json"
     )
 
     assert response.status_code == 201
     assert response.data["id"] > 0
-    assert response.data["creator"] == creator.id
+    assert response.data["creator"] == creator.user.id
     assert response.data["building"] == building.id
     assert response.data["schedule_definition"] == schedule_definition.id
     assert date_equals(response.data["creation_timestamp"], creation_timestamp)
     assert response.data["image_path"] == image_path
+
+
+@pytest.mark.django_db
+def test_schedule_work_entry_post_other() -> None:
+    creator = insert_dummy_student()
+    building = insert_dummy_building()
+    schedule_definition = insert_dummy_schedule_definition(buildings=[building])
+    creation_timestamp = "2222-02-02 22:22"
+    image_path = "pics/image.jpg"
+
+    schedule_assignment = insert_dummy_schedule_assignment(
+        creator.user, schedule_definition
+    )
+
+    data = {
+        "creator": creator.user.id,
+        "building": building.id,
+        "schedule_definition": schedule_definition.id,
+        "creation_timestamp": creation_timestamp,
+        "image_path": image_path,
+    }
+
+    client = APIClient()
+    other_student = insert_dummy_student("other@gmail.com")
+    client.force_login(other_student.user)
+
+    response = client.post(
+        "/schedule_work_entries/", json.dumps(data), content_type="application/json"
+    )
+
+    assert response.status_code == 403
 
 
 @pytest.mark.django_db
@@ -65,6 +108,9 @@ def test_schedule_work_entry_get() -> None:
     work_entry = insert_dummy_schedule_work_entry(user)
 
     client = APIClient()
+    super_student = insert_dummy_super_student()
+    client.force_login(super_student.user)
+
     response = client.get(f"/schedule_work_entries/{work_entry.id}/")
 
     assert response.status_code == 200
@@ -79,12 +125,38 @@ def test_schedule_work_entry_get() -> None:
 
 @pytest.mark.django_db
 def test_schedule_work_entry_get_by_user_id() -> None:
-    user = insert_dummy_user()
-    work_entry = insert_dummy_schedule_work_entry(user)
+    student = insert_dummy_student()
+    work_entry = insert_dummy_schedule_work_entry(student.user)
 
     client = APIClient()
-    response = client.get(f"/schedule_work_entries/users/{user.id}/")
+    client.force_login(student.user)
+
+    response = client.get(f"/schedule_work_entries/users/{student.user.id}/")
     response_ids = [data["id"] for data in response.data]
 
     assert response.status_code == 200
     assert work_entry.id in response_ids
+
+
+@pytest.mark.django_db
+def test_schedule_work_entry_get_by_user_other_student() -> None:
+    student = insert_dummy_student()
+    insert_dummy_schedule_work_entry(student.user)
+
+    client = APIClient()
+    other_student = insert_dummy_student("other@gmail.com")
+    client.force_login(other_student.user)
+
+    response = client.get(f"/schedule_work_entries/users/{student.user.id}/")
+
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_schedule_work_entry_get_by_user_anonymous() -> None:
+    student = insert_dummy_student()
+    client = APIClient()
+    # No login here
+    response = client.get(f"/schedule_work_entries/users/{student.user.id}/")
+
+    assert response.status_code == 403

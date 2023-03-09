@@ -7,9 +7,13 @@ from drtrottoir.models import ScheduleAssignment
 from drtrottoir.tests.dummy_data import (
     insert_dummy_schedule_assignment,
     insert_dummy_schedule_definition,
+    insert_dummy_student,
+    insert_dummy_super_student,
     insert_dummy_user,
 )
 from drtrottoir.tests.util import date_equals
+
+# TODO proper authentication tests
 
 
 @pytest.mark.django_db
@@ -18,6 +22,9 @@ def test_schedule_assignment_get_by_id() -> None:
     assignment: ScheduleAssignment = insert_dummy_schedule_assignment(user)
 
     client = APIClient()
+    super_student = insert_dummy_super_student()
+    client.force_login(super_student.user)
+
     response = client.get(f"/schedule_assignments/{assignment.id}/")
 
     assert response.status_code == 200
@@ -44,6 +51,9 @@ def test_schedule_assignment_post() -> None:
     }
 
     client = APIClient()
+    super_student = insert_dummy_super_student()
+    client.force_login(super_student.user)
+
     response = client.post(
         "/schedule_assignments/", json.dumps(data), content_type="application/json"
     )
@@ -65,6 +75,9 @@ def test_schedule_assignment_delete() -> None:
     assignment = insert_dummy_schedule_assignment(user)
 
     client = APIClient()
+    super_student = insert_dummy_super_student()
+    client.force_login(super_student.user)
+
     response = client.delete(f"/schedule_assignments/{assignment.id}/")
     assert response.status_code == 204
 
@@ -82,6 +95,9 @@ def test_schedule_assignment_patch_user() -> None:
     data = {"user": user_2.id}
 
     client = APIClient()
+    super_student = insert_dummy_super_student()
+    client.force_login(super_student.user)
+
     response = client.patch(
         f"/schedule_assignments/{assignment.id}/",
         json.dumps(data),
@@ -105,6 +121,9 @@ def test_schedule_assignment_patch_other() -> None:
     data = {"schedule_definition": dummy_schedule.id, "assigned_date": dummy_date}
 
     client = APIClient()
+    super_student = insert_dummy_super_student()
+    client.force_login(super_student.user)
+
     response = client.patch(
         f"/schedule_assignments/{assignment.id}/",
         json.dumps(data),
@@ -119,13 +138,41 @@ def test_schedule_assignment_patch_other() -> None:
 
 @pytest.mark.django_db
 def test_schedule_assignment_by_date_and_user() -> None:
-    user = insert_dummy_user()
-    assignment = insert_dummy_schedule_assignment(user)
+    student = insert_dummy_student()
+    assignment = insert_dummy_schedule_assignment(student.user)
 
     client = APIClient()
+    client.force_login(student.user)
     date = assignment.assigned_date
-    response = client.get(f"/schedule_assignments/date/{date}/user/{user.id}/")
+    response = client.get(f"/schedule_assignments/date/{date}/user/{student.user.id}/")
     response_ids = [data["id"] for data in response.data]
 
     assert response.status_code == 200
     assert assignment.id in response_ids
+
+
+@pytest.mark.django_db
+def test_schedule_assignment_by_date_and_user_anonymous() -> None:
+    student = insert_dummy_student()
+    assignment = insert_dummy_schedule_assignment(student.user)
+
+    client = APIClient()
+    date = assignment.assigned_date
+    response = client.get(f"/schedule_assignments/date/{date}/user/{student.user.id}/")
+
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_schedule_assignment_by_date_and_user_super_student() -> None:
+    student = insert_dummy_student()
+    assignment = insert_dummy_schedule_assignment(student.user)
+    super_student = insert_dummy_super_student()
+
+    client = APIClient()
+    client.force_login(super_student.user)
+
+    date = assignment.assigned_date
+    response = client.get(f"/schedule_assignments/date/{date}/user/{student.user.id}/")
+
+    assert response.status_code == 200
