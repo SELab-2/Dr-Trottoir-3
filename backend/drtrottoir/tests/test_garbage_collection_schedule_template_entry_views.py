@@ -3,17 +3,20 @@ import json
 import pytest
 from rest_framework.test import APIClient
 
-from drtrottoir.models import User
-
 from .dummy_data import (
     insert_dummy_garbage_collection_schedule_template,
     insert_dummy_garbage_collection_schedule_template_entry,
     insert_dummy_garbage_type,
+    insert_dummy_student,
 )
 
 
+@pytest.mark.django_db
 def test_garbage_collection_schedule_template_forbidden_methods():
     client = APIClient()
+
+    student = insert_dummy_student(is_super_student=True)
+    client.force_login(student.user)
 
     assert (
         client.get("/garbage_collection_schedule_template_entries/").status_code == 405
@@ -36,6 +39,8 @@ def test_garbage_collection_schedule_template_entry_get_detail():
     entry = insert_dummy_garbage_collection_schedule_template_entry()
 
     client = APIClient()
+    student = insert_dummy_student(is_super_student=True)
+    client.force_login(student.user)
     response = client.get(f"/garbage_collection_schedule_template_entries/{entry.id}/")
 
     assert (
@@ -57,10 +62,9 @@ def test_garbage_collection_schedule_template_entry_post():
         "garbage_collection_schedule_template": template.id,
     }
 
-    user = User.objects.create_user(username="test@gmail.com", password="test")
-
     client = APIClient()
-    client.force_login(user)
+    student = insert_dummy_student(is_super_student=True)
+    client.force_login(student.user)
     response = client.post(
         "/garbage_collection_schedule_template_entries/",
         json.dumps(data),
@@ -80,10 +84,9 @@ def test_garbage_collection_schedule_template_entry_post():
 def test_garbage_collection_schedule_template_entry_delete():
     entry = insert_dummy_garbage_collection_schedule_template_entry()
 
-    user = User.objects.create_user(username="test@gmail.com", password="test")
-
     client = APIClient()
-    client.force_login(user)
+    student = insert_dummy_student(is_super_student=True)
+    client.force_login(student.user)
 
     response = client.delete(
         f"/garbage_collection_schedule_template_entries/{entry.id}/"
@@ -100,10 +103,9 @@ def test_garbage_collection_schedule_template_patch():
     old_day = entry.day
     new_day = 7 if old_day != 7 else 6
 
-    user = User.objects.create_user(username="test@gmail.com", password="test")
-
     client = APIClient()
-    client.force_login(user)
+    student = insert_dummy_student(is_super_student=True)
+    client.force_login(student.user)
 
     data = {"day": new_day}
 
