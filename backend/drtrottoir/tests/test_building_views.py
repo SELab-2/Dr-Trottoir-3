@@ -45,9 +45,9 @@ def test_buildings_post():
 
     data = {
         "address": "address 1",
-        "pdf_guide": tmp_file,
         "is_active": True,
         "location_group": dummy_location_group.id,
+        "pdf_guide": tmp_file,
     }
     client.force_login(user)
     response = client.post(
