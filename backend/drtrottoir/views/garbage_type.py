@@ -1,8 +1,8 @@
+from rest_framework import permissions
 from rest_framework.viewsets import ModelViewSet
 
 from drtrottoir.models import GarbageType
 from drtrottoir.serializers.garbage_type import GarbageTypeSerializer
-from rest_framework import permissions
 
 
 class GarbageTypeViewSet(ModelViewSet):
