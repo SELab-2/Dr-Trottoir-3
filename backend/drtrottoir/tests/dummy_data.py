@@ -12,6 +12,7 @@ from drtrottoir.models import (
     ScheduleDefinition,
     ScheduleDefinitionBuilding,
     ScheduleWorkEntry,
+    Student,
     Syndicus,
     User,
 )
@@ -133,6 +134,15 @@ def insert_dummy_user(email: str = "test@gmail.com") -> User:
         username=email, password="test", email=email
     )
     return dummy_user
+
+
+def insert_dummy_student(email="tes@gmail.com", is_super_student=False) -> Student:
+    user = insert_dummy_user(email)
+    lg = insert_dummy_location_group()
+    student = Student(user=user, location_group=lg, is_super_student=is_super_student)
+    student.save()
+
+    return student
 
 
 # The ScheduleDefinition API is being written by Lander, but I  need
