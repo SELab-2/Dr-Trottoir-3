@@ -23,6 +23,7 @@ from drtrottoir.views import (
     BuildingListViewSet,
     GarbageCollectionScheduleTemplateEntryViewSet,
     GarbageCollectionScheduleTemplateViewSet,
+    GarbageCollectionScheduleViewSet,
     GarbageTypeViewSet,
     IssueDetailApiView,
     IssueImageDetailView,
@@ -46,6 +47,11 @@ router.register(
 router.register(r"garbage_type", GarbageTypeViewSet)
 
 router.register(
+    r"garbage_collection_schedules",
+    GarbageCollectionScheduleViewSet,
+)
+
+router.register(
     r"location_groups",
     LocationGroupViewSet,
 )
@@ -66,6 +72,7 @@ urlpatterns = [
     path("issues/", IssuesListApiView.as_view()),
     path("issues/<int:issue_id>/", IssueDetailApiView.as_view()),
     path("issues/not_approved/", IssueNotApprovedApiView.as_view()),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("issue_images/", IssueImageView.as_view()),
     path("issue_images/<int:issue_image_id>/", IssueImageDetailView.as_view()),
     # Schedule assignments uses ViewSet, but this particular url has
