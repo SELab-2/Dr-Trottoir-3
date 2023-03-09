@@ -17,7 +17,7 @@ def get_file_path_building_pdf_guide(instance, filename):
 
 class Building(models.Model):
     address = models.CharField(max_length=255)
-    pdf_guide = models.FileField(upload_to=get_file_path_building_pdf_guide)
+    pdf_guide = models.FileField(upload_to=get_file_path_building_pdf_guide, null=True)
     location_group = models.ForeignKey(
         LocationGroup, on_delete=models.RESTRICT, related_name="buildings"
     )

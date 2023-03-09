@@ -23,7 +23,7 @@ class BuildingListViewSet(ModelViewSet):
 
     queryset = Building.objects.all()
     serializer_class = BuildingSerializer
-    parser_classes = (MultiPartParser, )
+    # parser_classes = (MultiPartParser, )
 
     @action(detail=True)
     def schedule_definitions(self, request, pk=None) -> Response:
