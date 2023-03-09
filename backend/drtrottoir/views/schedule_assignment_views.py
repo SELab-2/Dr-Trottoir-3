@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import api_view
@@ -50,30 +52,11 @@ class ScheduleAssignmentViewSet(
         permissions.IsAuthenticated,
     ]
 
-    def update(self, request, *args, **kwargs):
-        """
-        Patch only allows the user field to be updated, so this is manually overwritten.
-
-        TODO replace this with read_only_fields
-        For the moment I've tried using read_only_fields, but I get some
-        Assertion sql errors. I don't know why yet, but I'm looking into it
-        """
-        allowed_fields = ["user"]
-        filtered_data = {k: v for (k, v) in request.data.items() if k in allowed_fields}
-
-        # Code below this point copied from UpdateModelMixin
-        partial = kwargs.pop("partial", False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=filtered_data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-
-        if getattr(instance, "_prefetched_objects_cache", None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
-            instance._prefetched_objects_cache = {}
-
-        return Response(serializer.data)
+    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        read_only_fields = ["assigned_date", "schedule_definition"]
+        for field in read_only_fields:
+            request.data.pop(field, False)
+        return super().update(request, *args, **kwargs)
 
     @staticmethod
     @api_view(["GET"])
@@ -84,9 +67,8 @@ class ScheduleAssignmentViewSet(
         # - They are a student and the student's user.id is the same as user_id
 
         # Check if admin or super student
-
         user_is_admin_or_super_student = IsSuperstudentOrAdmin().has_object_permission(
-            request, ScheduleAssignment, None
+            request, ScheduleAssignmentViewSet, None
         )
         try:
             request_id = request.user.id

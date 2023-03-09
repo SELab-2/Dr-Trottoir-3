@@ -1,4 +1,5 @@
 import datetime
+from typing import Union
 
 from drtrottoir.models import (
     Building,
@@ -191,10 +192,10 @@ def insert_dummy_schedule_definition(
 
 
 def insert_dummy_schedule_assignment(
-    user: User, schedule_definition: ScheduleDefinition = None
+    user: User, schedule_definition: Union[None, ScheduleDefinition] = None
 ) -> ScheduleAssignment:
     if schedule_definition is None:
-        schedule_definition: ScheduleDefinition = insert_dummy_schedule_definition()
+        schedule_definition = insert_dummy_schedule_definition()
     assignment = ScheduleAssignment(
         assigned_date="2022-01-26", schedule_definition=schedule_definition, user=user
     )

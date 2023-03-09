@@ -39,18 +39,18 @@ def test_schedule_assignment_get_by_id() -> None:
 
 @pytest.mark.django_db
 def test_schedule_assignment_post() -> None:
-    dummy_user = insert_dummy_user()
+    dummy_student = insert_dummy_student()
     dummy_definition = insert_dummy_schedule_definition()
     dummy_date = "2000-01-01"
 
     data = {
-        "user": dummy_user.id,
+        "user": dummy_student.user.id,
         "schedule_definition": dummy_definition.id,
         "assigned_date": dummy_date,
     }
 
     client = APIClient()
-    super_student = insert_dummy_student(is_super_student=True)
+    super_student = insert_dummy_student("super@gmail.com", is_super_student=True)
     client.force_login(super_student.user)
 
     response = client.post(
@@ -58,7 +58,7 @@ def test_schedule_assignment_post() -> None:
     )
 
     assert response.status_code == 201
-    assert response.data["user"] == dummy_user.id
+    assert response.data["user"] == dummy_student.user.id
     assert response.data["schedule_definition"] == dummy_definition.id
     assert date_equals(dummy_date, response.data["assigned_date"])
 
