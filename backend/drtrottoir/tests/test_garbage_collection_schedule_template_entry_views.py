@@ -12,8 +12,12 @@ from .dummy_data import (
 )
 
 
+@pytest.mark.django_db
 def test_garbage_collection_schedule_template_forbidden_methods():
     client = APIClient()
+
+    user = User.objects.create_user(username="test@gmail.com", password="test", is_superstudent=True)
+    client.force_login(user)
 
     assert (
         client.get("/garbage_collection_schedule_template_entries/").status_code == 405

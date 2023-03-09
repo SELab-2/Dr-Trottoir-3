@@ -18,12 +18,17 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from drtrottoir.views import (
+    BuildingListViewSet,
     GarbageCollectionScheduleTemplateEntryViewSet,
     GarbageCollectionScheduleTemplateViewSet,
+    GarbageCollectionScheduleViewSet,
     GarbageTypeViewSet,
     IssueDetailApiView,
     IssueNotApprovedApiView,
     IssuesListApiView,
+    LocationGroupViewSet,
+    ScheduleAssignmentViewSet,
+    ScheduleWorkEntryViewSet,
 )
 
 router = DefaultRouter()
@@ -37,6 +42,26 @@ router.register(
 )
 router.register(r"garbage_type", GarbageTypeViewSet)
 
+router.register(
+    r"garbage_collection_schedules",
+    GarbageCollectionScheduleViewSet,
+)
+
+router.register(
+    r"location_groups",
+    LocationGroupViewSet,
+)
+
+router.register(
+    r"buildings",
+    BuildingListViewSet,
+)
+
+
+router.register(r"schedule_assignments", ScheduleAssignmentViewSet)
+router.register(r"schedule_work_entries", ScheduleWorkEntryViewSet)
+
+
 urlpatterns = [
     path("", include(router.urls)),
     path("admin/", admin.site.urls),
@@ -44,4 +69,10 @@ urlpatterns = [
     path("issues/<int:issue_id>/", IssueDetailApiView.as_view()),
     path("issues/not_approved/", IssueNotApprovedApiView.as_view()),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+    # Schedule assignments uses ViewSet, but this particular url has
+    # two ids, so it's easier to do it like this
+    path(
+        "schedule_assignments/date/<str:assigned_date>/user/<int:user_id>/",
+        ScheduleAssignmentViewSet.retrieve_list_by_date_and_user,
+    ),
 ]

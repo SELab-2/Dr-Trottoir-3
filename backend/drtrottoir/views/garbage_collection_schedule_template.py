@@ -33,7 +33,7 @@ class GarbageCollectionScheduleTemplateViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
-    permission_classes = []
+    permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
 
     queryset = GarbageCollectionScheduleTemplate.objects.all()
     serializer_class = GarbageCollectionScheduleTemplateSerializer
