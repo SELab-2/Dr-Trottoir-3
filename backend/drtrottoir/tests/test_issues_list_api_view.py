@@ -52,3 +52,78 @@ def test_issues_list_api_view_get():
     assert dummy_issue_id_2 in response_data_ids
     assert non_existing_issue_id not in response_data_ids
     assert response.status_code == 200
+
+
+def _test_issues_list_api_view_get(client: APIClient):
+    """
+
+    """
+
+@pytest.mark.django_db
+def test_issues_list_api_view_get_no_user_fail():
+    """
+
+    """
+
+
+@pytest.mark.django_db
+def test_issues_list_api_view_get_student_fail():
+    """
+
+    """
+
+@pytest.mark.django_db
+def test_issues_list_api_view_get_super_student_success():
+    """
+
+    """
+
+
+@pytest.mark.django_db
+def test_issues_list_api_view_get_admin_success():
+    """
+
+    """
+
+
+@pytest.mark.django_db
+def test_issues_list_api_view_get_syndicus_fail():
+    """
+
+    """
+
+
+@pytest.mark.django_db
+def test_issues_list_api_view_post_no_user_fail():
+    """
+
+    """
+
+
+@pytest.mark.django_db
+def test_issues_list_api_view_post_student_success():
+    """
+
+    """
+
+
+@pytest.mark.django_db
+def test_issues_list_api_view_post_super_student_success():
+    """
+
+    """
+
+
+@pytest.mark.django_db
+def test_issues_list_api_view_post_admin_success():
+    """
+
+    """
+
+
+@pytest.mark.django_db
+def test_issues_list_api_view_post_syndicus_fail():
+    """
+
+    """
+

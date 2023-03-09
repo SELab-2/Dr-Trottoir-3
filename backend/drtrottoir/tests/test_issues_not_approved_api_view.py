@@ -67,3 +67,43 @@ def test_issues_some_approved():
     assert dummy_issue_1.id not in response_data_ids
     assert dummy_issue_2.id in response_data_ids
     assert response.status_code == 200
+
+
+def _test_issues_not_approved_get(client: APIClient):
+    """
+
+    """
+
+@pytest.mark.django_db
+def test_issues_not_approved_get_no_user_fail():
+    """
+
+    """
+
+
+@pytest.mark.django_db
+def test_issues_not_approved_get_student_fail():
+    """
+
+    """
+
+
+@pytest.mark.django_db
+def test_issues_not_approved_get_super_student_success():
+    """
+
+    """
+
+
+@pytest.mark.django_db
+def test_issues_not_approved_get_admin_success():
+    """
+
+    """
+
+
+@pytest.mark.django_db
+def test_issues_not_approved_get_syndicus_fail():
+    """
+
+    """

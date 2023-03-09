@@ -1,8 +1,12 @@
 from rest_framework import status
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from drtrottoir.models import Issue
+from drtrottoir.permissions import IsSuperstudentOrAdmin, IsSuperStudent, IsSyndicusOfBuildingAndApprovalNull, \
+    IsFromUserOfIssue
 from drtrottoir.serializers import IssueSerializer
 
 # TODO - maybe move logic implemented in views to ViewSet.
@@ -51,6 +55,8 @@ class IssuesListApiView(APIView):
 
 
 class IssueDetailApiView(APIView):
+    permission_classes = [IsAuthenticated, IsFromUserOfIssue]
+
     def get(self, request, issue_id, *args, **kwargs):
         """ """
         try:
@@ -103,3 +109,4 @@ class IssueNotApprovedApiView(APIView):
         issues = Issue.objects.filter(approval_user=None)
         serializer = IssueSerializer(issues, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
