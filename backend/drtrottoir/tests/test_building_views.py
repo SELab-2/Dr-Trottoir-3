@@ -112,12 +112,13 @@ def test_building_patch_detail():
     dummy_building = insert_dummy_building()
     dummy_location_group = insert_dummy_location_group()
 
-    # tmp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
-    # tmp_file.seek(0)
+    tmp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
+    tmp_file.write(b'Hello world!')
+    tmp_file.seek(0)
 
     data = {
         "address": "address 1",
-        # "filename": tmp_file,
+        "pdf_guide": tmp_file,
         "is_active": True,
         "location_group": dummy_location_group.id,
     }
@@ -127,18 +128,14 @@ def test_building_patch_detail():
     client.force_login(user)
     response = client.patch(
         f"/buildings/{dummy_building.id}/",
-        json.dumps(data),
-        content_type="application/json"
+        data
     )
 
-    print(response.data)
-    assert response.data == {
-        "id": 1,
-        "address": "address 1",
-        "is_active": True,
-        "location_group": dummy_location_group.id,
-        "pdf_guide": None
-    }
+    assert response.data['id'] == 1
+    assert response.data['address'] == 'address 1'
+    assert response.data['is_active']
+    assert response.data['location_group'] == dummy_location_group.id
+    assert response.data['pdf_guide'].endswith('.pdf')
     assert response.status_code == 200
 
 
