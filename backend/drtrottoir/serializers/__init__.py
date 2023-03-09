@@ -11,6 +11,7 @@ from .location_group import LocationGroupSerializer
 from .schedule_assignment import ScheduleAssignmentSerializer
 from .schedule_definition import ScheduleDefinitionSerializer
 from .schedule_work_entry import ScheduleWorkEntrySerializer
+from .pdf_upload import PdfUploadSerializer
 
 __all__ = [
     "GarbageCollectionScheduleTemplateEntrySerializer",
@@ -25,4 +26,5 @@ __all__ = [
     "IssueImageSerializer",
     "ScheduleDefinitionSerializer",
     "ScheduleDefinitionBuildingSerializer",
+    "PdfUploadSerializer",
 ]

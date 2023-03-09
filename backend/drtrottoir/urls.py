@@ -32,7 +32,7 @@ from drtrottoir.views import (
     IssuesListApiView,
     LocationGroupViewSet,
     ScheduleAssignmentViewSet,
-    ScheduleWorkEntryViewSet,
+    ScheduleWorkEntryViewSet, PostDetailImageAPIView,
 )
 
 router = DefaultRouter()
@@ -81,4 +81,5 @@ urlpatterns = [
         "schedule_assignments/date/<str:assigned_date>/user/<int:user_id>/",
         ScheduleAssignmentViewSet.retrieve_list_by_date_and_user,
     ),
+    path("buildings/upload/<int:building_id>/", PostDetailImageAPIView.as_view())
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -40,29 +40,83 @@ def test_buildings_post():
 
     dummy_location_group = insert_dummy_location_group()
 
-    # tmp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
-    # tmp_file.seek(0)
+    tmp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
+    tmp_file.write(b'Hello world!')
+    tmp_file.seek(0)
 
     data = {
         "address": "address 1",
         "is_active": True,
         "location_group": dummy_location_group.id,
-        # "pdf_guide": tmp_file,
+        "pdf_guide": tmp_file,
     }
     client.force_login(user)
     response = client.post(
-        "/buildings/", json.dumps(data), content_type="application/json"
+        "/buildings/", data
     )
 
-    assert response.data == {
-        "id": 1,
-        "address": "address 1",
-        "is_active": True,
-        "location_group": dummy_location_group.id,
-        "pdf_guide": None
-    }
+    print(response.data)
+
+    assert response.data['id'] == 1
+    assert response.data['address'] == "address 1"
+    assert response.data['is_active'] == True
+    assert response.data['location_group'] == dummy_location_group.id
+    assert response.data['pdf_guide'].endswith(".pdf")
     assert response.status_code == 201
-    # assert response.data["pdf_guide"].endswith(".pdf")
+
+
+@pytest.mark.django_db
+def test_buildings_patch_with_file():
+    dummy_building = insert_dummy_building()
+
+    client = APIClient()
+    user = User.objects.create_user(username="test@gmail.com", password="test")
+
+    # dummy_location_group = insert_dummy_location_group()
+
+    tmp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
+    tmp_file.write(b'Hello world!')
+    tmp_file.seek(0)
+
+    data = {
+        # "address": "address 1",
+        # "is_active": True,
+        # "location_group": dummy_location_group.id,
+        "pdf_guide": tmp_file,
+    }
+    client.force_login(user)
+    response = client.patch(
+        f"/buildings/{dummy_building.id}/", data
+    )
+
+    print(response.data)
+
+    assert response.data['id'] == dummy_building.id
+    assert response.data['address'] == dummy_building.address
+    assert response.data['is_active'] == dummy_building.is_active
+    assert response.data['pdf_guide'].endswith(".pdf")
+    assert response.status_code == 200
+
+# @pytest.mark.django_db
+# def test_buildings_post_detail():
+#     dummy_building_1 = insert_dummy_building()
+#
+#     client = APIClient()
+#     user = User.objects.create_user(username="test@gmail.com", password="test")
+#
+#     tmp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
+#     tmp_file.write(b'Hello world!')
+#     tmp_file.seek(0)
+#
+#     data = {
+#         "file": tmp_file,
+#     }
+#     client.force_login(user)
+#     response = client.put(
+#         f"/buildings/upload/{dummy_building_1.id}/", data
+#     )
+#
+#     assert response.status_code == 201
 
 
 @pytest.mark.django_db
