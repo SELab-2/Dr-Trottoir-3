@@ -3,6 +3,7 @@ from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -117,6 +118,7 @@ class ScheduleWorkEntryViewSet(
 
     queryset = ScheduleWorkEntry.objects.all()
     serializer_class = ScheduleWorkEntrySerializer
+    parser_classes = (MultiPartParser, FormParser)
 
     # Get schedule work entry by user id
     @action(
