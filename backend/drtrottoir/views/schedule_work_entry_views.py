@@ -13,14 +13,14 @@ from drtrottoir.models import (
     ScheduleDefinition,
     ScheduleDefinitionBuilding,
 )
-from drtrottoir.permissions import IsSuperStudentOrAdmin, user_is_student
+from drtrottoir.permissions import IsSuperstudentOrAdmin, user_is_student
 from drtrottoir.serializers import ScheduleWorkEntrySerializer
 
 
 # TODO permissions
 
 
-class ScheduleWorkEntryPermission(IsSuperStudentOrAdmin):
+class ScheduleWorkEntryPermission(IsSuperstudentOrAdmin):
     """
     POST permissions for the ScheduleWorkEntry API are somewhat difficult. In order for a new entry to be added,
     the post requirement has the following requirements:
@@ -96,7 +96,7 @@ class ScheduleWorkEntryGetByIdPermission(permissions.BasePermission):
 class ScheduleWorkEntryByUserIdPermission(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
         # Super students or admins always have access
-        if IsSuperStudentOrAdmin().has_object_permission(request, view, None):
+        if IsSuperstudentOrAdmin().has_object_permission(request, view, None):
             return True
 
         if not user_is_student(request.user):
@@ -125,7 +125,7 @@ class ScheduleWorkEntryViewSet(
         url_path=r"users/(?P<user_id>\w+)",
         permission_classes=[
             ScheduleWorkEntryByUserIdPermission,
-            IsSuperStudentOrAdmin,
+            IsSuperstudentOrAdmin,
             IsAuthenticated,
         ],
     )

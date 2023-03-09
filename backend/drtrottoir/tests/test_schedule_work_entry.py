@@ -8,7 +8,6 @@ from drtrottoir.tests.dummy_data import (
     insert_dummy_schedule_definition,
     insert_dummy_schedule_work_entry,
     insert_dummy_student,
-    insert_dummy_super_student,
     insert_dummy_user,
     insert_dummy_schedule_assignment,
 )
@@ -23,7 +22,7 @@ def test_schedule_work_entry_list_get() -> None:
     work_entry_nonexistent = work_entry1 + work_entry2 + 3
 
     client = APIClient()
-    super_student = insert_dummy_super_student()
+    super_student = insert_dummy_student(is_super_student=True)
     client.force_login(super_student.user)
 
     response = client.get("/schedule_work_entries/")
@@ -108,7 +107,7 @@ def test_schedule_work_entry_get() -> None:
     work_entry = insert_dummy_schedule_work_entry(user)
 
     client = APIClient()
-    super_student = insert_dummy_super_student()
+    super_student = insert_dummy_student(is_super_student=True)
     client.force_login(super_student.user)
 
     response = client.get(f"/schedule_work_entries/{work_entry.id}/")

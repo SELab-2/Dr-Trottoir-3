@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from drtrottoir import models
 from drtrottoir.models import ScheduleAssignment, Student
-from drtrottoir.permissions import IsSuperStudentOrAdmin
+from drtrottoir.permissions import IsSuperstudentOrAdmin
 from drtrottoir.serializers import ScheduleAssignmentSerializer
 
 # TODO permissions
@@ -46,7 +46,7 @@ class ScheduleAssignmentViewSet(
     serializer_class = ScheduleAssignmentSerializer
 
     permission_classes = [
-        (ScheduleAssignmentPermission | IsSuperStudentOrAdmin),
+        (ScheduleAssignmentPermission | IsSuperstudentOrAdmin),
         permissions.IsAuthenticated,
     ]
 
@@ -85,7 +85,7 @@ class ScheduleAssignmentViewSet(
 
         # Check if admin or super student
 
-        user_is_admin_or_super_student = IsSuperStudentOrAdmin().has_object_permission(
+        user_is_admin_or_super_student = IsSuperstudentOrAdmin().has_object_permission(
             request, ScheduleAssignment, None
         )
         try:

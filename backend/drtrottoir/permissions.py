@@ -1,17 +1,10 @@
-from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import permissions
-
-
-class IsSuperstudentOrAdmin(permissions.BasePermission):
 from typing import Any
 
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import permissions
 
-from drtrottoir.models import User
 
-
-class IsSuperStudentOrAdmin(permissions.BasePermission):
+class IsSuperstudentOrAdmin(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         try:
             request.user.admin

@@ -8,7 +8,6 @@ from drtrottoir.tests.dummy_data import (
     insert_dummy_schedule_assignment,
     insert_dummy_schedule_definition,
     insert_dummy_student,
-    insert_dummy_super_student,
     insert_dummy_user,
 )
 from drtrottoir.tests.util import date_equals
@@ -22,7 +21,7 @@ def test_schedule_assignment_get_by_id() -> None:
     assignment: ScheduleAssignment = insert_dummy_schedule_assignment(user)
 
     client = APIClient()
-    super_student = insert_dummy_super_student()
+    super_student = insert_dummy_student(is_super_student=True)
     client.force_login(super_student.user)
 
     response = client.get(f"/schedule_assignments/{assignment.id}/")
@@ -51,7 +50,7 @@ def test_schedule_assignment_post() -> None:
     }
 
     client = APIClient()
-    super_student = insert_dummy_super_student()
+    super_student = insert_dummy_student(is_super_student=True)
     client.force_login(super_student.user)
 
     response = client.post(
@@ -75,7 +74,7 @@ def test_schedule_assignment_delete() -> None:
     assignment = insert_dummy_schedule_assignment(user)
 
     client = APIClient()
-    super_student = insert_dummy_super_student()
+    super_student = insert_dummy_student(is_super_student=True)
     client.force_login(super_student.user)
 
     response = client.delete(f"/schedule_assignments/{assignment.id}/")
@@ -95,7 +94,7 @@ def test_schedule_assignment_patch_user() -> None:
     data = {"user": user_2.id}
 
     client = APIClient()
-    super_student = insert_dummy_super_student()
+    super_student = insert_dummy_student(is_super_student=True)
     client.force_login(super_student.user)
 
     response = client.patch(
@@ -121,7 +120,7 @@ def test_schedule_assignment_patch_other() -> None:
     data = {"schedule_definition": dummy_schedule.id, "assigned_date": dummy_date}
 
     client = APIClient()
-    super_student = insert_dummy_super_student()
+    super_student = insert_dummy_student(is_super_student=True)
     client.force_login(super_student.user)
 
     response = client.patch(
@@ -167,7 +166,7 @@ def test_schedule_assignment_by_date_and_user_anonymous() -> None:
 def test_schedule_assignment_by_date_and_user_super_student() -> None:
     student = insert_dummy_student()
     assignment = insert_dummy_schedule_assignment(student.user)
-    super_student = insert_dummy_super_student()
+    super_student = insert_dummy_student(email="super@gmail.com", is_super_student=True)
 
     client = APIClient()
     client.force_login(super_student.user)
