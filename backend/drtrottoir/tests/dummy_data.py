@@ -7,6 +7,7 @@ from drtrottoir.models import (
     GarbageCollectionScheduleTemplateEntry,
     GarbageType,
     Issue,
+    IssueImage,
     LocationGroup,
     ScheduleAssignment,
     ScheduleDefinition,
@@ -129,6 +130,15 @@ def insert_dummy_issue(dummy_user=None, dummy_building=None) -> Issue:
     return issue
 
 
+def insert_dummy_issue_image(dummy_user: User) -> IssueImage:
+    issue = insert_dummy_issue(dummy_user)
+
+    issue_image = IssueImage(issue=issue, image="test_path.jpg")
+    issue_image.save()
+
+    return issue_image
+
+
 def insert_dummy_user(email: str = "test@gmail.com") -> User:
     dummy_user: User = User.objects.create_user(
         username=email, password="test", email=email
@@ -136,20 +146,12 @@ def insert_dummy_user(email: str = "test@gmail.com") -> User:
     return dummy_user
 
 
-# These are added temporarily until we have a proper insert_student function
-def insert_dummy_super_student(email: str = "superstudent@gmail.com") -> Student:
+def insert_dummy_student(email="tes@gmail.com", is_super_student=False) -> Student:
     user = insert_dummy_user(email)
     lg = insert_dummy_location_group()
-    student = Student(user=user, location_group=lg, is_super_student=True)
+    student = Student(user=user, location_group=lg, is_super_student=is_super_student)
     student.save()
-    return student
 
-
-def insert_dummy_student(email: str = "student@gmail.com") -> Student:
-    user = insert_dummy_user(email)
-    lg = insert_dummy_location_group()
-    student = Student(user=user, location_group=lg, is_super_student=False)
-    student.save()
     return student
 
 

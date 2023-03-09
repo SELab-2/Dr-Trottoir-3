@@ -1,3 +1,8 @@
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework import permissions
+
+
+class IsSuperstudentOrAdmin(permissions.BasePermission):
 from typing import Any
 
 from django.core.exceptions import ObjectDoesNotExist

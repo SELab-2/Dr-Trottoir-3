@@ -13,10 +13,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
+from drtrottoir import settings
 from drtrottoir.views import (
     BuildingListViewSet,
     GarbageCollectionScheduleTemplateEntryViewSet,
@@ -24,6 +26,8 @@ from drtrottoir.views import (
     GarbageCollectionScheduleViewSet,
     GarbageTypeViewSet,
     IssueDetailApiView,
+    IssueImageDetailView,
+    IssueImageView,
     IssueNotApprovedApiView,
     IssuesListApiView,
     LocationGroupViewSet,
@@ -57,8 +61,10 @@ router.register(
     BuildingListViewSet,
 )
 
+
 router.register(r"schedule_assignments", ScheduleAssignmentViewSet)
 router.register(r"schedule_work_entries", ScheduleWorkEntryViewSet)
+
 
 urlpatterns = [
     path("", include(router.urls)),
@@ -66,6 +72,9 @@ urlpatterns = [
     path("issues/", IssuesListApiView.as_view()),
     path("issues/<int:issue_id>/", IssueDetailApiView.as_view()),
     path("issues/not_approved/", IssueNotApprovedApiView.as_view()),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+    path("issue_images/", IssueImageView.as_view()),
+    path("issue_images/<int:issue_image_id>/", IssueImageDetailView.as_view()),
     # Schedule assignments uses ViewSet, but this particular url has
     # two ids, so it's easier to do it like this
     path(
@@ -73,4 +82,5 @@ urlpatterns = [
         ScheduleAssignmentViewSet.retrieve_list_by_date_and_user,
     ),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
