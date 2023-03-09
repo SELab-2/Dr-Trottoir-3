@@ -21,7 +21,6 @@ class IsSuperstudentOrAdmin(permissions.BasePermission):
 
 class IsSuperstudentOrAdminOrSafe(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-
         try:
             request.user.admin
             return True

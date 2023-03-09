@@ -72,9 +72,9 @@ def test_garbage_type_no_post_auth():
 
     assert response.status_code == 403
 
+
 @pytest.mark.django_db
 def test_garbage_type_no_get_auth():
-
     client = APIClient()
 
     assert client.get("/garbage_type/").status_code == 403
