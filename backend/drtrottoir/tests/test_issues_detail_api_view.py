@@ -14,7 +14,7 @@ from ..serializers import BuildingSerializer
 @pytest.mark.django_db
 def test_issues_detail_api_view_get_valid_one_present():
     """ """
-    user = insert_dummy_student(is_super_student=True)
+    user = insert_dummy_admin()
     client = APIClient()
     client.force_authenticate(user.user)
     dummy_issue_1 = insert_dummy_issue(user.user)
