@@ -78,9 +78,7 @@ def test_issues_some_approved():
     assert response.status_code == 200
 
 
-def _test_issues_not_approved_api_view_get(
-    user: User = None, issue_user: User = None, building: Building = None
-):
+def _test_issues_not_approved_api_view_get(user=None, issue_user=None, building=None):
     client = APIClient()
     if user is not None:
         client.force_authenticate(user)

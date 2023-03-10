@@ -128,7 +128,7 @@ def test_issues_detail_api_view_delete_invalid_id():
     assert response.status_code == 404
 
 
-def _test_issues_detail_api_view_get_invalid_id(user: User = None):
+def _test_issues_detail_api_view_get_invalid_id(user=None):
     """ """
     client = APIClient()
     if user is not None:
@@ -141,7 +141,7 @@ def _test_issues_detail_api_view_get_invalid_id(user: User = None):
 
 
 def _test_issues_detail_api_view_get_valid_id(
-    user: User = None, issue_user: User = None, building: Building = None
+    user=None, issue_user=None, building=None
 ):
     """ """
     client = APIClient()
@@ -241,7 +241,7 @@ def test_issues_detail_api_view_get_admin_success():
     assert response.status_code == status.HTTP_200_OK
 
 
-def _test_issues_detail_api_view_patch_valid_id(user: User = None):
+def _test_issues_detail_api_view_patch_valid_id(user=None):
     """ """
     client = APIClient()
     if user is not None:
@@ -258,7 +258,7 @@ def _test_issues_detail_api_view_patch_valid_id(user: User = None):
     )
 
 
-def _test_issues_detail_api_view_patch_invalid_id(user: User = None):
+def _test_issues_detail_api_view_patch_invalid_id(user=None):
     """ """
     client = APIClient()
     if user is not None:
@@ -313,7 +313,7 @@ def test_issues_detail_api_view_patch_admin_success():
     assert response.status_code == status.HTTP_200_OK
 
 
-def _test_issues_detail_api_view_delete_invalid_id(user: User = None):
+def _test_issues_detail_api_view_delete_invalid_id(user=None):
     """ """
     client = APIClient()
     if user is not None:
@@ -324,7 +324,7 @@ def _test_issues_detail_api_view_delete_invalid_id(user: User = None):
     return client.delete(f"/issues/{dummy_issue_1.id + 1}/")
 
 
-def _test_issues_detail_api_view_delete_valid_id(user: User = None):
+def _test_issues_detail_api_view_delete_valid_id(user=None):
     """ """
     client = APIClient()
     if user is not None:

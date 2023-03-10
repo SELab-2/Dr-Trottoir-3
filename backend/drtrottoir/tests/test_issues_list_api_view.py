@@ -61,9 +61,7 @@ def test_issues_list_api_view_get():
     assert response.status_code == 200
 
 
-def _test_issues_list_api_view_get(
-    user: User = None, issue_user: User = None, building: Building = None
-):
+def _test_issues_list_api_view_get(user=None, issue_user=None, building=None):
     """ """
     client = APIClient()
     if user is not None:
@@ -123,9 +121,7 @@ def test_issues_list_api_view_get_syndicus_fail():
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-def _test_issues_list_api_view_post(
-    user: User = None, issue_user: User = None, building: Building = None
-):
+def _test_issues_list_api_view_post(user=None, issue_user=None, building=None):
     """ """
     client = APIClient()
     if user is not None:
