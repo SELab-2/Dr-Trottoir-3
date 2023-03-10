@@ -7,11 +7,13 @@ from drtrottoir.models import (
     GarbageCollectionScheduleTemplateEntry,
     GarbageType,
     Issue,
+    IssueImage,
     LocationGroup,
     ScheduleAssignment,
     ScheduleDefinition,
     ScheduleDefinitionBuilding,
     ScheduleWorkEntry,
+    Student,
     Syndicus,
     User,
 )
@@ -128,11 +130,29 @@ def insert_dummy_issue(dummy_user=None, dummy_building=None) -> Issue:
     return issue
 
 
+def insert_dummy_issue_image(dummy_user: User) -> IssueImage:
+    issue = insert_dummy_issue(dummy_user)
+
+    issue_image = IssueImage(issue=issue, image="test_path.jpg")
+    issue_image.save()
+
+    return issue_image
+
+
 def insert_dummy_user(email: str = "test@gmail.com") -> User:
     dummy_user: User = User.objects.create_user(
         username=email, password="test", email=email
     )
     return dummy_user
+
+
+def insert_dummy_student(email="tes@gmail.com", is_super_student=False) -> Student:
+    user = insert_dummy_user(email)
+    lg = insert_dummy_location_group()
+    student = Student(user=user, location_group=lg, is_super_student=is_super_student)
+    student.save()
+
+    return student
 
 
 # The ScheduleDefinition API is being written by Lander, but I  need
@@ -184,7 +204,7 @@ def insert_dummy_schedule_work_entry(creator: User) -> ScheduleWorkEntry:
     schedule_definition = insert_dummy_schedule_definition()
     work_entry = ScheduleWorkEntry(
         creation_timestamp="2022-01-26 06:00",
-        image_path="pics/image.png",
+        image="image.png",
         creator=creator,
         building=building,
         schedule_definition=schedule_definition,

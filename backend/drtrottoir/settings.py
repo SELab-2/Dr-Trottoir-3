@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-# import os
+import os
 from pathlib import Path
 from typing import List
 
@@ -134,3 +134,9 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Actual directory user files go to
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# URL used to access the media
+MEDIA_URL = "/media/"

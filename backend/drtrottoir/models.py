@@ -1,3 +1,6 @@
+import os
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -74,8 +77,14 @@ class Issue(models.Model):
     )
 
 
+def get_file_path_issue_image(instance, filename):
+    extension = filename.split(".")[-1]
+    filename = str(uuid.uuid4()) + "." + extension
+    return os.path.join("issue_images/", filename)
+
+
 class IssueImage(models.Model):
-    image_path = models.CharField(max_length=255)
+    image = models.ImageField(upload_to=get_file_path_issue_image)
     issue = models.ForeignKey(Issue, on_delete=models.RESTRICT, related_name="images")
 
 
@@ -89,9 +98,15 @@ class ScheduleAssignment(models.Model):
     )
 
 
+def get_file_path_schedule_work_entry_image(instance, filename):
+    extension = filename.split(".")[-1]
+    filename = str(uuid.uuid4()) + "." + extension
+    return os.path.join("schedule_work_entry_images/", filename)
+
+
 class ScheduleWorkEntry(models.Model):
     creation_timestamp = models.DateTimeField()
-    image_path = models.CharField(max_length=255)
+    image = models.ImageField(upload_to=get_file_path_schedule_work_entry_image)
     creator = models.ForeignKey(
         User, on_delete=models.RESTRICT, related_name="schedule_work_entries"
     )
