@@ -81,15 +81,13 @@ def test_issues_some_approved():
 def _test_issues_not_approved_api_view_get(
     user: User = None, issue_user: User = None, building: Building = None
 ):
-    """ """
     client = APIClient()
     if user is not None:
         client.force_authenticate(user)
 
-    # dummy_user = insert_dummy_admin()
     insert_dummy_issue(dummy_user=issue_user, dummy_building=building)
 
-    return client.get(f"/issues/not_approved/")
+    return client.get("/issues/not_approved/")
 
 
 @pytest.mark.django_db

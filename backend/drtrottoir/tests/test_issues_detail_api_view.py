@@ -4,9 +4,8 @@ import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from drtrottoir.models import Building, Syndicus, User
+from drtrottoir.models import Building, User
 
-from ..serializers import BuildingSerializer
 from .dummy_data import (
     insert_dummy_admin,
     insert_dummy_building,

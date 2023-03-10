@@ -1,5 +1,4 @@
 from rest_framework import status
-from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,8 +8,6 @@ from drtrottoir.permissions import (
     IsFromUserOfIssue,
     IsStudent,
     IsSuperStudent,
-    IsSuperstudentOrAdmin,
-    IsSyndicus,
     IsSyndicusOfBuildingAndApprovalNotNull,
     IsSyndicusOfBuildingAndApprovalNull,
 )
@@ -36,8 +33,6 @@ from drtrottoir.serializers import IssueSerializer
 
 
 class IssuesListApiView(APIView):
-    # permission_classes = []
-
     def get(self, request, *args, **kwargs):
         """ """
         if not IsAuthenticated().has_permission(
@@ -49,7 +44,6 @@ class IssuesListApiView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
-        """ """
         if not IsAuthenticated().has_permission(
             request, None
         ) or not IsStudent().has_permission(request, None):
@@ -70,13 +64,7 @@ class IssuesListApiView(APIView):
 
 
 class IssueDetailApiView(APIView):
-    # permission_classes = [IsAuthenticated, IsSuperStudent]
-
-    # @permission_classes([IsAuthenticated, IsSuperStudent])
     def get(self, request, issue_id, *args, **kwargs):
-        # if not IsAuthenticated().has_permission(request, None) and not IsSuperStudent().has_permission(request, None):
-        #     return Response(status=status.HTTP_403_FORBIDDEN)
-
         try:
             instance = Issue.objects.get(id=issue_id)
 
@@ -98,13 +86,11 @@ class IssueDetailApiView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-    # @permission_classes(IsSuperStudent)
     def patch(self, request, issue_id, *args, **kwargs):
         if not IsAuthenticated().has_permission(
             request, None
         ) or not IsSuperStudent().has_permission(request, None):
             return Response(status=status.HTTP_403_FORBIDDEN)
-        """ """
         try:
             instance = Issue.objects.get(id=issue_id)
             serializer = IssueSerializer(instance, data=request.data, partial=True)
@@ -120,9 +106,6 @@ class IssueDetailApiView(APIView):
             )
 
     def delete(self, request, issue_id, *args, **kwargs):
-        # if not IsAuthenticated().has_permission(request, None) or (not IsSuperStudent().has_permission(request, None) and not IsSyndicus().has_permission(request, None)):
-        #     return Response(status=status.HTTP_403_FORBIDDEN)
-        """ """
         try:
             instance = Issue.objects.get(id=issue_id)
 
@@ -150,7 +133,6 @@ class IssueDetailApiView(APIView):
 
 class IssueNotApprovedApiView(APIView):
     def get(self, request, *args, **kwargs):
-        """ """
         if not IsAuthenticated().has_permission(
             request, None
         ) or not IsSuperStudent().has_permission(request, None):

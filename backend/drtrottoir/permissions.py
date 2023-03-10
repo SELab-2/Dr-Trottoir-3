@@ -1,14 +1,11 @@
-from typing import Any
-
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import permissions
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import SAFE_METHODS
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
-from drtrottoir.models import Admin, Issue, Student, Syndicus
-from rest_framework.permissions import SAFE_METHODS
+from drtrottoir.models import Issue
 
 
 class IsSuperstudentOrAdmin(permissions.BasePermission):
@@ -41,12 +38,6 @@ class IsSyndicusOfBuildingAndApprovalNull(permissions.BasePermission):
     def has_object_permission(
         self, request: Request, view: APIView, obj: Issue
     ) -> bool:
-        """
-        The request.user is a Syndicus object, or at least should be.
-        """
-        # if isinstance(request.user, Syndicus) and not request.user.user.is_anonymous and len(obj.building.syndicus_set.all().filter(user=request.user.user)) > 0 and obj.approval_user is None:
-        #     return True
-        # return False
         if isinstance(request.user, AnonymousUser):
             return False
         try:
@@ -75,13 +66,8 @@ class IsSyndicusOfBuildingAndApprovalNotNull(permissions.BasePermission):
 
 class IsSuperStudent(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
-        # return False
-        # if (isinstance(request.user, Student) or isinstance(request.user, Admin)) and not request.user.user.is_anonymous:
-        #     return True
-        # return False
         if isinstance(request.user, AnonymousUser):
             return False
-
         try:
             student = request.user.student
             return student.is_super_student
@@ -95,9 +81,6 @@ class IsSuperStudent(permissions.BasePermission):
 
 class IsStudent(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
-        # if isinstance(request.user, Student) and not request.user.user.is_anonymous:
-        #     return True
-        # return False
         if isinstance(request.user, AnonymousUser):
             return False
         try:
@@ -114,10 +97,6 @@ class IsStudent(permissions.BasePermission):
 
 class IsSyndicus(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
-        """ """
-        # if isinstance(request.user, Syndicus) and not request.user.user.is_anonymous:
-        #     return True
-        # return False
         if isinstance(request.user, AnonymousUser):
             return False
         try:

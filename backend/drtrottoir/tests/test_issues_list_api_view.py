@@ -71,7 +71,7 @@ def _test_issues_list_api_view_get(
 
     insert_dummy_issue(dummy_user=issue_user, dummy_building=building)
 
-    return client.get(f"/issues/")
+    return client.get("/issues/")
 
 
 @pytest.mark.django_db
