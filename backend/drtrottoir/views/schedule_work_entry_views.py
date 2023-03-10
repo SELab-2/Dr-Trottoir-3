@@ -101,14 +101,20 @@ class ScheduleWorkEntryViewSet(
         # Condition 1: request.user must be the same as request.data.creator
         data_creator_id = int(request.data["creator"])
         if not request.user.id == data_creator_id:
-            return Response({"Error": "Creator field does not match request user"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"Error": "Creator field does not match request user"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         # Condition 2: The user in request.user is in one ScheduleAssignment
         # happening today
         # (TODO add today requirement)
         schedule_assignments = ScheduleAssignment.objects.filter(user=request.user)
         if schedule_assignments.count() == 0:
-            return Response({"Error": "User does not match schedule assignment"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"Error": "User does not match schedule assignment"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         # Condition 3: The building in request.data['building'] is
         # in schedule_assignment.schedule_definition.buildings
@@ -118,7 +124,10 @@ class ScheduleWorkEntryViewSet(
             building=data_building_id, schedule_definition=data_schedule_definition_id
         )
         if schedule_definition_buildings.count() == 0:
-            return Response({"Error": "Building not in schedule definition"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"Error": "Building not in schedule definition"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         # If at this point all checks passed, POST as mixins.CreateModelMixin
         return super().create(request, *args, **kwargs)
@@ -129,10 +138,10 @@ class ScheduleWorkEntryViewSet(
     def retrieve_by_user_id(request, user_id):
         request_is_superstudent_or_admin = user_is_superstudent_or_admin(request.user)
         request_is_student_and_id_matches = (
-                user_is_student(request.user) and user_id == request.user.id
+            user_is_student(request.user) and user_id == request.user.id
         )
         request_allowed = (
-                request_is_superstudent_or_admin or request_is_student_and_id_matches
+            request_is_superstudent_or_admin or request_is_student_and_id_matches
         )
 
         if not request_allowed:

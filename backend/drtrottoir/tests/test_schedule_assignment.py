@@ -701,7 +701,7 @@ def test_schedule_assignment_get_by_date_and_user_allowed_superstudent_admin() -
 
 @pytest.mark.django_db
 def test_schedule_assignment_get_by_date_and_user_not_allowed_anonymous_syndicus() -> (
-        None
+    None
 ):
     student = insert_dummy_student()
     assignment = insert_dummy_schedule_assignment(student.user)
@@ -809,6 +809,7 @@ def test_schedule_assignment_forbidden_methods() -> None:
     assert client.put("/schedule_assignments/").status_code == 405
     assert client.patch("/schedule_assignments/").status_code == 405
     assert client.delete("/schedule_assignments/").status_code == 405
+
 
 # endregion Forbidden methods
 

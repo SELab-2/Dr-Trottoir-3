@@ -18,7 +18,6 @@ from drtrottoir.tests.dummy_data import (
 )
 from drtrottoir.tests.util import date_equals
 
-
 # For POST unit and authentication tests, see region POST at the bottom
 
 # TODO POST should also only work if the creation_timestamp is TODAY
@@ -198,6 +197,7 @@ def test_schedule_work_entry_get_list_not_allowed_anonymous_student_syndicus() -
 
 # region GET item
 
+
 @pytest.mark.django_db
 def test_schedule_work_entry_get_allowed_superstudent_admin() -> None:
     work_entry = insert_dummy_schedule_work_entry(insert_dummy_user("entry@gmail.com"))
@@ -255,6 +255,7 @@ def test_schedule_work_entry_get_matching_user_allowed_non_matching_user_not_all
 
 # endregion GET item
 
+
 # region GET by user
 @pytest.mark.django_db
 def test_schedule_work_entry_get_by_user_allowed_superstudent_admin() -> None:
@@ -298,7 +299,9 @@ def test_schedule_work_entry_get_by_user_matching_user_allowed_non_matching_user
     client = APIClient()
 
     client.force_login(student.user)
-    response_matching_user = client.get(f"/schedule_work_entries/users/{student.user.id}/")
+    response_matching_user = client.get(
+        f"/schedule_work_entries/users/{student.user.id}/"
+    )
 
     client.force_login(other_student.user)
     response_other = client.get(f"/schedule_work_entries/users/{student.user.id}/")
@@ -377,6 +380,7 @@ Because of the complexity of the POST request, I've added these in a separate se
 
 
 # region Unit tests
+
 
 def _create_dummy_image(name: str):
     image = Image.new("RGB", (100, 100))
@@ -545,7 +549,7 @@ def test_schedule_work_entry_post_no_matching_schedule_assignment_returns_400() 
 
 
 @pytest.mark.django_db
-def test_schedule_work_entry_post_building_not_matching_schedule_definition_returns_400() -> None:
+def test_schedule_work_entry_post_building_not_matching_schedule_definition_returns_400():  # noqa: E501
     """
     POST requires that the creator is in at least one schedule assignment containing
     the schedule definition.
@@ -581,7 +585,10 @@ def test_schedule_work_entry_post_building_not_matching_schedule_definition_retu
 
 # region Authentication tests
 
-def _test_schedule_work_entry_post_correct_information_give_user(user: Union[User, None]):
+
+def _test_schedule_work_entry_post_correct_information_give_user(
+    user: Union[User, None]
+):
     client = APIClient()
     if user is None:
         user = insert_dummy_user()
@@ -616,8 +623,12 @@ def test_schedule_work_entry_post_allowed_student_superstudent() -> None:
     student = insert_dummy_student("student@gmail.com", is_super_student=False)
     super_student = insert_dummy_student("super@gmail.com", is_super_student=True)
 
-    response_student = _test_schedule_work_entry_post_correct_information_give_user(student.user)
-    response_super_student = _test_schedule_work_entry_post_correct_information_give_user(super_student.user)
+    response_student = _test_schedule_work_entry_post_correct_information_give_user(
+        student.user
+    )
+    response_super_student = (
+        _test_schedule_work_entry_post_correct_information_give_user(super_student.user)
+    )
 
     assert response_student.status_code == 201
     assert response_super_student.status_code == 201
@@ -628,13 +639,20 @@ def test_schedule_work_entry_post_not_allowed_anonymous_admin_syndicus() -> None
     admin = insert_dummy_admin("admin@gmail.com")
     syndicus = insert_dummy_syndicus(insert_dummy_user("syndicus@gmail.com"))
 
-    response_anonymous = _test_schedule_work_entry_post_correct_information_give_user(None)
-    response_admin = _test_schedule_work_entry_post_correct_information_give_user(admin.user)
-    response_syndicus = _test_schedule_work_entry_post_correct_information_give_user(syndicus.user)
+    response_anonymous = _test_schedule_work_entry_post_correct_information_give_user(
+        None
+    )
+    response_admin = _test_schedule_work_entry_post_correct_information_give_user(
+        admin.user
+    )
+    response_syndicus = _test_schedule_work_entry_post_correct_information_give_user(
+        syndicus.user
+    )
 
     assert response_anonymous.status_code == 403
     assert response_admin.status_code == 403
     assert response_syndicus.status_code == 403
+
 
 # endregion Authentication tests
 
