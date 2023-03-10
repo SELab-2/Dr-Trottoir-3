@@ -16,6 +16,7 @@ from drtrottoir.models import (
     Student,
     Syndicus,
     User,
+    Admin,
 )
 
 
@@ -211,3 +212,10 @@ def insert_dummy_schedule_work_entry(creator: User) -> ScheduleWorkEntry:
     )
     work_entry.save()
     return work_entry
+
+
+def insert_dummy_admin(email="tes@gmail.com") -> Admin:
+    user = insert_dummy_user(email)
+    admin = Admin(user=user)
+    admin.save()
+    return admin
