@@ -51,7 +51,7 @@ def test_garbage_type_get_detail_non_existing_return_404():
     student = insert_dummy_student(is_super_student=True)
     client.force_login(student.user)
 
-    response = client.get(f"/garbage_type/0/")
+    response = client.get("/garbage_type/1/")
 
     assert response.status_code == 404
 
@@ -95,7 +95,7 @@ def test_garbage_type_delete_non_existing_return_404():
     student = insert_dummy_student(is_super_student=True)
     client.force_login(student.user)
 
-    response = client.delete(f"/garbage_type/0/")
+    response = client.delete("/garbage_type/1/")
 
     assert response.status_code == 404
 
