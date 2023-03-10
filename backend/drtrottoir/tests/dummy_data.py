@@ -33,15 +33,12 @@ def insert_dummy_location_group(name: str = "dummy location group") -> LocationG
     return lg
 
 
-def insert_dummy_building(
-    address: str = "dummy address", path: str = "dummy path", lg=None
-) -> Building:
+def insert_dummy_building(address: str = "dummy address", lg=None) -> Building:
     if lg is None:
         lg = insert_dummy_location_group()
 
     building = Building(
         address=address,
-        guide_pdf_path=path,
         location_group=lg,
     )
     building.save()
