@@ -52,6 +52,15 @@ class IsSyndicusOfBuildingAndApprovalNull(permissions.BasePermission):
             return False
 
 
+class IsSyndicusOfBuildingAndApprovalNotNull(permissions.BasePermission):
+    def has_object_permission(self, request: Request, view: APIView, obj: Issue) -> bool:
+        if isinstance(request.user, AnonymousUser):
+            return False
+        try:
+            return len(obj.building.syndicus_set.all().filter(user=request.user)) > 0 and obj.approval_user is not None
+        except ObjectDoesNotExist:
+            return False
+
 class IsSuperStudent(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
         # return False

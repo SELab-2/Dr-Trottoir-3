@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 
 from drtrottoir.models import Issue
 from drtrottoir.permissions import IsSuperstudentOrAdmin, IsSuperStudent, IsSyndicusOfBuildingAndApprovalNull, \
-    IsFromUserOfIssue
+    IsFromUserOfIssue, IsSyndicus, IsSyndicusOfBuildingAndApprovalNotNull
 from drtrottoir.serializers import IssueSerializer
 
 # TODO - maybe move logic implemented in views to ViewSet.
@@ -65,7 +65,7 @@ class IssueDetailApiView(APIView):
         try:
             instance = Issue.objects.get(id=issue_id)
 
-            if (not IsAuthenticated().has_permission(request, None) and not IsSuperStudent().has_permission(request, None)) or (not IsFromUserOfIssue().has_object_permission(request, None, instance) and not IsSyndicusOfBuildingAndApprovalNull().has_object_permission(request, None, instance) and not IsSuperStudent().has_permission(request, None)):
+            if not IsSuperStudent().has_permission(request, None) and not IsFromUserOfIssue().has_object_permission(request, None, instance) and not IsSyndicusOfBuildingAndApprovalNull().has_object_permission(request, None, instance):
                 return Response(status=status.HTTP_403_FORBIDDEN)
 
             serializer = IssueSerializer(instance)
@@ -77,7 +77,7 @@ class IssueDetailApiView(APIView):
 
     # @permission_classes(IsSuperStudent)
     def patch(self, request, issue_id, *args, **kwargs):
-        if not IsAuthenticated().has_permission(request, None) and not IsSuperStudent().has_permission(request, None):
+        if not IsAuthenticated().has_permission(request, None) or not IsSuperStudent().has_permission(request, None):
             return Response(status=status.HTTP_403_FORBIDDEN)
         """ """
         try:
@@ -95,9 +95,15 @@ class IssueDetailApiView(APIView):
             )
 
     def delete(self, request, issue_id, *args, **kwargs):
+        # if not IsAuthenticated().has_permission(request, None) or (not IsSuperStudent().has_permission(request, None) and not IsSyndicus().has_permission(request, None)):
+        #     return Response(status=status.HTTP_403_FORBIDDEN)
         """ """
         try:
             instance = Issue.objects.get(id=issue_id)
+
+            if not IsSuperStudent().has_permission(request, None) and not IsSyndicusOfBuildingAndApprovalNotNull().has_object_permission(request, None, instance):
+                return Response(status=status.HTTP_403_FORBIDDEN)
+
             serializer = IssueSerializer(
                 instance, data={"resolved": True}, partial=True
             )
