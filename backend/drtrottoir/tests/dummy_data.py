@@ -2,6 +2,7 @@ import datetime
 from typing import Union
 
 from drtrottoir.models import (
+    Admin,
     Building,
     GarbageCollectionSchedule,
     GarbageCollectionScheduleTemplate,
@@ -51,12 +52,9 @@ def insert_dummy_building(
 
 
 def insert_dummy_syndicus(
-    user: User,
-    buildings=None,
-):
-    syndicus = Syndicus(
-        user=user,
-    )
+    user: User, buildings: Union[None, list[Building]] = None
+) -> Syndicus:
+    syndicus = Syndicus(user=user)
     syndicus.save()
 
     if buildings is None:
@@ -156,9 +154,13 @@ def insert_dummy_student(email="tes@gmail.com", is_super_student=False) -> Stude
     return student
 
 
-# The ScheduleDefinition API is being written by Lander, but I  need
-# it for the ScheduleAssignment API. Replace this when finished.
-# - Pim
+def insert_dummy_admin(email: str = "admin@gmail.com") -> Admin:
+    user = insert_dummy_user(email)
+    admin = Admin(user=user)
+    admin.save()
+    return admin
+
+
 def insert_dummy_schedule_definition(
     buildings=None, name="dummy schedule definition name", lg=None, version=1
 ) -> ScheduleDefinition:
