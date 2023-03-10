@@ -92,6 +92,11 @@ class IsStudent(permissions.BasePermission):
             request.user.student
             return True
         except ObjectDoesNotExist:
+            try:
+                request.user.admin
+                return True
+            except ObjectDoesNotExist:
+                return False
             return False
 
 

@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 
 from drtrottoir.models import Issue
 from drtrottoir.permissions import IsSuperstudentOrAdmin, IsSuperStudent, IsSyndicusOfBuildingAndApprovalNull, \
-    IsFromUserOfIssue, IsSyndicus, IsSyndicusOfBuildingAndApprovalNotNull
+    IsFromUserOfIssue, IsSyndicus, IsSyndicusOfBuildingAndApprovalNotNull, IsStudent
 from drtrottoir.serializers import IssueSerializer
 
 # TODO - maybe move logic implemented in views to ViewSet.
@@ -29,16 +29,20 @@ from drtrottoir.serializers import IssueSerializer
 
 
 class IssuesListApiView(APIView):
-    permission_classes = []
+    # permission_classes = []
 
     def get(self, request, *args, **kwargs):
         """ """
+        if not IsAuthenticated().has_permission(request, None) or not IsSuperStudent().has_permission(request, None):
+            return Response(status=status.HTTP_403_FORBIDDEN)
         issues = Issue.objects
         serializer = IssueSerializer(issues, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         """ """
+        if not IsAuthenticated().has_permission(request, None) or not IsStudent().has_permission(request, None):
+            return Response(status=status.HTTP_403_FORBIDDEN)
         request_user = request.user
 
         if request_user is None:
