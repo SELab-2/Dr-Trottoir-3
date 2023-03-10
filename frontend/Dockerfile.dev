@@ -6,7 +6,7 @@ WORKDIR /frontend
 
 # copy the json file first
 COPY --chown=node:node ./package.json .
-#COPY package-lock.json ./
+COPY --chown=node:node ./package-lock.json .
 
 # install npm dependencies
 RUN npm install
