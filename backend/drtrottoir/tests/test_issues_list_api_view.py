@@ -4,10 +4,16 @@ import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from drtrottoir.models import User, Building
+from drtrottoir.models import Building, User
 
-from .dummy_data import insert_dummy_building, insert_dummy_issue, insert_dummy_admin, insert_dummy_student, \
-    insert_dummy_syndicus, insert_dummy_user
+from .dummy_data import (
+    insert_dummy_admin,
+    insert_dummy_building,
+    insert_dummy_issue,
+    insert_dummy_student,
+    insert_dummy_syndicus,
+    insert_dummy_user,
+)
 
 
 @pytest.mark.django_db
@@ -55,9 +61,10 @@ def test_issues_list_api_view_get():
     assert response.status_code == 200
 
 
-def _test_issues_list_api_view_get(user: User = None, issue_user: User = None, building: Building = None):
-    """
-    """
+def _test_issues_list_api_view_get(
+    user: User = None, issue_user: User = None, building: Building = None
+):
+    """ """
     client = APIClient()
     if user is not None:
         client.force_authenticate(user)
@@ -69,9 +76,7 @@ def _test_issues_list_api_view_get(user: User = None, issue_user: User = None, b
 
 @pytest.mark.django_db
 def test_issues_list_api_view_get_no_user_fail():
-    """
-
-    """
+    """ """
     response = _test_issues_list_api_view_get()
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -79,9 +84,7 @@ def test_issues_list_api_view_get_no_user_fail():
 
 @pytest.mark.django_db
 def test_issues_list_api_view_get_student_fail():
-    """
-
-    """
+    """ """
     user = insert_dummy_student()
 
     response = _test_issues_list_api_view_get(user.user, user.user)
@@ -91,9 +94,7 @@ def test_issues_list_api_view_get_student_fail():
 
 @pytest.mark.django_db
 def test_issues_list_api_view_get_super_student_success():
-    """
-
-    """
+    """ """
     user = insert_dummy_student(is_super_student=True)
 
     response = _test_issues_list_api_view_get(user.user, user.user)
@@ -103,9 +104,7 @@ def test_issues_list_api_view_get_super_student_success():
 
 @pytest.mark.django_db
 def test_issues_list_api_view_get_admin_success():
-    """
-
-    """
+    """ """
     user = insert_dummy_admin()
 
     response = _test_issues_list_api_view_get(user.user, user.user)
@@ -115,9 +114,7 @@ def test_issues_list_api_view_get_admin_success():
 
 @pytest.mark.django_db
 def test_issues_list_api_view_get_syndicus_fail():
-    """
-
-    """
+    """ """
     dummy_user = insert_dummy_user()
     user = insert_dummy_syndicus(dummy_user)
 
@@ -126,9 +123,10 @@ def test_issues_list_api_view_get_syndicus_fail():
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-def _test_issues_list_api_view_post(user: User = None, issue_user: User = None, building: Building = None):
-    """
-    """
+def _test_issues_list_api_view_post(
+    user: User = None, issue_user: User = None, building: Building = None
+):
+    """ """
     client = APIClient()
     if user is not None:
         client.force_authenticate(user)
@@ -144,9 +142,7 @@ def _test_issues_list_api_view_post(user: User = None, issue_user: User = None, 
 
 @pytest.mark.django_db
 def test_issues_list_api_view_post_no_user_fail():
-    """
-
-    """
+    """ """
     response = _test_issues_list_api_view_post()
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -154,9 +150,7 @@ def test_issues_list_api_view_post_no_user_fail():
 
 @pytest.mark.django_db
 def test_issues_list_api_view_post_student_success():
-    """
-
-    """
+    """ """
     user = insert_dummy_student()
 
     response = _test_issues_list_api_view_post(user.user)
@@ -166,9 +160,7 @@ def test_issues_list_api_view_post_student_success():
 
 @pytest.mark.django_db
 def test_issues_list_api_view_post_super_student_success():
-    """
-
-    """
+    """ """
     user = insert_dummy_student(is_super_student=True)
 
     response = _test_issues_list_api_view_post(user.user)
@@ -178,9 +170,7 @@ def test_issues_list_api_view_post_super_student_success():
 
 @pytest.mark.django_db
 def test_issues_list_api_view_post_admin_success():
-    """
-
-    """
+    """ """
     user = insert_dummy_admin()
 
     response = _test_issues_list_api_view_post(user.user)
@@ -190,9 +180,7 @@ def test_issues_list_api_view_post_admin_success():
 
 @pytest.mark.django_db
 def test_issues_list_api_view_post_syndicus_fail():
-    """
-
-    """
+    """ """
     dummy_user = insert_dummy_user()
     user = insert_dummy_syndicus(dummy_user)
 

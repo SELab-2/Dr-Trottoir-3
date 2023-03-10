@@ -1,6 +1,7 @@
 import datetime
 
 from drtrottoir.models import (
+    Admin,
     Building,
     GarbageCollectionSchedule,
     GarbageCollectionScheduleTemplate,
@@ -15,7 +16,7 @@ from drtrottoir.models import (
     ScheduleWorkEntry,
     Student,
     Syndicus,
-    User, Admin,
+    User,
 )
 
 

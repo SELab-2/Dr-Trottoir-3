@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
-from drtrottoir.models import Issue, Syndicus, Student, Admin
+from drtrottoir.models import Admin, Issue, Student, Syndicus
 
 
 class IsSuperstudentOrAdmin(permissions.BasePermission):
@@ -27,17 +27,19 @@ class IsSuperstudentOrAdmin(permissions.BasePermission):
 
 
 class IsFromUserOfIssue(permissions.BasePermission):
-    def has_object_permission(self, request: Request, view: APIView, obj: Issue) -> bool:
-        """
-
-        """
+    def has_object_permission(
+        self, request: Request, view: APIView, obj: Issue
+    ) -> bool:
+        """ """
         if isinstance(request.user, AnonymousUser):
             return False
         return obj.from_user.id == request.user.id
 
 
 class IsSyndicusOfBuildingAndApprovalNull(permissions.BasePermission):
-    def has_object_permission(self, request: Request, view: APIView, obj: Issue) -> bool:
+    def has_object_permission(
+        self, request: Request, view: APIView, obj: Issue
+    ) -> bool:
         """
         The request.user is a Syndicus object, or at least should be.
         """
@@ -47,19 +49,28 @@ class IsSyndicusOfBuildingAndApprovalNull(permissions.BasePermission):
         if isinstance(request.user, AnonymousUser):
             return False
         try:
-            return len(obj.building.syndicus_set.all().filter(user=request.user)) > 0 and obj.approval_user is None
+            return (
+                len(obj.building.syndicus_set.all().filter(user=request.user)) > 0
+                and obj.approval_user is None
+            )
         except ObjectDoesNotExist:
             return False
 
 
 class IsSyndicusOfBuildingAndApprovalNotNull(permissions.BasePermission):
-    def has_object_permission(self, request: Request, view: APIView, obj: Issue) -> bool:
+    def has_object_permission(
+        self, request: Request, view: APIView, obj: Issue
+    ) -> bool:
         if isinstance(request.user, AnonymousUser):
             return False
         try:
-            return len(obj.building.syndicus_set.all().filter(user=request.user)) > 0 and obj.approval_user is not None
+            return (
+                len(obj.building.syndicus_set.all().filter(user=request.user)) > 0
+                and obj.approval_user is not None
+            )
         except ObjectDoesNotExist:
             return False
+
 
 class IsSuperStudent(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
@@ -102,9 +113,7 @@ class IsStudent(permissions.BasePermission):
 
 class IsSyndicus(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
-        """
-
-        """
+        """ """
         # if isinstance(request.user, Syndicus) and not request.user.user.is_anonymous:
         #     return True
         # return False

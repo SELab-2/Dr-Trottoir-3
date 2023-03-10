@@ -5,8 +5,15 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from drtrottoir.models import Issue
-from drtrottoir.permissions import IsSuperstudentOrAdmin, IsSuperStudent, IsSyndicusOfBuildingAndApprovalNull, \
-    IsFromUserOfIssue, IsSyndicus, IsSyndicusOfBuildingAndApprovalNotNull, IsStudent
+from drtrottoir.permissions import (
+    IsFromUserOfIssue,
+    IsStudent,
+    IsSuperStudent,
+    IsSuperstudentOrAdmin,
+    IsSyndicus,
+    IsSyndicusOfBuildingAndApprovalNotNull,
+    IsSyndicusOfBuildingAndApprovalNull,
+)
 from drtrottoir.serializers import IssueSerializer
 
 # TODO - maybe move logic implemented in views to ViewSet.
@@ -33,7 +40,9 @@ class IssuesListApiView(APIView):
 
     def get(self, request, *args, **kwargs):
         """ """
-        if not IsAuthenticated().has_permission(request, None) or not IsSuperStudent().has_permission(request, None):
+        if not IsAuthenticated().has_permission(
+            request, None
+        ) or not IsSuperStudent().has_permission(request, None):
             return Response(status=status.HTTP_403_FORBIDDEN)
         issues = Issue.objects
         serializer = IssueSerializer(issues, many=True)
@@ -41,7 +50,9 @@ class IssuesListApiView(APIView):
 
     def post(self, request, *args, **kwargs):
         """ """
-        if not IsAuthenticated().has_permission(request, None) or not IsStudent().has_permission(request, None):
+        if not IsAuthenticated().has_permission(
+            request, None
+        ) or not IsStudent().has_permission(request, None):
             return Response(status=status.HTTP_403_FORBIDDEN)
         request_user = request.user
 
@@ -69,7 +80,15 @@ class IssueDetailApiView(APIView):
         try:
             instance = Issue.objects.get(id=issue_id)
 
-            if not IsSuperStudent().has_permission(request, None) and not IsFromUserOfIssue().has_object_permission(request, None, instance) and not IsSyndicusOfBuildingAndApprovalNull().has_object_permission(request, None, instance):
+            if (
+                not IsSuperStudent().has_permission(request, None)
+                and not IsFromUserOfIssue().has_object_permission(
+                    request, None, instance
+                )
+                and not IsSyndicusOfBuildingAndApprovalNull().has_object_permission(
+                    request, None, instance
+                )
+            ):
                 return Response(status=status.HTTP_403_FORBIDDEN)
 
             serializer = IssueSerializer(instance)
@@ -81,7 +100,9 @@ class IssueDetailApiView(APIView):
 
     # @permission_classes(IsSuperStudent)
     def patch(self, request, issue_id, *args, **kwargs):
-        if not IsAuthenticated().has_permission(request, None) or not IsSuperStudent().has_permission(request, None):
+        if not IsAuthenticated().has_permission(
+            request, None
+        ) or not IsSuperStudent().has_permission(request, None):
             return Response(status=status.HTTP_403_FORBIDDEN)
         """ """
         try:
@@ -105,7 +126,11 @@ class IssueDetailApiView(APIView):
         try:
             instance = Issue.objects.get(id=issue_id)
 
-            if not IsSuperStudent().has_permission(request, None) and not IsSyndicusOfBuildingAndApprovalNotNull().has_object_permission(request, None, instance):
+            if not IsSuperStudent().has_permission(
+                request, None
+            ) and not IsSyndicusOfBuildingAndApprovalNotNull().has_object_permission(
+                request, None, instance
+            ):
                 return Response(status=status.HTTP_403_FORBIDDEN)
 
             serializer = IssueSerializer(
@@ -126,9 +151,10 @@ class IssueDetailApiView(APIView):
 class IssueNotApprovedApiView(APIView):
     def get(self, request, *args, **kwargs):
         """ """
-        if not IsAuthenticated().has_permission(request, None) or not IsSuperStudent().has_permission(request, None):
+        if not IsAuthenticated().has_permission(
+            request, None
+        ) or not IsSuperStudent().has_permission(request, None):
             return Response(status=status.HTTP_403_FORBIDDEN)
         issues = Issue.objects.filter(approval_user=None)
         serializer = IssueSerializer(issues, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-

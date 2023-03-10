@@ -4,11 +4,17 @@ import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from drtrottoir.models import User, Syndicus, Building
+from drtrottoir.models import Building, Syndicus, User
 
-from .dummy_data import insert_dummy_issue, insert_dummy_student, insert_dummy_syndicus, insert_dummy_admin, \
-    insert_dummy_user, insert_dummy_building
 from ..serializers import BuildingSerializer
+from .dummy_data import (
+    insert_dummy_admin,
+    insert_dummy_building,
+    insert_dummy_issue,
+    insert_dummy_student,
+    insert_dummy_syndicus,
+    insert_dummy_user,
+)
 
 
 @pytest.mark.django_db
@@ -124,9 +130,7 @@ def test_issues_detail_api_view_delete_invalid_id():
 
 
 def _test_issues_detail_api_view_get_invalid_id(user: User = None):
-    """
-
-    """
+    """ """
     client = APIClient()
     if user is not None:
         client.force_authenticate(user)
@@ -137,10 +141,10 @@ def _test_issues_detail_api_view_get_invalid_id(user: User = None):
     return client.get(f"/issues/{dummy_issue.id + 1}/")
 
 
-def _test_issues_detail_api_view_get_valid_id(user: User = None, issue_user: User = None, building: Building = None):
-    """
-
-    """
+def _test_issues_detail_api_view_get_valid_id(
+    user: User = None, issue_user: User = None, building: Building = None
+):
+    """ """
     client = APIClient()
     if user is not None:
         client.force_authenticate(user)
@@ -153,9 +157,7 @@ def _test_issues_detail_api_view_get_valid_id(user: User = None, issue_user: Use
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_get_no_user_fail():
-    """
-
-    """
+    """ """
     response = _test_issues_detail_api_view_get_valid_id()
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -163,9 +165,7 @@ def test_issues_detail_api_view_get_no_user_fail():
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_get_student_success():
-    """
-
-    """
+    """ """
     user = insert_dummy_student()
 
     response = _test_issues_detail_api_view_get_valid_id(user.user, user.user)
@@ -175,9 +175,7 @@ def test_issues_detail_api_view_get_student_success():
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_get_student_fail():
-    """
-
-    """
+    """ """
     user = insert_dummy_student()
 
     response = _test_issues_detail_api_view_get_valid_id(user=user.user)
@@ -187,67 +185,65 @@ def test_issues_detail_api_view_get_student_fail():
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_get_syndicus_success():
-    """
-
-    """
+    """ """
     building = insert_dummy_building()
     dummy_user = insert_dummy_user("email1@gmail.com")
     user = insert_dummy_syndicus(user=dummy_user, buildings=[building])
 
     issue_user = insert_dummy_user("email2@gmail.com")
 
-    response = _test_issues_detail_api_view_get_valid_id(user=user.user, issue_user=issue_user, building=building)
+    response = _test_issues_detail_api_view_get_valid_id(
+        user=user.user, issue_user=issue_user, building=building
+    )
 
     assert response.status_code == status.HTTP_200_OK
 
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_get_syndicus_fail():
-    """
-
-    """
+    """ """
     dummy_user = insert_dummy_user("email1@gmail.com")
     user = insert_dummy_syndicus(user=dummy_user)
 
     issue_user = insert_dummy_user("email2@gmail.com")
 
-    response = _test_issues_detail_api_view_get_valid_id(user=user.user, issue_user=issue_user)
+    response = _test_issues_detail_api_view_get_valid_id(
+        user=user.user, issue_user=issue_user
+    )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_get_super_student_success():
-    """
-
-    """
+    """ """
     user = insert_dummy_student(is_super_student=True, email="email1@gmail.com")
 
     issue_user = insert_dummy_user("email2@gmail.com")
 
-    response = _test_issues_detail_api_view_get_valid_id(user=user.user, issue_user=issue_user)
+    response = _test_issues_detail_api_view_get_valid_id(
+        user=user.user, issue_user=issue_user
+    )
 
     assert response.status_code == status.HTTP_200_OK
 
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_get_admin_success():
-    """
-
-    """
+    """ """
     user = insert_dummy_admin("email1@gmail.com")
 
     issue_user = insert_dummy_user("email2@gmail.com")
 
-    response = _test_issues_detail_api_view_get_valid_id(user=user.user, issue_user=issue_user)
+    response = _test_issues_detail_api_view_get_valid_id(
+        user=user.user, issue_user=issue_user
+    )
 
     assert response.status_code == status.HTTP_200_OK
 
 
 def _test_issues_detail_api_view_patch_valid_id(user: User = None):
-    """
-
-    """
+    """ """
     client = APIClient()
     if user is not None:
         client.force_authenticate(user)
@@ -264,9 +260,7 @@ def _test_issues_detail_api_view_patch_valid_id(user: User = None):
 
 
 def _test_issues_detail_api_view_patch_invalid_id(user: User = None):
-    """
-
-    """
+    """ """
     client = APIClient()
     if user is not None:
         client.force_authenticate(user)
@@ -284,9 +278,7 @@ def _test_issues_detail_api_view_patch_invalid_id(user: User = None):
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_patch_no_user_fail():
-    """
-
-    """
+    """ """
     response = _test_issues_detail_api_view_patch_valid_id()
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -294,9 +286,7 @@ def test_issues_detail_api_view_patch_no_user_fail():
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_patch_student_fail():
-    """
-
-    """
+    """ """
     user = insert_dummy_student()
 
     response = _test_issues_detail_api_view_patch_valid_id(user=user.user)
@@ -306,9 +296,7 @@ def test_issues_detail_api_view_patch_student_fail():
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_patch_super_student_success():
-    """
-
-    """
+    """ """
     user = insert_dummy_student(is_super_student=True)
 
     response = _test_issues_detail_api_view_patch_valid_id(user.user)
@@ -318,9 +306,7 @@ def test_issues_detail_api_view_patch_super_student_success():
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_patch_admin_success():
-    """
-
-    """
+    """ """
     user = insert_dummy_admin()
 
     response = _test_issues_detail_api_view_patch_valid_id(user.user)
@@ -329,9 +315,7 @@ def test_issues_detail_api_view_patch_admin_success():
 
 
 def _test_issues_detail_api_view_delete_invalid_id(user: User = None):
-    """
-
-    """
+    """ """
     client = APIClient()
     if user is not None:
         client.force_authenticate(user)
@@ -342,9 +326,7 @@ def _test_issues_detail_api_view_delete_invalid_id(user: User = None):
 
 
 def _test_issues_detail_api_view_delete_valid_id(user: User = None):
-    """
-
-    """
+    """ """
     client = APIClient()
     if user is not None:
         client.force_authenticate(user)
@@ -356,9 +338,7 @@ def _test_issues_detail_api_view_delete_valid_id(user: User = None):
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_delete_no_user_fail():
-    """
-
-    """
+    """ """
     response = _test_issues_detail_api_view_patch_valid_id()
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -366,9 +346,7 @@ def test_issues_detail_api_view_delete_no_user_fail():
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_delete_student_fail():
-    """
-
-    """
+    """ """
     user = insert_dummy_student()
 
     response = _test_issues_detail_api_view_delete_valid_id(user.user)
@@ -378,9 +356,7 @@ def test_issues_detail_api_view_delete_student_fail():
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_delete_super_student_success():
-    """
-
-    """
+    """ """
     user = insert_dummy_student(is_super_student=True)
 
     response = _test_issues_detail_api_view_delete_valid_id(user.user)
@@ -390,9 +366,7 @@ def test_issues_detail_api_view_delete_super_student_success():
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_delete_admin_success():
-    """
-
-    """
+    """ """
     user = insert_dummy_admin()
 
     response = _test_issues_detail_api_view_delete_valid_id(user.user)
@@ -402,30 +376,30 @@ def test_issues_detail_api_view_delete_admin_success():
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_delete_syndicus_success():
-    """
-
-    """
+    """ """
     building = insert_dummy_building()
     dummy_user = insert_dummy_user("email1@gmail.com")
     user = insert_dummy_syndicus(user=dummy_user, buildings=[building])
 
     issue_user = insert_dummy_user("email2@gmail.com")
 
-    response = _test_issues_detail_api_view_get_valid_id(user=user.user, issue_user=issue_user, building=building)
+    response = _test_issues_detail_api_view_get_valid_id(
+        user=user.user, issue_user=issue_user, building=building
+    )
 
     assert response.status_code == status.HTTP_200_OK
 
 
 @pytest.mark.django_db
 def test_issues_detail_api_view_delete_syndicus_fail():
-    """
-
-    """
+    """ """
     dummy_user = insert_dummy_user("email1@gmail.com")
     user = insert_dummy_syndicus(user=dummy_user)
 
     issue_user = insert_dummy_user("email2@gmail.com")
 
-    response = _test_issues_detail_api_view_get_valid_id(user=user.user, issue_user=issue_user)
+    response = _test_issues_detail_api_view_get_valid_id(
+        user=user.user, issue_user=issue_user
+    )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
