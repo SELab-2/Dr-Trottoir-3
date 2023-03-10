@@ -55,15 +55,17 @@ class IssuesListApiView(APIView):
 
 
 class IssueDetailApiView(APIView):
-    # permission_classes = [IsAuthenticated, IsFromUserOfIssue]
+    # permission_classes = [IsAuthenticated, IsSuperStudent]
 
-    @permission_classes([IsAuthenticated, IsSuperStudent])
+    # @permission_classes([IsAuthenticated, IsSuperStudent])
     def get(self, request, issue_id, *args, **kwargs):
-        """ """
+        # if not IsAuthenticated().has_permission(request, None) and not IsSuperStudent().has_permission(request, None):
+        #     return Response(status=status.HTTP_403_FORBIDDEN)
+
         try:
             instance = Issue.objects.get(id=issue_id)
 
-            if not IsFromUserOfIssue().has_object_permission(request, None, instance) and not IsSyndicusOfBuildingAndApprovalNull().has_object_permission(request, None, instance) and not IsSuperStudent().has_permission(request, None):
+            if (not IsAuthenticated().has_permission(request, None) and not IsSuperStudent().has_permission(request, None)) or (not IsFromUserOfIssue().has_object_permission(request, None, instance) and not IsSyndicusOfBuildingAndApprovalNull().has_object_permission(request, None, instance) and not IsSuperStudent().has_permission(request, None)):
                 return Response(status=status.HTTP_403_FORBIDDEN)
 
             serializer = IssueSerializer(instance)
@@ -73,8 +75,10 @@ class IssueDetailApiView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-    @permission_classes([IsAuthenticated, IsSuperStudent])
+    # @permission_classes(IsSuperStudent)
     def patch(self, request, issue_id, *args, **kwargs):
+        if not IsAuthenticated().has_permission(request, None) and not IsSuperStudent().has_permission(request, None):
+            return Response(status=status.HTTP_403_FORBIDDEN)
         """ """
         try:
             instance = Issue.objects.get(id=issue_id)

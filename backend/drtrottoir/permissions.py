@@ -1,5 +1,6 @@
 from typing import Any
 
+from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
@@ -30,6 +31,8 @@ class IsFromUserOfIssue(permissions.BasePermission):
         """
 
         """
+        if isinstance(request.user, AnonymousUser):
+            return False
         return obj.from_user.id == request.user.id
 
 
@@ -38,32 +41,49 @@ class IsSyndicusOfBuildingAndApprovalNull(permissions.BasePermission):
         """
         The request.user is a Syndicus object, or at least should be.
         """
-        if isinstance(request.user, Syndicus) and not request.user.user.is_anonymous and len(obj.building.syndicus_set.all().filter(user=request.user.user)) > 0 and obj.approval_user is None:
-            return True
-        return False
-        # try:
-        #     return request.user.syndicus in obj.building.syndicus_set and obj.approval_user is None
-        # except ObjectDoesNotExist:
-        #     return False
+        # if isinstance(request.user, Syndicus) and not request.user.user.is_anonymous and len(obj.building.syndicus_set.all().filter(user=request.user.user)) > 0 and obj.approval_user is None:
+        #     return True
+        # return False
+        if isinstance(request.user, AnonymousUser):
+            return False
+        try:
+            return len(obj.building.syndicus_set.all().filter(user=request.user)) > 0 and obj.approval_user is None
+        except ObjectDoesNotExist:
+            return False
 
 
 class IsSuperStudent(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
-        if (isinstance(request.user, Student) or isinstance(request.user, Admin)) and not request.user.user.is_anonymous:
-            return True
-        return False
-        # try:
-        #     student = request.user.student
-        #     return student.is_super_student
-        # except ObjectDoesNotExist:
-        #     return False
+        # return False
+        # if (isinstance(request.user, Student) or isinstance(request.user, Admin)) and not request.user.user.is_anonymous:
+        #     return True
+        # return False
+        if isinstance(request.user, AnonymousUser):
+            return False
+
+        try:
+            student = request.user.student
+            return student.is_super_student
+        except ObjectDoesNotExist:
+            try:
+                request.user.admin
+                return True
+            except ObjectDoesNotExist:
+                return False
 
 
 class IsStudent(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
-        if isinstance(request.user, Student) and not request.user.user.is_anonymous:
+        # if isinstance(request.user, Student) and not request.user.user.is_anonymous:
+        #     return True
+        # return False
+        if isinstance(request.user, AnonymousUser):
+            return False
+        try:
+            request.user.student
             return True
-        return False
+        except ObjectDoesNotExist:
+            return False
 
 
 class IsSyndicus(permissions.BasePermission):
@@ -71,6 +91,13 @@ class IsSyndicus(permissions.BasePermission):
         """
 
         """
-        if isinstance(request.user, Syndicus) and not request.user.user.is_anonymous:
+        # if isinstance(request.user, Syndicus) and not request.user.user.is_anonymous:
+        #     return True
+        # return False
+        if isinstance(request.user, AnonymousUser):
+            return False
+        try:
+            request.user.syndicus
             return True
-        return False
+        except ObjectDoesNotExist:
+            return False

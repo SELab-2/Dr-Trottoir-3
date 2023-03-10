@@ -14,11 +14,11 @@ from ..serializers import BuildingSerializer
 @pytest.mark.django_db
 def test_issues_detail_api_view_get_valid_one_present():
     """ """
-    user = insert_dummy_admin()
-    dummy_issue_1 = insert_dummy_issue(user.user)
-
+    user = insert_dummy_student(is_super_student=True)
     client = APIClient()
     client.force_authenticate(user.user)
+    dummy_issue_1 = insert_dummy_issue(user.user)
+
     response = client.get(f"/issues/{dummy_issue_1.id}/")
 
     assert response.status_code == 200
@@ -128,7 +128,7 @@ def _test_issues_detail_api_view_get_invalid_id(user: User = None):
 
     """
     client = APIClient()
-    if User is not None:
+    if user is not None:
         client.force_authenticate(user)
 
     dummy_user = insert_dummy_admin()
@@ -196,7 +196,7 @@ def test_issues_detail_api_view_get_syndicus_success():
 
     issue_user = insert_dummy_user("email2@gmail.com")
 
-    response = _test_issues_detail_api_view_get_valid_id(user=user, issue_user=issue_user, building=building)
+    response = _test_issues_detail_api_view_get_valid_id(user=user.user, issue_user=issue_user, building=building)
 
     assert response.status_code == status.HTTP_200_OK
 
@@ -210,7 +210,7 @@ def test_issues_detail_api_view_get_syndicus_fail():
 
     issue_user = insert_dummy_user("email2@gmail.com")
 
-    response = _test_issues_detail_api_view_get_valid_id(user=user, issue_user=issue_user)
+    response = _test_issues_detail_api_view_get_valid_id(user=user.user, issue_user=issue_user)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -224,7 +224,7 @@ def test_issues_detail_api_view_get_super_student_success():
 
     issue_user = insert_dummy_user("email2@gmail.com")
 
-    response = _test_issues_detail_api_view_get_valid_id(user=user, issue_user=issue_user)
+    response = _test_issues_detail_api_view_get_valid_id(user=user.user, issue_user=issue_user)
 
     assert response.status_code == status.HTTP_200_OK
 
@@ -238,7 +238,7 @@ def test_issues_detail_api_view_get_admin_success():
 
     issue_user = insert_dummy_user("email2@gmail.com")
 
-    response = _test_issues_detail_api_view_get_valid_id(user=user, issue_user=issue_user)
+    response = _test_issues_detail_api_view_get_valid_id(user=user.user, issue_user=issue_user)
 
     assert response.status_code == status.HTTP_200_OK
 
