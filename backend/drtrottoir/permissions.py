@@ -8,6 +8,7 @@ from rest_framework.request import Request
 from rest_framework.views import APIView
 
 from drtrottoir.models import Admin, Issue, Student, Syndicus
+from rest_framework.permissions import SAFE_METHODS
 
 
 class IsSuperstudentOrAdmin(permissions.BasePermission):
@@ -124,3 +125,19 @@ class IsSyndicus(permissions.BasePermission):
             return True
         except ObjectDoesNotExist:
             return False
+
+
+class IsSuperstudentOrAdminOrSafe(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        try:
+            request.user.admin
+            return True
+        except ObjectDoesNotExist:
+            try:
+                student = request.user.student
+                if student.is_super_student:
+                    return True
+                return request.method in SAFE_METHODS
+
+            except ObjectDoesNotExist:
+                return False
