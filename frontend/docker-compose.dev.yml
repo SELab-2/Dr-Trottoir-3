@@ -10,5 +10,3 @@ services:
     volumes:
       - ./:/frontend
       - /frontend/node_modules
-#    env_file:
-#      - ./.env.dev

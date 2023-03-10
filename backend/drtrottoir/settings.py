@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-import os
+# import os
 from pathlib import Path
 from typing import List
 
@@ -80,17 +80,17 @@ WSGI_APPLICATION = "drtrottoir.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    # "default": { TODO remove
-    #     "ENGINE": "django.db.backends.sqlite3",
-    #     "NAME": BASE_DIR / "db.sqlite3",
-    # }
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": os.environ.get("POSTGRES_HOST"),
-        "NAME": os.environ.get("POSTGRES_DB"),
-        "USER": os.environ.get("POSTGRES_USER"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+    "default": {  # TODO remove
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
+    # "default": {
+    #     "ENGINE": "django.db.backends.postgresql",
+    #     "HOST": os.environ.get("POSTGRES_HOST"),
+    #     "NAME": os.environ.get("POSTGRES_DB"),
+    #     "USER": os.environ.get("POSTGRES_USER"),
+    #     "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+    # }
 }
 
 
