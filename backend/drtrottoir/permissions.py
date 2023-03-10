@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
-from drtrottoir.models import Issue
+from drtrottoir.models import Issue, Syndicus, Student, Admin
 
 
 class IsSuperstudentOrAdmin(permissions.BasePermission):
@@ -36,30 +36,34 @@ class IsFromUserOfIssue(permissions.BasePermission):
 class IsSyndicusOfBuildingAndApprovalNull(permissions.BasePermission):
     def has_object_permission(self, request: Request, view: APIView, obj: Issue) -> bool:
         """
-
+        The request.user is a Syndicus object, or at least should be.
         """
-        try:
-            return request.user.syndicus in obj.building.syndicus_set and obj.approval_user is None
-        except ObjectDoesNotExist:
-            return False
+        if isinstance(request.user, Syndicus) and not request.user.user.is_anonymous and len(obj.building.syndicus_set.all().filter(user=request.user.user)) > 0 and obj.approval_user is None:
+            return True
+        return False
+        # try:
+        #     return request.user.syndicus in obj.building.syndicus_set and obj.approval_user is None
+        # except ObjectDoesNotExist:
+        #     return False
 
 
 class IsSuperStudent(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
-        try:
-            student = request.user.student
-            return student.is_super_student
-        except ObjectDoesNotExist:
-            return False
+        if (isinstance(request.user, Student) or isinstance(request.user, Admin)) and not request.user.user.is_anonymous:
+            return True
+        return False
+        # try:
+        #     student = request.user.student
+        #     return student.is_super_student
+        # except ObjectDoesNotExist:
+        #     return False
 
 
 class IsStudent(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
-        try:
-            request.user.student
+        if isinstance(request.user, Student) and not request.user.user.is_anonymous:
             return True
-        except ObjectDoesNotExist:
-            return False
+        return False
 
 
 class IsSyndicus(permissions.BasePermission):
@@ -67,8 +71,6 @@ class IsSyndicus(permissions.BasePermission):
         """
 
         """
-        try:
-            request.user.syndicus
+        if isinstance(request.user, Syndicus) and not request.user.user.is_anonymous:
             return True
-        except ObjectDoesNotExist:
-            return False
+        return False

@@ -63,6 +63,7 @@ def insert_dummy_syndicus(
             syndicus.buildings.add(building)
 
     syndicus.save()
+
     return syndicus
 
 
