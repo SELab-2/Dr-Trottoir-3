@@ -29,8 +29,6 @@ class ScheduleWorkEntryPermission(IsSuperstudentOrAdmin):
 
     def has_permission(self, request: Request, view: APIView) -> bool:
         if request.method == "POST":
-            if isinstance(request.user, AnonymousUser):
-                return False
             return user_is_student(request.user)
         # If not a post request, return default permissions
         return super().has_permission(request, view)
@@ -43,6 +41,10 @@ class ScheduleWorkEntryGetByIdPermission(permissions.BasePermission):
                 # If no ID is given, we are requesting the list. In this case,
                 # refuse access
                 return False
+            # At this point we should be authenticated because of the
+            # IsAuthenticated permission class. Mypy however does not know
+            # this, and we need to manually check to make sure we're not
+            # AnonymousUser.
             if isinstance(request.user, AnonymousUser):
                 return False
             try:
@@ -55,12 +57,9 @@ class ScheduleWorkEntryGetByIdPermission(permissions.BasePermission):
 
 class ScheduleWorkEntryByUserIdPermission(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
-        if isinstance(request.user, AnonymousUser):
-            return False
         # Super students or admins always have access
         if user_is_superstudent_or_admin(request.user):
             return True
-
         # Students have access if request.user is the same as the user in the url
         if not user_is_student(request.user):
             return False
@@ -74,8 +73,8 @@ class ScheduleWorkEntryViewSet(
     viewsets.GenericViewSet,
 ):
     permission_classes = [
-        (ScheduleWorkEntryPermission | ScheduleWorkEntryGetByIdPermission),
         IsAuthenticated,
+        (ScheduleWorkEntryPermission | ScheduleWorkEntryGetByIdPermission),
     ]
 
     queryset = ScheduleWorkEntry.objects.all()
@@ -94,8 +93,11 @@ class ScheduleWorkEntryViewSet(
                 schedule_definition=request.data.schedule_definition
         If any of these are not the case, we return a 400_BAD_REQUEST error
         """
+
+        # At this point we've passed our permission checks, and we should
+        # be authenticated. However, we need manually check if we are not
+        # AnonymousUser or mypy's type checking will give errors.
         if isinstance(request.user, AnonymousUser):
-            # Manual check to please mypy
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         # Condition 1: request.user must be the same as request.data.creator
