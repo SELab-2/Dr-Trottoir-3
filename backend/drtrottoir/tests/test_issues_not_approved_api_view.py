@@ -1,20 +1,26 @@
 import pytest
+from rest_framework import status
 from rest_framework.test import APIClient
 
-from drtrottoir.models import User
-
-from .dummy_data import insert_dummy_issue
+from .dummy_data import (
+    insert_dummy_admin,
+    insert_dummy_issue,
+    insert_dummy_student,
+    insert_dummy_syndicus,
+    insert_dummy_user,
+)
 
 
 @pytest.mark.django_db
 def test_issues_all_not_approved():
     """ """
-    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
-
-    dummy_issue_id_1 = insert_dummy_issue(dummy_user).id
-    dummy_issue_id_2 = insert_dummy_issue(dummy_user).id
-
+    user = insert_dummy_admin()
     client = APIClient()
+    client.force_authenticate(user.user)
+
+    dummy_issue_id_1 = insert_dummy_issue(user.user).id
+    dummy_issue_id_2 = insert_dummy_issue(user.user).id
+
     response = client.get("/issues/not_approved/")
 
     response_data_ids = [e["id"] for e in response.data]
@@ -27,18 +33,18 @@ def test_issues_all_not_approved():
 @pytest.mark.django_db
 def test_issues_all_approved():
     """ """
-    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+    user = insert_dummy_admin()
+    client = APIClient()
+    client.force_authenticate(user.user)
+    dummy_issue_1 = insert_dummy_issue(user.user)
+    dummy_issue_2 = insert_dummy_issue(user.user)
 
-    dummy_issue_1 = insert_dummy_issue(dummy_user)
-    dummy_issue_2 = insert_dummy_issue(dummy_user)
-
-    dummy_issue_1.approval_user = dummy_user
+    dummy_issue_1.approval_user = user.user
     dummy_issue_1.save()
 
-    dummy_issue_2.approval_user = dummy_user
+    dummy_issue_2.approval_user = user.user
     dummy_issue_2.save()
 
-    client = APIClient()
     response = client.get("/issues/not_approved/")
 
     response_data_ids = [e["id"] for e in response.data]
@@ -50,15 +56,16 @@ def test_issues_all_approved():
 @pytest.mark.django_db
 def test_issues_some_approved():
     """ """
-    dummy_user = User.objects.create_user(username="test@gmail.com", password="test")
+    user = insert_dummy_admin()
+    client = APIClient()
+    client.force_authenticate(user.user)
 
-    dummy_issue_1 = insert_dummy_issue(dummy_user)
-    dummy_issue_2 = insert_dummy_issue(dummy_user)
+    dummy_issue_1 = insert_dummy_issue(user.user)
+    dummy_issue_2 = insert_dummy_issue(user.user)
 
-    dummy_issue_1.approval_user = dummy_user
+    dummy_issue_1.approval_user = user.user
     dummy_issue_1.save()
 
-    client = APIClient()
     response = client.get("/issues/not_approved/")
 
     response_data_ids = [e["id"] for e in response.data]
@@ -67,3 +74,62 @@ def test_issues_some_approved():
     assert dummy_issue_1.id not in response_data_ids
     assert dummy_issue_2.id in response_data_ids
     assert response.status_code == 200
+
+
+def _test_issues_not_approved_api_view_get(user=None, issue_user=None, building=None):
+    client = APIClient()
+    if user is not None:
+        client.force_authenticate(user)
+
+    insert_dummy_issue(dummy_user=issue_user, dummy_building=building)
+
+    return client.get("/issues/not_approved/")
+
+
+@pytest.mark.django_db
+def test_issues_not_approved_get_no_user_fail():
+    """ """
+    response = _test_issues_not_approved_api_view_get()
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
+def test_issues_not_approved_get_student_fail():
+    """ """
+    user = insert_dummy_student()
+
+    response = _test_issues_not_approved_api_view_get(user.user)
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
+def test_issues_not_approved_get_super_student_success():
+    """ """
+    user = insert_dummy_student(is_super_student=True)
+
+    response = _test_issues_not_approved_api_view_get(user.user)
+
+    assert response.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.django_db
+def test_issues_not_approved_get_admin_success():
+    """ """
+    user = insert_dummy_admin()
+
+    response = _test_issues_not_approved_api_view_get(user.user)
+
+    assert response.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.django_db
+def test_issues_not_approved_get_syndicus_fail():
+    """ """
+    dummy_user = insert_dummy_user("email_temp@gmail.com")
+    user = insert_dummy_syndicus(dummy_user)
+
+    response = _test_issues_not_approved_api_view_get(user.user)
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
