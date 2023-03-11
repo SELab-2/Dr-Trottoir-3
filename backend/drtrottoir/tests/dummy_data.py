@@ -117,7 +117,7 @@ def insert_dummy_issue(dummy_user=None, dummy_building=None) -> Issue:
 
     if dummy_user is None:
         dummy_user = User.objects.create_user(
-            username="test@gmail.com", password="test"
+            username="user_issue@gmail.com", password="test"
         )
 
     issue = Issue(
