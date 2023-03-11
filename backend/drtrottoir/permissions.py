@@ -4,7 +4,7 @@ from rest_framework.permissions import SAFE_METHODS
 
 
 class IsSuperstudentOrAdmin(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         try:
             request.user.admin
 
