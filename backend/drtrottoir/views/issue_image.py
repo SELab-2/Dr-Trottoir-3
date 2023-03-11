@@ -22,7 +22,9 @@ class IssueImageView(APIView):
 
     def post(self, request, *args, **kwargs):
         """ """
-        if not IsAuthenticated().has_permission(request, None) or not IsStudent().has_permission(request, None):
+        if not IsAuthenticated().has_permission(
+            request, None
+        ) or not IsStudent().has_permission(request, None):
             return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = IssueImageSerializer(data=request.data)
         if serializer.is_valid():
@@ -37,6 +39,7 @@ class IssueImageDetailView(APIView):
     The files are not allowed to be deleted, only the entries from the database.
     The uploaded files are accessible at /media/issue_images/{filename}/
     """
+
     # Code removed on March 11 2023, since it does not follow the API guide.
     # def get(self, request, issue_image_id, *args, **kwargs):
     #     try:
@@ -48,7 +51,9 @@ class IssueImageDetailView(APIView):
 
     def delete(self, request, issue_image_id, *args, **kwargs):
         """ """
-        if not IsAuthenticated().has_permission(request, None) or not IsSuperStudent().has_permission(request, None):
+        if not IsAuthenticated().has_permission(
+            request, None
+        ) or not IsSuperStudent().has_permission(request, None):
             return Response(status=status.HTTP_403_FORBIDDEN)
         try:
             instance = IssueImage.objects.get(id=issue_image_id)

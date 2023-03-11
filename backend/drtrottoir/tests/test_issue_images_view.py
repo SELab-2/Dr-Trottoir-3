@@ -5,8 +5,14 @@ from PIL import Image
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from .dummy_data import insert_dummy_issue, insert_dummy_issue_image, insert_dummy_user, insert_dummy_student, \
-    insert_dummy_admin, insert_dummy_syndicus
+from .dummy_data import (
+    insert_dummy_admin,
+    insert_dummy_issue,
+    insert_dummy_issue_image,
+    insert_dummy_student,
+    insert_dummy_syndicus,
+    insert_dummy_user,
+)
 
 
 @pytest.mark.django_db
