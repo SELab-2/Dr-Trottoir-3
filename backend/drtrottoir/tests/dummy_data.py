@@ -159,13 +159,6 @@ def insert_dummy_student(email="test@gmail.com", is_super_student=False) -> Stud
     return student
 
 
-def insert_dummy_admin(email: str = "admin@gmail.com") -> Admin:
-    user = insert_dummy_user(email)
-    admin = Admin(user=user)
-    admin.save()
-    return admin
-
-
 def insert_dummy_schedule_definition(
     buildings=None, name="dummy schedule definition name", lg=None, version=1
 ) -> ScheduleDefinition:

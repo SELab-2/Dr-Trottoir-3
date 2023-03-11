@@ -67,7 +67,7 @@ def test_schedule_work_entry_get_list_multiple_entries_return_200() -> None:
 
 @pytest.mark.django_db
 def test_schedule_work_entry_get_existing_returns_200() -> None:
-    user = insert_dummy_user()
+    user = insert_dummy_user("user@gmail.com")
     work_entry = insert_dummy_schedule_work_entry(user)
 
     client = APIClient()
@@ -159,8 +159,8 @@ def test_schedule_work_entry_get_by_user_empty_returns_empty_list_and_200() -> N
 
 @pytest.mark.django_db
 def test_schedule_work_entry_get_list_allowed_superstudent_admin() -> None:
-    super_student = insert_dummy_student(is_super_student=True)
-    admin = insert_dummy_admin()
+    super_student = insert_dummy_student("super@gmail.com", is_super_student=True)
+    admin = insert_dummy_admin("admin@gmail.com")
     client = APIClient()
 
     client.force_login(super_student.user)
@@ -175,7 +175,7 @@ def test_schedule_work_entry_get_list_allowed_superstudent_admin() -> None:
 
 @pytest.mark.django_db
 def test_schedule_work_entry_get_list_not_allowed_anonymous_student_syndicus() -> None:
-    student = insert_dummy_student(is_super_student=False)
+    student = insert_dummy_student("super@gmail.com", is_super_student=False)
     syndicus = insert_dummy_syndicus(insert_dummy_user("syndicus@gmail.com"))
     client = APIClient()
 
@@ -201,8 +201,8 @@ def test_schedule_work_entry_get_list_not_allowed_anonymous_student_syndicus() -
 @pytest.mark.django_db
 def test_schedule_work_entry_get_allowed_superstudent_admin() -> None:
     work_entry = insert_dummy_schedule_work_entry(insert_dummy_user("entry@gmail.com"))
-    super_student = insert_dummy_student(is_super_student=True)
-    admin = insert_dummy_admin()
+    super_student = insert_dummy_student("super@gmail.com", is_super_student=True)
+    admin = insert_dummy_admin("admin@gmail.com")
     client = APIClient()
 
     client.force_login(super_student.user)
@@ -259,8 +259,8 @@ def test_schedule_work_entry_get_matching_user_allowed_non_matching_user_not_all
 # region GET by user
 @pytest.mark.django_db
 def test_schedule_work_entry_get_by_user_allowed_superstudent_admin() -> None:
-    super_student = insert_dummy_student(is_super_student=True)
-    admin = insert_dummy_admin()
+    super_student = insert_dummy_student("super@gmail.com", is_super_student=True)
+    admin = insert_dummy_admin("admin@gmail.com")
     client = APIClient()
 
     client.force_login(super_student.user)

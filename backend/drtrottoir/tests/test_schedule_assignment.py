@@ -111,7 +111,7 @@ def test_schedule_assignment_post_incomplete_data_returns_400() -> None:
 # region GET item
 @pytest.mark.django_db
 def test_schedule_assignment_get_existing_returns_200() -> None:
-    user = insert_dummy_user()
+    user = insert_dummy_user("user@gmail.com")
     assignment: ScheduleAssignment = insert_dummy_schedule_assignment(user)
 
     client = APIClient()
@@ -148,7 +148,7 @@ def test_schedule_assignment_get_non_existing_returns_404() -> None:
 
 @pytest.mark.django_db
 def test_schedule_assignment_delete_existing_returns_204() -> None:
-    user = insert_dummy_user()
+    user = insert_dummy_user("user@gmail.com")
     assignment = insert_dummy_schedule_assignment(user)
 
     client = APIClient()
@@ -405,8 +405,8 @@ def test_schedule_assignment_post_allowed_superstudent_admin() -> None:
         "schedule_definition": dummy_definition.id,
         "assigned_date": dummy_date,
     }
-    super_student = insert_dummy_student(is_super_student=True)
-    admin = insert_dummy_admin()
+    super_student = insert_dummy_student("super@gmail.com", is_super_student=True)
+    admin = insert_dummy_admin("admin@gmail.com")
 
     client = APIClient()
 
@@ -436,7 +436,7 @@ def test_schedule_assignment_post_not_allowed_anonymous_student_syndicus() -> No
         "assigned_date": dummy_date,
     }
 
-    student = insert_dummy_student(is_super_student=False)
+    student = insert_dummy_student("super@gmail.com", is_super_student=False)
     syndicus = insert_dummy_syndicus(insert_dummy_user("syndicus@gmail.com"))
 
     client = APIClient()
@@ -471,8 +471,8 @@ def test_schedule_assignment_get_allowed_superstudent_admin() -> None:
     dummy_schedule_assignment = insert_dummy_schedule_assignment(dummy_student.user)
 
     client = APIClient()
-    super_student = insert_dummy_student(is_super_student=True)
-    admin = insert_dummy_admin()
+    super_student = insert_dummy_student("super@gmail.com", is_super_student=True)
+    admin = insert_dummy_admin("admin@gmail.com")
 
     client.force_login(super_student.user)
     response_super_student = client.get(
@@ -613,8 +613,8 @@ def test_schedule_assignment_patch_allowed_superstudent_admin() -> None:
     data: Dict[Any, Any] = {}
 
     client = APIClient()
-    super_student = insert_dummy_student(is_super_student=True)
-    admin = insert_dummy_admin()
+    super_student = insert_dummy_student("super@gmail.com", is_super_student=True)
+    admin = insert_dummy_admin("admin@gmail.com")
 
     client.force_login(super_student.user)
     response_super_student = client.patch(
@@ -683,7 +683,7 @@ def test_schedule_assignment_get_by_date_and_user_allowed_superstudent_admin() -
 
     client = APIClient()
     super_student = insert_dummy_student("super@gmail.com", is_super_student=True)
-    admin = insert_dummy_admin()
+    admin = insert_dummy_admin("admin@gmail.com")
 
     client.force_login(super_student.user)
     response_super_student = client.get(

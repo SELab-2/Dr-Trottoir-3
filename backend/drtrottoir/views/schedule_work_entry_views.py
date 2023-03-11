@@ -1,12 +1,9 @@
-from rest_framework import mixins, status, viewsets
-from rest_framework.decorators import action
-from rest_framework.parsers import MultiPartParser
 from typing import Any
 
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import api_view
-from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
