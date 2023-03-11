@@ -14,7 +14,8 @@ class IssueImageView(APIView):
     # Code removed on March 11 2023, since it does not follow the API guide.
     # def get(self, request, *args, **kwargs):
     #     """ """
-    #     # if not IsAuthenticated().has_permission(request, None) or not IsStudent().has_permission(request, None):
+    #     # if not IsAuthenticated().has_permission(request, None)
+    #          or not IsStudent().has_permission(request, None):
     #     #     return Response(status=status.HTTP_403_FORBIDDEN)
     #     posts = IssueImage.objects.all()
     #     serializer = IssueImageSerializer(posts, many=True)
