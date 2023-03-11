@@ -1,12 +1,14 @@
 import datetime
 
 from drtrottoir.models import (
+    Admin,
     Building,
     GarbageCollectionSchedule,
     GarbageCollectionScheduleTemplate,
     GarbageCollectionScheduleTemplateEntry,
     GarbageType,
     Issue,
+    IssueImage,
     LocationGroup,
     ScheduleAssignment,
     ScheduleDefinition,
@@ -32,15 +34,12 @@ def insert_dummy_location_group(name: str = "dummy location group") -> LocationG
     return lg
 
 
-def insert_dummy_building(
-    address: str = "dummy address", path: str = "dummy path", lg=None
-) -> Building:
+def insert_dummy_building(address: str = "dummy address", lg=None) -> Building:
     if lg is None:
         lg = insert_dummy_location_group()
 
     building = Building(
         address=address,
-        guide_pdf_path=path,
         location_group=lg,
     )
     building.save()
@@ -65,6 +64,7 @@ def insert_dummy_syndicus(
             syndicus.buildings.add(building)
 
     syndicus.save()
+
     return syndicus
 
 
@@ -129,11 +129,27 @@ def insert_dummy_issue(dummy_user=None, dummy_building=None) -> Issue:
     return issue
 
 
+def insert_dummy_issue_image(dummy_user: User) -> IssueImage:
+    issue = insert_dummy_issue(dummy_user)
+
+    issue_image = IssueImage(issue=issue, image="test_path.jpg")
+    issue_image.save()
+
+    return issue_image
+
+
 def insert_dummy_user(email: str = "test@gmail.com") -> User:
     dummy_user: User = User.objects.create_user(
         username=email, password="test", email=email
     )
     return dummy_user
+
+
+def insert_dummy_admin(email="tes@gmail.com") -> Admin:
+    user = insert_dummy_user(email)
+    admin = Admin(user=user)
+    admin.save()
+    return admin
 
 
 def insert_dummy_student(email="test@gmail.com", is_super_student=False) -> Student:
@@ -194,7 +210,7 @@ def insert_dummy_schedule_work_entry(creator: User) -> ScheduleWorkEntry:
     schedule_definition = insert_dummy_schedule_definition()
     work_entry = ScheduleWorkEntry(
         creation_timestamp="2022-01-26 06:00",
-        image_path="pics/image.png",
+        image="image.png",
         creator=creator,
         building=building,
         schedule_definition=schedule_definition,
