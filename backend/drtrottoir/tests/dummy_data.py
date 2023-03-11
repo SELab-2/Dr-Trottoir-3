@@ -145,7 +145,7 @@ def insert_dummy_user(email: str = "test@gmail.com") -> User:
     return dummy_user
 
 
-def insert_dummy_admin(email="tes@gmail.com") -> Admin:
+def insert_dummy_admin(email="test@gmail.com") -> Admin:
     user = insert_dummy_user(email)
     admin = Admin(user=user)
     admin.save()
