@@ -58,8 +58,8 @@ class ScheduleAssignmentViewSet(
     serializer_class = ScheduleAssignmentSerializer
 
     permission_classes = [
-        (ScheduleAssignmentPermission | IsSuperstudentOrAdmin),
         permissions.IsAuthenticated,
+        (ScheduleAssignmentPermission | IsSuperstudentOrAdmin),
     ]
 
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
