@@ -107,7 +107,13 @@ class IsSyndicus(permissions.BasePermission):
 
 
 class IsSuperstudentOrAdminOrSafe(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
+    """
+    Allow all Safe_Methods (Get, Head and Options) to be executed by every
+    authenticated user. All other methods can only be executed by users with
+    super_student or administrator rights.
+    """
+
+    def has_permission(self, request, view):
         try:
             request.user.admin
             return True
