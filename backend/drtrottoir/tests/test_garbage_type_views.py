@@ -21,7 +21,7 @@ def test_garbage_type_api_view_get_success_return_200():
     student = insert_dummy_student(is_super_student=True)
     client.force_login(student.user)
 
-    response = client.get("/garbage_type/")
+    response = client.get("/garbage_types/")
     response_ids = [e["id"] for e in response.data]
 
     assert sorted(response_ids) == sorted([dummy_entry_1.id, dummy_entry_2.id])
@@ -36,7 +36,7 @@ def test_garbage_type_get_detail_existing_return_200():
     student = insert_dummy_student(is_super_student=True)
     client.force_login(student.user)
 
-    response = client.get(f"/garbage_type/{dummy_entry.id}/")
+    response = client.get(f"/garbage_types/{dummy_entry.id}/")
 
     assert (
         response.data["id"] == dummy_entry.id
@@ -51,7 +51,7 @@ def test_garbage_type_get_detail_non_existing_return_404():
     student = insert_dummy_student(is_super_student=True)
     client.force_login(student.user)
 
-    response = client.get("/garbage_type/1/")
+    response = client.get("/garbage_types/1/")
 
     assert response.status_code == 404
 
@@ -65,7 +65,7 @@ def test_garbage_type_post_success_return_201():
     client.force_login(student.user)
 
     response = client.post(
-        "/garbage_type/",
+        "/garbage_types/",
         json.dumps(dummy_garbage_type_data),
         content_type="application/json",
     )
@@ -84,7 +84,7 @@ def test_garbage_type_delete_existing_return_204():
     student = insert_dummy_student(is_super_student=True)
     client.force_login(student.user)
 
-    response = client.delete(f"/garbage_type/{dummy_entry.id}/")
+    response = client.delete(f"/garbage_types/{dummy_entry.id}/")
 
     assert response.status_code == 204
 
@@ -95,7 +95,7 @@ def test_garbage_type_delete_non_existing_return_404():
     student = insert_dummy_student(is_super_student=True)
     client.force_login(student.user)
 
-    response = client.delete("/garbage_type/1/")
+    response = client.delete("/garbage_types/1/")
 
     assert response.status_code == 404
 
@@ -111,11 +111,11 @@ def test_get_auth_success_return_200():
     insert_dummy_syndicus(user=user)
 
     client.force_login(student.user)
-    response_student_permissions = client.get("/garbage_type/")
+    response_student_permissions = client.get("/garbage_types/")
     client.force_login(super_student.user)
-    response_super_student_permissions = client.get("/garbage_type/")
+    response_super_student_permissions = client.get("/garbage_types/")
     client.login(username="syndicus@gmail.com", password="test")
-    response_syndicus_permissions = client.get("/garbage_type/")
+    response_syndicus_permissions = client.get("/garbage_types/")
 
     assert (
         response_student_permissions.status_code == 200
@@ -128,7 +128,7 @@ def test_get_auth_success_return_200():
 def test_get_auth_failed_return_403():
     client = APIClient()
 
-    response_no_auth = client.get("/garbage_type/")
+    response_no_auth = client.get("/garbage_types/")
 
     assert response_no_auth.status_code == 403
 
@@ -141,7 +141,7 @@ def test_delete_auth_success_return_204():
     super_student = insert_dummy_student(is_super_student=True)
     client.force_login(super_student.user)
 
-    response = client.delete(f"/garbage_type/{dummy_entry.id}/")
+    response = client.delete(f"/garbage_types/{dummy_entry.id}/")
 
     assert response.status_code == 204
 
@@ -155,11 +155,11 @@ def test_delete_auth_failed_return_403():
     user = User.objects.create_user(username="syndicus@gmail.com", password="test")
     syndicus = insert_dummy_syndicus(user=user)
 
-    response_no_auth = client.delete(f"/garbage_type/{dummy_entry.id}/")
+    response_no_auth = client.delete(f"/garbage_types/{dummy_entry.id}/")
     client.force_login(student.user)
-    response_student_permissions = client.delete(f"/garbage_type/{dummy_entry.id}/")
+    response_student_permissions = client.delete(f"/garbage_types/{dummy_entry.id}/")
     client.force_login(syndicus.user)
-    response_syndicus_permissions = client.delete(f"/garbage_type/{dummy_entry.id}/")
+    response_syndicus_permissions = client.delete(f"/garbage_types/{dummy_entry.id}/")
 
     assert (
         response_no_auth.status_code == 403
@@ -177,7 +177,7 @@ def test_post_auth_success_return_201():
     client.force_login(super_student.user)
 
     response_super_student_permissions = client.post(
-        "/garbage_type/",
+        "/garbage_types/",
         json.dumps(dummy_garbage_type_data),
         content_type="application/json",
     )
@@ -195,19 +195,19 @@ def test_post_auth_failed_return_403():
     insert_dummy_syndicus(user=user)
 
     response_no_auth = client.post(
-        "/garbage_type/",
+        "/garbage_types/",
         json.dumps(dummy_garbage_type_data),
         content_type="application/json",
     )
     client.force_login(student.user)
     response_student_permissions = client.post(
-        "/garbage_type/",
+        "/garbage_types/",
         json.dumps(dummy_garbage_type_data),
         content_type="application/json",
     )
     client.login(username="syndicus@gmail.com", password="test")
     response_syndicus_permissions = client.post(
-        "/garbage_type/",
+        "/garbage_types/",
         json.dumps(dummy_garbage_type_data),
         content_type="application/json",
     )
@@ -229,7 +229,7 @@ def test_put_auth_success_return_200():
     client.force_login(super_student.user)
 
     response_super_student_permissions = client.put(
-        f"/garbage_type/{dummy_entry.id}/",
+        f"/garbage_types/{dummy_entry.id}/",
         json.dumps(dummy_garbage_type_data),
         content_type="application/json",
     )
@@ -248,19 +248,19 @@ def test_put_auth_failed_return_403():
     insert_dummy_syndicus(user=user)
 
     response_no_auth = client.put(
-        f"/garbage_type/{dummy_entry.id}/",
+        f"/garbage_types/{dummy_entry.id}/",
         json.dumps(dummy_garbage_type_data),
         content_type="application/json",
     )
     client.force_login(student.user)
     response_student_permissions = client.put(
-        f"/garbage_type/{dummy_entry.id}/",
+        f"/garbage_types/{dummy_entry.id}/",
         json.dumps(dummy_garbage_type_data),
         content_type="application/json",
     )
     client.login(username="syndicus@gmail.com", password="test")
     response_syndicus_permissions = client.put(
-        f"/garbage_type/{dummy_entry.id}/",
+        f"/garbage_types/{dummy_entry.id}/",
         json.dumps(dummy_garbage_type_data),
         content_type="application/json",
     )
@@ -282,7 +282,7 @@ def test_patch_auth_success_return_200():
     client.force_login(super_student.user)
 
     response_super_student_permissions = client.patch(
-        f"/garbage_type/{dummy_entry.id}/",
+        f"/garbage_types/{dummy_entry.id}/",
         json.dumps(dummy_garbage_type_data),
         content_type="application/json",
     )
@@ -301,19 +301,19 @@ def test_patch_auth_failed_return_403():
     insert_dummy_syndicus(user=user)
 
     response_no_auth = client.patch(
-        f"/garbage_type/{dummy_entry.id}/",
+        f"/garbage_types/{dummy_entry.id}/",
         json.dumps(dummy_garbage_type_data),
         content_type="application/json",
     )
     client.force_login(student.user)
     response_student_permissions = client.patch(
-        f"/garbage_type/{dummy_entry.id}/",
+        f"/garbage_types/{dummy_entry.id}/",
         json.dumps(dummy_garbage_type_data),
         content_type="application/json",
     )
     client.login(username="syndicus@gmail.com", password="test")
     response_syndicus_permissions = client.patch(
-        f"/garbage_type/{dummy_entry.id}/",
+        f"/garbage_types/{dummy_entry.id}/",
         json.dumps(dummy_garbage_type_data),
         content_type="application/json",
     )

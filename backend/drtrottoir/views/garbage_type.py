@@ -13,7 +13,7 @@ class GarbageTypeViewSet(ModelViewSet):
 
     Example:
         All objects: :template:`drtrottoir/garbage_type`
-        Specific object: :template:`drtrottoir/garbage_type/{object_id}`
+        Specific object: :template:`drtrottoir/garbage_types/{object_id}`
 
     Authentication:
         :path: /garbage_types/
