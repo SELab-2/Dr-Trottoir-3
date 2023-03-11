@@ -1,3 +1,6 @@
+from rest_framework import mixins, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser
 from typing import Any
 
 from django.contrib.auth.models import AnonymousUser
@@ -80,7 +83,7 @@ class ScheduleWorkEntryViewSet(
 
     queryset = ScheduleWorkEntry.objects.all()
     serializer_class = ScheduleWorkEntrySerializer
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser,)
 
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """

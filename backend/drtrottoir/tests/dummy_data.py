@@ -35,15 +35,12 @@ def insert_dummy_location_group(name: str = "dummy location group") -> LocationG
     return lg
 
 
-def insert_dummy_building(
-    address: str = "dummy address", path: str = "dummy path", lg=None
-) -> Building:
+def insert_dummy_building(address: str = "dummy address", lg=None) -> Building:
     if lg is None:
         lg = insert_dummy_location_group()
 
     building = Building(
         address=address,
-        guide_pdf_path=path,
         location_group=lg,
     )
     building.save()
@@ -65,6 +62,7 @@ def insert_dummy_syndicus(
             syndicus.buildings.add(building)
 
     syndicus.save()
+
     return syndicus
 
 
@@ -117,7 +115,7 @@ def insert_dummy_issue(dummy_user=None, dummy_building=None) -> Issue:
 
     if dummy_user is None:
         dummy_user = User.objects.create_user(
-            username="test@gmail.com", password="test"
+            username="user_issue@gmail.com", password="test"
         )
 
     issue = Issue(
@@ -145,7 +143,14 @@ def insert_dummy_user(email: str = "test@gmail.com") -> User:
     return dummy_user
 
 
-def insert_dummy_student(email="tes@gmail.com", is_super_student=False) -> Student:
+def insert_dummy_admin(email="test@gmail.com") -> Admin:
+    user = insert_dummy_user(email)
+    admin = Admin(user=user)
+    admin.save()
+    return admin
+
+
+def insert_dummy_student(email="test@gmail.com", is_super_student=False) -> Student:
     user = insert_dummy_user(email)
     lg = insert_dummy_location_group()
     student = Student(user=user, location_group=lg, is_super_student=is_super_student)
