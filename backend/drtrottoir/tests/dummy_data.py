@@ -1,6 +1,7 @@
 import datetime
 
 from drtrottoir.models import (
+    Admin,
     Building,
     GarbageCollectionSchedule,
     GarbageCollectionScheduleTemplate,
@@ -63,6 +64,7 @@ def insert_dummy_syndicus(
             syndicus.buildings.add(building)
 
     syndicus.save()
+
     return syndicus
 
 
@@ -141,6 +143,13 @@ def insert_dummy_user(email: str = "test@gmail.com") -> User:
         username=email, password="test", email=email
     )
     return dummy_user
+
+
+def insert_dummy_admin(email="tes@gmail.com") -> Admin:
+    user = insert_dummy_user(email)
+    admin = Admin(user=user)
+    admin.save()
+    return admin
 
 
 def insert_dummy_student(email="tes@gmail.com", is_super_student=False) -> Student:
