@@ -32,6 +32,7 @@ from drtrottoir.views import (
     IssuesListApiView,
     LocationGroupViewSet,
     ScheduleAssignmentViewSet,
+    ScheduleDefinitionViewSet,
     ScheduleWorkEntryViewSet,
 )
 
@@ -64,6 +65,7 @@ router.register(
 
 router.register(r"schedule_assignments", ScheduleAssignmentViewSet)
 router.register(r"schedule_work_entries", ScheduleWorkEntryViewSet)
+router.register("schedule_definitions", ScheduleDefinitionViewSet)
 
 
 urlpatterns = [
