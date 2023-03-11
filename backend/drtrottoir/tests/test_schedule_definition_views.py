@@ -9,6 +9,20 @@ from .dummy_data import (
 )
 
 
+@pytest.mark.django_db
+def test_schedule_definition_forbidden_methods():
+    client = APIClient()
+
+    student = insert_dummy_student(is_super_student=True)
+    client.force_login(student.user)
+    sched = insert_dummy_schedule_definition()
+
+    assert client.patch(f"/schedule_definitions/{sched.id}/").status_code == 405
+    assert client.delete(f"/schedule_definitions/{sched.id}/").status_code == 405
+    assert client.delete("/schedule_definitions/").status_code == 405
+    assert client.put("/schedule_definitions/").status_code == 405
+
+
 def _test_schedule_definition_list(user=None):
     client = APIClient()
 
@@ -96,7 +110,7 @@ def test_schedule_definition_buildings_success():
     assignment, res = _test_schedule_definition_buildings(student.user, student.user)
 
     assert res.status_code == 200 and sorted(x["id"] for x in res.data) == sorted(
-        x.id for x in assignment.schedule_definition.buildings
+        x.id for x in assignment.schedule_definition.buildings.all()
     )
 
 
@@ -130,9 +144,10 @@ def _test_schedule_definition_schedule_assignments(assignment_user, user=None):
 
 @pytest.mark.django_db
 def test_schedule_definition_schedule_assignments_success():
-    student = insert_dummy_student()
+    student1 = insert_dummy_student(email="student1@mail.com")
+    student2 = insert_dummy_student(is_super_student=True)
     assignment, res = _test_schedule_definition_schedule_assignments(
-        student.user, student.user
+        student1.user, student2.user
     )
 
     assert res.status_code == 200 and [x["id"] for x in res.data] == [assignment.id]

@@ -21,18 +21,21 @@ class ScheduleDefinitionViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet,
 ):
-    permission_classes_by_action = {
-        "list": [permissions.IsAuthenticated, IsSuperstudentOrAdmin],
-        "retrieve": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
-        "buildings": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
-        "schedule_work_entries": [permissions.IsAuthenticated, IsSuperstudentOrAdmin],
-        "schedule_assignments": [permissions.IsAuthenticated, IsSuperstudentOrAdmin],
-    }
-
     queryset = ScheduleDefinition.objects.all()
     serializer_class = ScheduleDefinitionSerializer
 
+    # This method allows more granular selection of permissions for any given
+    # action
+    permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
+    permission_classes_by_action = {
+        "retrieve": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
+        "buildings": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
+    }
+
     def get_permissions(self):
+        if self.action not in self.permission_classes_by_action:
+            return [perm() for perm in self.permission_classes]
+
         return [perm() for perm in self.permission_classes_by_action[self.action]]
 
     @action(detail=True)
@@ -46,7 +49,7 @@ class ScheduleDefinitionViewSet(
     def schedule_assignments(self, request, pk=None):
         schedule_definition = self.get_object()
         serializer = ScheduleAssignmentSerializer(
-            schedule_definition.schedule_assignments, many=True
+            schedule_definition.assignments, many=True
         )
 
         return Response(serializer.data)
