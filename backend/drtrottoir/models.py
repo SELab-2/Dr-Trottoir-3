@@ -113,6 +113,13 @@ class GarbageCollectionScheduleTemplate(models.Model):
 
 
 class GarbageType(models.Model):
+    """
+    :model:`GarbageType` stores the name of a single garbage type.
+
+    Args:
+        name (str): name of the garbage type.
+    """
+
     name = models.CharField(max_length=255)
 
 

@@ -20,6 +20,12 @@ class IsSuperstudentOrAdmin(permissions.BasePermission):
 
 
 class IsSuperstudentOrAdminOrSafe(permissions.BasePermission):
+    """
+    Allow all Safe_Methods (Get, Head and Options) to be executed by every
+    authenticated user. All other methods can only be executed by users with
+    super_student or administrator rights.
+    """
+
     def has_permission(self, request, view):
         try:
             request.user.admin
