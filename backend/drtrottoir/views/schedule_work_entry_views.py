@@ -67,14 +67,25 @@ class ScheduleWorkEntryGetByIdPermission(permissions.BasePermission):
 
 
 class ScheduleWorkEntryByUserIdPermission(permissions.BasePermission):
+    """Custom permission class for the retrieve_by_user_id method in
+    ScheduleWorkEntryViewSet, for the `schedule_work_entries/users/<user_id>/`
+    url. Allows super students and admins to GET work entries by user id, and
+    students if their user id matches the request user's id:
+    user_id==request.user.id
+
+    """
+
     def has_permission(self, request: Request, view: APIView) -> bool:
-        # Super students or admins always have access
-        if user_is_superstudent_or_admin(request.user):
-            return True
-        # Students have access if request.user is the same as the user in the url
-        if not user_is_student(request.user):
-            return False
-        return request.user.id == int(view.kwargs["user_id"])
+        if request.method == "GET":
+            # Super students or admins always have access
+            if user_is_superstudent_or_admin(request.user):
+                return True
+            # Students have access if request.user is the same as the user in the url
+            if not user_is_student(request.user):
+                return False
+            user_id = int(view.kwargs["user_id"])
+            return request.user.id == user_id
+        return False
 
 
 class ScheduleWorkEntryViewSet(
@@ -163,7 +174,9 @@ class ScheduleWorkEntryViewSet(
     # Get schedule work entry by user id
     @staticmethod
     @api_view(["GET"])
-    @rest_framework.decorators.permission_classes([ScheduleWorkEntryByUserIdPermission])
+    @rest_framework.decorators.permission_classes(
+        [IsAuthenticated, ScheduleWorkEntryByUserIdPermission]
+    )
     def retrieve_by_user_id(request, user_id):
         """Custom GET method for the url `schedule_work_entries/users/<user_id>/`.
 
