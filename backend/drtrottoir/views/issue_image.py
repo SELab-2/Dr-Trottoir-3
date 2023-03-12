@@ -10,15 +10,12 @@ from drtrottoir.serializers import IssueImageSerializer
 
 
 class IssueImageView(APIView):
-    """
-    :views:`drtrottoir.views.issue.IssuesListApiView`
-    Displays a list of all objects of type :model:`drtrottoir.models.Issue`.
+    """The list endpoint for the issue images object.
 
-    Example:
-        All objects: :template:`drtrottoir/issues/`
+    The request should be sent to `/issue_images/`.
 
-    Authentication:
-        :path: /issues/
+    This endpoint supports the following methods which requires an authenticated
+    user with the described permissions:
         POST (required permission `drtrottoir.models.Student(is_super_student=True)`):
             Create a new issue image and upload an image, return newly created object.
             Request format: 'multipart'.
@@ -50,18 +47,15 @@ class IssueImageView(APIView):
 
 
 class IssueImageDetailView(APIView):
-    """
-    :views:`drtrottoir.views.issue.IssuesListApiView`
-    Displays a list of all objects of type :model:`drtrottoir.models.Issue`.
+    """The detail endpoint for the issue images object.
 
-    Example:
-        All objects: :template:`drtrottoir/issues/`
+    The request should be sent to `/issues_images/{issue_image_id}/`
 
-    Authentication:
-        :path: /issues/
-        DELETE (required permission `drtrottoir.models.Student(is_super_student=True)`):
-            Create a new issue image and upload an image, return newly created object.
-            Request format: 'multipart'.
+    This endpoint supports the following methods which requires an authenticated
+    user with the described permissions:
+    DELETE (required permission `drtrottoir.models.Student(is_super_student=True)`):
+        Create a new issue image and upload an image, return newly created object.
+        Request format: 'multipart'.
     """
 
     # Code removed on March 11 2023, since it does not follow the API guide.
