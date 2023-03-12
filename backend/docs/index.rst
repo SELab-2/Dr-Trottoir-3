@@ -7,10 +7,7 @@ This is the main page of the Dr Trottoir backend documentation. For more informa
    :maxdepth: 2
    :caption: Contents:
 
-   docs/testcalc
-   docs/testclass
-   docs/location_group
-   docs/building
+   docs/views
 
 Indices and tables
 ==================
