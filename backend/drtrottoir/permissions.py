@@ -121,22 +121,12 @@ class IsSyndicus(permissions.BasePermission):
 
 class HasAssignmentForScheduleDefinition(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
+        if isinstance(request.user, AnonymousUser):
+            return False
         if any(
             assignment in request.user.assignments.all()
             for assignment in obj.assignments.all()
         ):
             return True
-
         else:
-            try:
-                request.user.admin
-
-                return True
-
-            except ObjectDoesNotExist:
-                try:
-                    student = request.user.student
-                    return student.is_super_student
-
-                except ObjectDoesNotExist:
-                    return False
+            return user_is_superstudent_or_admin(request.user)

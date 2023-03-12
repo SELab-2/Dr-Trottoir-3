@@ -619,9 +619,10 @@ def _test_schedule_work_entry_post_correct_information_give_user(
 
 
 @pytest.mark.django_db
-def test_schedule_work_entry_post_allowed_student_superstudent() -> None:
+def test_schedule_work_entry_post_allowed_student_superstudent_admin() -> None:
     student = insert_dummy_student("student@gmail.com", is_super_student=False)
     super_student = insert_dummy_student("super@gmail.com", is_super_student=True)
+    admin = insert_dummy_admin("admin@gmail.com")
 
     response_student = _test_schedule_work_entry_post_correct_information_give_user(
         student.user
@@ -629,28 +630,28 @@ def test_schedule_work_entry_post_allowed_student_superstudent() -> None:
     response_super_student = (
         _test_schedule_work_entry_post_correct_information_give_user(super_student.user)
     )
+    response_admin = _test_schedule_work_entry_post_correct_information_give_user(
+        admin.user
+    )
 
     assert response_student.status_code == 201
     assert response_super_student.status_code == 201
+    assert response_admin.status_code == 201
 
 
 @pytest.mark.django_db
-def test_schedule_work_entry_post_not_allowed_anonymous_admin_syndicus() -> None:
-    admin = insert_dummy_admin("admin@gmail.com")
+def test_schedule_work_entry_post_not_allowed_anonymous_syndicus() -> None:
     syndicus = insert_dummy_syndicus(insert_dummy_user("syndicus@gmail.com"))
 
     response_anonymous = _test_schedule_work_entry_post_correct_information_give_user(
         None
     )
-    response_admin = _test_schedule_work_entry_post_correct_information_give_user(
-        admin.user
-    )
+
     response_syndicus = _test_schedule_work_entry_post_correct_information_give_user(
         syndicus.user
     )
 
     assert response_anonymous.status_code == 403
-    assert response_admin.status_code == 403
     assert response_syndicus.status_code == 403
 
 
