@@ -1,33 +1,30 @@
-from rest_framework.decorators import action
-from rest_framework.response import Response
+import re
+
 from rest_framework import mixins, permissions, viewsets
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from drtrottoir.models import LocationGroup
 from drtrottoir.permissions import (
-    IsSuperstudentOrAdmin,
     user_is_superstudent_or_admin,
-    user_is_student,
 )
 from drtrottoir.serializers import (
     BuildingSerializer,
     LocationGroupSerializer,
     ScheduleDefinitionSerializer,
 )
-import re
 
 
 class LocationGroupPermissions(permissions.BasePermission):
     """
-    The GET for all location groups and details is allowed by any authenticated user
-    All other endpoints require a superstudent or admin
+    Class defining the permissions for location_groups endpoints.
     """
 
     def has_permission(self, request: Request, view) -> bool:
-        if request.method == "GET" and re.match("^/location_groups/[0-9]*/?$",
-                                                request.get_full_path()):
+        if request.method == "GET" and re.match(
+            "^/location_groups/[0-9]*/?$", request.get_full_path()
+        ):
             return True
         else:
             return user_is_superstudent_or_admin(request.user)
@@ -41,10 +38,35 @@ class LocationGroupViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
-    permission_classes = [
-        permissions.IsAuthenticated &
-        LocationGroupPermissions
-    ]
+    """
+    Viewset for location groups.
+
+    Endpoints:
+
+        /location_groups/
+            GET: (required permission `permissions.IsAuthenticated`)
+                All location_groups.
+            POST: (required permission `drtrottoir.models.SuperStudent`)
+                Add a location group.
+
+        /location_groups/:location_group_id/
+            GET: (required permission `permissions.IsAuthenticated`)
+                Location group of that id.
+            PATCH: (required permission `drtrottoir.models.SuperStudent`)
+                Update this location group's data.
+            DELETE: (required permission `drtrottoir.models.SuperStudent`)
+                Delete this location group.
+
+        /location_groups/:location_group_id/buildings/
+            GET: (required permission `drtrottoir.models.SuperStudent`)
+                All the buildings that are in this location group.
+
+        /location_groups/:location_group_id/schedule_definitions/
+            GET: (required permission `drtrottoir.models.SuperStudent`)
+                All the schedule definitions that are in this location group.
+    """
+
+    permission_classes = [permissions.IsAuthenticated & LocationGroupPermissions]
 
     queryset = LocationGroup.objects.all()
     serializer_class = LocationGroupSerializer

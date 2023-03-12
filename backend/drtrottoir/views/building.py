@@ -27,7 +27,7 @@ import re
 
 class BuildingPermissions(permissions.BasePermission):
     """
-
+    Class defining the permissions for building endpoints.
     """
     def has_permission(self, request: Request, view) -> bool:
         if request.method == "GET" and re.match("^/buildings/[0-9]+/$",
@@ -73,6 +73,31 @@ class BuildingListViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
+    """
+    Viewset for buildings.
+
+    Endpoints:
+
+        /buildings/
+            GET: (required permission `drtrottoir.models.Student`)
+                All buildings.
+            POST: (required permission `drtrottoir.models.SuperStudent`)
+                Add a building.
+
+        /buildings/:building_id/
+            GET: (required permission `permissions.IsAuthenticated`)
+                Building of that id.
+            PATCH: (required permission `drtrottoir.models.SuperStudent`)
+                Update this building's data.
+            DELETE: (required permission `drtrottoir.models.SuperStudent`)
+                Delete this building.
+
+        /buildings/users/:user_id/
+            GET: (required permission `drtrottoir.models.SuperStudent` or
+            `drtrottoir.model.syndicus` if user_id is the syndicus user_id)
+                All the buildings that are in this location group.
+    """
+
     permission_classes = [
         permissions.IsAuthenticated &
         BuildingPermissions

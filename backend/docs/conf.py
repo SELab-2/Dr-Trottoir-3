@@ -8,6 +8,15 @@
 
 import os
 import sys
+import django
+
+sys.path.append(os.path.abspath('../'))
+
+# Specify settings module
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'drtrottoir.settings')
+
+# Setup Django
+django.setup()
 
 project = "Dr Trottoir"
 copyright = "2023, SELab2 Team 3"

@@ -9,6 +9,8 @@ This is the main page of the Dr Trottoir backend documentation. For more informa
 
    docs/testcalc
    docs/testclass
+   docs/location_group
+   docs/building
 
 Indices and tables
 ==================
