@@ -95,7 +95,29 @@ class BuildingListViewSet(
         /buildings/users/:user_id/
             GET: (required permission `drtrottoir.models.SuperStudent` or
             `drtrottoir.model.syndicus` if user_id is the syndicus user_id)
-                All the buildings that are in this location group.
+                All the buildings from this syndicus.
+
+        /buildings/:building_id/schedule_definitions/
+            GET: (required permission `drtrottoir.models.SuperStudent`)
+                All the schedule definitions of this building.
+
+        /buildings/:building_id/issues/
+            GET: (required permission `drtrottoir.models.SuperStudent` or
+            `drtrottoir.model.syndicus` if the syndicus is the syndicus of that building
+            )
+                All the issues of this building.
+
+        /buildings/:building_id/garbage_collection_schedule_templates/
+            GET: (required permission `drtrottoir.models.Student`)
+                All the garbage collection schedule templates of this building.
+
+        /buildings/:building_id/garbage_collection_schedules/
+            GET: (required permission `drtrottoir.models.Student`)
+                All the garbage collection schedules of this building.
+
+        /buildings/:building_id/for_day/:date/garbage_collection_schedules/
+            GET: (required permission `drtrottoir.models.Student`)
+                All the garbage collection schedules of this building on this given day.
     """
 
     permission_classes = [
