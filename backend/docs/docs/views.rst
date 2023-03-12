@@ -5,16 +5,61 @@ Views
 Building
 ########
 
-Contains the class in `building.py`.
-
 .. automodule:: drtrottoir.views.building
    :members:
 
 
-location_group views
-####################
+Garbage collection schedule
+###########################
 
-Contains the class in `location_group.py`.
+.. automodule:: drtrottoir.views.garbage_collection_schedule
+   :members:
+
+
+Garbage collection schedule template
+####################################
+
+.. automodule:: drtrottoir.views.garbage_collection_schedule_template
+   :members:
+
+
+Garbage type
+############
+
+.. automodule:: drtrottoir.views.garbage_type
+   :members:
+
+
+Issue
+#####
+
+.. automodule:: drtrottoir.views.issue
+   :members:
+
+
+Issue image
+###########
+
+.. automodule:: drtrottoir.views.issue_image
+   :members:
+
+
+location_group
+##############
 
 .. automodule:: drtrottoir.views.location_group
+   :members:
+
+
+Schedule assignment
+###################
+
+.. automodule:: drtrottoir.views.schedule_assignment_views
+   :members:
+
+
+Schedule work entry
+###################
+
+.. automodule:: drtrottoir.views.schedule_work_entry_views
    :members:

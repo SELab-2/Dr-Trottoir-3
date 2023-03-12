@@ -79,44 +79,71 @@ class BuildingListViewSet(
     Endpoints:
 
         /buildings/
-            GET: (required permission `drtrottoir.models.Student`)
+            **GET:**
+                required permission: ``drtrottoir.models.Student``
+
                 All buildings.
-            POST: (required permission `drtrottoir.models.SuperStudent`)
+            **POST:**
+                required permission: ``drtrottoir.models.Student(is_super_student=True)``
+
                 Add a building.
 
         /buildings/:building_id/
-            GET: (required permission `permissions.IsAuthenticated`)
+            **GET:**
+                required permission: ``permissions.IsAuthenticated``
+
                 Building of that id.
-            PATCH: (required permission `drtrottoir.models.SuperStudent`)
+            **PATCH:**
+                required permission:
+                ``drtrottoir.models.Student(is_super_student=True)``
+
                 Update this building's data.
-            DELETE: (required permission `drtrottoir.models.SuperStudent`)
+            **DELETE:**
+                required permission:
+                ``drtrottoir.models.Student(is_super_student=True)``
+
                 Delete this building.
 
         /buildings/users/:user_id/
-            GET: (required permission `drtrottoir.models.SuperStudent` or
-            `drtrottoir.model.syndicus` if user_id is the syndicus user_id)
+            **GET:**
+                required permission:
+                ``drtrottoir.models.Student(is_super_student=True)`` or
+                ``drtrottoir.model.syndicus`` if user_id is the syndicus user_id
+
                 All the buildings from this syndicus.
 
         /buildings/:building_id/schedule_definitions/
-            GET: (required permission `drtrottoir.models.SuperStudent`)
+            **GET:**
+                required permission:
+                ``drtrottoir.models.Student(is_super_student=True)``
+
                 All the schedule definitions of this building.
 
         /buildings/:building_id/issues/
-            GET: (required permission `drtrottoir.models.SuperStudent` or
-            `drtrottoir.model.syndicus` if the syndicus is the syndicus of that building
-            )
+            **GET:**
+                required permission:
+                ``drtrottoir.models.Student(is_super_student=True)`` or
+                ``drtrottoir.model.syndicus`` if the syndicus is the syndicus of that
+                building
+
                 All the issues of this building.
 
         /buildings/:building_id/garbage_collection_schedule_templates/
-            GET: (required permission `drtrottoir.models.Student`)
+            **GET:**
+                required permission ``drtrottoir.models.Student``
+
                 All the garbage collection schedule templates of this building.
 
         /buildings/:building_id/garbage_collection_schedules/
-            GET: (required permission `drtrottoir.models.Student`)
+            **GET:**
+                required permission ``drtrottoir.models.Student``
+
                 All the garbage collection schedules of this building.
 
         /buildings/:building_id/for_day/:date/garbage_collection_schedules/
-            GET: (required permission `drtrottoir.models.Student`)
+            **GET:**
+                required permission ``drtrottoir.models.Student``
+
                 All the garbage collection schedules of this building on this given day.
     """
 

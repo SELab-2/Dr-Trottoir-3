@@ -44,25 +44,44 @@ class LocationGroupViewSet(
     Endpoints:
 
         /location_groups/
-            GET: (required permission `permissions.IsAuthenticated`)
+            **GET:**
+                required permission: ``permissions.IsAuthenticated``
+
                 All location_groups.
-            POST: (required permission `drtrottoir.models.SuperStudent`)
+            **POST:**
+                required permission:
+                ``drtrottoir.models.Student(is_super_student=True)``
+
                 Add a location group.
 
         /location_groups/:location_group_id/
-            GET: (required permission `permissions.IsAuthenticated`)
+            **GET:**
+                required permission: ``permissions.IsAuthenticated``
+
                 Location group of that id.
-            PATCH: (required permission `drtrottoir.models.SuperStudent`)
+            **PATCH:**
+                required permission:
+                ``drtrottoir.models.Student(is_super_student=True)``
+
                 Update this location group's data.
-            DELETE: (required permission `drtrottoir.models.SuperStudent`)
+            **DELETE:**
+                required permission:
+                ``drtrottoir.models.Student(is_super_student=True)``
+
                 Delete this location group.
 
         /location_groups/:location_group_id/buildings/
-            GET: (required permission `drtrottoir.models.SuperStudent`)
+            **GET:**
+                required permission:
+                ``drtrottoir.models.Student(is_super_student=True)``
+
                 All the buildings that are in this location group.
 
         /location_groups/:location_group_id/schedule_definitions/
-            GET: (required permission `drtrottoir.models.SuperStudent`)
+            **GET:**
+                required permission:
+                ``drtrottoir.models.Student(is_super_student=True)``
+
                 All the schedule definitions that are in this location group.
     """
 
