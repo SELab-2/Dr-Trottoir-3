@@ -11,8 +11,8 @@ from .dummy_data import (
     insert_dummy_issue,
     insert_dummy_location_group,
     insert_dummy_schedule_definition,
-    insert_dummy_syndicus,
     insert_dummy_student,
+    insert_dummy_syndicus,
     insert_dummy_user,
 )
 

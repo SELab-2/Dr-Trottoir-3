@@ -1,13 +1,13 @@
+from typing import Union
+
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import permissions
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.request import Request
 from rest_framework.views import APIView
-from typing import Union
-from drtrottoir.models import Issue
 
-from drtrottoir.models import User
+from drtrottoir.models import Issue, User
 
 
 def user_is_student(user: Union[AnonymousUser, User]) -> bool:

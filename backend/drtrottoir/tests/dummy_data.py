@@ -147,6 +147,7 @@ def insert_dummy_user(email: str = "test@gmail.com") -> User:
     )
     return dummy_user
 
+
 def insert_dummy_admin(email="test@gmail.com") -> Admin:
     user = insert_dummy_user(email)
     admin = Admin(user=user)
@@ -154,8 +155,9 @@ def insert_dummy_admin(email="test@gmail.com") -> Admin:
     return admin
 
 
-def insert_dummy_student(email="test@gmail.com", is_super_student=False, lg=None) -> \
-        Student:
+def insert_dummy_student(
+    email="test@gmail.com", is_super_student=False, lg=None
+) -> Student:
     user = insert_dummy_user(email)
     if lg is None:
         lg = insert_dummy_location_group()

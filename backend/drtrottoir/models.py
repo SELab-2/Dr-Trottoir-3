@@ -14,6 +14,7 @@ class LocationGroup(models.Model):
     Attributes:
         name (str): Name of the location group.
     """
+
     name = models.CharField(max_length=255)
 
 

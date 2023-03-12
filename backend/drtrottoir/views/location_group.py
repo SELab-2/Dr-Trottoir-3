@@ -6,9 +6,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from drtrottoir.models import LocationGroup
-from drtrottoir.permissions import (
-    user_is_superstudent_or_admin,
-)
+from drtrottoir.permissions import user_is_superstudent_or_admin
 from drtrottoir.serializers import (
     BuildingSerializer,
     LocationGroupSerializer,

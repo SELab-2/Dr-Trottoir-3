@@ -8,6 +8,7 @@
 
 import os
 import sys
+
 import django
 
 sys.path.append(os.path.abspath('../'))
