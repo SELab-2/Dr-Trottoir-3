@@ -48,9 +48,12 @@ def insert_dummy_building(address: str = "dummy address", lg=None) -> Building:
 
 
 def insert_dummy_syndicus(
-    user: User,
+    user=None,
     buildings=None,
+    email="test@gmail.com",
 ):
+    if user is None:
+        user = insert_dummy_user(email)
     syndicus = Syndicus(
         user=user,
     )

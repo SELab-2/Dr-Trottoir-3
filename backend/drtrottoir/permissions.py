@@ -1,9 +1,10 @@
+from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import permissions
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.request import Request
 from rest_framework.views import APIView
-
+from typing import Union
 from drtrottoir.models import Issue
 
 from drtrottoir.models import User
@@ -25,6 +26,11 @@ def user_is_admin(user: Union[AnonymousUser, User]) -> bool:
 
 def user_is_superstudent_or_admin(user: Union[AnonymousUser, User]) -> bool:
     return user_is_superstudent(user) or user_is_admin(user)
+
+
+def user_is_syndicus(user: Union[AnonymousUser, User]) -> bool:
+    return hasattr(user, "syndicus")
+
 
 class IsSuperstudentOrAdmin(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):

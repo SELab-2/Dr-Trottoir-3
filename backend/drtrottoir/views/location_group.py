@@ -6,7 +6,11 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from drtrottoir.models import LocationGroup
-from drtrottoir.permissions import IsSuperstudentOrAdmin, user_is_superstudent_or_admin, user_is_student
+from drtrottoir.permissions import (
+    IsSuperstudentOrAdmin,
+    user_is_superstudent_or_admin,
+    user_is_student,
+)
 from drtrottoir.serializers import (
     BuildingSerializer,
     LocationGroupSerializer,
@@ -17,11 +21,8 @@ import re
 
 class LocationGroupPermissions(permissions.BasePermission):
     """
-    The GET item in ScheduleAssignment also allows students to access the entry, as
-    long as that user is the same as the ScheduleAssignment's user field.
-    To summarize, a user is allowed to GET an entry in ScheduleAssignment if:
-    - They are an admin or a super student
-    - They are a user and request.user.id == schedule_assignment.user.id
+    The GET for all location groups and details is allowed by any authenticated user
+    All other endpoints require a superstudent or admin
     """
 
     def has_permission(self, request: Request, view) -> bool:

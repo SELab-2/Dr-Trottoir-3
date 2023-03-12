@@ -3,8 +3,6 @@ import json
 import pytest
 from rest_framework.test import APIClient
 
-from drtrottoir.models import User
-
 from .dummy_data import (
     insert_dummy_building,
     insert_dummy_location_group,
@@ -62,6 +60,25 @@ def test_location_groups_post():
 
 
 @pytest.mark.django_db
+def test_location_groups_post_forbidden():
+    """
+    A student that is not a super_student should not be able to post location_groups
+    """
+    client = APIClient()
+    student = insert_dummy_student(is_super_student=False)
+    client.force_login(student.user)
+    data = {
+        "name": "location2",
+    }
+
+    response = client.post(
+        "/location_groups/", json.dumps(data), content_type="application/json"
+    )
+
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
 def test_location_groups_get_detail():
     dummy_location_group = insert_dummy_location_group("location 1")
 
@@ -93,23 +110,50 @@ def test_location_groups_patch_detail():
 
 
 @pytest.mark.django_db
+def test_location_groups_patch_detail_forbidden():
+    """
+    A student that is not a super_student should not be able to patch location_groups
+    """
+    dummy_location_group = insert_dummy_location_group("location 1")
+    data = {"name": "city 1"}
+    client = APIClient()
+    student = insert_dummy_student(is_super_student=False)
+    client.force_login(student.user)
+    response = client.patch(
+        f"/location_groups/{dummy_location_group.id}/",
+        json.dumps(data),
+        content_type="application/json",
+    )
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
 def test_location_groups_delete_detail():
     dummy_location_group = insert_dummy_location_group("location 1")
     client = APIClient()
     student = insert_dummy_student(is_super_student=True)
     client.force_login(student.user)
-    response = client.get(f"/location_groups/{dummy_location_group.id}/")
-
-    assert (
-        dummy_location_group.id == response.data["id"]
-        and dummy_location_group.name == response.data["name"]
-        and response.status_code == 200
-    )
 
     response = client.delete(f"/location_groups/{dummy_location_group.id}/")
     assert response.status_code == 204
     response = client.get(f"/location_groups/{dummy_location_group.id}/")
     assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_location_groups_delete_detail_forbidden():
+    """
+    A student that is not a super_student should not be able to delete location_groups
+    """
+    dummy_location_group = insert_dummy_location_group("location 1")
+    client = APIClient()
+    student = insert_dummy_student(is_super_student=False)
+    client.force_login(student.user)
+
+    response = client.delete(f"/location_groups/{dummy_location_group.id}/")
+    assert response.status_code == 403
+    response = client.get(f"/location_groups/{dummy_location_group.id}/")
+    assert response.status_code == 200
 
 
 @pytest.mark.django_db
@@ -133,6 +177,22 @@ def test_location_group_get_buildings_list():
 
 
 @pytest.mark.django_db
+def test_location_group_get_buildings_list_forbidden():
+    """
+    A student that is not a super_student should not be able to get buildings from a
+    location_group
+    """
+    location_group_1 = insert_dummy_location_group()
+
+    client = APIClient()
+    student = insert_dummy_student(is_super_student=False)
+    client.force_login(student.user)
+    response = client.get(f"/location_groups/{location_group_1.id}/buildings/")
+
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
 def test_location_group_get_schedule_definitions_list():
     location_group_1 = insert_dummy_location_group()
     location_group_2 = insert_dummy_location_group()
@@ -152,3 +212,20 @@ def test_location_group_get_schedule_definitions_list():
     assert sched_definition_1.id in response_ids
     assert sched_definition_2.id in response_ids
     assert sched_definition_3.id not in response_ids
+
+
+@pytest.mark.django_db
+def test_location_group_get_schedule_definitions_list_forbidden():
+    """
+    A student that is not a super_student should not be able to get schedule_definitions
+    from a location_group
+    """
+    location_group_1 = insert_dummy_location_group()
+
+    client = APIClient()
+    student = insert_dummy_student(is_super_student=False)
+    client.force_login(student.user)
+    response = client.get(
+        f"/location_groups/{location_group_1.id}/schedule_definitions/"
+    )
+    assert response.status_code == 403
