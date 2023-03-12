@@ -17,7 +17,6 @@ from drtrottoir.models import (
     Student,
     Syndicus,
     User,
-    Admin,
 )
 
 

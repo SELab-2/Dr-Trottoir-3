@@ -7,9 +7,13 @@ from rest_framework.test import APIClient
 from drtrottoir.models import User
 
 from .dummy_data import (
+    insert_dummy_admin,
     insert_dummy_building,
     insert_dummy_garbage_collection_schedule,
-    insert_dummy_garbage_type, insert_dummy_student, insert_dummy_admin, insert_dummy_user, insert_dummy_syndicus,
+    insert_dummy_garbage_type,
+    insert_dummy_student,
+    insert_dummy_syndicus,
+    insert_dummy_user,
 )
 
 
@@ -93,6 +97,7 @@ def test_garbage_collection_schedule_delete():
     response = client.get(f"/garbage_collection_schedules/{entry.id}/")
     assert response.status_code == 404
 
+
 @pytest.mark.django_db
 def test_garbage_collection_schedule_forbidden_methods():
     user = insert_dummy_admin()
@@ -114,10 +119,16 @@ def _test_garbage_collection_schedules_list_api_view_post(user=None):
     dummy_date = "2002-03-17"
     dummy_garbage_type = insert_dummy_garbage_type()
 
-    dummy_data = {"building": dummy_building.id, "for_day": dummy_date, "garbage_type": dummy_garbage_type.id}
+    dummy_data = {
+        "building": dummy_building.id,
+        "for_day": dummy_date,
+        "garbage_type": dummy_garbage_type.id,
+    }
 
     return client.post(
-        "/garbage_collection_schedules/", json.dumps(dummy_data), content_type="application/json"
+        "/garbage_collection_schedules/",
+        json.dumps(dummy_data),
+        content_type="application/json",
     )
 
 
@@ -168,8 +179,8 @@ def test_garbage_collection_schedules_list_api_view_post_syndicus_fail():
     response = _test_garbage_collection_schedules_list_api_view_post(user.user)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    
-    
+
+
 def _test_garbage_collection_schedules_detail_api_view_get(user=None):
     """ """
     client = APIClient()
@@ -199,15 +210,12 @@ def test_garbage_collection_schedules_detail_api_view_get_student_success():
     assert response.status_code == status.HTTP_200_OK
 
 
-
 @pytest.mark.django_db
 def test_garbage_collection_schedules_detail_api_view_get_syndicus_fail():
     """ """
     dummy_user = insert_dummy_user()
     user = insert_dummy_syndicus(user=dummy_user)
-    response = _test_garbage_collection_schedules_detail_api_view_get(
-        user=user.user
-    )
+    response = _test_garbage_collection_schedules_detail_api_view_get(user=user.user)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -216,9 +224,7 @@ def test_garbage_collection_schedules_detail_api_view_get_syndicus_fail():
 def test_garbage_collection_schedules_detail_api_view_get_super_student_success():
     """ """
     user = insert_dummy_student(is_super_student=True)
-    response = _test_garbage_collection_schedules_detail_api_view_get(
-        user=user.user
-    )
+    response = _test_garbage_collection_schedules_detail_api_view_get(user=user.user)
 
     assert response.status_code == status.HTTP_200_OK
 
@@ -227,13 +233,11 @@ def test_garbage_collection_schedules_detail_api_view_get_super_student_success(
 def test_garbage_collection_schedules_detail_api_view_get_admin_success():
     """ """
     user = insert_dummy_admin()
-    response = _test_garbage_collection_schedules_detail_api_view_get(
-        user=user.user
-    )
+    response = _test_garbage_collection_schedules_detail_api_view_get(user=user.user)
 
     assert response.status_code == status.HTTP_200_OK
-    
-    
+
+
 def _test_garbage_collection_schedules_detail_api_view_patch(user=None):
     """ """
     client = APIClient()
@@ -344,8 +348,6 @@ def test_garbage_collection_schedules_detail_api_view_delete_syndicus_fail():
     dummy_user = insert_dummy_user()
     user = insert_dummy_syndicus(user=dummy_user)
 
-    response = _test_garbage_collection_schedules_detail_api_view_delete(
-        user=user.user
-    )
+    response = _test_garbage_collection_schedules_detail_api_view_delete(user=user.user)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
