@@ -9,7 +9,7 @@ from drtrottoir.models import Issue
 
 
 class IsSuperstudentOrAdmin(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         try:
             request.user.admin
 
@@ -107,7 +107,13 @@ class IsSyndicus(permissions.BasePermission):
 
 
 class IsSuperstudentOrAdminOrSafe(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
+    """
+    Allow all Safe_Methods (Get, Head and Options) to be executed by every
+    authenticated user. All other methods can only be executed by users with
+    super_student or administrator rights.
+    """
+
+    def has_permission(self, request, view):
         try:
             request.user.admin
             return True
@@ -120,3 +126,26 @@ class IsSuperstudentOrAdminOrSafe(permissions.BasePermission):
 
             except ObjectDoesNotExist:
                 return False
+
+
+class HasAssignmentForScheduleDefinition(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if any(
+            assignment in request.user.assignments.all()
+            for assignment in obj.assignments.all()
+        ):
+            return True
+
+        else:
+            try:
+                request.user.admin
+
+                return True
+
+            except ObjectDoesNotExist:
+                try:
+                    student = request.user.student
+                    return student.is_super_student
+
+                except ObjectDoesNotExist:
+                    return False
