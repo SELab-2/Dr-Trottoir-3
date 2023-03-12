@@ -8,6 +8,7 @@ This is the main page of the Dr Trottoir backend documentation. For more informa
    :caption: Contents:
 
    docs/views
+   docs/models
 
 Indices and tables
 ==================
