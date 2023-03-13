@@ -121,7 +121,8 @@ class ScheduleAssignmentViewSet(
 
                 Retrieve all schedule assignments on the given date assigned to given user.
 
-    """
+    """  # noqa
+
     queryset = ScheduleAssignment.objects.all()
     serializer_class = ScheduleAssignmentSerializer
 
