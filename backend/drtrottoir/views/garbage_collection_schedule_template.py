@@ -29,25 +29,25 @@ class GarbageCollectionScheduleTemplateEntryViewSet(
         /garbage_collection_schedule_template_entries/
             **POST:**
                 required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
-                
+
                 Create a new entry.
-                
+
         /garbage_collection_schedule_template_entries/:id/
-            **GET:** 
+            **GET:**
                 required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
-                
+
                 Get information for a single entry.
-                
+
             **PATCH:**
                 required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
-                
+
                 Update information for a single entry.
-                
-            **DELETE:** 
+
+            **DELETE:**
                 required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
-                
+
                 Remove the entry with the given id.
-    """ # noqa
+    """  # noqa
 
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
 

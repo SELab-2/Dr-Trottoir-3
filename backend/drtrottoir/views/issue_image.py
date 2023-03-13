@@ -17,7 +17,7 @@ class IssueImageView(APIView):
         /issue_images/
             **POST:**
                required permission: ``drtrottoir.models.Student(is_super_student=True)``
-    
+
                 Create a new issue image and upload an image, return newly created object.
                 Request format: 'multipart'.
     """  # noqa
@@ -55,7 +55,7 @@ class IssueImageDetailView(APIView):
         /issues_images/:issue_image_id/
             **DELETE:**
                required permission: ``drtrottoir.models.Student(is_super_student=True)``
-    
+
                 Create a new issue image and upload an image, return newly created object.
                 Request format: 'multipart'.
     """  # noqa

@@ -29,37 +29,37 @@ class ScheduleDefinitionViewSet(
         /schedule_definitions/
             **GET:**
                 required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
-                
+
                 List all schedule definitions.
-                
+
             **POST:**
                 required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
-                
+
                 Create a new schedule definition.
-                
+
         /schedule_definitions/:id/
             **GET:**
                 required permission: ``drtrottoir.permissions.HasAssignmentForScheduleDefinition``
-                
+
                 Get information for a single schedule definition.
-                
+
         /schedule_definitions/:id/buildings/
             **GET:**
                 required permission: ``drtrottoir.permissions.HasAssignmentForScheduleDefinition``
-                
+
                 Get all buildings associated with a schedule definition.
-                
+
         /schedule_definitions/:id/schedule_assignments/
             **GET:**
                 required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
-                
+
                 Get all schedule assignments associated with a schedule
                 definition.
-                
+
         /schedule_definitions/:id/schedule_work_entries/
             **GET:**
                 required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
-                
+
                 Get all schedule work entries associated with a schedule
                 definition.
     """  # noqa
