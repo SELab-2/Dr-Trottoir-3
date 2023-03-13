@@ -6,6 +6,15 @@ from django.db import models
 
 
 class LocationGroup(models.Model):
+    """
+    Represents the general location, this is used for multiple objects like users,
+    buildings, … so that the displayed options for the user in the frontend can be
+    restricted.
+
+    Attributes:
+        name (str): Name of the location group.
+    """
+
     name = models.CharField(max_length=255)
 
 
@@ -16,6 +25,16 @@ def get_file_path_building_pdf_guide(instance, filename):
 
 
 class Building(models.Model):
+    # TODO: unsure about type of pdf_guide
+    """
+    Represents a building.
+
+    Attributes:
+        address (str): Address of the building.
+        pdf_guide (file): Path of a resource on the server.
+        location_group (LocationGroup): The location group that the building is in.
+        is_active (bool): Whether a building is active. Defaults to True
+    """
     address = models.CharField(max_length=255)
     pdf_guide = models.FileField(upload_to=get_file_path_building_pdf_guide, null=True)
     location_group = models.ForeignKey(
@@ -135,9 +154,9 @@ class GarbageCollectionScheduleTemplate(models.Model):
 
 class GarbageType(models.Model):
     """
-    :model:`GarbageType` stores the name of a single garbage type.
+    Stores the name of a single garbage type.
 
-    Args:
+    Attributes:
         name (str): name of the garbage type.
     """
 

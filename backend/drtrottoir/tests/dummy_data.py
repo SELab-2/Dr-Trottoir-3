@@ -48,9 +48,12 @@ def insert_dummy_building(address: str = "dummy address", lg=None) -> Building:
 
 
 def insert_dummy_syndicus(
-    user: User,
+    user=None,
     buildings=None,
+    email="test@gmail.com",
 ):
+    if user is None:
+        user = insert_dummy_user(email)
     syndicus = Syndicus(
         user=user,
     )
@@ -138,23 +141,26 @@ def insert_dummy_issue_image(dummy_user: User) -> IssueImage:
     return issue_image
 
 
-def insert_dummy_user(email: str = "test@gmail.com") -> User:
+def insert_dummy_user(email: str = "test_user@gmail.com") -> User:
     dummy_user: User = User.objects.create_user(
         username=email, password="test", email=email
     )
     return dummy_user
 
 
-def insert_dummy_admin(email="test@gmail.com") -> Admin:
+def insert_dummy_admin(email="test_admin@gmail.com") -> Admin:
     user = insert_dummy_user(email)
     admin = Admin(user=user)
     admin.save()
     return admin
 
 
-def insert_dummy_student(email="test@gmail.com", is_super_student=False) -> Student:
+def insert_dummy_student(
+    email="test_student@gmail.com", is_super_student=False, lg=None
+) -> Student:
     user = insert_dummy_user(email)
-    lg = insert_dummy_location_group()
+    if lg is None:
+        lg = insert_dummy_location_group()
     student = Student(user=user, location_group=lg, is_super_student=is_super_student)
     student.save()
 
