@@ -111,8 +111,8 @@ class BuildingListViewSet(
         "retrieve": [permissions.IsAuthenticated],
         "list": [permissions.IsAuthenticated, IsStudent],
         "syndicus_buildings": [
-            (permissions.IsAuthenticated & IsSyndicusWithUserID)
-            | (permissions.IsAuthenticated & IsSuperstudentOrAdmin)
+            permissions.IsAuthenticated,
+            IsSyndicusWithUserID | IsSuperstudentOrAdmin,
         ],
         "issues": [
             (permissions.IsAuthenticated & IsSyndicusWithBuilding)
