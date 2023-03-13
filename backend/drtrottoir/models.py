@@ -155,6 +155,17 @@ class GarbageCollectionScheduleTemplateEntry(models.Model):
 
 
 class GarbageCollectionSchedule(models.Model):
+    """
+    Represents the garbage collection schedule, this is used for multiple objects like users,
+    buildings, … so that the displayed options for the user in the frontend can be
+    restricted.
+
+    Attributes:
+        for_day (date): the date on which this collection has to happen.
+        building (Building): the building where the garbage has to be collected.
+        garbage_type (GarbageType): the type of garbage that has to be collected.
+    """
+
     for_day = models.DateField()
     building = models.ForeignKey(
         Building, on_delete=models.RESTRICT, related_name="garbage_collection_schedules"
