@@ -55,9 +55,11 @@ class BuildingPermissions(permissions.BasePermission):
                 user_is_syndicus(request.user)
                 and request.user.id == int(view.kwargs["user_id"])
             ) or user_is_superstudent_or_admin(request.user)
-        elif request.method == "GET" and re.match(
-            "^/buildings/[0-9]+/issues/$", request.get_full_path()
-        ) and hasattr(request.user, "syndicus"):
+        elif (
+            request.method == "GET"
+            and re.match("^/buildings/[0-9]+/issues/$", request.get_full_path())
+            and hasattr(request.user, "syndicus")
+        ):
             #  only the syndicus of the buidling and superstudent or admin can access
             #  this
 
