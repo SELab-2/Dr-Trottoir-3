@@ -36,7 +36,7 @@ class GarbageCollectionScheduleViewSet(
                 required permission ``drtrottoir.models.Student(is_super_student=True)``
 
                 Delete this garbage collection schedule.
-    """
+    """ # noqa
 
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdminOrSafe]
 
