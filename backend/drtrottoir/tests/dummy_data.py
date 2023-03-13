@@ -99,13 +99,16 @@ def insert_dummy_garbage_collection_schedule_template(
     return template
 
 
-def insert_dummy_garbage_collection_schedule_template_entry() -> (
-    GarbageCollectionScheduleTemplateEntry
-):
+def insert_dummy_garbage_collection_schedule_template_entry(
+    template=None, day=4
+) -> GarbageCollectionScheduleTemplateEntry:
     garbage_type = insert_dummy_garbage_type()
-    template = insert_dummy_garbage_collection_schedule_template()
+
+    if template is None:
+        template = insert_dummy_garbage_collection_schedule_template()
+
     entry = GarbageCollectionScheduleTemplateEntry(
-        day=4,
+        day=day,
         garbage_type=garbage_type,
         garbage_collection_schedule_template=template,
     )

@@ -44,6 +44,23 @@ class Building(models.Model):
 
 
 class ScheduleDefinition(models.Model):
+    """
+    Represents a schedule definition. A student's route follows one of these
+    schedule definitions.
+
+    A student's actual work is tracked using work entries. A schedule
+    definition allows the database to know what route the student was
+    *supposed* to do. This way, we can know when a building was skipped for
+    whatever reason.
+
+    Attributes:
+        name (str): name of the schedule definition (e.g. Kouter)
+        version (int): which version of the schedule definition this is
+        location_group (LocationGroup): location group this schedule belongs to.
+        buildings ([ScheduleDefinitionBuilding]): list of buildings that make
+            up this schedule, represented using a separate many-to-many model
+    """
+
     name = models.CharField(max_length=255)
     version = models.IntegerField()
     location_group = models.ForeignKey(
@@ -53,6 +70,15 @@ class ScheduleDefinition(models.Model):
 
 
 class ScheduleDefinitionBuilding(models.Model):
+    """
+    Intermediate table used to link buildings and schedule definitions.
+
+    Attributes:
+        building (Building): building to link
+        schedule_definition (ScheduleDefinition): schedule definition to link
+        position (int): order in which the building appears in the schedule definition
+    """
+
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
     schedule_definition = models.ForeignKey(
         ScheduleDefinition, on_delete=models.CASCADE
@@ -144,6 +170,15 @@ class ScheduleWorkEntry(models.Model):
 
 
 class GarbageCollectionScheduleTemplate(models.Model):
+    """
+    Represents a template from which a garbage collection schedule can be
+    created.
+
+    Attributes:
+        name (str): name of the template
+        building (str): What building this template is for
+    """
+
     name = models.CharField(max_length=255)
     building = models.ForeignKey(
         Building,
@@ -164,6 +199,17 @@ class GarbageType(models.Model):
 
 
 class GarbageCollectionScheduleTemplateEntry(models.Model):
+    """
+    An entry for a garbage collection schedule template (e.g. on Monday, GFT
+    needs to be collected)
+
+    Attribute:
+        day (int): what day of the week this entry represents (1-7)
+        garbage_type (GarbageType): what garbage type this is an entry for
+        garbage_collection_schedule_template (GarbageCollectionScheduleTemplate):
+            what schedule this entry is a part of
+    """
+
     day = models.SmallIntegerField()
     garbage_type = models.ForeignKey(GarbageType, on_delete=models.RESTRICT)
     garbage_collection_schedule_template = models.ForeignKey(
