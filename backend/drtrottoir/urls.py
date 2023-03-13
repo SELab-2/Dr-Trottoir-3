@@ -33,6 +33,7 @@ from drtrottoir.views import (
     IssuesListApiView,
     LocationGroupViewSet,
     ScheduleAssignmentViewSet,
+    ScheduleDefinitionViewSet,
     ScheduleWorkEntryViewSet,
 )
 
@@ -45,7 +46,7 @@ router.register(
     r"garbage_collection_schedule_templates",
     GarbageCollectionScheduleTemplateViewSet,
 )
-router.register(r"garbage_type", GarbageTypeViewSet)
+router.register(r"garbage_types", GarbageTypeViewSet)
 
 router.register(
     r"garbage_collection_schedules",
@@ -65,6 +66,7 @@ router.register(
 
 router.register(r"schedule_assignments", ScheduleAssignmentViewSet)
 router.register(r"schedule_work_entries", ScheduleWorkEntryViewSet)
+router.register("schedule_definitions", ScheduleDefinitionViewSet)
 
 
 urlpatterns = [

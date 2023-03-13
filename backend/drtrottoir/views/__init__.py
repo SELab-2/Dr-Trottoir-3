@@ -9,6 +9,7 @@ from .issue import IssueDetailApiView, IssueNotApprovedApiView, IssuesListApiVie
 from .issue_image import IssueImageDetailView, IssueImageView
 from .location_group import LocationGroupViewSet
 from .schedule_assignment_views import ScheduleAssignmentViewSet
+from .schedule_definition import ScheduleDefinitionViewSet
 from .schedule_work_entry_views import ScheduleWorkEntryViewSet
 
 __all__ = [
@@ -25,4 +26,5 @@ __all__ = [
     "ScheduleWorkEntryViewSet",
     "IssueImageView",
     "IssueImageDetailView",
+    "ScheduleDefinitionViewSet",
 ]

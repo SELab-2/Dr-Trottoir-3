@@ -9,9 +9,15 @@ class LocationGroup(models.Model):
     name = models.CharField(max_length=255)
 
 
+def get_file_path_building_pdf_guide(instance, filename):
+    extension = filename.split(".")[-1]
+    filename = str(uuid.uuid4()) + "." + extension
+    return os.path.join("building_pdf_guides/", filename)
+
+
 class Building(models.Model):
     address = models.CharField(max_length=255)
-    guide_pdf_path = models.CharField(max_length=255)
+    pdf_guide = models.FileField(upload_to=get_file_path_building_pdf_guide, null=True)
     location_group = models.ForeignKey(
         LocationGroup, on_delete=models.RESTRICT, related_name="buildings"
     )
@@ -128,6 +134,13 @@ class GarbageCollectionScheduleTemplate(models.Model):
 
 
 class GarbageType(models.Model):
+    """
+    :model:`GarbageType` stores the name of a single garbage type.
+
+    Args:
+        name (str): name of the garbage type.
+    """
+
     name = models.CharField(max_length=255)
 
 

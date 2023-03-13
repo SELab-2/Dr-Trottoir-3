@@ -1,8 +1,16 @@
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from drtrottoir.models import Issue
+from drtrottoir.permissions import (
+    IsFromUserOfIssue,
+    IsStudent,
+    IsSuperStudent,
+    IsSyndicusOfBuildingAndApprovalNotNull,
+    IsSyndicusOfBuildingAndApprovalNull,
+)
 from drtrottoir.serializers import IssueSerializer
 
 # TODO - maybe move logic implemented in views to ViewSet.
@@ -25,16 +33,21 @@ from drtrottoir.serializers import IssueSerializer
 
 
 class IssuesListApiView(APIView):
-    permission_classes = []
-
     def get(self, request, *args, **kwargs):
         """ """
+        if not IsAuthenticated().has_permission(
+            request, None
+        ) or not IsSuperStudent().has_permission(request, None):
+            return Response(status=status.HTTP_403_FORBIDDEN)
         issues = Issue.objects
         serializer = IssueSerializer(issues, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
-        """ """
+        if not IsAuthenticated().has_permission(
+            request, None
+        ) or not IsStudent().has_permission(request, None):
+            return Response(status=status.HTTP_403_FORBIDDEN)
         request_user = request.user
 
         if request_user is None:
@@ -52,9 +65,20 @@ class IssuesListApiView(APIView):
 
 class IssueDetailApiView(APIView):
     def get(self, request, issue_id, *args, **kwargs):
-        """ """
         try:
             instance = Issue.objects.get(id=issue_id)
+
+            if (
+                not IsSuperStudent().has_permission(request, None)
+                and not IsFromUserOfIssue().has_object_permission(
+                    request, None, instance
+                )
+                and not IsSyndicusOfBuildingAndApprovalNull().has_object_permission(
+                    request, None, instance
+                )
+            ):
+                return Response(status=status.HTTP_403_FORBIDDEN)
+
             serializer = IssueSerializer(instance)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Issue.DoesNotExist:
@@ -63,7 +87,10 @@ class IssueDetailApiView(APIView):
             )
 
     def patch(self, request, issue_id, *args, **kwargs):
-        """ """
+        if not IsAuthenticated().has_permission(
+            request, None
+        ) or not IsSuperStudent().has_permission(request, None):
+            return Response(status=status.HTTP_403_FORBIDDEN)
         try:
             instance = Issue.objects.get(id=issue_id)
             serializer = IssueSerializer(instance, data=request.data, partial=True)
@@ -79,9 +106,16 @@ class IssueDetailApiView(APIView):
             )
 
     def delete(self, request, issue_id, *args, **kwargs):
-        """ """
         try:
             instance = Issue.objects.get(id=issue_id)
+
+            if not IsSuperStudent().has_permission(
+                request, None
+            ) and not IsSyndicusOfBuildingAndApprovalNotNull().has_object_permission(
+                request, None, instance
+            ):
+                return Response(status=status.HTTP_403_FORBIDDEN)
+
             serializer = IssueSerializer(
                 instance, data={"resolved": True}, partial=True
             )
@@ -99,7 +133,10 @@ class IssueDetailApiView(APIView):
 
 class IssueNotApprovedApiView(APIView):
     def get(self, request, *args, **kwargs):
-        """ """
+        if not IsAuthenticated().has_permission(
+            request, None
+        ) or not IsSuperStudent().has_permission(request, None):
+            return Response(status=status.HTTP_403_FORBIDDEN)
         issues = Issue.objects.filter(approval_user=None)
         serializer = IssueSerializer(issues, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
