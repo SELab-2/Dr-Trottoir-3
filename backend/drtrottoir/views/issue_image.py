@@ -11,15 +11,16 @@ from drtrottoir.serializers import IssueImageSerializer
 
 class IssueImageView(APIView):
     """The list endpoint for the issue images object.
-
-    The request should be sent to `/issue_images/`.
-
-    This endpoint supports the following methods which requires an authenticated
-    user with the described permissions:
-        POST (required permission `drtrottoir.models.Student(is_super_student=True)`):
-            Create a new issue image and upload an image, return newly created object.
-            Request format: 'multipart'.
-    """
+    
+        urls:
+        
+        /issue_images/
+            **POST:** 
+               required permission: ``drtrottoir.models.Student(is_super_student=True)``
+            
+                Create a new issue image and upload an image, return newly created object.
+                Request format: 'multipart'.
+    """  # noqa
 
     parser_classes = (MultiPartParser,)
     # Code removed on March 11 2023, since it does not follow the API guide.
@@ -47,16 +48,17 @@ class IssueImageView(APIView):
 
 
 class IssueImageDetailView(APIView):
-    """The detail endpoint for the issue images object.
+    """The list endpoint for the issue images object.
 
-    The request should be sent to `/issues_images/{issue_image_id}/`
+        urls:
 
-    This endpoint supports the following methods which requires an authenticated
-    user with the described permissions:
-    DELETE (required permission `drtrottoir.models.Student(is_super_student=True)`):
-        Create a new issue image and upload an image, return newly created object.
-        Request format: 'multipart'.
-    """
+        /issues_images/:issue_image_id/
+            **DELETE:** 
+               required permission: ``drtrottoir.models.Student(is_super_student=True)``
+
+                Create a new issue image and upload an image, return newly created object.
+                Request format: 'multipart'.
+    """  # noqa
 
     # Code removed on March 11 2023, since it does not follow the API guide.
     # def get(self, request, issue_image_id, *args, **kwargs):

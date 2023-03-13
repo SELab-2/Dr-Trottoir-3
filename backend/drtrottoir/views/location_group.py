@@ -22,7 +22,7 @@ class LocationGroupViewSet(
     """
     Viewset for location groups.
 
-    Endpoints:
+    urls:
 
         /location_groups/
             **GET:**

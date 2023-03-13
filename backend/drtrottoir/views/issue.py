@@ -81,9 +81,9 @@ class IssuesListApiView(APIView):
 class IssueDetailApiView(APIView):
     """The detail endpoint for the issue object.
 
-    Endpoint:
+    urls:
     
-        /issues/{issue_id}/
+        /issues/:issue_id/
             **GET:** 
                 required permission: ``drtrottoir.models.Student`` if the issue from_user field
                 is the user of the request OR syndicus if they are the syndicus of the building
@@ -173,7 +173,7 @@ class IssueDetailApiView(APIView):
 class IssueNotApprovedApiView(APIView):
     """The list endpoint for the issue object with approval_user equal to None.
 
-    Endpoint:
+    urls:
     
         /issues/not_approved/
             **GET:** 

@@ -34,7 +34,7 @@ class BuildingListViewSet(
     """
     Viewset for buildings.
 
-    Endpoints:
+    urls:
 
         /buildings/
             **GET:**
