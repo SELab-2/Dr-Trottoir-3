@@ -1,11 +1,79 @@
-from rest_framework import mixins, status, viewsets
+from typing import Any
+
+import rest_framework
+from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import api_view
+from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from drtrottoir.models import ScheduleAssignment
+from drtrottoir.permissions import (
+    IsSuperstudentOrAdmin,
+    user_is_student,
+    user_is_superstudent_or_admin,
+)
 from drtrottoir.serializers import ScheduleAssignmentSerializer
 
-# TODO permissions
+
+class ScheduleAssignmentPermission(permissions.BasePermission):
+    """Custom permissions class for the GET method ScheduleAssignmentViewSet class. The
+    GET item in ScheduleAssignment also allows students to access the entry, as long
+    as that user is the same as the ScheduleAssignment's user field.
+
+    To summarize, a user is allowed to GET an entry in ScheduleAssignment if:
+        - They are an admin or a super student
+        - They are a user and request.user.id == schedule_assignment.user.id
+    """
+
+    def has_permission(self, request: Request, view: APIView) -> bool:
+        if request.method == "GET":
+            # Super students and admins are allowed
+            if user_is_superstudent_or_admin(request.user):
+                return True
+            # The user must be a student
+            if not user_is_student(request.user):
+                return False
+
+            # If no ID is given, we are requesting the list. In this case, refuse access
+            if "pk" not in view.kwargs.keys():
+                return False
+
+            schedule_assignment_id = int(view.kwargs["pk"])
+            try:
+                schedule_assignment = ScheduleAssignment.objects.get(
+                    pk=schedule_assignment_id
+                )
+            except ScheduleAssignment.DoesNotExist:
+                return False
+            return schedule_assignment.user.id == request.user.id
+        return False
+
+
+class ScheduleAssignmentByDateAndUserPermission(permissions.BasePermission):
+    """
+    Custom permissions class for the ScheduleAssignmentViewSet
+    retrieve_list_by_date_and_user method in the
+    `/schedule_assignments/date/<date>/users/<user_id>/` url.
+
+    A user is granted permission if:
+        - They are an admin or a super student
+        - They are a student and their user ID matches the ID
+          in the url: request.user.id == user_id
+    """
+
+    def has_permission(self, request: Request, view: APIView) -> bool:
+        if request.method == "GET":
+            # Super students or admins are allowed
+            if user_is_superstudent_or_admin(request.user):
+                return True
+            # Otherwise the user must be a student
+            if not user_is_student(request.user):
+                return False
+            # and their user_id must match the request user's id
+            user_id = view.kwargs["user_id"]
+            return request.user.id == user_id
+        return False
 
 
 class ScheduleAssignmentViewSet(
@@ -15,39 +83,57 @@ class ScheduleAssignmentViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
-    permission_classes = []
-
     queryset = ScheduleAssignment.objects.all()
     serializer_class = ScheduleAssignmentSerializer
 
-    def update(self, request, *args, **kwargs):
+    permission_classes = [
+        permissions.IsAuthenticated,
+        (ScheduleAssignmentPermission | IsSuperstudentOrAdmin),
+    ]
+
+    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        """The POST method for the Schedule Assignment API. The assigned_date and
+        schedule_definitions fields in ScheduleAssignment are read-only. so these
+        are popped from the request data beforehand. The super update method is
+        then called.
+
+        Args:
+            request (Request): A rest_framework Request containing the necessary fields.
+            *args (Any): Additional args values as needed.
+            **kwargs (Any): Additional kwargs values as needed.
+
+        Returns:
+            Response: An appropriate HTTP response based on the given request.
+
         """
-        Patch only allows the user field to be updated, so this is manually overwritten.
-
-        TODO replace this with read_only_fields
-        For the moment I've tried using read_only_fields, but I get some
-        Assertion sql errors. I don't know why yet, but I'm looking into it
-        """
-        allowed_fields = ["user"]
-        filtered_data = {k: v for (k, v) in request.data.items() if k in allowed_fields}
-
-        # Code below this point copied from UpdateModelMixin
-        partial = kwargs.pop("partial", False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=filtered_data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-
-        if getattr(instance, "_prefetched_objects_cache", None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
-            instance._prefetched_objects_cache = {}
-
-        return Response(serializer.data)
+        read_only_fields = ["assigned_date", "schedule_definition"]
+        for field in read_only_fields:
+            request.data.pop(field, False)
+        return super().update(request, *args, **kwargs)
 
     @staticmethod
     @api_view(["GET"])
-    def retrieve_list_by_date_and_user(request, assigned_date, user_id):
+    @rest_framework.decorators.permission_classes(
+        [permissions.IsAuthenticated, ScheduleAssignmentByDateAndUserPermission]
+    )
+    def retrieve_list_by_date_and_user(
+        request: Request, assigned_date: str, user_id: int
+    ) -> Response:
+        """Custom GET method to allow for the
+        `/schedule_assignments/date/<date>/users/<user_id>/` url.
+
+        Args:
+            request (Request): A rest_framework Request containing the necessary
+            fields.
+            assigned_date (str): The date in string format we're asking for, in
+            YYYY-MM-DD format.
+            user_id (int): The int id of the user we're requesting the data for.
+
+        Returns:
+            Response: A list containing all the schedule assignments matching the
+            user and date.
+
+        """
         schedule_assignments = ScheduleAssignment.objects.filter(
             assigned_date=assigned_date, user_id=user_id
         )

@@ -25,8 +25,7 @@ def test_issue_images_api_view_post_jpg():
     client = APIClient()
     client.force_authenticate(user.user)
 
-    dummy_user = insert_dummy_user()
-    dummy_issue = insert_dummy_issue(dummy_user)
+    dummy_issue = insert_dummy_issue(user.user)
     image = Image.new("RGB", (100, 100))
 
     tmp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
@@ -52,8 +51,7 @@ def test_issue_images_api_view_post_png():
     client = APIClient()
     client.force_authenticate(user.user)
 
-    dummy_user = insert_dummy_user()
-    dummy_issue = insert_dummy_issue(dummy_user)
+    dummy_issue = insert_dummy_issue(user.user)
     image = Image.new("RGB", (100, 100))
 
     tmp_file = tempfile.NamedTemporaryFile(suffix=".png")
@@ -75,8 +73,7 @@ def test_issue_images_api_view_no_file_extension():
     client = APIClient()
     client.force_authenticate(user.user)
 
-    dummy_user = insert_dummy_user()
-    dummy_issue = insert_dummy_issue(dummy_user)
+    dummy_issue = insert_dummy_issue(user.user)
     image = Image.new("RGB", (100, 100))
 
     tmp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
@@ -199,9 +196,7 @@ def test_issue_images_detail_api_view_delete_valid_one_present():
     client = APIClient()
     client.force_authenticate(user.user)
 
-    dummy_user = insert_dummy_user()
-
-    dummy_issue_image = insert_dummy_issue_image(dummy_user)
+    dummy_issue_image = insert_dummy_issue_image(user.user)
 
     response = client.delete(f"/issue_images/{dummy_issue_image.id}/")
 
@@ -219,9 +214,7 @@ def test_issue_images_detail_api_view_delete_valid_multiple_present():
     client = APIClient()
     client.force_authenticate(user.user)
 
-    dummy_user = insert_dummy_user()
-
-    dummy_issue_image_1 = insert_dummy_issue_image(dummy_user)
+    dummy_issue_image_1 = insert_dummy_issue_image(user.user)
 
     # Code removed on March 11 2023, since it does not follow the API guide.
     # dummy_issue_image_2 = insert_dummy_issue_image(dummy_user)

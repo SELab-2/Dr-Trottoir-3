@@ -92,10 +92,15 @@ urlpatterns = [
         + "schedule_assignments/date/<str:assigned_date>/user/<int:user_id>/",
         ScheduleAssignmentViewSet.retrieve_list_by_date_and_user,
     ),
+    path(
+        settings.BASE_PATH + "schedule_work_entries/users/<int:user_id>/",
+        ScheduleWorkEntryViewSet.retrieve_by_user_id,
+    ),
+    path(settings.BASE_PATH + "api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(
-        settings.MEDIA_URL,
+        settings.BASE_PATH + settings.MEDIA_URL,
         document_root=settings.MEDIA_ROOT,
     )
