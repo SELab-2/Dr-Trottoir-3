@@ -10,6 +10,17 @@ from drtrottoir.serializers import IssueImageSerializer
 
 
 class IssueImageView(APIView):
+    """The list endpoint for the issue images object.
+
+    The request should be sent to `/issue_images/`.
+
+    This endpoint supports the following methods which requires an authenticated
+    user with the described permissions:
+        POST (required permission `drtrottoir.models.Student(is_super_student=True)`):
+            Create a new issue image and upload an image, return newly created object.
+            Request format: 'multipart'.
+    """
+
     parser_classes = (MultiPartParser,)
     # Code removed on March 11 2023, since it does not follow the API guide.
     # def get(self, request, *args, **kwargs):
@@ -36,9 +47,15 @@ class IssueImageView(APIView):
 
 
 class IssueImageDetailView(APIView):
-    """
-    The files are not allowed to be deleted, only the entries from the database.
-    The uploaded files are accessible at /media/issue_images/{filename}/
+    """The detail endpoint for the issue images object.
+
+    The request should be sent to `/issues_images/{issue_image_id}/`
+
+    This endpoint supports the following methods which requires an authenticated
+    user with the described permissions:
+    DELETE (required permission `drtrottoir.models.Student(is_super_student=True)`):
+        Create a new issue image and upload an image, return newly created object.
+        Request format: 'multipart'.
     """
 
     # Code removed on March 11 2023, since it does not follow the API guide.
