@@ -44,7 +44,7 @@ Issue image
    :members:
 
 
-location_group
+Location group
 ##############
 
 .. automodule:: drtrottoir.views.location_group
