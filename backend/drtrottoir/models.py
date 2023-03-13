@@ -162,7 +162,7 @@ class GarbageCollectionSchedule(models.Model):
         for_day (date): the date on which this garbage collection has to happen.
         building (Building): the building where this garbage collection has to happen.
         garbage_type (GarbageType): the type of garbage that has to be collected for this garbage collection.
-    """ # noqa
+    """  # noqa
 
     for_day = models.DateField()
     building = models.ForeignKey(
