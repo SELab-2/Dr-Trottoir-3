@@ -35,14 +35,18 @@ from drtrottoir.serializers import IssueSerializer
 class IssuesListApiView(APIView):
     """The list endpoint for the issue object.
 
-    The request should be sent to `/issues/`.
-    This endpoint supports the following methods which requires an authenticated
-    user with the described permissions:
-    GET (required permission `drtrottoir.models.Student(is_super_student=True)`):
-        All issues.
-    POST (required permission `drtrottoir.models.Student`):
-        Create a new issue type, return newly created object.
-    """
+    Endpoint:
+
+        /issues/
+            **GET:** 
+                required permission: ``drtrottoir.models.Student(is_super_student=True)``
+
+                All issues.
+            **POST:**
+                required permission: ``drtrottoir.models.Student``
+
+                Create a new issue type, return newly created object.
+    """  # noqa
 
     def get(self, request, *args, **kwargs):
         """ """
@@ -77,26 +81,27 @@ class IssuesListApiView(APIView):
 class IssueDetailApiView(APIView):
     """The detail endpoint for the issue object.
 
-    The request should be sent to `/issues/{issue_id}/`
+    Endpoint:
+    
+        /issues/{issue_id}/
+            **GET:** 
+                required permission: ``drtrottoir.models.Student`` if the issue from_user field
+                is the user of the request OR syndicus if they are the syndicus of the building
+                for which the issue was made and approval_user is not NULL OR
+                ``drtrottoir.models.Student(is_super_student=True)``
 
-    This endpoint supports the following methods which requires an authenticated
-    user with the described permissions:
-    GET (
-        required permission: `drtrottoir.models.Student` if the issue from_user field
-        is the user of the request OR syndicus if they are the syndicus of the building
-        for which the issue was made and approval_user is not NULL OR
-        `drtrottoir.models.Student(is_super_student=True)`
-    ):
-            Get the issue object with the given ID.
-    PATCH (required permission `drtrottoir.models.Student(is_super_student=True)`):
-        Update the message of the issue.
-    DELETE (
-        required permission: `drtrottoir.models.Student(is_super_student=True)` OR
-        syndicus if they are the syndicus of the building for which the issue was
-        made and approval_user is not NULL
-    ):
-        Set the issue to resolved=True.
-    """
+                Get the issue object with the given ID.
+            **PATCH:**
+                required permission: ``drtrottoir.models.Student(is_super_student=True)``
+                
+                Update the message of the issue.
+            **DELETE:**
+                required permission: ``drtrottoir.models.Student(is_super_student=True)`` OR
+                ``drtrottoir.models.Syndicus`` if they are the syndicus of the building for which the issue was
+                made and approval_user is not NULL
+
+                Set the issue to resolved=True.
+    """# noqa
 
     def get(self, request, issue_id, *args, **kwargs):
         try:
@@ -168,13 +173,14 @@ class IssueDetailApiView(APIView):
 class IssueNotApprovedApiView(APIView):
     """The list endpoint for the issue object with approval_user equal to None.
 
-    The request should be sent to `/issues/not_approved/`
+    Endpoint:
+    
+        /issues/not_approved/
+            **GET:** 
+                required permission: ``drtrottoir.models.Student(is_super_student=True)``
 
-    This endpoint supports the following methods which requires an authenticated
-    user with the described permissions:
-    GET (required permission `drtrottoir.models.Student(is_super_student=True)`):
-        All issues with approved=False.
-    """
+                All issues with approved=False.
+    """  # noqa
 
     def get(self, request, *args, **kwargs):
         if not IsAuthenticated().has_permission(
