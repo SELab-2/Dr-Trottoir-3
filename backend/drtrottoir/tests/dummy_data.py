@@ -1,4 +1,5 @@
 import datetime
+from typing import Union
 
 from drtrottoir.models import (
     Admin,
@@ -48,8 +49,8 @@ def insert_dummy_building(address: str = "dummy address", lg=None) -> Building:
 
 
 def insert_dummy_syndicus(
-    user=None,
-    buildings=None,
+    user: Union[None, User] = None,
+    buildings: Union[None, list[Building]] = None,
     email="test@gmail.com",
 ):
     if user is None:
@@ -170,9 +171,6 @@ def insert_dummy_student(
     return student
 
 
-# The ScheduleDefinition API is being written by Lander, but I  need
-# it for the ScheduleAssignment API. Replace this when finished.
-# - Pim
 def insert_dummy_schedule_definition(
     buildings=None, name="dummy schedule definition name", lg=None, version=1
 ) -> ScheduleDefinition:
@@ -205,8 +203,11 @@ def insert_dummy_schedule_definition(
     return definition
 
 
-def insert_dummy_schedule_assignment(user: User) -> ScheduleAssignment:
-    schedule_definition: ScheduleDefinition = insert_dummy_schedule_definition()
+def insert_dummy_schedule_assignment(
+    user: User, schedule_definition: Union[None, ScheduleDefinition] = None
+) -> ScheduleAssignment:
+    if schedule_definition is None:
+        schedule_definition = insert_dummy_schedule_definition()
     assignment = ScheduleAssignment(
         assigned_date="2022-01-26", schedule_definition=schedule_definition, user=user
     )
