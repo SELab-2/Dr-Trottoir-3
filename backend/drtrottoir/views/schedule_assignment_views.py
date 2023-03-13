@@ -83,6 +83,45 @@ class ScheduleAssignmentViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
+    """
+    Viewset for schedule assignments.
+
+    Endpoints:
+
+        /schedule_assignments/
+            **POST:**
+                required permission:
+                ``drtrottoir.permissions.IsSuperstudentOrAdmin``
+
+                Add a schedule assignment.
+
+        /schedule_assignments/:schedule_assignment_id/
+            **GET:**
+                required permission:
+                ``drtrottoir.views.schedule_assignment_views.ScheduleAssignmentPermission | drtrottoir.permissions.IsSuperstudentOrAdmin``
+
+                Retrieve a schedule assignment by id.
+
+            **PATCH:**
+                required permission:
+                ``drtrottoir.permissions.IsSuperstudentOrAdmin``
+
+                Update this schedule assignment's data.
+
+            **DELETE:**
+                required permission:
+                ``drtrottoir.permissions.IsSuperstudentOrAdmin``
+
+                Delete this schedule assignment.
+
+        /schedule_assignments/date/:assigned_date/user/:user_id/
+            **GET:**
+                required permission:
+                ``drtrottoir.views.schedule_assignment_views.ScheduleAssignmentByDateAndUserPermission``
+
+                Retrieve all schedule assignments on the given date assigned to given user.
+
+    """
     queryset = ScheduleAssignment.objects.all()
     serializer_class = ScheduleAssignmentSerializer
 
@@ -124,9 +163,9 @@ class ScheduleAssignmentViewSet(
 
         Args:
             request (Request): A rest_framework Request containing the necessary
-            fields.
+                fields.
             assigned_date (str): The date in string format we're asking for, in
-            YYYY-MM-DD format.
+                YYYY-MM-DD format.
             user_id (int): The int id of the user we're requesting the data for.
 
         Returns:
