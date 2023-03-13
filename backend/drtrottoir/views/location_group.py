@@ -1,31 +1,14 @@
-import re
-
 from rest_framework import mixins, permissions, viewsets
 from rest_framework.decorators import action
-from rest_framework.request import Request
 from rest_framework.response import Response
 
 from drtrottoir.models import LocationGroup
-from drtrottoir.permissions import user_is_superstudent_or_admin
+from drtrottoir.permissions import IsSuperstudentOrAdmin
 from drtrottoir.serializers import (
     BuildingSerializer,
     LocationGroupSerializer,
     ScheduleDefinitionSerializer,
 )
-
-
-class LocationGroupPermissions(permissions.BasePermission):
-    """
-    Class defining the permissions for location_groups endpoints.
-    """
-
-    def has_permission(self, request: Request, view) -> bool:
-        if request.method == "GET" and re.match(
-            "^/location_groups/[0-9]*/?$", request.get_full_path()
-        ):
-            return True
-        else:
-            return user_is_superstudent_or_admin(request.user)
 
 
 class LocationGroupViewSet(
@@ -83,7 +66,17 @@ class LocationGroupViewSet(
                 All the schedule definitions that are in this location group.
     """
 
-    permission_classes = [permissions.IsAuthenticated & LocationGroupPermissions]
+    permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
+    permission_classes_by_action = {
+        "retrieve": [permissions.IsAuthenticated],
+        "list": [permissions.IsAuthenticated],
+    }
+
+    def get_permissions(self):
+        if self.action not in self.permission_classes_by_action:
+            return [perm() for perm in self.permission_classes]
+
+        return [perm() for perm in self.permission_classes_by_action[self.action]]
 
     queryset = LocationGroup.objects.all()
     serializer_class = LocationGroupSerializer

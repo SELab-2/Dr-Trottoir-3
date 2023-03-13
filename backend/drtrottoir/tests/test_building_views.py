@@ -324,7 +324,7 @@ def test_building_get_schedules_by_date_list():
         building_1, date=datetime.date(2023, 2, 3)
     )
 
-    student = insert_dummy_student(is_super_student=True)
+    student = insert_dummy_student(is_super_student=False)
     client = APIClient()
     client.force_login(student.user)
     response = client.get(

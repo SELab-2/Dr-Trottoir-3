@@ -1,5 +1,3 @@
-from typing import Union
-
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import permissions
@@ -7,29 +5,8 @@ from rest_framework.permissions import SAFE_METHODS
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
-from drtrottoir.models import Issue, User
-
-
-def user_is_student(user: Union[AnonymousUser, User]) -> bool:
-    return hasattr(user, "student")
-
-
-def user_is_superstudent(user: Union[AnonymousUser, User]) -> bool:
-    if not hasattr(user, "student"):
-        return False
-    return user.student.is_super_student
-
-
-def user_is_admin(user: Union[AnonymousUser, User]) -> bool:
-    return hasattr(user, "admin")
-
-
-def user_is_superstudent_or_admin(user: Union[AnonymousUser, User]) -> bool:
-    return user_is_superstudent(user) or user_is_admin(user)
-
-
-def user_is_syndicus(user: Union[AnonymousUser, User]) -> bool:
-    return hasattr(user, "syndicus")
+from drtrottoir.models import Issue
+from drtrottoir.serializers import BuildingSerializer
 
 
 class IsSuperstudentOrAdmin(permissions.BasePermission):
@@ -126,6 +103,33 @@ class IsSyndicus(permissions.BasePermission):
         try:
             request.user.syndicus
             return True
+        except ObjectDoesNotExist:
+            return False
+
+
+class IsSyndicusWithUserID(permissions.BasePermission):
+    def has_permission(self, request: Request, view) -> bool:
+        if isinstance(request.user, AnonymousUser):
+            return False
+        try:
+            request.user.syndicus
+            return request.user.id == int(view.kwargs["user_id"])
+        except ObjectDoesNotExist:
+            return False
+
+
+class IsSyndicusWithBuilding(permissions.BasePermission):
+    def has_permission(self, request: Request, view) -> bool:
+        if isinstance(request.user, AnonymousUser):
+            return False
+        try:
+            request.user.syndicus
+            return int(view.kwargs["pk"]) in [
+                b["id"]
+                for b in BuildingSerializer(
+                    request.user.syndicus.buildings.all(), many=True
+                ).data
+            ]
         except ObjectDoesNotExist:
             return False
 
