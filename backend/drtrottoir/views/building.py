@@ -115,8 +115,7 @@ class BuildingListViewSet(
             IsSyndicusWithUserID | IsSuperstudentOrAdmin,
         ],
         "issues": [
-            (permissions.IsAuthenticated & IsSyndicusWithBuilding)
-            | (permissions.IsAuthenticated & IsSuperstudentOrAdmin)
+            permissions.IsAuthenticated, IsSyndicusWithBuilding | IsSuperstudentOrAdmin
         ],
         "garbage_collection_schedule_templates": [
             permissions.IsAuthenticated,
