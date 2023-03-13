@@ -86,6 +86,14 @@ class ScheduleDefinitionBuilding(models.Model):
 
 
 class User(AbstractUser):
+    """
+    Representing any user (student, syndicus or admin)
+
+    Attributes:
+        first_name (str): this user's first name
+        last_name (str): this user's last name
+        email (str): this user's email
+    """
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField(max_length=255, unique=True)
@@ -97,10 +105,24 @@ class User(AbstractUser):
 
 
 class Admin(models.Model):
+    """
+    An Admin user
+
+    Attributes:
+        user (User): the user model of this admin
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
 
 class Student(models.Model):
+    """
+    A Student user
+
+    Attributes:
+        user (User): the user model of this student
+        location_group (LocationGroup): In what location this student works
+        is_super_student (bool): Whether this user is a super_student
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     location_group = models.ForeignKey(
         LocationGroup, on_delete=models.RESTRICT, related_name="students"
@@ -109,6 +131,13 @@ class Student(models.Model):
 
 
 class Syndicus(models.Model):
+    """
+    A Syndicus user
+
+    Attributes:
+        user (User): the user model of this syndicus
+        buildings (Building): a list of buildings this syndicus oversees
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     buildings = models.ManyToManyField(Building)
 
