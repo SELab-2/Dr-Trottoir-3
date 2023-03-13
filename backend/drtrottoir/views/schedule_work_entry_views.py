@@ -94,6 +94,39 @@ class ScheduleWorkEntryViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet,
 ):
+    """
+    Viewset of schedule work entries.
+
+    Endpoints:
+
+        /schedule_work_entries/
+            **GET:**
+                required permission:
+                ``drtrottoir.permissions.IsSuperstudentOrHigher``
+
+                All schedule work entries.
+            **POST:**
+                required permission:
+                ``drtrottoir.views.schedule_work_entry_views.ScheduleWorkEntryPermission``
+
+                Add a schedule work entry.
+
+        /schedule_work_entries/:schedule_work_entry_id/
+            **GET:**
+                required permission:
+                ``drtrottoir.views.schedule_work_entry_views.ScheduleWorkEntryGetByIdPermission``
+
+                Retrieve a schedule work entry by its id.
+
+        /schedule_work_entries/users/:user_id/
+            **GET:**
+                required permission:
+                ``drtrottoir.views.schedule_work_entry_views.ScheduleWorkEntryByUserIdPermission``
+
+                Retrieve all schedule work entries matching a user.
+
+    """
+
     permission_classes = [
         IsAuthenticated,
         (ScheduleWorkEntryPermission | ScheduleWorkEntryGetByIdPermission),

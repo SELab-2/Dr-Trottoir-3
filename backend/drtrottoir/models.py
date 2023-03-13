@@ -93,7 +93,7 @@ class User(AbstractUser):
 
     USERNAME_FIELD = "email"
 
-    # email is explicitely *not* allowed to be in REQUIRED_FIELDS
+    # email is explicitly *not* allowed to be in REQUIRED_FIELDS
     REQUIRED_FIELDS = ["first_name", "last_name"]
 
 
