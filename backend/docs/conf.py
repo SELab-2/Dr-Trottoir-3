@@ -11,10 +11,10 @@ import sys
 
 import django
 
-sys.path.append(os.path.abspath('../'))
+sys.path.append(os.path.abspath("../"))
 
 # Specify settings module
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'drtrottoir.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "drtrottoir.settings")
 
 # Setup Django
 django.setup()
