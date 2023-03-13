@@ -156,14 +156,12 @@ class GarbageCollectionScheduleTemplateEntry(models.Model):
 
 class GarbageCollectionSchedule(models.Model):
     """
-    Represents the garbage collection schedule, this is used for multiple objects like users,
-    buildings, … so that the displayed options for the user in the frontend can be
-    restricted.
+    Represents a garbage collection schedule.
 
     Attributes:
-        for_day (date): the date on which this collection has to happen.
-        building (Building): the building where the garbage has to be collected.
-        garbage_type (GarbageType): the type of garbage that has to be collected.
+        for_day (date): the date on which this garbage collection has to happen.
+        building (Building): the building where this garbage collection has to happen.
+        garbage_type (GarbageType): the type of garbage that has to be collected for this garbage collection.
     """
 
     for_day = models.DateField()
