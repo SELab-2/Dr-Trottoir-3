@@ -49,9 +49,15 @@ def insert_dummy_building(address: str = "dummy address", lg=None) -> Building:
 
 
 def insert_dummy_syndicus(
-    user: User, buildings: Union[None, list[Building]] = None
-) -> Syndicus:
-    syndicus = Syndicus(user=user)
+        user: Union[None, User] = None,
+        buildings: Union[None, list[Building]] = None,
+        email="test@gmail.com",
+):
+    if user is None:
+        user = insert_dummy_user(email)
+    syndicus = Syndicus(
+        user=user,
+    )
     syndicus.save()
 
     if buildings is None:
@@ -82,7 +88,7 @@ def insert_dummy_garbage_collection_schedule(building=None, date=None):
 
 
 def insert_dummy_garbage_collection_schedule_template(
-    building=None,
+        building=None,
 ) -> GarbageCollectionScheduleTemplate:
     if building is None:
         building = insert_dummy_building()
@@ -95,7 +101,7 @@ def insert_dummy_garbage_collection_schedule_template(
 
 
 def insert_dummy_garbage_collection_schedule_template_entry() -> (
-    GarbageCollectionScheduleTemplateEntry
+        GarbageCollectionScheduleTemplateEntry
 ):
     garbage_type = insert_dummy_garbage_type()
     template = insert_dummy_garbage_collection_schedule_template()
@@ -136,23 +142,26 @@ def insert_dummy_issue_image(dummy_user: User) -> IssueImage:
     return issue_image
 
 
-def insert_dummy_user(email: str = "test@gmail.com") -> User:
+def insert_dummy_user(email: str = "test_user@gmail.com") -> User:
     dummy_user: User = User.objects.create_user(
         username=email, password="test", email=email
     )
     return dummy_user
 
 
-def insert_dummy_admin(email="test@gmail.com") -> Admin:
+def insert_dummy_admin(email="test_admin@gmail.com") -> Admin:
     user = insert_dummy_user(email)
     admin = Admin(user=user)
     admin.save()
     return admin
 
 
-def insert_dummy_student(email="test@gmail.com", is_super_student=False) -> Student:
+def insert_dummy_student(
+    email="test_student@gmail.com", is_super_student=False, lg=None
+) -> Student:
     user = insert_dummy_user(email)
-    lg = insert_dummy_location_group()
+    if lg is None:
+        lg = insert_dummy_location_group()
     student = Student(user=user, location_group=lg, is_super_student=is_super_student)
     student.save()
 
@@ -160,7 +169,7 @@ def insert_dummy_student(email="test@gmail.com", is_super_student=False) -> Stud
 
 
 def insert_dummy_schedule_definition(
-    buildings=None, name="dummy schedule definition name", lg=None, version=1
+        buildings=None, name="dummy schedule definition name", lg=None, version=1
 ) -> ScheduleDefinition:
     if lg is None:
         lg = insert_dummy_location_group()

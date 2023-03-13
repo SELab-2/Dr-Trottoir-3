@@ -7,6 +7,8 @@ from rest_framework.permissions import SAFE_METHODS
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
+from drtrottoir.models import Issue
+from drtrottoir.serializers import BuildingSerializer
 from drtrottoir.models import Issue, User
 
 
@@ -116,6 +118,60 @@ class IsSyndicus(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
         if isinstance(request.user, AnonymousUser):
             return False
+        try:
+            request.user.syndicus
+            return True
+        except ObjectDoesNotExist:
+            return False
+
+
+class IsSyndicusWithUserID(permissions.BasePermission):
+    def has_permission(self, request: Request, view) -> bool:
+        if isinstance(request.user, AnonymousUser):
+            return False
+        try:
+            request.user.syndicus
+            return request.user.id == int(view.kwargs["user_id"])
+        except ObjectDoesNotExist:
+            return False
+
+
+class IsSyndicusWithBuilding(permissions.BasePermission):
+    def has_permission(self, request: Request, view) -> bool:
+        if isinstance(request.user, AnonymousUser):
+            return False
+        try:
+            request.user.syndicus
+            return int(view.kwargs["pk"]) in [
+                b["id"]
+                for b in BuildingSerializer(
+                    request.user.syndicus.buildings.all(), many=True
+                ).data
+            ]
+        except ObjectDoesNotExist:
+            return False
+
+
+class IsSuperstudentOrAdminOrSafe(permissions.BasePermission):
+    """
+    Allow all Safe_Methods (Get, Head and Options) to be executed by every
+    authenticated user. All other methods can only be executed by users with
+    super_student or administrator rights.
+    """
+
+    def has_permission(self, request, view):
+        try:
+            request.user.admin
+            return True
+        except ObjectDoesNotExist:
+            try:
+                student = request.user.student
+                if student.is_super_student:
+                    return True
+                return request.method in SAFE_METHODS
+
+            except ObjectDoesNotExist:
+                return False
         return user_is_syndicus(request.user)
 
 
@@ -129,4 +185,15 @@ class HasAssignmentForScheduleDefinition(permissions.BasePermission):
         ):
             return True
         else:
-            return user_is_superstudent_or_admin(request.user)
+            try:
+                request.user.admin
+
+                return True
+
+            except ObjectDoesNotExist:
+                try:
+                    student = request.user.student
+                    return student.is_super_student
+
+                except ObjectDoesNotExist:
+                    return False
