@@ -141,14 +141,14 @@ def insert_dummy_issue_image(dummy_user: User) -> IssueImage:
     return issue_image
 
 
-def insert_dummy_user(email: str = "test@gmail.com") -> User:
+def insert_dummy_user(email: str = "test_user@gmail.com") -> User:
     dummy_user: User = User.objects.create_user(
         username=email, password="test", email=email
     )
     return dummy_user
 
 
-def insert_dummy_admin(email="test@gmail.com") -> Admin:
+def insert_dummy_admin(email="test_admin@gmail.com") -> Admin:
     user = insert_dummy_user(email)
     admin = Admin(user=user)
     admin.save()
@@ -156,7 +156,7 @@ def insert_dummy_admin(email="test@gmail.com") -> Admin:
 
 
 def insert_dummy_student(
-    email="test@gmail.com", is_super_student=False, lg=None
+    email="test_student@gmail.com", is_super_student=False, lg=None
 ) -> Student:
     user = insert_dummy_user(email)
     if lg is None:
