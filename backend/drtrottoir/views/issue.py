@@ -38,7 +38,7 @@ class IssuesListApiView(APIView):
     Endpoint:
 
         /issues/
-            **GET:** 
+            **GET:**
                 required permission: ``drtrottoir.models.Student(is_super_student=True)``
 
                 All issues.
@@ -82,9 +82,9 @@ class IssueDetailApiView(APIView):
     """The detail endpoint for the issue object.
 
     urls:
-    
+
         /issues/:issue_id/
-            **GET:** 
+            **GET:**
                 required permission: ``drtrottoir.models.Student`` if the issue from_user field
                 is the user of the request OR syndicus if they are the syndicus of the building
                 for which the issue was made and approval_user is not NULL OR
@@ -93,7 +93,7 @@ class IssueDetailApiView(APIView):
                 Get the issue object with the given ID.
             **PATCH:**
                 required permission: ``drtrottoir.models.Student(is_super_student=True)``
-                
+
                 Update the message of the issue.
             **DELETE:**
                 required permission: ``drtrottoir.models.Student(is_super_student=True)`` OR
@@ -101,7 +101,7 @@ class IssueDetailApiView(APIView):
                 made and approval_user is not NULL
 
                 Set the issue to resolved=True.
-    """# noqa
+    """  # noqa
 
     def get(self, request, issue_id, *args, **kwargs):
         try:
@@ -174,9 +174,9 @@ class IssueNotApprovedApiView(APIView):
     """The list endpoint for the issue object with approval_user equal to None.
 
     urls:
-    
+
         /issues/not_approved/
-            **GET:** 
+            **GET:**
                 required permission: ``drtrottoir.models.Student(is_super_student=True)``
 
                 All issues with approved=False.
