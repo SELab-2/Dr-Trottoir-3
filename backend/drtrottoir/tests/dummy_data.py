@@ -49,9 +49,9 @@ def insert_dummy_building(address: str = "dummy address", lg=None) -> Building:
 
 
 def insert_dummy_syndicus(
-        user: Union[None, User] = None,
-        buildings: Union[None, list[Building]] = None,
-        email="test@gmail.com",
+    user: Union[None, User] = None,
+    buildings: Union[None, list[Building]] = None,
+    email="test@gmail.com",
 ):
     if user is None:
         user = insert_dummy_user(email)
@@ -88,7 +88,7 @@ def insert_dummy_garbage_collection_schedule(building=None, date=None):
 
 
 def insert_dummy_garbage_collection_schedule_template(
-        building=None,
+    building=None,
 ) -> GarbageCollectionScheduleTemplate:
     if building is None:
         building = insert_dummy_building()
@@ -101,7 +101,7 @@ def insert_dummy_garbage_collection_schedule_template(
 
 
 def insert_dummy_garbage_collection_schedule_template_entry() -> (
-        GarbageCollectionScheduleTemplateEntry
+    GarbageCollectionScheduleTemplateEntry
 ):
     garbage_type = insert_dummy_garbage_type()
     template = insert_dummy_garbage_collection_schedule_template()
@@ -169,7 +169,7 @@ def insert_dummy_student(
 
 
 def insert_dummy_schedule_definition(
-        buildings=None, name="dummy schedule definition name", lg=None, version=1
+    buildings=None, name="dummy schedule definition name", lg=None, version=1
 ) -> ScheduleDefinition:
     if lg is None:
         lg = insert_dummy_location_group()
