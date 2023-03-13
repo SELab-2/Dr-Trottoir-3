@@ -12,14 +12,14 @@ from drtrottoir.serializers import IssueImageSerializer
 class IssueImageView(APIView):
     """The list endpoint for the issue images object.
 
-    urls:
+    Endpoints:
 
-    /issue_images/
-        **POST:**
-           required permission: ``drtrottoir.models.Student(is_super_student=True)``
-
-            Create a new issue image and upload an image, return newly created object.
-            Request format: 'multipart'.
+        /issue_images/
+            **POST:**
+               required permission: ``drtrottoir.models.Student(is_super_student=True)``
+    
+                Create a new issue image and upload an image, return newly created object.
+                Request format: 'multipart'.
     """  # noqa
 
     parser_classes = (MultiPartParser,)
@@ -50,14 +50,14 @@ class IssueImageView(APIView):
 class IssueImageDetailView(APIView):
     """The list endpoint for the issue images object.
 
-    urls:
+    Endpoints:
 
-    /issues_images/:issue_image_id/
-        **DELETE:**
-           required permission: ``drtrottoir.models.Student(is_super_student=True)``
-
-            Create a new issue image and upload an image, return newly created object.
-            Request format: 'multipart'.
+        /issues_images/:issue_image_id/
+            **DELETE:**
+               required permission: ``drtrottoir.models.Student(is_super_student=True)``
+    
+                Create a new issue image and upload an image, return newly created object.
+                Request format: 'multipart'.
     """  # noqa
 
     # Code removed on March 11 2023, since it does not follow the API guide.

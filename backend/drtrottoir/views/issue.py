@@ -35,7 +35,7 @@ from drtrottoir.serializers import IssueSerializer
 class IssuesListApiView(APIView):
     """The list endpoint for the issue object.
 
-    Endpoint:
+    Endpoints:
 
         /issues/
             **GET:**
@@ -81,7 +81,7 @@ class IssuesListApiView(APIView):
 class IssueDetailApiView(APIView):
     """The detail endpoint for the issue object.
 
-    urls:
+    Endpoints:
 
         /issues/:issue_id/
             **GET:**
@@ -173,7 +173,7 @@ class IssueDetailApiView(APIView):
 class IssueNotApprovedApiView(APIView):
     """The list endpoint for the issue object with approval_user equal to None.
 
-    urls:
+    Endpoints:
 
         /issues/not_approved/
             **GET:**

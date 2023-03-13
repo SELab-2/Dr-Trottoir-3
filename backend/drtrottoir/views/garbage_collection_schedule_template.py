@@ -27,16 +27,27 @@ class GarbageCollectionScheduleTemplateEntryViewSet(
     Endpoints:
 
         /garbage_collection_schedule_template_entries/
-            POST: (required permission `drtrottoir.permissions.IsSuperstudentOrAdmin`)
+            **POST:**
+                required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
+                
                 Create a new entry.
+                
         /garbage_collection_schedule_template_entries/:id/
-            GET: (required permission `drtrottoir.permissions.IsSuperstudentOrAdmin`)
+            **GET:** 
+                required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
+                
                 Get information for a single entry.
-            PATCH: (required permission `drtrottoir.permissions.IsSuperstudentOrAdmin`)
+                
+            **PATCH:**
+                required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
+                
                 Update information for a single entry.
-            DELETE: (required permission `drtrottoir.permissions.IsSuperstudentOrAdmin`)
+                
+            **DELETE:** 
+                required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
+                
                 Remove the entry with the given id.
-    """
+    """ # noqa
 
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
 
@@ -57,21 +68,38 @@ class GarbageCollectionScheduleTemplateViewSet(
     Endpoints:
 
         /garbage_collection_schedule_templates/
-            POST: (required permission `drtrottoir.permissions.IsSuperstudentOrAdmin`)
+            **POST:**
+                required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
+
                 Create a new schedule template.
+
         /garbage_collection_schedule_templates/:id/
-            GET: (required permission `drtrottoir.permissions.IsSuperstudentOrAdmin`)
+            **GET:**
+                required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
+
                 Get information for a single schedule template.
-            PATCH: (required permission `drtrottoir.permissions.IsSuperstudentOrAdmin`)
+
+            **PATCH:**
+                required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
+
                 Update information for a single schedule template.
-            DELETE: (required permission `drtrottoir.permissions.IsSuperstudentOrAdmin`)
+
+            **DELETE:**
+                required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
+
                 Remove the schedule template with the given id.
+
         /garbage_collection_schedule_templates/:id/entries/
-            GET: (required permission `drtrottoir.permissions.IsSuperstudentOrAdmin`)
+            **GET:**
+                required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
+
                 Return the schedule entries associated with the given schedule
                 template.
+
         /garbage_collection_schedule_templates/:id/entries/days/:day/entries/
-            GET: (required permission `drtrottoir.permissions.IsSuperstudentOrAdmin`)
+            **GET:**
+                required permission: ``drtrottoir.permissions.IsSuperstudentOrAdmin``
+
                 Return the schedule entries associated with the given schedule
                 template for the given day.
     """

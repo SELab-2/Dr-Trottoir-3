@@ -25,7 +25,6 @@ def get_file_path_building_pdf_guide(instance, filename):
 
 
 class Building(models.Model):
-    # TODO: unsure about type of pdf_guide
     """
     Represents a building.
 
@@ -203,7 +202,7 @@ class GarbageCollectionScheduleTemplateEntry(models.Model):
     An entry for a garbage collection schedule template (e.g. on Monday, GFT
     needs to be collected)
 
-    Attribute:
+    Attributes:
         day (int): what day of the week this entry represents (1-7)
         garbage_type (GarbageType): what garbage type this is an entry for
         garbage_collection_schedule_template (GarbageCollectionScheduleTemplate):
@@ -221,7 +220,7 @@ class GarbageCollectionScheduleTemplateEntry(models.Model):
 
 class GarbageCollectionSchedule(models.Model):
     """
-    Represents a garbage collection schedule.
+    Represents a garbage collection schedule. Uses a template to get what needs to be collected on what day.
 
     Attributes:
         for_day (date): the date on which this garbage collection has to happen.

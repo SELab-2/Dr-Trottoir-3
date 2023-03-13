@@ -58,6 +58,13 @@ Schedule assignment
    :members:
 
 
+Schedule definition
+###################
+
+.. automodule:: drtrottoir.views.schedule_definition
+   :members:
+
+
 Schedule work entry
 ###################
 
