@@ -13,7 +13,6 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
@@ -74,14 +73,23 @@ urlpatterns = [
     path(settings.BASE_PATH + "admin/", admin.site.urls),
     path(settings.BASE_PATH + "issues/", IssuesListApiView.as_view()),
     path(settings.BASE_PATH + "issues/<int:issue_id>/", IssueDetailApiView.as_view()),
-    path(settings.BASE_PATH + "issues/not_approved/", IssueNotApprovedApiView.as_view()),
-    path(settings.BASE_PATH + "api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+    path(
+        settings.BASE_PATH + "issues/not_approved/", IssueNotApprovedApiView.as_view()
+    ),
+    path(
+        settings.BASE_PATH + "api-auth/",
+        include("rest_framework.urls", namespace="rest_framework"),
+    ),
     path(settings.BASE_PATH + "issue_images/", IssueImageView.as_view()),
-    path(settings.BASE_PATH + "issue_images/<int:issue_image_id>/", IssueImageDetailView.as_view()),
+    path(
+        settings.BASE_PATH + "issue_images/<int:issue_image_id>/",
+        IssueImageDetailView.as_view(),
+    ),
     # Schedule assignments uses ViewSet, but this particular url has
     # two ids, so it's easier to do it like this
     path(
-        settings.BASE_PATH + "schedule_assignments/date/<str:assigned_date>/user/<int:user_id>/",
+        settings.BASE_PATH
+        + "schedule_assignments/date/<str:assigned_date>/user/<int:user_id>/",
         ScheduleAssignmentViewSet.retrieve_list_by_date_and_user,
     ),
 ]
