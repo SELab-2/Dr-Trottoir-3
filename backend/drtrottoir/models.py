@@ -174,6 +174,15 @@ class GarbageCollectionScheduleTemplateEntry(models.Model):
 
 
 class GarbageCollectionSchedule(models.Model):
+    """
+    Represents a garbage collection schedule.
+
+    Attributes:
+        for_day (date): the date on which this garbage collection has to happen.
+        building (Building): the building where this garbage collection has to happen.
+        garbage_type (GarbageType): the type of garbage that is collected for this garbage collection.
+    """  # noqa
+
     for_day = models.DateField()
     building = models.ForeignKey(
         Building, on_delete=models.RESTRICT, related_name="garbage_collection_schedules"
