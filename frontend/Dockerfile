@@ -4,13 +4,10 @@ FROM node:18-alpine as builder
 # set the working dir for container
 WORKDIR /frontend
 
-# copy the json file first
-COPY --chown=node:node ./package.json .
-COPY --chown=node:node ./package-lock.json .
+# copy project files
+COPY --chown=node:node . .
 
 # install npm dependencies
 RUN npm install
 
-# copy other project files
-COPY --chown=node:node . .
 USER node

@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+    restart: always
+    volumes:
+      - static-data:/vol/web
+    environment:
+      - BASE_PATH=api/
+      - SECRET_KEY=${SECRET_KEY}
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - DATABASE=postgres
+    depends_on:
+      - db
+  db:
+    image: postgres:15-alpine
+    restart: always
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+  proxy:
+    build:
+      context: ./proxy
+    restart: always
+    environment:
+      - BASE_PATH=api/
+    depends_on:
+      - backend
+    volumes:
+      - static-data:/vol/static
+volumes:
+  postgres-data:
+  static-data:
