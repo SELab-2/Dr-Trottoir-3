@@ -37,6 +37,7 @@ class GarbageCollectionScheduleTemplateEntryViewSet(
             DELETE: (required permission `drtrottoir.permissions.IsSuperstudentOrAdmin`)
                 Remove the entry with the given id.
     """
+
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
 
     queryset = GarbageCollectionScheduleTemplateEntry.objects.all()
@@ -69,7 +70,12 @@ class GarbageCollectionScheduleTemplateViewSet(
             GET: (required permission `drtrottoir.permissions.IsSuperstudentOrAdmin`)
                 Return the schedule entries associated with the given schedule
                 template.
+        /garbage_collection_schedule_templates/:id/entries/days/:day/entries/
+            GET: (required permission `drtrottoir.permissions.IsSuperstudentOrAdmin`)
+                Return the schedule entries associated with the given schedule
+                template for the given day.
     """
+
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
 
     queryset = GarbageCollectionScheduleTemplate.objects.all()
@@ -79,6 +85,16 @@ class GarbageCollectionScheduleTemplateViewSet(
     def entries(self, request, pk=None):
         template = self.get_object()
         entries = template.entries.all()
+        serializer = GarbageCollectionScheduleTemplateEntrySerializer(
+            entries, many=True
+        )
+
+        return Response(serializer.data)
+
+    @action(detail=True, methods=["GET"], url_path=r"days/(?P<day>[0-9]+)/entries")
+    def days(self, request, day, pk=None):
+        template = self.get_object()
+        entries = template.entries.filter(day=day)
         serializer = GarbageCollectionScheduleTemplateEntrySerializer(
             entries, many=True
         )

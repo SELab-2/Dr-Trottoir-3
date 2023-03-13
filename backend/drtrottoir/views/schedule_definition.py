@@ -45,7 +45,7 @@ class ScheduleDefinitionViewSet(
             GET: (required permission `drtrottoir.permissions.IsSuperstudentOrAdmin`)
                 Get all schedule work entries associated with a schedule
                 definition.
-    """
+    """  # noqa
 
     queryset = ScheduleDefinition.objects.all()
     serializer_class = ScheduleDefinitionSerializer
