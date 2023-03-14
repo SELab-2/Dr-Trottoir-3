@@ -115,6 +115,16 @@ class Syndicus(models.Model):
 
 
 class Issue(models.Model):
+    """
+    Represents an issue made by a Student or SuperStudent while working their assigned route.
+
+    Attributes:
+        building (Building): building for which the issue was made.
+        resolved (bool): a boolean stating if the issue was resolved by the syndicus.
+        message (str): the message from the student to the syndicus describing the issue.
+        from_user (User): the user that created the issue.
+        approval_user (User): the user that approved the issue and sent the issue to the syndicus.
+    """
     building = models.ForeignKey(
         Building, on_delete=models.RESTRICT, related_name="issues"
     )
@@ -135,6 +145,13 @@ def get_file_path_issue_image(instance, filename):
 
 
 class IssueImage(models.Model):
+    """
+    Contains images that are linked to an Issue.
+
+    Attributes:
+        image (Image): an image showing for what the issue was made.
+        issue (Issue): the corresponding issue for this image.
+    """
     image = models.ImageField(upload_to=get_file_path_issue_image)
     issue = models.ForeignKey(Issue, on_delete=models.RESTRICT, related_name="images")
 
