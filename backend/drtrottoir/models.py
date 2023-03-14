@@ -209,7 +209,7 @@ class GarbageCollectionScheduleTemplate(models.Model):
 
     Attributes:
         name (str): name of the template
-        building (str): What building this template is for
+        building (Building): What building this template is for
     """
 
     name = models.CharField(max_length=255)
