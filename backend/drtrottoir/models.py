@@ -141,14 +141,14 @@ class IssueImage(models.Model):
 
 class ScheduleAssignment(models.Model):
     """
-    Represents a schedule assigned to a (super)student they must complete a on
+    Represents a schedule assigned to a (super)student they must complete on
      a specific day.
 
     Attributes:
-        user (int): The user id of the student who must do the schedule.
-        schedule_definition (int): The id of the schedule_definition which
-            outlines the route the student must follow.
-        assigned_date (date): The date on which the student must do their
+        user (Student): The user id of the student who must do the schedule.
+        schedule_definition (ScheduleDefinition): The id of the schedule_definition
+            which outlines the route the student must follow.
+        assigned_date (Date): The date on which the student must do their
             schedule.
     """
 
@@ -177,17 +177,18 @@ class ScheduleWorkEntry(models.Model):
     completed that part of their route.
 
     Attributes:
-        creator (int): The id of the student who created the schedule work entry.
-        building (int): The id of the building the student is at when making the
+        creator (Student): The id of the student who created the schedule work entry.
+        building (Building): The id of the building the student is at when making the
             schedule work entry.
-        schedule_definition (int): The id of schedule definition that describes
-            the route the user must follow.
-        creation_timestamp (datetime): The time and date on which the entry is
+        schedule_definition (ScheduleDefinition): The id of schedule definition that
+            describes the route the user must follow.
+        creation_timestamp (DateTime): The time and date on which the entry is
             created.
         image (Image): An image to prove the student has indeed completed that
             part of their schedule.
 
     """
+
     creation_timestamp = models.DateTimeField()
     image = models.ImageField(upload_to=get_file_path_schedule_work_entry_image)
     creator = models.ForeignKey(
