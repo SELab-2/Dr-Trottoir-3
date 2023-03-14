@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: .
+    command: sh -c "npm run lint && npm run build"
+    volumes:
+      - ./:/frontend
+      - /frontend/node_modules
