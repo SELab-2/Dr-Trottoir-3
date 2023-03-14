@@ -10,6 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Frontend
-        run: test.sh frontend --build
+        run: sh test.sh frontend --build
       - name: Backend
-        run: test.sh backend --build
+        run: sh test.sh backend --build
