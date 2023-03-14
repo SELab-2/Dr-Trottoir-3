@@ -140,6 +140,18 @@ class IssueImage(models.Model):
 
 
 class ScheduleAssignment(models.Model):
+    """
+    Represents a schedule assigned to a (super)student they must complete a on
+     a specific day.
+
+    Attributes:
+        user (int): The user id of the student who must do the schedule.
+        schedule_definition (int): The id of the schedule_definition which
+            outlines the route the student must follow.
+        assigned_date (date): The date on which the student must do their
+            schedule.
+    """
+
     assigned_date = models.DateField()
     schedule_definition = models.ForeignKey(
         ScheduleDefinition, on_delete=models.RESTRICT, related_name="assignments"
@@ -156,6 +168,26 @@ def get_file_path_schedule_work_entry_image(instance, filename):
 
 
 class ScheduleWorkEntry(models.Model):
+    """
+    Represents a single piece of progress in a student's schedule. Whenever a
+    student completes part of their route (arriving at the building, taking the
+    trash bins out, or leaving the building), they take a picture and upload it
+    to the database so the super students can track their progress. A schedule
+    work entry represents one single action with picture that proves they have
+    completed that part of their route.
+
+    Attributes:
+        creator (int): The id of the student who created the schedule work entry.
+        building (int): The id of the building the student is at when making the
+            schedule work entry.
+        schedule_definition (int): The id of schedule definition that describes
+            the route the user must follow.
+        creation_timestamp (datetime): The time and date on which the entry is
+            created.
+        image (Image): An image to prove the student has indeed completed that
+            part of their schedule.
+
+    """
     creation_timestamp = models.DateTimeField()
     image = models.ImageField(upload_to=get_file_path_schedule_work_entry_image)
     creator = models.ForeignKey(
