@@ -28,3 +28,11 @@ To just run frontend, backend, or docs, run
 
 ## Rebuilding image
 To rebuild a docker image, add `--build`. This is necessary in some cases, for example when the dependencies changed. Docs will also only be updated when rebuilding the image.
+
+# Testing
+
+Run 
+```shell
+./test.sh {frontend|backend}
+```
+to run the tests in docker. Optionally add `--build` to rebuild the image if needed.
