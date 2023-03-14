@@ -7,7 +7,11 @@ WORKDIR /frontend
 # copy project files
 COPY --chown=node:node . .
 
+
 # install npm dependencies
-RUN npm install
+RUN apk update && \
+    apk add rsync && \
+    npm install && \
+    chown -R node:node /frontend/
 
 USER node

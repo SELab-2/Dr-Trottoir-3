@@ -3,7 +3,7 @@ services:
   frontend:
     build:
       context: .
-    command: sh -c "npm run lint && npm run build"
+    command: sh -c "rsync -a --exclude={'node_modules','.next'} /frontend_host/ /frontend/ && npm run lint && npm run build"
     volumes:
-      - ./:/frontend
-      - /frontend/node_modules
+      - ./:/frontend_host:ro
+      - /frontend/

@@ -13,7 +13,7 @@
 .env/
 .venv/
 venv/
-.mypy_cahce/
+.mypy_cache/
 .pytest_cache/
 
 # Local PostgreSQL data

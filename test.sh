@@ -12,7 +12,6 @@ case $1 in
         cd backend || exit 1
         if [ "$build" = true ]; then
           echo "Building image"
-          docker compose
           docker compose -f docker-compose.test.yml -p backend-test up --abort-on-container-exit --exit-code-from backend --build --renew-anon-volumes
           else docker compose -f docker-compose.test.yml -p backend-test up --abort-on-container-exit --exit-code-from backend
         fi
@@ -22,9 +21,8 @@ case $1 in
         cd frontend || exit 1
         if [ "$build" = true ]; then
           echo "Building image"
-          docker compose
-          docker compose -f docker-compose.test.yml -p frontend-test up --build --renew-anon-volumes
-          else docker compose -f docker-compose.test.yml -p frontend-test up
+          docker compose -f docker-compose.test.yml -p frontend-test up --build --renew-anon-volumes --exit-code-from frontend
+          else docker compose -f docker-compose.test.yml -p frontend-test up --exit-code-from frontend
         fi
         ;;
     *)

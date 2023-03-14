@@ -5,10 +5,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.test
-    command: sh -c "make venv && make lint && make test"
+    command: sh -c "rsync -r /app_host/ /app/ && make venv && make lint && /app/venv/bin/python manage.py wait_for_db && make test"
     volumes:
-      - ./:/app/
-      - /app/venv/
+      - ./:/app_host/:ro
+      - /app/
     environment:
       - SECRET_KEY=devsecretkey
       - DEBUG=1
