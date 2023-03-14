@@ -96,7 +96,10 @@ urlpatterns = [
         settings.BASE_PATH + "schedule_work_entries/users/<int:user_id>/",
         ScheduleWorkEntryViewSet.retrieve_by_user_id,
     ),
-    path(settings.BASE_PATH + "api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+    path(
+        settings.BASE_PATH + "api-auth/",
+        include("rest_framework.urls", namespace="rest_framework"),
+    ),
 ]
 
 if settings.DEBUG:

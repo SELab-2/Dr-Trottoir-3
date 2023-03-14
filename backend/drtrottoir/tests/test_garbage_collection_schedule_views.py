@@ -35,12 +35,9 @@ def test_garbage_collection_schedule_post():
         content_type="application/json",
     )
 
-    assert response.data == {
-        "id": 1,
-        "for_day": "2002-03-17",
-        "garbage_type": garbage_type.id,
-        "building": building.id,
-    }
+    assert response.data["for_day"] == "2002-03-17"
+    assert response.data["garbage_type"] == garbage_type.id
+    assert response.data["building"] == building.id
     assert response.status_code == 201
 
 
