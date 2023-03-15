@@ -1,2 +1,18 @@
 [tool.isort]
 profile = "black"
+skip = "migrations"
+
+[tool.black]
+extend-exclude = '''
+# A regex preceded with ^/ will apply only to files and directories
+# in the root of the project.
+(
+    migrations
+)
+'''
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+
+[tool.django-stubs]
+django_settings_module = "drtrottoir.settings"

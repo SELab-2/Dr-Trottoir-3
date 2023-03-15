@@ -1,0 +1,11 @@
+{
+    email joris.peeters@ugent.be
+}
+
+sel2-3.ugent.be {
+    reverse_proxy /api/* http://proxy:8000
+    handle_path /docs/* {
+        reverse_proxy http://docs:80
+    }
+    reverse_proxy http://frontend:3000
+}
