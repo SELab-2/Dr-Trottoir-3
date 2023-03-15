@@ -124,7 +124,7 @@ class Issue(models.Model):
         message (str): the message from the student to the syndicus describing the issue.
         from_user (User): the user that created the issue.
         approval_user (User): the user that approved the issue and sent the issue to the syndicus.
-    """ # noqa
+    """  # noqa
 
     building = models.ForeignKey(
         Building, on_delete=models.RESTRICT, related_name="issues"
