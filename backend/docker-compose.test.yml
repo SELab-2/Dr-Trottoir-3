@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.test
-    command: sh -c "rsync -r /app_host/ /app/ && make venv && make lint && /app/venv/bin/python manage.py wait_for_db && make test"
+    command: sh -c "rsync -a --exclude={'venv', 'docs', 'proxy'} /app_host/ /app/ && make venv && make lint && /app/venv/bin/python manage.py wait_for_db && make test"
     volumes:
       - ./:/app_host/:ro
       - /app/
