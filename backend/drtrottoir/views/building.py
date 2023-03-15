@@ -67,7 +67,7 @@ class BuildingListViewSet(
             **GET:**
                 required permission:
                 ``drtrottoir.models.Student(is_super_student=True)`` or
-                ``drtrottoir.model.syndicus`` if user_id is the syndicus user_id
+                ``drtrottoir.models.Syndicus`` if user_id is the syndicus user_id
 
                 All the buildings from this syndicus.
 
@@ -82,7 +82,7 @@ class BuildingListViewSet(
             **GET:**
                 required permission:
                 ``drtrottoir.models.Student(is_super_student=True)`` or
-                ``drtrottoir.model.syndicus`` if the syndicus is the syndicus of that
+                ``drtrottoir.models.Syndicus`` if the syndicus is the syndicus of that
                 building
 
                 All the issues of this building.

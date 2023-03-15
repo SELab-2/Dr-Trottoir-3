@@ -123,7 +123,7 @@ class ScheduleWorkEntryViewSet(
 
                 Retrieve all schedule work entries matching a user.
 
-    """
+    """  # noqa
 
     permission_classes = [
         IsAuthenticated,

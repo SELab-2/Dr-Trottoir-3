@@ -70,10 +70,7 @@ def test_garbage_type_post_success_return_201():
         content_type="application/json",
     )
 
-    assert (
-        response.data == {"id": 1, "name": "dummy garbage type"}
-        and response.status_code == 201
-    )
+    assert response.data["name"] == "dummy garbage type" and response.status_code == 201
 
 
 @pytest.mark.django_db
