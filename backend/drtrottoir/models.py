@@ -25,7 +25,6 @@ def get_file_path_building_pdf_guide(instance, filename):
 
 
 class Building(models.Model):
-    # TODO: unsure about type of pdf_guide
     """
     Represents a building.
 
@@ -35,6 +34,7 @@ class Building(models.Model):
         location_group (LocationGroup): The location group that the building is in.
         is_active (bool): Whether a building is active. Defaults to True
     """
+
     address = models.CharField(max_length=255)
     pdf_guide = models.FileField(upload_to=get_file_path_building_pdf_guide, null=True)
     location_group = models.ForeignKey(
@@ -87,6 +87,15 @@ class ScheduleDefinitionBuilding(models.Model):
 
 
 class User(AbstractUser):
+    """
+    Representing any user (student, syndicus or admin)
+
+    Attributes:
+        first_name (str): this user's first name
+        last_name (str): this user's last name
+        email (str): this user's email
+    """
+
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField(max_length=255, unique=True)
@@ -98,10 +107,26 @@ class User(AbstractUser):
 
 
 class Admin(models.Model):
+    """
+    An Admin user
+
+    Attributes:
+        user (User): the user model of this admin
+    """
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
 
 class Student(models.Model):
+    """
+    A Student user
+
+    Attributes:
+        user (User): the user model of this student
+        location_group (LocationGroup): In what location this student works
+        is_super_student (bool): Whether this user is a super_student
+    """
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     location_group = models.ForeignKey(
         LocationGroup, on_delete=models.RESTRICT, related_name="students"
@@ -110,6 +135,14 @@ class Student(models.Model):
 
 
 class Syndicus(models.Model):
+    """
+    A Syndicus user
+
+    Attributes:
+        user (User): the user model of this syndicus
+        buildings (Building): a list of buildings this syndicus oversees
+    """
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     buildings = models.ManyToManyField(Building)
 
@@ -228,7 +261,7 @@ class GarbageCollectionScheduleTemplate(models.Model):
 
     Attributes:
         name (str): name of the template
-        building (str): What building this template is for
+        building (Building): What building this template is for
     """
 
     name = models.CharField(max_length=255)
@@ -255,7 +288,7 @@ class GarbageCollectionScheduleTemplateEntry(models.Model):
     An entry for a garbage collection schedule template (e.g. on Monday, GFT
     needs to be collected)
 
-    Attribute:
+    Attributes:
         day (int): what day of the week this entry represents (1-7)
         garbage_type (GarbageType): what garbage type this is an entry for
         garbage_collection_schedule_template (GarbageCollectionScheduleTemplate):
@@ -273,7 +306,7 @@ class GarbageCollectionScheduleTemplateEntry(models.Model):
 
 class GarbageCollectionSchedule(models.Model):
     """
-    Represents a garbage collection schedule.
+    Represents a garbage collection schedule. Uses a template to get what needs to be collected on what day.
 
     Attributes:
         for_day (date): the date on which this garbage collection has to happen.
