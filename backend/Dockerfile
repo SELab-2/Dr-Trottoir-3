@@ -7,7 +7,6 @@ ENV PYTHONUNBUFFERED 1
 
 # set work directory
 WORKDIR /app
-EXPOSE 8000
 
 # copy project
 COPY . .
@@ -15,7 +14,7 @@ COPY ./scripts /scripts
 
 # install psycopg2 dependencies
 RUN apk update && \
-    apk add postgresql-dev gcc python3-dev musl-dev libffi-dev zlib-dev jpeg-dev linux-headers && \
+    apk add postgresql-dev gcc python3-dev musl-dev libffi-dev zlib-dev jpeg-dev linux-headers pcre pcre-dev && \
     python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
     /py/bin/pip install -r requirements.txt && \
