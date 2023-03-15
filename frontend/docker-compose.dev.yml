@@ -3,7 +3,6 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: Dockerfile.dev
     command: npm run dev
     ports:
       - "8001:3000"

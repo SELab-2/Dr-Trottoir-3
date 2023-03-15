@@ -63,7 +63,6 @@ def test_buildings_post():
     client.force_login(student.user)
     response = client.post("/buildings/", data)
 
-    assert response.data["id"] == 1
     assert response.data["address"] == "address 1"
     assert response.data["is_active"]
     assert response.data["location_group"] == dummy_location_group.id
@@ -153,7 +152,7 @@ def test_building_patch_detail():
     client.force_login(student.user)
     response = client.patch(f"/buildings/{dummy_building.id}/", data)
 
-    assert response.data["id"] == 1
+    assert response.data["id"] == dummy_building.id
     assert response.data["address"] == "address 1"
     assert response.data["is_active"]
     assert response.data["location_group"] == dummy_location_group.id

@@ -28,14 +28,11 @@ def test_issues_list_api_view_post():
         "/issues/", json.dumps(dummy_issue_data), content_type="application/json"
     )
 
-    assert response.data == {
-        "id": 1,
-        "resolved": False,
-        "message": "dummy message",
-        "building": 1,
-        "from_user": 1,
-        "approval_user": None,
-    }
+    assert response.data["resolved"] is False
+    assert response.data["message"] == "dummy message"
+    assert response.data["building"] == dummy_building.id
+    assert response.data["from_user"] == user.user.id
+    assert response.data["approval_user"] is None
     assert response.status_code == 201
 
 
