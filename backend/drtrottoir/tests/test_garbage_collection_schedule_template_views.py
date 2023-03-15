@@ -217,3 +217,46 @@ def test_garbage_collection_schedule_template_days_failure():
     _, res = _test_garbage_collection_schedule_template_days(student.user)
 
     assert res.status_code == 403
+
+
+def _test_garbage_collection_schedule_template_entries(user=None):
+    client = APIClient()
+
+    if user is not None:
+        client.force_login(user)
+
+    template = insert_dummy_garbage_collection_schedule_template()
+
+    entry1 = insert_dummy_garbage_collection_schedule_template_entry(
+        template=template, day=4
+    )
+    entry2 = insert_dummy_garbage_collection_schedule_template_entry(
+        template=template, day=5
+    )
+
+    return [entry1, entry2], client.get(
+        f"/garbage_collection_schedule_templates/{template.id}/entries/"
+    )
+
+
+@pytest.mark.django_db
+def test_garbage_collection_schedule_template_entries_success():
+    student = insert_dummy_student(is_super_student=True)
+
+    entries, res = _test_garbage_collection_schedule_template_entries(student.user)
+
+    assert res.status_code == 200 and sorted(x["id"] for x in res.data) == sorted(
+        x.id for x in entries
+    )
+
+
+@pytest.mark.django_db
+def test_garbage_collection_schedule_template_entries_failure():
+    _, res = _test_garbage_collection_schedule_template_entries()
+
+    assert res.status_code == 403
+
+    student = insert_dummy_student(is_super_student=False)
+    _, res = _test_garbage_collection_schedule_template_entries(student.user)
+
+    assert res.status_code == 403
