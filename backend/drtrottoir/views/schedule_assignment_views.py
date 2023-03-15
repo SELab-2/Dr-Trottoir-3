@@ -60,20 +60,24 @@ class ScheduleAssignmentByDateAndUserPermission(permissions.BasePermission):
         - They are an admin or a super student
         - They are a student and their user ID matches the ID
           in the url: request.user.id == user_id
+
+    Note: even though GET is the only allowed method, we don't need to
+    check for that. If for example the user tries to do a DELETE method,
+    they'll get a 403 error if they don't have the permission or a 405
+    error if they do, because of the `@api_view(["GET"])` decorator at
+    retrieve_list_by_date_and_user.
     """
 
     def has_permission(self, request: Request, view: APIView) -> bool:
-        if request.method == "GET":
-            # Super students or admins are allowed
-            if user_is_superstudent_or_admin(request.user):
-                return True
-            # Otherwise the user must be a student
-            if not user_is_student(request.user):
-                return False
-            # and their user_id must match the request user's id
-            user_id = view.kwargs["user_id"]
-            return request.user.id == user_id
-        return False
+        # Super students or admins are allowed
+        if user_is_superstudent_or_admin(request.user):
+            return True
+        # Otherwise the user must be a student
+        if not user_is_student(request.user):
+            return False
+        # and their user_id must match the request user's id
+        user_id = view.kwargs["user_id"]
+        return request.user.id == user_id
 
 
 class ScheduleAssignmentViewSet(
