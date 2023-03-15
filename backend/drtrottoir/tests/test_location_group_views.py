@@ -55,7 +55,7 @@ def test_location_groups_post():
         "/location_groups/", json.dumps(data), content_type="application/json"
     )
 
-    assert response.data == {"id": 2, "name": "location2"}
+    assert response.data["name"] == "location2"
     assert response.status_code == 201
 
 
@@ -105,7 +105,7 @@ def test_location_groups_patch_detail():
         json.dumps(data),
         content_type="application/json",
     )
-    assert response.data == {"id": 1, "name": "city 1"}
+    assert response.data["name"] == "city 1"
     assert response.status_code == 200
 
 

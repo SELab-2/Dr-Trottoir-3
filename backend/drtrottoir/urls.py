@@ -69,23 +69,41 @@ router.register("schedule_definitions", ScheduleDefinitionViewSet)
 
 
 urlpatterns = [
-    path("", include(router.urls)),
-    path("admin/", admin.site.urls),
-    path("issues/", IssuesListApiView.as_view()),
-    path("issues/<int:issue_id>/", IssueDetailApiView.as_view()),
-    path("issues/not_approved/", IssueNotApprovedApiView.as_view()),
-    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
-    path("issue_images/", IssueImageView.as_view()),
-    path("issue_images/<int:issue_image_id>/", IssueImageDetailView.as_view()),
+    path(settings.BASE_PATH, include(router.urls)),
+    path(settings.BASE_PATH + "admin/", admin.site.urls),
+    path(settings.BASE_PATH + "issues/", IssuesListApiView.as_view()),
+    path(settings.BASE_PATH + "issues/<int:issue_id>/", IssueDetailApiView.as_view()),
+    path(
+        settings.BASE_PATH + "issues/not_approved/", IssueNotApprovedApiView.as_view()
+    ),
+    path(
+        settings.BASE_PATH + "api-auth/",
+        include("rest_framework.urls", namespace="rest_framework"),
+    ),
+    path(settings.BASE_PATH + "issue_images/", IssueImageView.as_view()),
+    path(
+        settings.BASE_PATH + "issue_images/<int:issue_image_id>/",
+        IssueImageDetailView.as_view(),
+    ),
     # Schedule assignments uses ViewSet, but this particular url has
     # two ids, so it's easier to do it like this
     path(
-        "schedule_assignments/date/<str:assigned_date>/user/<int:user_id>/",
+        settings.BASE_PATH
+        + "schedule_assignments/date/<str:assigned_date>/user/<int:user_id>/",
         ScheduleAssignmentViewSet.retrieve_list_by_date_and_user,
     ),
     path(
-        "schedule_work_entries/users/<int:user_id>/",
+        settings.BASE_PATH + "schedule_work_entries/users/<int:user_id>/",
         ScheduleWorkEntryViewSet.retrieve_by_user_id,
     ),
-    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path(
+        settings.BASE_PATH + "api-auth/",
+        include("rest_framework.urls", namespace="rest_framework"),
+    ),
+]
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.BASE_PATH + settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT,
+    )

@@ -1,0 +1,70 @@
+version: '3.8'
+services:
+  caddy:
+    image: caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile.prod:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - selab
+
+  backend:
+    extends:
+      file: ../backend/docker-compose.prod.yml
+      service: backend
+    build: ../backend
+    networks:
+      selab:
+        aliases:
+          - backend
+
+  db:
+    extends:
+      file: ../backend/docker-compose.prod.yml
+      service: db
+    build: ../backend
+    networks:
+      selab:
+        aliases:
+          - db
+
+  proxy:
+    extends:
+      file: ../backend/docker-compose.prod.yml
+      service: proxy
+    build: ../backend/proxy
+    networks:
+      - selab
+    depends_on:
+      - backend
+
+  docs:
+    extends:
+      file: ../backend/docs/docker-compose.yml
+      service: docs
+    restart: always
+    build: ../backend/docs
+    networks:
+      - selab
+
+  frontend:
+    extends:
+      file: ../frontend/docker-compose.prod.yml
+      service: frontend
+    build: ../frontend
+    networks:
+      - selab
+
+networks:
+  selab:
+
+volumes:
+  postgres-data:
+  static-data:
+  caddy_data:
+  caddy_config:

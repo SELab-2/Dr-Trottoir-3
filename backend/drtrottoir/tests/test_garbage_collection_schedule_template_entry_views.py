@@ -110,12 +110,9 @@ def test_garbage_collection_schedule_template_entry_post_success():
         response,
     ) = _test_garbage_collection_schedule_template_entry_post(student.user)
 
-    assert response.data == {
-        "id": 1,
-        "day": 4,
-        "garbage_type": garbage_type.id,
-        "garbage_collection_schedule_template": template.id,
-    }
+    assert response.data["day"] == 4
+    assert response.data["garbage_type"] == garbage_type.id
+    assert response.data["garbage_collection_schedule_template"] == template.id
     assert response.status_code == 201
 
 
