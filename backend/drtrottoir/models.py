@@ -88,19 +88,16 @@ class ScheduleDefinitionBuilding(models.Model):
 
 class User(AbstractUser):
     """
-    Representing any user (student, syndicus or admin)
+    Representing any user (student, syndicus or admin). Email is stored in the
+    username field.
 
     Attributes:
         first_name (str): this user's first name
         last_name (str): this user's last name
-        email (str): this user's email
     """
 
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    email = models.EmailField(max_length=255, unique=True)
-
-    USERNAME_FIELD = "email"
 
     # email is explicitly *not* allowed to be in REQUIRED_FIELDS
     REQUIRED_FIELDS = ["first_name", "last_name"]

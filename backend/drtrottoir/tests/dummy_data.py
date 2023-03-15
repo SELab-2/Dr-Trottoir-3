@@ -146,9 +146,7 @@ def insert_dummy_issue_image(dummy_user: User) -> IssueImage:
 
 
 def insert_dummy_user(email: str = "test_user@gmail.com") -> User:
-    dummy_user: User = User.objects.create_user(
-        username=email, password="test", email=email
-    )
+    dummy_user: User = User.objects.create_user(username=email, password="test")
     return dummy_user
 
 
