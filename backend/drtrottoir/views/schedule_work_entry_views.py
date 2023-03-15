@@ -47,18 +47,18 @@ class ScheduleWorkEntryGetByIdPermission(permissions.BasePermission):
 
     def has_permission(self, request: Request, view: APIView) -> bool:
         if request.method == "GET":
-            # At this point we should be authenticated because of the
-            # IsAuthenticated permission class. Mypy however does not know
-            # this, and we need to manually check to make sure we're not
-            # AnonymousUser.
-            if isinstance(request.user, AnonymousUser):
+            if not (
+                user_is_student(request.user)
+                or user_is_superstudent_or_admin(request.user)
+            ):
                 return False
-            if "pk" not in view.kwargs.keys():
+            str_work_entry_id = view.kwargs.get("pk", None)
+            if str_work_entry_id is None:
                 # If no ID is given, we are requesting the list. In this case,
                 # refuse access
                 return False
+            work_entry_id = int(str_work_entry_id)
             try:
-                work_entry_id = int(view.kwargs["pk"])
                 work_entry = ScheduleWorkEntry.objects.get(pk=work_entry_id)
                 return work_entry.creator.id == request.user.id
             except ScheduleWorkEntry.DoesNotExist:
@@ -76,16 +76,14 @@ class ScheduleWorkEntryByUserIdPermission(permissions.BasePermission):
     """
 
     def has_permission(self, request: Request, view: APIView) -> bool:
-        if request.method == "GET":
-            # Super students or admins always have access
-            if user_is_superstudent_or_admin(request.user):
-                return True
-            # Students have access if request.user is the same as the user in the url
-            if not user_is_student(request.user):
-                return False
-            user_id = int(view.kwargs["user_id"])
-            return request.user.id == user_id
-        return False
+        # Super students or admins always have access
+        if user_is_superstudent_or_admin(request.user):
+            return True
+        # Students have access if request.user is the same as the user in the url
+        if not user_is_student(request.user):
+            return False
+        user_id = int(view.kwargs["user_id"])
+        return request.user.id == user_id
 
 
 class ScheduleWorkEntryViewSet(
@@ -95,7 +93,7 @@ class ScheduleWorkEntryViewSet(
     viewsets.GenericViewSet,
 ):
     """
-    Viewset of schedule work entries.
+    ViewSet of schedule work entries.
 
     Endpoints:
 
@@ -167,8 +165,7 @@ class ScheduleWorkEntryViewSet(
         # At this point we've passed our permission checks, and we should
         # be authenticated. However, we need manually check if we are not
         # AnonymousUser or mypy's type checking will give errors.
-        if isinstance(request.user, AnonymousUser):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        assert not isinstance(request.user, AnonymousUser)
 
         # Condition 1: request.user must be the same as request.data.creator
         data_creator_id = int(request.data["creator"])

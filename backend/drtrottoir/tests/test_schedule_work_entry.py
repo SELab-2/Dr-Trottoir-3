@@ -289,6 +289,40 @@ def test_schedule_work_entry_get_by_user_not_allowed_anonymous_syndicus() -> Non
 
 
 @pytest.mark.django_db
+def test_schedule_work_entry_get_non_existent_permissions() -> None:
+    student = insert_dummy_student("student@gmail.com")
+    super_student = insert_dummy_student("super@gmail.com", is_super_student=True)
+    admin = insert_dummy_admin("admin@gmail.com")
+    syndicus = insert_dummy_syndicus(insert_dummy_user("syndicus@gmail.com"))
+    non_existent_entry_id = 99999999
+
+    client = APIClient()
+
+    # Anonymous
+    client.logout()
+    response_anonymous = client.get(f"/schedule_work_entries/{non_existent_entry_id}/")
+    # Student
+    client.force_login(student.user)
+    response_student = client.get(f"/schedule_work_entries/{non_existent_entry_id}/")
+    # Super student
+    client.force_login(super_student.user)
+    response_super = client.get(f"/schedule_work_entries/{non_existent_entry_id}/")
+    # Admin
+    client.force_login(admin.user)
+    response_admin = client.get(f"/schedule_work_entries/{non_existent_entry_id}/")
+    # Syndicus
+    client.force_login(syndicus.user)
+    response_syndicus = client.get(f"/schedule_work_entries/{non_existent_entry_id}/")
+
+    assert response_anonymous.status_code == 403
+    assert response_student.status_code == 403
+    assert response_syndicus.status_code == 403
+
+    assert response_super.status_code == 404
+    assert response_admin.status_code == 404
+
+
+@pytest.mark.django_db
 def test_schedule_work_entry_get_by_user_matching_user_allowed_non_matching_user_not_allowed():  # noqa: E501
     """
     A student is allowed to access a schedule work entry by user if that student's
@@ -359,6 +393,58 @@ def test_schedule_work_entry_forbidden_methods() -> None:
     assert client.put("/schedule_work_entries/").status_code == 405
     assert client.patch("/schedule_work_entries/").status_code == 405
     assert client.delete("/schedule_work_entries/").status_code == 405
+
+
+@pytest.mark.django_db
+def test_schedule_work_entry_by_user_id_forbidden_methods() -> None:
+    """
+    The only method allowed for by_user_and_date is GET, the other methods
+    (POST, PUT, PATCH, and DELETE) are forbidden.
+    """
+    student = insert_dummy_student("student@gmail.com", is_super_student=False)
+    super_student = insert_dummy_student(
+        "superstudent@gmail.com", is_super_student=True
+    )
+    admin = insert_dummy_admin("admin@gmail.com")
+    syndicus = insert_dummy_syndicus(insert_dummy_user("syndicus@gmail.com"))
+    client = APIClient()
+
+    url = "/schedule_work_entries/users/9999/"
+
+    # Anonymous user gets 404
+    client.logout()
+    assert client.post(url).status_code == 403
+    assert client.put(url).status_code == 403
+    assert client.patch(url).status_code == 403
+    assert client.delete(url).status_code == 403
+
+    # Syndicus gets 404
+    client.force_login(syndicus.user)
+    assert client.post(url).status_code == 403
+    assert client.put(url).status_code == 403
+    assert client.patch(url).status_code == 403
+    assert client.delete(url).status_code == 403
+
+    # Student gets 403
+    client.force_login(student.user)
+    assert client.post(url).status_code == 403
+    assert client.put(url).status_code == 403
+    assert client.patch(url).status_code == 403
+    assert client.delete(url).status_code == 403
+
+    # Super student gets 405
+    client.force_login(super_student.user)
+    assert client.post(url).status_code == 405
+    assert client.put(url).status_code == 405
+    assert client.patch(url).status_code == 405
+    assert client.delete(url).status_code == 405
+
+    # Admin gets 405
+    client.force_login(admin.user)
+    assert client.post(url).status_code == 405
+    assert client.put(url).status_code == 405
+    assert client.patch(url).status_code == 405
+    assert client.delete(url).status_code == 405
 
 
 # endregion Forbidden methods
