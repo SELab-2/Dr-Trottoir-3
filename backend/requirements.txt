@@ -3,4 +3,6 @@ Django==4.1.7
 djangorestframework==3.14.0
 pytz==2022.7.1
 sqlparse==0.4.3
-django-types==0.17.0
+psycopg2-binary==2.9.5
+Pillow==9.4.0
+uWSGI>=2.0.21,<2.1

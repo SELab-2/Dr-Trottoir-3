@@ -1,0 +1,21 @@
+name: Deploy
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: deploy
+    steps:
+      - uses: actions/checkout@v3
+      - name: Make deploy.sh executable
+        run: chmod +x deploy.sh
+      - name: Run deploy.sh
+        run: ./deploy.sh
+        env:
+          ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_USER: ${{ secrets.DB_USER }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}

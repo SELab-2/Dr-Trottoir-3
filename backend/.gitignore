@@ -262,3 +262,7 @@ poetry.toml
 .ruff_cache/
 
 # End of https://www.toptal.com/developers/gitignore/api/python,django
+
+# Ignore uploaded images
+media
+media/*

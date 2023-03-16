@@ -1,17 +1,21 @@
 import datetime
+from typing import Union
 
 from drtrottoir.models import (
+    Admin,
     Building,
     GarbageCollectionSchedule,
     GarbageCollectionScheduleTemplate,
     GarbageCollectionScheduleTemplateEntry,
     GarbageType,
     Issue,
+    IssueImage,
     LocationGroup,
     ScheduleAssignment,
     ScheduleDefinition,
     ScheduleDefinitionBuilding,
     ScheduleWorkEntry,
+    Student,
     Syndicus,
     User,
 )
@@ -31,15 +35,12 @@ def insert_dummy_location_group(name: str = "dummy location group") -> LocationG
     return lg
 
 
-def insert_dummy_building(
-    address: str = "dummy address", path: str = "dummy path", lg=None
-) -> Building:
+def insert_dummy_building(address: str = "dummy address", lg=None) -> Building:
     if lg is None:
         lg = insert_dummy_location_group()
 
     building = Building(
         address=address,
-        guide_pdf_path=path,
         location_group=lg,
     )
     building.save()
@@ -48,9 +49,12 @@ def insert_dummy_building(
 
 
 def insert_dummy_syndicus(
-    user: User,
-    buildings=None,
+    user: Union[None, User] = None,
+    buildings: Union[None, list[Building]] = None,
+    email="test@gmail.com",
 ):
+    if user is None:
+        user = insert_dummy_user(email)
     syndicus = Syndicus(
         user=user,
     )
@@ -64,6 +68,7 @@ def insert_dummy_syndicus(
             syndicus.buildings.add(building)
 
     syndicus.save()
+
     return syndicus
 
 
@@ -95,13 +100,16 @@ def insert_dummy_garbage_collection_schedule_template(
     return template
 
 
-def insert_dummy_garbage_collection_schedule_template_entry() -> (
-    GarbageCollectionScheduleTemplateEntry
-):
+def insert_dummy_garbage_collection_schedule_template_entry(
+    template=None, day=4
+) -> GarbageCollectionScheduleTemplateEntry:
     garbage_type = insert_dummy_garbage_type()
-    template = insert_dummy_garbage_collection_schedule_template()
+
+    if template is None:
+        template = insert_dummy_garbage_collection_schedule_template()
+
     entry = GarbageCollectionScheduleTemplateEntry(
-        day=4,
+        day=day,
         garbage_type=garbage_type,
         garbage_collection_schedule_template=template,
     )
@@ -116,7 +124,7 @@ def insert_dummy_issue(dummy_user=None, dummy_building=None) -> Issue:
 
     if dummy_user is None:
         dummy_user = User.objects.create_user(
-            username="test@gmail.com", password="test"
+            username="user_issue@gmail.com", password="test"
         )
 
     issue = Issue(
@@ -128,16 +136,39 @@ def insert_dummy_issue(dummy_user=None, dummy_building=None) -> Issue:
     return issue
 
 
-def insert_dummy_user(email: str = "test@gmail.com") -> User:
-    dummy_user: User = User.objects.create_user(
-        username=email, password="test", email=email
-    )
+def insert_dummy_issue_image(dummy_user: User) -> IssueImage:
+    issue = insert_dummy_issue(dummy_user)
+
+    issue_image = IssueImage(issue=issue, image="test_path.jpg")
+    issue_image.save()
+
+    return issue_image
+
+
+def insert_dummy_user(email: str = "test_user@gmail.com") -> User:
+    dummy_user: User = User.objects.create_user(username=email, password="test")
     return dummy_user
 
 
-# The ScheduleDefinition API is being written by Lander, but I  need
-# it for the ScheduleAssignment API. Replace this when finished.
-# - Pim
+def insert_dummy_admin(email="test_admin@gmail.com") -> Admin:
+    user = insert_dummy_user(email)
+    admin = Admin(user=user)
+    admin.save()
+    return admin
+
+
+def insert_dummy_student(
+    email="test_student@gmail.com", is_super_student=False, lg=None
+) -> Student:
+    user = insert_dummy_user(email)
+    if lg is None:
+        lg = insert_dummy_location_group()
+    student = Student(user=user, location_group=lg, is_super_student=is_super_student)
+    student.save()
+
+    return student
+
+
 def insert_dummy_schedule_definition(
     buildings=None, name="dummy schedule definition name", lg=None, version=1
 ) -> ScheduleDefinition:
@@ -170,8 +201,11 @@ def insert_dummy_schedule_definition(
     return definition
 
 
-def insert_dummy_schedule_assignment(user: User) -> ScheduleAssignment:
-    schedule_definition: ScheduleDefinition = insert_dummy_schedule_definition()
+def insert_dummy_schedule_assignment(
+    user: User, schedule_definition: Union[None, ScheduleDefinition] = None
+) -> ScheduleAssignment:
+    if schedule_definition is None:
+        schedule_definition = insert_dummy_schedule_definition()
     assignment = ScheduleAssignment(
         assigned_date="2022-01-26", schedule_definition=schedule_definition, user=user
     )
@@ -184,7 +218,7 @@ def insert_dummy_schedule_work_entry(creator: User) -> ScheduleWorkEntry:
     schedule_definition = insert_dummy_schedule_definition()
     work_entry = ScheduleWorkEntry(
         creation_timestamp="2022-01-26 06:00",
-        image_path="pics/image.png",
+        image="image.png",
         creator=creator,
         building=building,
         schedule_definition=schedule_definition,

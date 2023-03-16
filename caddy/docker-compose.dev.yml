@@ -1,0 +1,47 @@
+version: '3.8'
+services:
+  caddy:
+    image: caddy
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile.dev:/etc/caddy/Caddyfile
+    networks:
+      - selab
+
+  backend:
+    extends:
+      file: ../backend/docker-compose.dev.yml
+      service: backend
+    build: ../backend
+    environment:
+      - BASE_PATH=api/
+    networks:
+      - selab
+
+  db:
+    extends:
+      file: ../backend/docker-compose.dev.yml
+      service: db
+    networks:
+      selab:
+        aliases:
+          - db
+  docs:
+    extends:
+      file: ../backend/docs/docker-compose.yml
+      service: docs
+    build: ../backend
+    networks:
+      - selab
+
+  frontend:
+    extends:
+      file: ../frontend/docker-compose.dev.yml
+      service: frontend
+    build: ../frontend
+    networks:
+      - selab
+
+networks:
+  selab:
