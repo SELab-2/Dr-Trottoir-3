@@ -1,7 +1,7 @@
 # Dr-Trottoir-3
 
 ## OneDrive
-All non code related files are stored in following onedrive directory. This includes functional analysis, use cases, endpoint guides, figma designs...
+All non code related files are stored in following OneDrive directory. This includes functional analysis, use cases, endpoint guides, figma designs...
 [OneDrive](https://ugentbe-my.sharepoint.com/personal/bart_mesuere_ugent_be/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbart%5Fmesuere%5Fugent%5Fbe%2FDocuments%2FOnderwijs%2FSELab2%2F2022%2D2023%2FMappen%20studenten%2Fgroep3&ct=1676648071488&or=OWA%2DNT&cid=0d2049e3%2Dfcb1%2Df225%2Dcaee%2Df2b258c1f843&ga=1)
 
 ## Roles
