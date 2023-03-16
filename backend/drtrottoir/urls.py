@@ -20,7 +20,7 @@ from rest_framework.routers import DefaultRouter
 
 from drtrottoir import settings
 from drtrottoir.views import (
-    BuildingListViewSet,
+    BuildingViewSet,
     GarbageCollectionScheduleTemplateEntryViewSet,
     GarbageCollectionScheduleTemplateViewSet,
     GarbageCollectionScheduleViewSet,
@@ -59,7 +59,7 @@ router.register(
 
 router.register(
     r"buildings",
-    BuildingListViewSet,
+    BuildingViewSet,
 )
 
 
