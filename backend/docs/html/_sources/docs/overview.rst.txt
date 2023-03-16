@@ -3,45 +3,44 @@ Overview
 ========
 
 DrTrottoir is a service company that manages trash cleanup schedules for apartments and similar
-housing buildings. To do so, DrTrottoir hires students to enter these buildings on assigned dates who
-take out the necessary trash. Because multiple buildings can share the same trash cleanup schedule, these
-buildings will be grouped in a route. A student who is out to perform his work will visit all buildings in
-a route and take out the trash for each of these buildings. To achieve a higher efficiency, the order of
-visits in these routes are determined beforehand.
+housing buildings. To do so, DrTrottoir hires students to enter these buildings on assigned dates
+to enter the buildings and take out the necessary trash for that day. Because many buildings share
+the same trash cleanup schedule, these buildings will be grouped in a route. A student out to perform
+his work will visit all buildings in a route and take out the trash for each of these buildings. To
+achieve a higher efficiency, these order of visits in these routes are determined beforehand.
 
 While a student is out on a route, a supervisor, called a super student, will be able to track which
 buildings have been visited. Super students will also have administrator rights to add, remove or
-manage routes, student schedules, and student permissions. A building owner (syndicus) will be
-given an account, which can also be added or removed by super students.
+manage routes, student schedules and student permissions. A building owner (syndicus) will also be
+given an account, which is also managed by the super student.
 
-In order for super students to verify the students are actually doing their work, students will have to take
+In order for super students to verify students actually doing their work, students will have to take
 pictures with their phones and upload them to the database. At least one photo must be taken for arriving
-at a building, for taking out the trash, and for leaving the building, per building. If a student encounters
-any troubles at a building they can create an issue to report this to the super students, which will notify the
-building's syndicus.
+at a building, for taking out the trash, and for leaving the building, for every building in the route.
+If a student encounters any troubles at a building they can create an issue to report this to notify
+the super students and the building's syndicus.
 
 User
 ****
 
-A user represents a user account from the django framework. Asides from the user model, there are
+A user represents a user account according to the django framework. Asides from the user model, there are
 also user roles. These roles are: student, super student, admin and syndicus. Theoretically a user can
 have multiple roles, although in practice it is expected for a user to only have one. The user role
-determines the permissions of the actions the user can take, according to the endpoint specifications.
+determines the permissions of the actions the user can take.
 
 Location Group
 **************
 
 A location group is a grouping of objects, such as users or buildings, by a location. Concretely, these
 will be cities, such as Ghent or Antwerp. Location groups are useful for separating permissions in
-different locations: a super student from Ghent does not need to know the schedule assignments of a
-student in Leuven for example.
+different locations. A super student from Ghent does not need to know the schedule assignments of a
+student in Leuven.
 
 Building
 ********
 
 A building represents a physical building that students can visit. Buildings are limited to a location
-group and contain an address and pdf guide. This guide can be used by students to navigate around the
-building, if needed.
+group and contain an address and pdf guide, for helping students navigate around the buildings.
 
 Garbage Type
 ************

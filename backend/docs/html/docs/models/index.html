@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Models &mdash; Dr Trottoir  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex/" />
+    <link rel="search" title="Search" href="../../search/" />
+    <link rel="prev" title="Views" href="../views/" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../" class="icon icon-home">
+            Dr Trottoir
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview/">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/">Views</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#drtrottoir.models.Admin"><code class="docutils literal notranslate"><span class="pre">Admin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Admin.user"><code class="docutils literal notranslate"><span class="pre">Admin.user</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Admin.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Admin.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Admin.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Admin.MultipleObjectsReturned</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#drtrottoir.models.Building"><code class="docutils literal notranslate"><span class="pre">Building</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Building.address"><code class="docutils literal notranslate"><span class="pre">Building.address</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Building.pdf_guide"><code class="docutils literal notranslate"><span class="pre">Building.pdf_guide</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Building.location_group"><code class="docutils literal notranslate"><span class="pre">Building.location_group</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Building.is_active"><code class="docutils literal notranslate"><span class="pre">Building.is_active</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Building.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Building.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Building.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Building.MultipleObjectsReturned</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionSchedule"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionSchedule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionSchedule.for_day"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionSchedule.for_day</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionSchedule.building"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionSchedule.building</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionSchedule.garbage_type"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionSchedule.garbage_type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionSchedule.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionSchedule.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionSchedule.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionSchedule.MultipleObjectsReturned</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionScheduleTemplate"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionScheduleTemplate</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionScheduleTemplate.name"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionScheduleTemplate.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionScheduleTemplate.building"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionScheduleTemplate.building</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionScheduleTemplate.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionScheduleTemplate.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionScheduleTemplate.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionScheduleTemplate.MultipleObjectsReturned</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionScheduleTemplateEntry"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionScheduleTemplateEntry</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionScheduleTemplateEntry.day"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionScheduleTemplateEntry.day</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionScheduleTemplateEntry.garbage_type"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionScheduleTemplateEntry.garbage_type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionScheduleTemplateEntry.garbage_collection_schedule_template"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionScheduleTemplateEntry.garbage_collection_schedule_template</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionScheduleTemplateEntry.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionScheduleTemplateEntry.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageCollectionScheduleTemplateEntry.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionScheduleTemplateEntry.MultipleObjectsReturned</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#drtrottoir.models.GarbageType"><code class="docutils literal notranslate"><span class="pre">GarbageType</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageType.name"><code class="docutils literal notranslate"><span class="pre">GarbageType.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageType.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">GarbageType.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.GarbageType.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">GarbageType.MultipleObjectsReturned</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#drtrottoir.models.Issue"><code class="docutils literal notranslate"><span class="pre">Issue</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Issue.building"><code class="docutils literal notranslate"><span class="pre">Issue.building</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Issue.resolved"><code class="docutils literal notranslate"><span class="pre">Issue.resolved</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Issue.message"><code class="docutils literal notranslate"><span class="pre">Issue.message</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Issue.from_user"><code class="docutils literal notranslate"><span class="pre">Issue.from_user</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Issue.approval_user"><code class="docutils literal notranslate"><span class="pre">Issue.approval_user</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Issue.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Issue.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Issue.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Issue.MultipleObjectsReturned</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#drtrottoir.models.IssueImage"><code class="docutils literal notranslate"><span class="pre">IssueImage</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.IssueImage.image"><code class="docutils literal notranslate"><span class="pre">IssueImage.image</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.IssueImage.issue"><code class="docutils literal notranslate"><span class="pre">IssueImage.issue</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.IssueImage.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">IssueImage.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.IssueImage.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">IssueImage.MultipleObjectsReturned</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#drtrottoir.models.LocationGroup"><code class="docutils literal notranslate"><span class="pre">LocationGroup</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.LocationGroup.name"><code class="docutils literal notranslate"><span class="pre">LocationGroup.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.LocationGroup.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">LocationGroup.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.LocationGroup.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">LocationGroup.MultipleObjectsReturned</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#drtrottoir.models.ScheduleAssignment"><code class="docutils literal notranslate"><span class="pre">ScheduleAssignment</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleAssignment.user"><code class="docutils literal notranslate"><span class="pre">ScheduleAssignment.user</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleAssignment.schedule_definition"><code class="docutils literal notranslate"><span class="pre">ScheduleAssignment.schedule_definition</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleAssignment.assigned_date"><code class="docutils literal notranslate"><span class="pre">ScheduleAssignment.assigned_date</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleAssignment.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">ScheduleAssignment.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleAssignment.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">ScheduleAssignment.MultipleObjectsReturned</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#drtrottoir.models.ScheduleDefinition"><code class="docutils literal notranslate"><span class="pre">ScheduleDefinition</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleDefinition.name"><code class="docutils literal notranslate"><span class="pre">ScheduleDefinition.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleDefinition.version"><code class="docutils literal notranslate"><span class="pre">ScheduleDefinition.version</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleDefinition.location_group"><code class="docutils literal notranslate"><span class="pre">ScheduleDefinition.location_group</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleDefinition.buildings"><code class="docutils literal notranslate"><span class="pre">ScheduleDefinition.buildings</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleDefinition.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">ScheduleDefinition.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleDefinition.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">ScheduleDefinition.MultipleObjectsReturned</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#drtrottoir.models.ScheduleDefinitionBuilding"><code class="docutils literal notranslate"><span class="pre">ScheduleDefinitionBuilding</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleDefinitionBuilding.building"><code class="docutils literal notranslate"><span class="pre">ScheduleDefinitionBuilding.building</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleDefinitionBuilding.schedule_definition"><code class="docutils literal notranslate"><span class="pre">ScheduleDefinitionBuilding.schedule_definition</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleDefinitionBuilding.position"><code class="docutils literal notranslate"><span class="pre">ScheduleDefinitionBuilding.position</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleDefinitionBuilding.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">ScheduleDefinitionBuilding.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleDefinitionBuilding.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">ScheduleDefinitionBuilding.MultipleObjectsReturned</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#drtrottoir.models.ScheduleWorkEntry"><code class="docutils literal notranslate"><span class="pre">ScheduleWorkEntry</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleWorkEntry.creator"><code class="docutils literal notranslate"><span class="pre">ScheduleWorkEntry.creator</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleWorkEntry.building"><code class="docutils literal notranslate"><span class="pre">ScheduleWorkEntry.building</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleWorkEntry.schedule_definition"><code class="docutils literal notranslate"><span class="pre">ScheduleWorkEntry.schedule_definition</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleWorkEntry.creation_timestamp"><code class="docutils literal notranslate"><span class="pre">ScheduleWorkEntry.creation_timestamp</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleWorkEntry.image"><code class="docutils literal notranslate"><span class="pre">ScheduleWorkEntry.image</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleWorkEntry.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">ScheduleWorkEntry.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.ScheduleWorkEntry.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">ScheduleWorkEntry.MultipleObjectsReturned</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#drtrottoir.models.Student"><code class="docutils literal notranslate"><span class="pre">Student</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Student.user"><code class="docutils literal notranslate"><span class="pre">Student.user</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Student.location_group"><code class="docutils literal notranslate"><span class="pre">Student.location_group</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Student.is_super_student"><code class="docutils literal notranslate"><span class="pre">Student.is_super_student</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Student.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Student.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Student.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Student.MultipleObjectsReturned</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#drtrottoir.models.Syndicus"><code class="docutils literal notranslate"><span class="pre">Syndicus</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Syndicus.user"><code class="docutils literal notranslate"><span class="pre">Syndicus.user</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Syndicus.buildings"><code class="docutils literal notranslate"><span class="pre">Syndicus.buildings</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Syndicus.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Syndicus.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.Syndicus.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Syndicus.MultipleObjectsReturned</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#drtrottoir.models.User"><code class="docutils literal notranslate"><span class="pre">User</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.User.first_name"><code class="docutils literal notranslate"><span class="pre">User.first_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.User.last_name"><code class="docutils literal notranslate"><span class="pre">User.last_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.User.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">User.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drtrottoir.models.User.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">User.MultipleObjectsReturned</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../">Dr Trottoir</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/docs/models.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-drtrottoir.models">
+<span id="models"></span><h1>Models<a class="headerlink" href="#module-drtrottoir.models" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="drtrottoir.models.Admin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">drtrottoir.models.</span></span><span class="sig-name descname"><span class="pre">Admin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#drtrottoir.models.Admin" title="Permalink to this definition"></a></dt>
+<dd><p>An Admin user</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.Admin.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#drtrottoir.models.Admin.user" title="Permalink to this definition"></a></dt>
+<dd><p>the user model of this admin</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.User" title="drtrottoir.models.User">User</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.Admin.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#drtrottoir.models.Admin.DoesNotExist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.Admin.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#drtrottoir.models.Admin.MultipleObjectsReturned" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drtrottoir.models.Building">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">drtrottoir.models.</span></span><span class="sig-name descname"><span class="pre">Building</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#drtrottoir.models.Building" title="Permalink to this definition"></a></dt>
+<dd><p>Represents a building.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.Building.address">
+<span class="sig-name descname"><span class="pre">address</span></span><a class="headerlink" href="#drtrottoir.models.Building.address" title="Permalink to this definition"></a></dt>
+<dd><p>Address of the building.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.Building.pdf_guide">
+<span class="sig-name descname"><span class="pre">pdf_guide</span></span><a class="headerlink" href="#drtrottoir.models.Building.pdf_guide" title="Permalink to this definition"></a></dt>
+<dd><p>Path of a resource on the server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.Building.location_group">
+<span class="sig-name descname"><span class="pre">location_group</span></span><a class="headerlink" href="#drtrottoir.models.Building.location_group" title="Permalink to this definition"></a></dt>
+<dd><p>The location group that the building is in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.LocationGroup" title="drtrottoir.models.LocationGroup">LocationGroup</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.Building.is_active">
+<span class="sig-name descname"><span class="pre">is_active</span></span><a class="headerlink" href="#drtrottoir.models.Building.is_active" title="Permalink to this definition"></a></dt>
+<dd><p>Whether a building is active. Defaults to True</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.Building.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#drtrottoir.models.Building.DoesNotExist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.Building.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#drtrottoir.models.Building.MultipleObjectsReturned" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionSchedule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">drtrottoir.models.</span></span><span class="sig-name descname"><span class="pre">GarbageCollectionSchedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionSchedule" title="Permalink to this definition"></a></dt>
+<dd><p>Represents a garbage collection schedule. Uses a template to get what needs to be collected on what day.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionSchedule.for_day">
+<span class="sig-name descname"><span class="pre">for_day</span></span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionSchedule.for_day" title="Permalink to this definition"></a></dt>
+<dd><p>the date on which this garbage collection has to happen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>date</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionSchedule.building">
+<span class="sig-name descname"><span class="pre">building</span></span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionSchedule.building" title="Permalink to this definition"></a></dt>
+<dd><p>the building where this garbage collection has to happen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.Building" title="drtrottoir.models.Building">Building</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionSchedule.garbage_type">
+<span class="sig-name descname"><span class="pre">garbage_type</span></span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionSchedule.garbage_type" title="Permalink to this definition"></a></dt>
+<dd><p>the type of garbage that is collected for this garbage collection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.GarbageType" title="drtrottoir.models.GarbageType">GarbageType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionSchedule.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionSchedule.DoesNotExist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionSchedule.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionSchedule.MultipleObjectsReturned" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionScheduleTemplate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">drtrottoir.models.</span></span><span class="sig-name descname"><span class="pre">GarbageCollectionScheduleTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionScheduleTemplate" title="Permalink to this definition"></a></dt>
+<dd><p>Represents a template from which a garbage collection schedule can be
+created.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionScheduleTemplate.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionScheduleTemplate.name" title="Permalink to this definition"></a></dt>
+<dd><p>name of the template</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionScheduleTemplate.building">
+<span class="sig-name descname"><span class="pre">building</span></span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionScheduleTemplate.building" title="Permalink to this definition"></a></dt>
+<dd><p>What building this template is for</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.Building" title="drtrottoir.models.Building">Building</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionScheduleTemplate.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionScheduleTemplate.DoesNotExist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionScheduleTemplate.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionScheduleTemplate.MultipleObjectsReturned" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionScheduleTemplateEntry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">drtrottoir.models.</span></span><span class="sig-name descname"><span class="pre">GarbageCollectionScheduleTemplateEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionScheduleTemplateEntry" title="Permalink to this definition"></a></dt>
+<dd><p>An entry for a garbage collection schedule template (e.g. on Monday, GFT
+needs to be collected)</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionScheduleTemplateEntry.day">
+<span class="sig-name descname"><span class="pre">day</span></span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionScheduleTemplateEntry.day" title="Permalink to this definition"></a></dt>
+<dd><p>what day of the week this entry represents (1-7)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionScheduleTemplateEntry.garbage_type">
+<span class="sig-name descname"><span class="pre">garbage_type</span></span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionScheduleTemplateEntry.garbage_type" title="Permalink to this definition"></a></dt>
+<dd><p>what garbage type this is an entry for</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.GarbageType" title="drtrottoir.models.GarbageType">GarbageType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionScheduleTemplateEntry.garbage_collection_schedule_template">
+<span class="sig-name descname"><span class="pre">garbage_collection_schedule_template</span></span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionScheduleTemplateEntry.garbage_collection_schedule_template" title="Permalink to this definition"></a></dt>
+<dd><p>what schedule this entry is a part of</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.GarbageCollectionScheduleTemplate" title="drtrottoir.models.GarbageCollectionScheduleTemplate">GarbageCollectionScheduleTemplate</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionScheduleTemplateEntry.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionScheduleTemplateEntry.DoesNotExist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageCollectionScheduleTemplateEntry.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#drtrottoir.models.GarbageCollectionScheduleTemplateEntry.MultipleObjectsReturned" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">drtrottoir.models.</span></span><span class="sig-name descname"><span class="pre">GarbageType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#drtrottoir.models.GarbageType" title="Permalink to this definition"></a></dt>
+<dd><p>Stores the name of a single garbage type.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageType.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#drtrottoir.models.GarbageType.name" title="Permalink to this definition"></a></dt>
+<dd><p>name of the garbage type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageType.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#drtrottoir.models.GarbageType.DoesNotExist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.GarbageType.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#drtrottoir.models.GarbageType.MultipleObjectsReturned" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drtrottoir.models.Issue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">drtrottoir.models.</span></span><span class="sig-name descname"><span class="pre">Issue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#drtrottoir.models.Issue" title="Permalink to this definition"></a></dt>
+<dd><p>Represents an issue made by a Student or SuperStudent while working their assigned route.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.Issue.building">
+<span class="sig-name descname"><span class="pre">building</span></span><a class="headerlink" href="#drtrottoir.models.Issue.building" title="Permalink to this definition"></a></dt>
+<dd><p>building for which the issue was made.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.Building" title="drtrottoir.models.Building">Building</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.Issue.resolved">
+<span class="sig-name descname"><span class="pre">resolved</span></span><a class="headerlink" href="#drtrottoir.models.Issue.resolved" title="Permalink to this definition"></a></dt>
+<dd><p>a boolean stating if the issue was resolved by the syndicus.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.Issue.message">
+<span class="sig-name descname"><span class="pre">message</span></span><a class="headerlink" href="#drtrottoir.models.Issue.message" title="Permalink to this definition"></a></dt>
+<dd><p>the message from the student to the syndicus describing the issue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.Issue.from_user">
+<span class="sig-name descname"><span class="pre">from_user</span></span><a class="headerlink" href="#drtrottoir.models.Issue.from_user" title="Permalink to this definition"></a></dt>
+<dd><p>the user that created the issue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.User" title="drtrottoir.models.User">User</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.Issue.approval_user">
+<span class="sig-name descname"><span class="pre">approval_user</span></span><a class="headerlink" href="#drtrottoir.models.Issue.approval_user" title="Permalink to this definition"></a></dt>
+<dd><p>the user that approved the issue and sent the issue to the syndicus.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.User" title="drtrottoir.models.User">User</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.Issue.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#drtrottoir.models.Issue.DoesNotExist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.Issue.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#drtrottoir.models.Issue.MultipleObjectsReturned" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drtrottoir.models.IssueImage">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">drtrottoir.models.</span></span><span class="sig-name descname"><span class="pre">IssueImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#drtrottoir.models.IssueImage" title="Permalink to this definition"></a></dt>
+<dd><p>Contains images that are linked to an Issue.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.IssueImage.image">
+<span class="sig-name descname"><span class="pre">image</span></span><a class="headerlink" href="#drtrottoir.models.IssueImage.image" title="Permalink to this definition"></a></dt>
+<dd><p>an image showing for what the issue was made.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Image</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.IssueImage.issue">
+<span class="sig-name descname"><span class="pre">issue</span></span><a class="headerlink" href="#drtrottoir.models.IssueImage.issue" title="Permalink to this definition"></a></dt>
+<dd><p>the corresponding issue for this image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.Issue" title="drtrottoir.models.Issue">Issue</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.IssueImage.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#drtrottoir.models.IssueImage.DoesNotExist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.IssueImage.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#drtrottoir.models.IssueImage.MultipleObjectsReturned" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drtrottoir.models.LocationGroup">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">drtrottoir.models.</span></span><span class="sig-name descname"><span class="pre">LocationGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#drtrottoir.models.LocationGroup" title="Permalink to this definition"></a></dt>
+<dd><p>Represents the general location, this is used for multiple objects like users,
+buildings, … so that the displayed options for the user in the frontend can be
+restricted.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.LocationGroup.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#drtrottoir.models.LocationGroup.name" title="Permalink to this definition"></a></dt>
+<dd><p>Name of the location group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.LocationGroup.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#drtrottoir.models.LocationGroup.DoesNotExist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.LocationGroup.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#drtrottoir.models.LocationGroup.MultipleObjectsReturned" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleAssignment">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">drtrottoir.models.</span></span><span class="sig-name descname"><span class="pre">ScheduleAssignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#drtrottoir.models.ScheduleAssignment" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Represents a schedule assigned to a (super)student they must complete on</dt><dd><p>a specific day.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleAssignment.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleAssignment.user" title="Permalink to this definition"></a></dt>
+<dd><p>The user id of the student who must do the schedule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.Student" title="drtrottoir.models.Student">Student</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleAssignment.schedule_definition">
+<span class="sig-name descname"><span class="pre">schedule_definition</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleAssignment.schedule_definition" title="Permalink to this definition"></a></dt>
+<dd><p>The id of the schedule_definition
+which outlines the route the student must follow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.ScheduleDefinition" title="drtrottoir.models.ScheduleDefinition">ScheduleDefinition</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleAssignment.assigned_date">
+<span class="sig-name descname"><span class="pre">assigned_date</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleAssignment.assigned_date" title="Permalink to this definition"></a></dt>
+<dd><p>The date on which the student must do their
+schedule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Date</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleAssignment.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleAssignment.DoesNotExist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleAssignment.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleAssignment.MultipleObjectsReturned" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleDefinition">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">drtrottoir.models.</span></span><span class="sig-name descname"><span class="pre">ScheduleDefinition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#drtrottoir.models.ScheduleDefinition" title="Permalink to this definition"></a></dt>
+<dd><p>Represents a schedule definition. A student’s route follows one of these
+schedule definitions.</p>
+<p>A student’s actual work is tracked using work entries. A schedule
+definition allows the database to know what route the student was
+<em>supposed</em> to do. This way, we can know when a building was skipped for
+whatever reason.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleDefinition.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleDefinition.name" title="Permalink to this definition"></a></dt>
+<dd><p>name of the schedule definition (e.g. Kouter)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleDefinition.version">
+<span class="sig-name descname"><span class="pre">version</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleDefinition.version" title="Permalink to this definition"></a></dt>
+<dd><p>which version of the schedule definition this is</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleDefinition.location_group">
+<span class="sig-name descname"><span class="pre">location_group</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleDefinition.location_group" title="Permalink to this definition"></a></dt>
+<dd><p>location group this schedule belongs to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.LocationGroup" title="drtrottoir.models.LocationGroup">LocationGroup</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleDefinition.buildings">
+<span class="sig-name descname"><span class="pre">buildings</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleDefinition.buildings" title="Permalink to this definition"></a></dt>
+<dd><p>list of buildings that make
+up this schedule, represented using a separate many-to-many model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[<a class="reference internal" href="#drtrottoir.models.ScheduleDefinitionBuilding" title="drtrottoir.models.ScheduleDefinitionBuilding">ScheduleDefinitionBuilding</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleDefinition.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleDefinition.DoesNotExist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleDefinition.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleDefinition.MultipleObjectsReturned" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleDefinitionBuilding">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">drtrottoir.models.</span></span><span class="sig-name descname"><span class="pre">ScheduleDefinitionBuilding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#drtrottoir.models.ScheduleDefinitionBuilding" title="Permalink to this definition"></a></dt>
+<dd><p>Intermediate table used to link buildings and schedule definitions.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleDefinitionBuilding.building">
+<span class="sig-name descname"><span class="pre">building</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleDefinitionBuilding.building" title="Permalink to this definition"></a></dt>
+<dd><p>building to link</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.Building" title="drtrottoir.models.Building">Building</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleDefinitionBuilding.schedule_definition">
+<span class="sig-name descname"><span class="pre">schedule_definition</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleDefinitionBuilding.schedule_definition" title="Permalink to this definition"></a></dt>
+<dd><p>schedule definition to link</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.ScheduleDefinition" title="drtrottoir.models.ScheduleDefinition">ScheduleDefinition</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleDefinitionBuilding.position">
+<span class="sig-name descname"><span class="pre">position</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleDefinitionBuilding.position" title="Permalink to this definition"></a></dt>
+<dd><p>order in which the building appears in the schedule definition</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleDefinitionBuilding.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleDefinitionBuilding.DoesNotExist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleDefinitionBuilding.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleDefinitionBuilding.MultipleObjectsReturned" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleWorkEntry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">drtrottoir.models.</span></span><span class="sig-name descname"><span class="pre">ScheduleWorkEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#drtrottoir.models.ScheduleWorkEntry" title="Permalink to this definition"></a></dt>
+<dd><p>Represents a single piece of progress in a student’s schedule. Whenever a
+student completes part of their route (arriving at the building, taking the
+trash bins out, or leaving the building), they take a picture and upload it
+to the database so the super students can track their progress. A schedule
+work entry represents one single action with picture that proves they have
+completed that part of their route.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleWorkEntry.creator">
+<span class="sig-name descname"><span class="pre">creator</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleWorkEntry.creator" title="Permalink to this definition"></a></dt>
+<dd><p>The id of the student who created the schedule work entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.Student" title="drtrottoir.models.Student">Student</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleWorkEntry.building">
+<span class="sig-name descname"><span class="pre">building</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleWorkEntry.building" title="Permalink to this definition"></a></dt>
+<dd><p>The id of the building the student is at when making the
+schedule work entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.Building" title="drtrottoir.models.Building">Building</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleWorkEntry.schedule_definition">
+<span class="sig-name descname"><span class="pre">schedule_definition</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleWorkEntry.schedule_definition" title="Permalink to this definition"></a></dt>
+<dd><p>The id of schedule definition that
+describes the route the user must follow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.ScheduleDefinition" title="drtrottoir.models.ScheduleDefinition">ScheduleDefinition</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleWorkEntry.creation_timestamp">
+<span class="sig-name descname"><span class="pre">creation_timestamp</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleWorkEntry.creation_timestamp" title="Permalink to this definition"></a></dt>
+<dd><p>The time and date on which the entry is
+created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DateTime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleWorkEntry.image">
+<span class="sig-name descname"><span class="pre">image</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleWorkEntry.image" title="Permalink to this definition"></a></dt>
+<dd><p>An image to prove the student has indeed completed that
+part of their schedule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Image</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleWorkEntry.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleWorkEntry.DoesNotExist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.ScheduleWorkEntry.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#drtrottoir.models.ScheduleWorkEntry.MultipleObjectsReturned" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drtrottoir.models.Student">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">drtrottoir.models.</span></span><span class="sig-name descname"><span class="pre">Student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#drtrottoir.models.Student" title="Permalink to this definition"></a></dt>
+<dd><p>A Student user</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.Student.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#drtrottoir.models.Student.user" title="Permalink to this definition"></a></dt>
+<dd><p>the user model of this student</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.User" title="drtrottoir.models.User">User</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.Student.location_group">
+<span class="sig-name descname"><span class="pre">location_group</span></span><a class="headerlink" href="#drtrottoir.models.Student.location_group" title="Permalink to this definition"></a></dt>
+<dd><p>In what location this student works</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.LocationGroup" title="drtrottoir.models.LocationGroup">LocationGroup</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.Student.is_super_student">
+<span class="sig-name descname"><span class="pre">is_super_student</span></span><a class="headerlink" href="#drtrottoir.models.Student.is_super_student" title="Permalink to this definition"></a></dt>
+<dd><p>Whether this user is a super_student</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.Student.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#drtrottoir.models.Student.DoesNotExist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.Student.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#drtrottoir.models.Student.MultipleObjectsReturned" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drtrottoir.models.Syndicus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">drtrottoir.models.</span></span><span class="sig-name descname"><span class="pre">Syndicus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#drtrottoir.models.Syndicus" title="Permalink to this definition"></a></dt>
+<dd><p>A Syndicus user</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.Syndicus.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#drtrottoir.models.Syndicus.user" title="Permalink to this definition"></a></dt>
+<dd><p>the user model of this syndicus</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.User" title="drtrottoir.models.User">User</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.Syndicus.buildings">
+<span class="sig-name descname"><span class="pre">buildings</span></span><a class="headerlink" href="#drtrottoir.models.Syndicus.buildings" title="Permalink to this definition"></a></dt>
+<dd><p>a list of buildings this syndicus oversees</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#drtrottoir.models.Building" title="drtrottoir.models.Building">Building</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.Syndicus.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#drtrottoir.models.Syndicus.DoesNotExist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.Syndicus.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#drtrottoir.models.Syndicus.MultipleObjectsReturned" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drtrottoir.models.User">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">drtrottoir.models.</span></span><span class="sig-name descname"><span class="pre">User</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#drtrottoir.models.User" title="Permalink to this definition"></a></dt>
+<dd><p>Representing any user (student, syndicus or admin). Email is stored in the
+username field.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.User.first_name">
+<span class="sig-name descname"><span class="pre">first_name</span></span><a class="headerlink" href="#drtrottoir.models.User.first_name" title="Permalink to this definition"></a></dt>
+<dd><p>this user’s first name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drtrottoir.models.User.last_name">
+<span class="sig-name descname"><span class="pre">last_name</span></span><a class="headerlink" href="#drtrottoir.models.User.last_name" title="Permalink to this definition"></a></dt>
+<dd><p>this user’s last name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.User.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#drtrottoir.models.User.DoesNotExist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="drtrottoir.models.User.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#drtrottoir.models.User.MultipleObjectsReturned" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../views/" class="btn btn-neutral float-left" title="Views" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, SELab2 Team 3.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
