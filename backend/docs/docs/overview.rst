@@ -2,8 +2,8 @@
 Overview
 ========
 
-DrTrottoir is a service company that manages trash cleanup schedules for apartments and similar
-housing buildings. To do so, DrTrottoir hires students to enter these buildings on assigned dates who
+Dr. Trottoir is a service company that manages trash cleanup schedules for apartments and similar
+housing buildings. To do so, Dr. Trottoir hires students to enter these buildings on assigned dates who
 take out the necessary trash. Because multiple buildings can share the same trash cleanup schedule, these
 buildings will be grouped in a route. A student who is out to perform his work will visit all buildings in
 a route and take out the trash for each of these buildings. To achieve a higher efficiency, the order of
