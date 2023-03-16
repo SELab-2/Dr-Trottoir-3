@@ -23,7 +23,7 @@ from drtrottoir.serializers import (
 )
 
 
-class BuildingListViewSet(
+class BuildingViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
