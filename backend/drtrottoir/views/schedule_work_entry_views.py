@@ -138,15 +138,14 @@ class ScheduleWorkEntryViewSet(
         """Overrides the default POST method of mixins.CreateModelMixin to add
         extra quality control to the data. Concretely, a POST method is accepted if:
             - request.user must be the same as request.data.creator
-            - The user in request.user is in one ScheduleAssignment happening today
             - The building in request.data['building'] is in
               schedule_assignment.schedule_definition.buildings (or, put another way,
               there is an entry in ScheduleDefinitionBuilding where
               building=request.data.building and
               schedule_definition=request.data.schedule_definition
 
-        If any of conditions are not valid, we return a 400_BAD_REQUEST error. If the
-        given data is properly formatted, the super method is called and the
+        If any of the two conditions are not valid, we return a 400_BAD_REQUEST error.
+        If the given data is properly formatted, the super method is called and the
         ScheduleWorkEntry is created.
 
         Args:
@@ -175,23 +174,26 @@ class ScheduleWorkEntryViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Condition 2: The user in request.user is in one ScheduleAssignment
-        # happening today
-        # (TODO add today requirement)
-        schedule_assignments = ScheduleAssignment.objects.filter(user=request.user)
-        if schedule_assignments.count() == 0:
-            return Response(
-                {"Error": "User does not match schedule assignment"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
         # Condition 3: The building in request.data['building'] is
         # in schedule_assignment.schedule_definition.buildings
-        data_schedule_definition_id = int(request.data["schedule_definition"])
+
+        # Get schedule assignment object
+        try:
+            schedule_assignment_id = int(request.data["schedule_assignment"])
+            schedule_assignment = ScheduleAssignment.objects.get(
+                pk=schedule_assignment_id
+            )
+        except ScheduleAssignment.DoesNotExist:
+            return Response(
+                {"Error": "Given schedule assignment does not exist"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         data_building_id = int(request.data["building"])
         schedule_definition_buildings = ScheduleDefinitionBuilding.objects.filter(
-            building=data_building_id, schedule_definition=data_schedule_definition_id
+            building=data_building_id,
+            schedule_definition=schedule_assignment.schedule_definition.id,
         )
+        # Check if building in schedule definition
         if schedule_definition_buildings.count() == 0:
             return Response(
                 {"Error": "Building not in schedule definition"},
