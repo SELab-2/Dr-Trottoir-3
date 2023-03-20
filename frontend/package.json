@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "docs": "cd docs && typedoc"
+    "fmt": "next lint --fix",
+    "docs": "cd docs && typedoc",
+    "test": "jest"
   },
   "dependencies": {
     "@next/font": "13.1.6",
@@ -24,8 +26,11 @@
   "devDependencies": {
     "@babel/core": "^7.21.3",
     "@babel/eslint-parser": "^7.21.3",
+    "@jest/globals": "^29.5.0",
     "eslint": "^8.36.0",
     "eslint-config-google": "^0.14.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.0.5",
     "typedoc": "^0.23.26"
   },
   "eslintConfig": {
