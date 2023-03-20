@@ -37,6 +37,10 @@ class UserViewSet(ModelViewSet):
             required permission: `drtrottoir.permissions.IsSuperstudentOrAdmin`
 
             List all students.
+
+        /users/me/
+        **GET:**
+            Required permission: `permissions.IsAuthenticated`
     """
 
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
@@ -62,5 +66,11 @@ class UserViewSet(ModelViewSet):
     def admins(self, request):
         users = User.objects.filter(admin__isnull=False)
         serializer = UserSerializer(users, many=True)
+
+        return Response(serializer.data)
+
+    @action(detail=False, permission_classes=[permissions.IsAuthenticated])
+    def me(self, request):
+        serializer = UserSerializer(request.user)
 
         return Response(serializer.data)

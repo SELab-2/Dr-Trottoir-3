@@ -172,3 +172,21 @@ def test_users_get_syndici_fail():
     _, res = _test_users_get_syndici(student.user, False)
 
     assert res.status_code == 403
+
+
+@pytest.mark.django_db
+def test_users_me_success():
+    student = insert_dummy_student(is_super_student=False)
+
+    client = APIClient()
+    client.force_login(student.user)
+    res = client.get("/users/me/")
+
+    assert res.status_code == 200 and res.data["id"] == student.user.id
+
+
+def test_users_me_failure():
+    client = APIClient()
+    res = client.get("/users/me/")
+
+    assert res.status_code == 403
