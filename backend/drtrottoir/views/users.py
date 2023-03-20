@@ -9,6 +9,36 @@ from drtrottoir.serializers import UserSerializer
 
 
 class UserViewSet(ModelViewSet):
+    """
+    Viewset that handles all routes related to listing users.
+
+    Endpoints:
+
+        /users/
+        **GET:**
+            required permission: `drtrottoir.permissions.IsSuperstudentOrAdmin`
+
+            List all users.
+
+        /users/syndici/
+        **GET:**
+            required permission: `drtrottoir.permissions.IsSuperstudentOrAdmin`
+
+            List all syndici.
+
+        /users/admins/
+        **GET:**
+            required permission: `drtrottoir.permissions.IsSuperstudentOrAdmin`
+
+            List all admins.
+
+        /users/students/
+        **GET:**
+            required permission: `drtrottoir.permissions.IsSuperstudentOrAdmin`
+
+            List all students.
+    """
+
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
 
     queryset = User.objects.all()
