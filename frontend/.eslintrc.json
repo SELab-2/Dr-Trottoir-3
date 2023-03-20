@@ -6,5 +6,10 @@
   "extends": ["eslint:recommended", "google"],
   "env": {
       "browser": true
+  },
+  "rules": {
+    "guard-for-in": "off",
+    "no-redeclare": "off",
+    "indent": ["warn", 4]
   }
 }

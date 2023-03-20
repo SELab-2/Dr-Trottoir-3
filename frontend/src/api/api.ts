@@ -1,6 +1,8 @@
-import useSWR from 'swr';
+import useSWR, {SWRResponse} from 'swr';
 
 export enum Api {
+    /* eslint-disable no-unused-vars */
+    /* eslint-disable max-len */
     GarbageCollectionScheduleTemplateDetail = '/garbage_collection_schedule_templates/:id/',
     GarbageCollectionScheduleTemplateDetailEntries = '/garbage_collection_schedule_templates/:id/entries/',
     GarbageCollectionScheduleTemplateEntryDetail = '/garbage_collection_schedule_template_entries/:id/',
@@ -28,18 +30,32 @@ export enum Api {
     ScheduleDefinitionDetailScheduleWorkEntries = '/schedule_definitions/:id/schedule_work_entries/',
 }
 
-function fetcher<T>(...args): Promise<T> {
-  return fetch(...args).then((res) => res.json<T>());
+/**
+ * @param {any[]} args
+ * @return {Promise<T>}
+ * **/
+function fetcher<T>(...args: any[]): Promise<T> {
+    // @ts-ignore
+    return fetch(...args).then((res) => res.json<T>());
 }
 
-export function get<T>(route: Api): T {
-  return useSWR<T>(route, fetcher);
+/**
+ * @param {Api} route
+ * @return {SWRResponse}
+ * **/
+export function get<T>(route: Api): SWRResponse<T, any> {
+    return useSWR<T>(route, fetcher);
 }
 
-export function getParams<T>(route: Api, params: any): T {
-  for (const property in params) {
-    route = route.replace(':' + property, params[property]);
-  }
+/**
+ * @param {string} route
+ * @param {any} params
+ * @return {SWRResponse}
+ * **/
+export function getParams<T>(route: string, params: any): SWRResponse<T, any> {
+    for (const property in params) {
+        route = route.replace(':' + property, params[property]);
+    }
 
-  return useSWR<T>(route, fetcher);
+    return useSWR<T>(route, fetcher);
 }
