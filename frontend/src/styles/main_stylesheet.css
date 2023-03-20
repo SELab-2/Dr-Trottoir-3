@@ -1,0 +1,19 @@
+/*main project stylesheet definition*/
+
+:root {
+    --frietkot-geel: #E6E600;
+    --primary-dark: #1C1C1C;
+    --secondary-dark: #2D2F33;
+    --primary-light: #F3F5F9;
+    --secondary-light: #E9EDF4;
+}
+
+:root {
+    --small_corner: 8px;
+    --large-corner: 16px;
+    --scrollbar-corner: 4px;
+}
+
+:root {
+    font-family: 'Inter', sans-serif;
+}
