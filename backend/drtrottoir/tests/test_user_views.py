@@ -81,7 +81,7 @@ def test_users_get_students_success():
     students, res = _test_users_get_students(student.user)
 
     assert res.status_code == 200 and sorted([x["id"] for x in res.data]) == sorted(
-        [x.id for x in students] + [student.id]
+        [x.user.id for x in students] + [student.user.id]
     )
 
 
@@ -119,7 +119,7 @@ def test_users_get_admins_success():
     admins, res = _test_users_get_admins(student.user)
 
     assert res.status_code == 200 and sorted([x["id"] for x in res.data]) == sorted(
-        [x.id for x in admins]
+        [x.user.id for x in admins]
     )
 
 
@@ -157,7 +157,7 @@ def test_users_get_syndici_success():
     syndici, res = _test_users_get_syndici(student.user)
 
     assert res.status_code == 200 and sorted([x["id"] for x in res.data]) == sorted(
-        [x.id for x in syndici]
+        [x.user.id for x in syndici]
     )
 
 
