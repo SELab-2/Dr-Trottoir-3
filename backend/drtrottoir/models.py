@@ -246,8 +246,8 @@ class ScheduleWorkEntry(models.Model):
     building = models.ForeignKey(
         Building, on_delete=models.RESTRICT, related_name="schedule_work_entries"
     )
-    schedule_definition = models.ForeignKey(
-        ScheduleDefinition, on_delete=models.RESTRICT, related_name="work_entries"
+    schedule_assignment = models.ForeignKey(
+        ScheduleAssignment, on_delete=models.RESTRICT, related_name="work_entries"
     )
 
 
