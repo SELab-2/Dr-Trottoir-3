@@ -3,5 +3,8 @@
   "parserOptions": {
     "requireConfigFile": false
   },
-  "extends": ["eslint:recommended", "google"]
+  "extends": ["eslint:recommended", "google"],
+  "env": {
+      "browser": true
+  }
 }
