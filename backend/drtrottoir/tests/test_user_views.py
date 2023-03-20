@@ -43,7 +43,7 @@ def test_users_get_all_success():
     users = [x.user for x in syndici + students + admins]
 
     assert res.status_code == 200 and sorted([x["id"] for x in res.data]) == sorted(
-        [x.id for x in users] + [student.id]
+        [x.id for x in users] + [student.user.id]
     )
 
 
