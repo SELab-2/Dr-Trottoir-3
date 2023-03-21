@@ -21,7 +21,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from drtrottoir import settings
 from drtrottoir.views import (
-    BuildingListViewSet,
+    BuildingViewSet,
     GarbageCollectionScheduleTemplateEntryViewSet,
     GarbageCollectionScheduleTemplateViewSet,
     GarbageCollectionScheduleViewSet,
@@ -60,7 +60,7 @@ router.register(
 
 router.register(
     r"buildings",
-    BuildingListViewSet,
+    BuildingViewSet,
 )
 
 

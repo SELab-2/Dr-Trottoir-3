@@ -2,7 +2,7 @@ from rest_framework import mixins, permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from drtrottoir.models import ScheduleDefinition
+from drtrottoir.models import ScheduleDefinition, ScheduleWorkEntry
 from drtrottoir.permissions import (
     HasAssignmentForScheduleDefinition,
     IsSuperstudentOrAdmin,
@@ -100,8 +100,9 @@ class ScheduleDefinitionViewSet(
     @action(detail=True)
     def schedule_work_entries(self, request, pk=None):
         schedule_definition = self.get_object()
-        serializer = ScheduleWorkEntrySerializer(
-            schedule_definition.work_entries, many=True
+        schedule_work_entries = ScheduleWorkEntry.objects.filter(
+            schedule_assignment__schedule_definition=schedule_definition
         )
+        serializer = ScheduleWorkEntrySerializer(schedule_work_entries, many=True)
 
         return Response(serializer.data)

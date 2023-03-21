@@ -2,7 +2,7 @@
  * @module test-module
  */
 
-export { Testclass };
+export {Testclass};
 
 
 /**
@@ -17,7 +17,4 @@ class Testclass {
   /**
    * Testing
    */
-  print(): void {
-    console.log("Test");
-  }
 }

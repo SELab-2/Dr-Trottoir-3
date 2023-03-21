@@ -511,6 +511,19 @@ def test_schedule_assignment_get_not_allowed_anonymous_syndicus() -> None:
 
 
 @pytest.mark.django_db
+def test_schedule_assignment_get_not_allowed_non_existing_assignment() -> None:
+    dummy_student = insert_dummy_student("dummystudent@gmail.com")
+    non_existent_assignment = 99999999999999
+
+    client = APIClient()
+
+    client.force_login(dummy_student.user)
+    response = client.get(f"/schedule_assignments/{non_existent_assignment}/")
+
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
 def test_schedule_assignment_get_matching_user_allowed_non_matching_user_not_allowed():  # noqa: E501
     """
     A student is allowed to GET a specific schedule_assignment if the user
@@ -809,6 +822,58 @@ def test_schedule_assignment_forbidden_methods() -> None:
     assert client.put("/schedule_assignments/").status_code == 405
     assert client.patch("/schedule_assignments/").status_code == 405
     assert client.delete("/schedule_assignments/").status_code == 405
+
+
+@pytest.mark.django_db
+def test_schedule_assignment_by_user_and_date_forbidden_methods() -> None:
+    """
+    The only method allowed for by_user_and_date is GET, the other methods
+    (POST, PUT, PATCH, and DELETE) are forbidden.
+    """
+    student = insert_dummy_student("student@gmail.com", is_super_student=False)
+    super_student = insert_dummy_student(
+        "superstudent@gmail.com", is_super_student=True
+    )
+    admin = insert_dummy_admin("admin@gmail.com")
+    syndicus = insert_dummy_syndicus(insert_dummy_user("syndicus@gmail.com"))
+    client = APIClient()
+
+    url = "/schedule_assignments/date/1999-01-01/user/9999/"
+
+    # Anonymous user gets 404
+    client.logout()
+    assert client.post(url).status_code == 403
+    assert client.put(url).status_code == 403
+    assert client.patch(url).status_code == 403
+    assert client.delete(url).status_code == 403
+
+    # Syndicus gets 404
+    client.force_login(syndicus.user)
+    assert client.post(url).status_code == 403
+    assert client.put(url).status_code == 403
+    assert client.patch(url).status_code == 403
+    assert client.delete(url).status_code == 403
+
+    # Student gets 403
+    client.force_login(student.user)
+    assert client.post(url).status_code == 403
+    assert client.put(url).status_code == 403
+    assert client.patch(url).status_code == 403
+    assert client.delete(url).status_code == 403
+
+    # Super student gets 405
+    client.force_login(super_student.user)
+    assert client.post(url).status_code == 405
+    assert client.put(url).status_code == 405
+    assert client.patch(url).status_code == 405
+    assert client.delete(url).status_code == 405
+
+    # Admin gets 405
+    client.force_login(admin.user)
+    assert client.post(url).status_code == 405
+    assert client.put(url).status_code == 405
+    assert client.patch(url).status_code == 405
+    assert client.delete(url).status_code == 405
 
 
 # endregion Forbidden methods

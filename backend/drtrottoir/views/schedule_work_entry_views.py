@@ -47,18 +47,18 @@ class ScheduleWorkEntryGetByIdPermission(permissions.BasePermission):
 
     def has_permission(self, request: Request, view: APIView) -> bool:
         if request.method == "GET":
-            # At this point we should be authenticated because of the
-            # IsAuthenticated permission class. Mypy however does not know
-            # this, and we need to manually check to make sure we're not
-            # AnonymousUser.
-            if isinstance(request.user, AnonymousUser):
+            if not (
+                user_is_student(request.user)
+                or user_is_superstudent_or_admin(request.user)
+            ):
                 return False
-            if "pk" not in view.kwargs.keys():
+            str_work_entry_id = view.kwargs.get("pk", None)
+            if str_work_entry_id is None:
                 # If no ID is given, we are requesting the list. In this case,
                 # refuse access
                 return False
+            work_entry_id = int(str_work_entry_id)
             try:
-                work_entry_id = int(view.kwargs["pk"])
                 work_entry = ScheduleWorkEntry.objects.get(pk=work_entry_id)
                 return work_entry.creator.id == request.user.id
             except ScheduleWorkEntry.DoesNotExist:
@@ -76,16 +76,14 @@ class ScheduleWorkEntryByUserIdPermission(permissions.BasePermission):
     """
 
     def has_permission(self, request: Request, view: APIView) -> bool:
-        if request.method == "GET":
-            # Super students or admins always have access
-            if user_is_superstudent_or_admin(request.user):
-                return True
-            # Students have access if request.user is the same as the user in the url
-            if not user_is_student(request.user):
-                return False
-            user_id = int(view.kwargs["user_id"])
-            return request.user.id == user_id
-        return False
+        # Super students or admins always have access
+        if user_is_superstudent_or_admin(request.user):
+            return True
+        # Students have access if request.user is the same as the user in the url
+        if not user_is_student(request.user):
+            return False
+        user_id = int(view.kwargs["user_id"])
+        return request.user.id == user_id
 
 
 class ScheduleWorkEntryViewSet(
@@ -95,7 +93,7 @@ class ScheduleWorkEntryViewSet(
     viewsets.GenericViewSet,
 ):
     """
-    Viewset of schedule work entries.
+    ViewSet of schedule work entries.
 
     Endpoints:
 
@@ -140,15 +138,14 @@ class ScheduleWorkEntryViewSet(
         """Overrides the default POST method of mixins.CreateModelMixin to add
         extra quality control to the data. Concretely, a POST method is accepted if:
             - request.user must be the same as request.data.creator
-            - The user in request.user is in one ScheduleAssignment happening today
             - The building in request.data['building'] is in
               schedule_assignment.schedule_definition.buildings (or, put another way,
               there is an entry in ScheduleDefinitionBuilding where
               building=request.data.building and
               schedule_definition=request.data.schedule_definition
 
-        If any of conditions are not valid, we return a 400_BAD_REQUEST error. If the
-        given data is properly formatted, the super method is called and the
+        If any of the two conditions are not valid, we return a 400_BAD_REQUEST error.
+        If the given data is properly formatted, the super method is called and the
         ScheduleWorkEntry is created.
 
         Args:
@@ -167,8 +164,7 @@ class ScheduleWorkEntryViewSet(
         # At this point we've passed our permission checks, and we should
         # be authenticated. However, we need manually check if we are not
         # AnonymousUser or mypy's type checking will give errors.
-        if isinstance(request.user, AnonymousUser):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        assert not isinstance(request.user, AnonymousUser)
 
         # Condition 1: request.user must be the same as request.data.creator
         data_creator_id = int(request.data["creator"])
@@ -178,23 +174,26 @@ class ScheduleWorkEntryViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Condition 2: The user in request.user is in one ScheduleAssignment
-        # happening today
-        # (TODO add today requirement)
-        schedule_assignments = ScheduleAssignment.objects.filter(user=request.user)
-        if schedule_assignments.count() == 0:
-            return Response(
-                {"Error": "User does not match schedule assignment"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
         # Condition 3: The building in request.data['building'] is
         # in schedule_assignment.schedule_definition.buildings
-        data_schedule_definition_id = int(request.data["schedule_definition"])
+
+        # Get schedule assignment object
+        try:
+            schedule_assignment_id = int(request.data["schedule_assignment"])
+            schedule_assignment = ScheduleAssignment.objects.get(
+                pk=schedule_assignment_id
+            )
+        except ScheduleAssignment.DoesNotExist:
+            return Response(
+                {"Error": "Given schedule assignment does not exist"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         data_building_id = int(request.data["building"])
         schedule_definition_buildings = ScheduleDefinitionBuilding.objects.filter(
-            building=data_building_id, schedule_definition=data_schedule_definition_id
+            building=data_building_id,
+            schedule_definition=schedule_assignment.schedule_definition.id,
         )
+        # Check if building in schedule definition
         if schedule_definition_buildings.count() == 0:
             return Response(
                 {"Error": "Building not in schedule definition"},

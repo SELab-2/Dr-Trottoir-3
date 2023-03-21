@@ -1,15 +1,19 @@
 # Dr-Trottoir-3
 
-## Rolverdeling
-**Projectleider**: Maxim Stockmans
+## OneDrive
+All non code related files are stored in following OneDrive directory. This includes functional analysis, use cases, endpoint guides, figma designs...
+[OneDrive](https://ugentbe-my.sharepoint.com/personal/bart_mesuere_ugent_be/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbart%5Fmesuere%5Fugent%5Fbe%2FDocuments%2FOnderwijs%2FSELab2%2F2022%2D2023%2FMappen%20studenten%2Fgroep3&ct=1676648071488&or=OWA%2DNT&cid=0d2049e3%2Dfcb1%2Df225%2Dcaee%2Df2b258c1f843&ga=1)
 
-**Systeembeheerder**: Joris Peeters
+## Roles
+**Project Leader**: Maxim Stockmans
 
-**API beheerder**: Jef Roosens
+**System Admin**: Joris Peeters
 
-**Test beheerder**: Pim Pieters
+**API Manager**: Jef Roosens
 
-**Documentatiebeheerder**: Jahid Chetti
+**Test Manager**: Pim Pieters
+
+**Documentation Manager**: Jahid Chetti
 
 **Customer Relations Officer**: Bavo Verstraeten
 
@@ -29,3 +33,42 @@ After this is done and the branch is finished, a pull request from this branch t
 ## Documentation
 
 The documentation for both the backend and frontend are automatically generated based on the comments in the files. The docs of the backend and frontend are seperated, so you will need to build them independently. For generating and reading them, see the README.md files in `backend/docs` and `frontend/docs`.
+
+# Development
+
+## Entire stack
+
+To start the development environment, run
+
+```shell
+./dev.sh full
+```
+
+The frontend will be available at [http://localhost/](http://localhost/), the api at [http://localhost/api/](http://localhost/api/), and the docs at [http://localhost/docs/](http://localhost/docs/).
+
+Services can also be reached directly via the ports specified here:
+
+| Service  | Port |
+|----------|------|
+| Frontend | 8000 |
+| Backend  | 8001 |
+| Docs     | 8002 |
+| Postgres | 5432 |
+
+## Individual services
+
+To just run frontend, backend, or docs, run
+```shell
+./dev.sh {frontend|backend|docs}
+```
+
+## Rebuilding image
+To rebuild a docker image, add `--build`. This is necessary in some cases, for example when the dependencies changed. Docs will also only be updated when rebuilding the image.
+
+# Testing
+
+Run 
+```shell
+./test.sh {frontend|backend}
+```
+to run the tests in docker. Optionally add `--build` to rebuild the image if needed.

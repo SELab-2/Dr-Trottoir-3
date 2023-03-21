@@ -1,4 +1,4 @@
-from .building import BuildingListViewSet
+from .building import BuildingViewSet
 from .garbage_collection_schedule import GarbageCollectionScheduleViewSet
 from .garbage_collection_schedule_template import (
     GarbageCollectionScheduleTemplateEntryViewSet,
@@ -14,7 +14,7 @@ from .schedule_work_entry_views import ScheduleWorkEntryViewSet
 
 __all__ = [
     "LocationGroupViewSet",
-    "BuildingListViewSet",
+    "BuildingViewSet",
     "GarbageCollectionScheduleTemplateEntryViewSet",
     "GarbageCollectionScheduleTemplateViewSet",
     "GarbageCollectionScheduleViewSet",

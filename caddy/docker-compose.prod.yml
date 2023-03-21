@@ -27,7 +27,6 @@ services:
     extends:
       file: ../backend/docker-compose.prod.yml
       service: db
-    build: ../backend
     networks:
       selab:
         aliases:
@@ -48,7 +47,7 @@ services:
       file: ../backend/docs/docker-compose.yml
       service: docs
     restart: always
-    build: ../backend/docs
+    build: ../backend
     networks:
       - selab
 
