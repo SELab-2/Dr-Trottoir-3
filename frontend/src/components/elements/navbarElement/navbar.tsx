@@ -19,31 +19,31 @@ export default function NavBar(props) {
               color={selectedBtn === 0 ? 'secondary' : 'primary'}
               onClick={()=>setSelectedBtn(0)}
             >
-              Planner
+              A
             </Button>
             <Button className={styles.button}
               color={selectedBtn === 1 ? 'secondary' : 'primary'}
               onClick={()=>setSelectedBtn(1)}
             >
-              Actieve Routes
+              A
             </Button>
             <Button className={styles.button}
               color={selectedBtn === 2 ? 'secondary' : 'primary'}
               onClick={()=>setSelectedBtn(2)}
             >
-              Gebruikers
+              A
             </Button>
             <Button className={styles.button}
               color={selectedBtn === 3 ? 'secondary' : 'primary'}
               onClick={()=>setSelectedBtn(3)}
             >
-              Routes
+              A
             </Button>
             <Button className={styles.button}
               color={selectedBtn === 4 ? 'secondary' : 'primary'}
               onClick={()=>setSelectedBtn(4)}
             >
-              Gebouwen
+              A
             </Button>
           </div>
           <div className={styles.side_bar_bot}>
@@ -51,19 +51,19 @@ export default function NavBar(props) {
                     color={selectedBtn === 5 ? 'secondary' : 'primary'}
                     onClick={()=>setSelectedBtn(5)}
             >
-              Account
+              A
             </Button>
             <Button className={styles.button}
                     color={selectedBtn === 6 ? 'secondary' : 'primary'}
                     onClick={()=>setSelectedBtn(6)}
             >
-              Instellingen
+              A
             </Button>
             <Button className={styles.button}
                     color={selectedBtn === 7 ? 'secondary' : 'primary'}
                     onClick={()=>setSelectedBtn(7)}
             >
-              Logout
+              A
             </Button>
           </div>
         </div>

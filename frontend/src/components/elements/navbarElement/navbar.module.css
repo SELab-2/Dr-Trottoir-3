@@ -39,9 +39,13 @@
         background-color: #1C1C1C;
     }
     .side_bar_top {
-        flex-basis: 80px;
+        flex-basis: 56px;
         flex-grow: 1;
         background-color: #1C1C1C;
+        background-image: url('../../../../public/media/logo_drtrottoir.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 144px;
     }
     .side_bar_bot {
         display: flex;
@@ -78,6 +82,10 @@
         flex-basis: 56px;
         flex-grow: 1;
         background-color: #1C1C1C;
+        background-image: url('../../../../public/media/drtrottoir_icon.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 40px;
     }
 
     .side_bar_bot {
@@ -111,7 +119,7 @@
 .button {
     height: 40px;
     min-width: 40px;
-    background-color: #1C1C1C;
+    background-color: #2D2F33;
     border-radius: 8px;
 }
 
