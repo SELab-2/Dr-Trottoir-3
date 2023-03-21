@@ -5,12 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ea4caa2d-6378-4997-a5c5-7797e292c071" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/components/elements/navbarElement/navbar.module.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/elements/navbarElement/navbar.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/_app.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/_app.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/_document.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/_document.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/testgreet.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/testgreet.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tests/testclass.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/testclass.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,6 +20,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="TypeScript JSX File" />
         <option value="CSS File" />
       </list>
     </option>
@@ -84,6 +85,7 @@
       <workItem from="1679309310396" duration="1739000" />
       <workItem from="1679311148031" duration="185000" />
       <workItem from="1679313438574" duration="478000" />
+      <workItem from="1679391722149" duration="6365000" />
     </task>
     <servers />
   </component>
