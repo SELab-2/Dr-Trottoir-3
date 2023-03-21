@@ -1,16 +1,20 @@
-import {describe, expect, test} from '@jest/globals';
+import {describe, expect, test, beforeEach, afterEach} from '@jest/globals';
+import { createServer, Model, Server } from "miragejs";
+import { Api, get } from './api';
+import { ScheduleAssignment }  from './models';
 
-/**
- * @param {number} a
- * @param {number} b
- * @return {number}
- * **/
-function sum(a: number, b: number): number {
-    return a + b;
-}
+let server: Server
+
+beforeEach(() => {
+  server = createServer({ environment: 'test' })
+})
+
+afterEach(() => {
+  server.shutdown()
+})
 
 describe('sum module', () => {
     test('adds 1 + 2 to equal 3', () => {
-        expect(sum(1, 2)).toBe(3);
+        expect(get<ScheduleAssignment[]>(Api.ScheduleAssignments)).toBe(3);
     });
 });

@@ -34,9 +34,9 @@ export enum Api {
  * @param {any[]} args
  * @return {Promise<T>}
  * **/
-function fetcher<T>(...args: any[]): Promise<T> {
+async function fetcher<T>(...args: any[]): Promise<T> {
     // @ts-ignore
-    return fetch(...args).then((res) => res.json<T>());
+    return fetch(...args).then(res => res.json<T>());
 }
 
 /**
