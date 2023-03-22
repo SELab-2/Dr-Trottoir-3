@@ -15,24 +15,13 @@ export default function LoginPage() {
         router.push("/");
     }
 
-    //@ts-ignore
-    const handleChangeEmail = (event) => {
-        setEmail(event.target.value);
-    }
-
-    //@ts-ignore
-    const handleChangePassword = (event) => {
-        setPassword(event.target.value);
-    }
-
     async function handleLogin() {
         // await setLoading(true);
+        console.log("Logging in")
         await signIn('credentials', {redirect: false, email: email, password: password });
+        console.log("Logged in")
+        await router.push("/")
     }
-
-    const onFinish = (values: any) => {
-        console.log(values);
-    };
 
     return (
         <div className={styles.loginpage}>
@@ -55,11 +44,17 @@ export default function LoginPage() {
                         <TextField
                             fullWidth
                             label={"Email"}
+                            onChange={e => setEmail(e.target.value)}
                         />
-                        <TextField fullWidth label={"Password"} type={"password"}/>
+                        <TextField
+                            fullWidth
+                            label={"Password"}
+                            type={"password"}
+                            onChange={e => setPassword(e.target.value)}
+                        />
                     </div>
                     <div className={styles.formfields}>
-                        <Button variant="contained">Log in</Button>
+                        <Button variant="contained" onClick={handleLogin}>Log in</Button>
                     </div>
                 </Box>
             </div>
