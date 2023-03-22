@@ -14,7 +14,7 @@ export default function LoginButton() {
     return (
         <>
             Not signed in <br />
-            <button onClick={() => signIn()}>Sign in</button>
+            <button onClick={() => signIn('credentials', {'redirect':false, 'password': "srDRapRg83PvHUpbnuCQ", 'username': 'admin@drtrottoir.be'})}>Sign in</button>
         </>
     )
 }

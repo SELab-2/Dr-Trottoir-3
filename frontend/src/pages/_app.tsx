@@ -7,26 +7,8 @@ import {ConfigProvider, theme} from "antd";
 // eslint-disable-next-line require-jsdoc
 export default function App({ Component, pageProps: {session, ...pageProps} }: AppProps) {
   return (
-      <ConfigProvider
-          theme={{
-              // algorithm: theme.defaultAlgorithm,
-              components: {
-                  Button: {
-                      colorPrimary: '#E6E600',
-                      colorPrimaryHover: "#cfcf00",
-                  },
-                  Form: {
-                      colorPrimary: "#a91",
-                      colorText: "#a91",
-                      colorTextLabel: "#fff",
-                      colorPrimaryText: "#fff",
-                  },
-              },
-          }}
-      >
-          <SessionProvider session={session}>
-            <Component {...pageProps} />
-          </SessionProvider>
-      </ConfigProvider>
+      <SessionProvider session={session} basePath={"http://localhost:3002/api/auth"}>
+        <Component {...pageProps} />
+      </SessionProvider>
   )
 }

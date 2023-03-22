@@ -13,7 +13,7 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 
 // eslint-disable max-len
 // eslint-disable-next-line require-jsdoc
-export default function NavBar(props) {
+export default function   NavBar(props) {
   const [selectedBtn, setSelectedBtn] = React.useState(0);
 
   return (

@@ -32,6 +32,7 @@ async function refreshAccessToken(tokenObject) {
 
 // A list of providers to sign in with
 const providers = [
+
     CredentialsProvider({
         name: 'Credentials',
         credentials: {
@@ -39,16 +40,20 @@ const providers = [
             password: {  label: "Password", type: "password" }
         },
         authorize: async (credentials) => {
+            console.log("AUTHORIZE")
             try {
                 const user = await axios.post(
                     "http://localhost:8000/auth/token/", {
-                        "username": credentials.username,
-                        "password": credentials.password
+                        username: credentials.username,
+                        password: credentials.password
                     }, {
                         "headers": {
                             "Content-Type": "application/json"
                         }
                     });
+
+                console.log("USER")
+                console.log(user)
 
                 // @ts-ignore
                 if (user.data.access) {
@@ -57,6 +62,9 @@ const providers = [
                 }
                 return null;
             } catch (e) {
+                console.log("ERROR")
+                console.log(e)
+                // console.log(e)
                 // @ts-ignore
                 throw new Error(e);
             }
@@ -66,8 +74,13 @@ const providers = [
 
 // these callbacks are run when new access token is received
 const callbacks = {
+    // // @ts-ignore
+    // async signIn({ user, account, profile, email, credentials }) {
+    //     return true
+    // },
     // @ts-ignore
     jwt: async ({ token, user }) => {
+        console.log("OKDNFKDSFK")
         if (user) {
             // Only at login
             const decodedJwt = JSON.parse(Buffer.from(user.access.split('.')[1], 'base64').toString())
@@ -90,6 +103,8 @@ const callbacks = {
     },
     // @ts-ignore
     session: async ({ session, token }) => {
+        console.log('kdsjfjdsbfbdsjfds')
+
         session.accessToken = token.accessToken;
         session.accessTokenExpires = token.accessTokenExpires;
         session.error = token.error;

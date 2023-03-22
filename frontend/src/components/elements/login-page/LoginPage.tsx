@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { useSession, signIn } from 'next-auth/react';
 import styles from "./LoginPage.module.css"
 import {Box, Button, TextField} from "@mui/material";
+import LoginButton from "@/components/elements/login-button/login-button";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -11,15 +12,12 @@ export default function LoginPage() {
     const router = useRouter();
 
     const { data: session } = useSession()
-    if (session && session.user) {
-        router.push("/");
-    }
+    // if (session && session.user) {
+    //     router.push("/");
+    // }
 
     async function handleLogin() {
-        // await setLoading(true);
-        console.log("Logging in")
-        await signIn('credentials', {redirect: false, email: email, password: password });
-        console.log("Logged in")
+        signIn('credentials', {'redirect':false, 'password': password, 'username': email})
         await router.push("/")
     }
 
