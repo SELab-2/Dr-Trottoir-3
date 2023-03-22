@@ -25,10 +25,9 @@ export default function Home() {
                 <main className={styles.main}>
                     <NavBar>
                         <div style={{backgroundColor: 'white', width: '100%', height: '100%'}}>
-                            <p>Hi {session.user.name}.</p>
+                            <p>Hi {session.user.name}, you are logged in (TODO: this is debug).</p>
                         </div>
                     </NavBar>
-                    <p>askjnkf</p>
                 </main>
             </>
         );
@@ -47,7 +46,6 @@ export default function Home() {
                     <div style={{backgroundColor: 'white', width: '100%', height: '100%'}}>
                         <p>Not logged in, TODO: redirect to login page.</p>
                     </div>
-
                 </NavBar>
             </main>
         </>

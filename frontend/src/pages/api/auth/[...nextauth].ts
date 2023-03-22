@@ -3,11 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { getCsrfToken } from 'next-auth/react';
 import axios from "axios";
 
-/**
- * This function refreshes the access token using the refresh token.
- * @param tokenObject The new access token or an error.
- * @returns {Promise<(*&{error: string})|(*&{accessTokenExpires: number, accessToken: *, refreshToken: *})>}
- */
 // @ts-ignore
 async function refreshAccessToken(tokenObject) {
     const csrfToken = await getCsrfToken()
@@ -40,7 +35,6 @@ const providers = [
             password: {  label: "Password", type: "password" }
         },
         authorize: async (credentials) => {
-            console.log("AUTHORIZE")
             try {
                 const user = await axios.post(
                     "http://localhost:8000/auth/token/", {
@@ -52,9 +46,6 @@ const providers = [
                         }
                     });
 
-                console.log("USER")
-                console.log(user)
-
                 // @ts-ignore
                 if (user.data.access) {
                     // @ts-ignore
@@ -62,9 +53,6 @@ const providers = [
                 }
                 return null;
             } catch (e) {
-                console.log("ERROR")
-                console.log(e)
-                // console.log(e)
                 // @ts-ignore
                 throw new Error(e);
             }
@@ -80,7 +68,6 @@ const callbacks = {
     // },
     // @ts-ignore
     jwt: async ({ token, user }) => {
-        console.log("OKDNFKDSFK")
         if (user) {
             // Only at login
             const decodedJwt = JSON.parse(Buffer.from(user.access.split('.')[1], 'base64').toString())
@@ -103,8 +90,6 @@ const callbacks = {
     },
     // @ts-ignore
     session: async ({ session, token }) => {
-        console.log('kdsjfjdsbfbdsjfds')
-
         session.accessToken = token.accessToken;
         session.accessTokenExpires = token.accessTokenExpires;
         session.error = token.error;
@@ -116,7 +101,6 @@ const callbacks = {
     },
     // @ts-ignore
     redirect: async ({ url, baseUrl }) => {
-        console.log("REDIRECT")
         return url;
     }
 }
