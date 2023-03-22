@@ -26,11 +26,11 @@
         font-size: 16px;
         text-align: left;
         height: 40px;
-        min-width: 256px;
+        min-width: 200px;
     }
 
     .left_flex_container {
-        flex-basis: 256px;
+        flex-basis: 200px;
         flex-grow: 0;
         display: flex;
         flex-flow: column;
@@ -141,7 +141,7 @@
 
 .button_default {
     font-family: 'Inter', sans-serif;
-    font-weight: bold;
+    font-weight: 500;
     color: #F3F5F9;
     text-transform: none;
     background-color: #1C1C1C;
@@ -150,7 +150,7 @@
 
 .button_selected {
     font-family: 'Inter', sans-serif;
-    font-weight: bold;
+    font-weight: 500;
     color: #E6E600;
     text-transform: none;
     background-color: #2D2F33;

@@ -1,7 +1,8 @@
 import styles from './navbar.module.css';
 import Button from '@mui/material/Button';
-import React from 'react';
+import React, {useEffect} from 'react';
 import Link from 'next/link';
+import {useRouter} from 'next/router';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import RouteIcon from '@mui/icons-material/Route';
 import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded';
@@ -11,10 +12,11 @@ import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 
+
 // eslint-disable max-len
 // eslint-disable-next-line require-jsdoc
 export default function NavBar(props) {
-  const [selectedBtn, setSelectedBtn] = React.useState(0);
+  const router = useRouter();
 
   return (
     <div className={styles.full}>
@@ -23,80 +25,16 @@ export default function NavBar(props) {
         <div className={styles.left_flex_container} style={{backgroundColor: 'green'}}>
           <div className={styles.side_bar_top}></div>
           <div className={styles.side_bar_mid}>
-            <Link href="/scheduler">
-              <Button id={styles.button}
-                className={selectedBtn === 0 ? styles.button_selected : styles.button_default}
-                onClick={()=>setSelectedBtn(0)}
-              >
-                <DateRangeIcon className={styles.icon}/>
-                <p className={styles.text}>Planner</p>
-              </Button>
-            </Link>
-            <Link href="/live_routes">
-              <Button id={styles.button}
-                className={selectedBtn === 1 ? styles.button_selected : styles.button_default}
-                onClick={()=>setSelectedBtn(1)}
-              >
-                <SensorsRoundedIcon className={styles.icon}/>
-                <p className={styles.text}>Actieve&nbsp;Routes</p>
-              </Button>
-            </Link>
-            <Link href="/users">
-              <Button id={styles.button}
-                className={selectedBtn === 2 ? styles.button_selected : styles.button_default}
-                onClick={()=>setSelectedBtn(2)}
-              >
-                <p className={styles.text}>Gebruikers</p>
-                <PeopleAltRoundedIcon className={styles.icon}/>
-              </Button>
-            </Link>
-            <Link href="/routes">
-              <Button id={styles.button}
-                className={selectedBtn === 3 ? styles.button_selected : styles.button_default}
-                onClick={()=>setSelectedBtn(3)}
-              >
-                <RouteIcon className={styles.icon}/>
-                <p className={styles.text}>Routes</p>
-              </Button>
-            </Link>
-            <Link href="/buildings">
-              <Button id={styles.button}
-                className={selectedBtn === 4 ? styles.button_selected : styles.button_default}
-                onClick={()=>setSelectedBtn(4)}
-              >
-                <ApartmentRoundedIcon className={styles.icon}/>
-                <p className={styles.text}>Gebouwen</p>
-              </Button>
-            </Link>
+            <NavButton href={'/scheduler'} text={'Scheduler'} icon={<DateRangeIcon className={styles.icon}/>} router={router}/>
+            <NavButton href={'/live_routes'} text={'Live Routes'} icon={<SensorsRoundedIcon className={styles.icon}/>} router={router}/>
+            <NavButton href={'/users'} text={'Users'} icon={<PeopleAltRoundedIcon className={styles.icon}/>} router={router}/>
+            <NavButton href={'/routes'} text={'Routes'} icon={<RouteIcon className={styles.icon}/>} router={router}/>
+            <NavButton href={'/buildings'} text={'Buildings'} icon={<ApartmentRoundedIcon className={styles.icon}/>} router={router}/>
           </div>
           <div className={styles.side_bar_bot}>
-            <Link href="/users/{:id}">
-              <Button id={styles.button}
-                className={selectedBtn === 5 ? styles.button_selected : styles.button_default}
-                onClick={()=>setSelectedBtn(5)}
-              >
-                <PersonRoundedIcon className={styles.icon}/>
-                <p className={styles.text}>Account</p>
-              </Button>
-            </Link>
-            <Link href="/settings">
-              <Button id={styles.button}
-                className={selectedBtn === 6 ? styles.button_selected : styles.button_default}
-                onClick={()=>setSelectedBtn(6)}
-              >
-                <TuneRoundedIcon className={styles.icon}/>
-                <p className={styles.text}>Instellingen</p>
-              </Button>
-            </Link>
-            <Link href="/">
-              <Button id={styles.button}
-                className={selectedBtn === 7 ? styles.button_selected : styles.button_default}
-                onClick={()=>setSelectedBtn(7)}
-              >
-                <LogoutRoundedIcon className={styles.icon}/>
-                <p className={styles.text}>Logout</p>
-              </Button>
-            </Link>
+            <NavButton href={'/users/[id]'} text={'Account'} icon={<PersonRoundedIcon className={styles.icon}/>} router={router}/>
+            <NavButton href={'/settings'} text={'Instellingen'} icon={<TuneRoundedIcon className={styles.icon}/>} router={router}/>
+            <NavButton href={'/login'} text={'Logout'} icon={<LogoutRoundedIcon className={styles.icon}/>} router={router}/>
           </div>
         </div>
         <div className={styles.right_flex_container} style={{backgroundColor: 'red'}}>
@@ -107,5 +45,23 @@ export default function NavBar(props) {
         </div>
       </div>
     </div>
+  );
+}
+
+
+// eslint-disable-next-line require-jsdoc
+function NavButton({href, text, router, icon}) {
+  const isActive = router.asPath === (href === '/live_routes' ? '/' : href);
+
+  return (
+    <Link href={href === '/' ? '/scheduler' : href} passHref>
+      <Button id={styles.button}
+              // onClick={router.push(href, undefined, { shallow: true })}
+        className={isActive ? styles.button_selected : styles.button_default}
+      >
+        {icon}
+        <p className={styles.text}>{text}</p>
+      </Button>
+     </Link>
   );
 }

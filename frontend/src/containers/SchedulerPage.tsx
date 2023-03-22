@@ -1,12 +1,11 @@
-import {Inter} from '@next/font/google';
 import NavBar from '../components/elements/navbarElement/navbar';
 
 // eslint-disable-next-line require-jsdoc
-export default function Home() {
+export default function SchedulerPage() {
   return (
     <>
       <NavBar>
-        <div style={{backgroundColor: 'white', width: '100%', height: '100%'}}/>
+          <h1 style={{color: 'black'}}>SCHEDULER</h1>
       </NavBar>
     </>
   );
