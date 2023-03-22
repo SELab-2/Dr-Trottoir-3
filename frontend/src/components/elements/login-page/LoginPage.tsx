@@ -1,8 +1,8 @@
 import {useRef, useState} from 'react';
 import { useRouter } from 'next/router'
 import { useSession, signIn } from 'next-auth/react';
-import {Button, Form, FormInstance, Input} from "antd";
 import styles from "./LoginPage.module.css"
+import {Box, Button, TextField} from "@mui/material";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -30,8 +30,6 @@ export default function LoginPage() {
         await signIn('credentials', {redirect: false, email: email, password: password });
     }
 
-    const formRef = useRef<FormInstance>(null);
-
     const onFinish = (values: any) => {
         console.log(values);
     };
@@ -41,25 +39,29 @@ export default function LoginPage() {
             <div className={styles.loginpageformwrapper}>
                 <img src={"/media/logo_drtrottoir.svg"} className={styles.drtrottoirlogo}/>
 
-                <Form
-                    ref={formRef}
-                    name="control-ref"
-                    onFinish={onFinish}
-                    layout="vertical"
-                    className={styles.loginpageform}
+                <Box
+                    component="form"
+                    sx={{
+                        '& .MuiTextField-root': { color: "#fff", backgroundColor: "#272A2F" },
+                        '& .MuiInputLabel-root': {color: "#B3B3B3"},
+                        '& .MuiButton-root': {backgroundColor: "var(--primary-yellow)", color: "black", width: "min(250px, 100%)"},
+                        '& .MuiInputBase-input': {color: "#fff"}
+                    }}
+                    noValidate
+                    autoComplete="off"
+                    className={styles.form}
                 >
-                    <Form.Item name="email" label={"Email"} rules={[{ required: true }]} className={styles.hideinputlabel}>
-                        <Input size="large" placeholder="john.smith@gmail.com" />
-                    </Form.Item>
-                    <Form.Item name="password" label={"Password"} rules={[{ required: true }]}>
-                        <Input size="large" type="password" />
-                    </Form.Item>
-                    <Form.Item className={styles.centerformbuttonwrapper}>
-                        <Button size="large" type="primary" htmlType="submit" className={styles.centerformbutton}>
-                            Log in
-                        </Button>
-                    </Form.Item>
-                </Form>
+                    <div className={styles.formfields}>
+                        <TextField
+                            fullWidth
+                            label={"Email"}
+                        />
+                        <TextField fullWidth label={"Password"} type={"password"}/>
+                    </div>
+                    <div className={styles.formfields}>
+                        <Button variant="contained">Log in</Button>
+                    </div>
+                </Box>
             </div>
         </div>
     );
