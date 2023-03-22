@@ -1,6 +1,6 @@
 import styles from './navbar.module.css';
 import Button from '@mui/material/Button';
-import React, {useEffect, useState} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import Router from 'next/router';
 import {useRouter} from 'next/router';
 import DateRangeIcon from '@mui/icons-material/DateRange';
@@ -11,7 +11,25 @@ import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import {OverridableComponent} from '@mui/material/OverridableComponent';
+import {SvgIconTypeMap} from '@mui/material';
 
+
+interface INavItem {
+  id: number;
+  text: string;
+  href: string;
+  icon: OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
+}
+
+
+var topButtons = [
+  {id: '0', text: 'Planner', href: '/scheduler', icon: <DateRangeIcon className={styles.icon}/>},
+  {id: '1', text: 'Live Routes', href: '/live_routes', icon: <SensorsRoundedIcon className={styles.icon}/>},
+  {id: '2', text: 'Gebruikers', href: '/users', icon: <PeopleAltRoundedIcon className={styles.icon}/>},
+  {id: '3', text: 'Routes', href: '/routes', icon: <RouteIcon className={styles.icon}/>},
+  {id: '4', text: 'Gebouwen', href: '/buildings', icon: <ApartmentRoundedIcon className={styles.icon}/>},
+];
 
 // eslint-disable max-len
 // eslint-disable-next-line require-jsdoc
@@ -38,11 +56,15 @@ export default function NavBar(props) {
         <div className={styles.left_flex_container} style={{backgroundColor: 'green'}}>
           <div className={styles.side_bar_top}></div>
           <div className={styles.side_bar_mid}>
-            <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath} href={'/scheduler'} text={'Scheduler'} icon={<DateRangeIcon className={styles.icon}/>}/>
-            <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath} href={'/live_routes'} text={'Live Routes'} icon={<SensorsRoundedIcon className={styles.icon}/>}/>
-            <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath} href={'/users'} text={'Users'} icon={<PeopleAltRoundedIcon className={styles.icon}/>}/>
-            <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath} href={'/routes'} text={'Routes'} icon={<RouteIcon className={styles.icon}/>}/>
-            <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath} href={'/buildings'} text={'Buildings'} icon={<ApartmentRoundedIcon className={styles.icon}/>}/>
+            { topButtons.map((term, index) =>
+              <NavButton
+                router={router}
+                nextPath={nextPath}
+                setNextPath={setNextPath}
+                href={term.href}
+                text={term.text}
+                icon={term.icon} />
+            )}
           </div>
           <div className={styles.side_bar_bot}>
             <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath} href={'/users/[id]'} text={'Account'} icon={<PersonRoundedIcon className={styles.icon}/>}/>
@@ -68,7 +90,9 @@ function NavButton({href, text, router, icon, nextPath, setNextPath}) {
 
   return (
     <Button id={styles.button}
-      onClick={() => {Router.push(href, undefined, {shallow: true}); setNextPath(href)}}
+      onClick={() => {
+        Router.push(href, undefined, {shallow: true}); setNextPath(href);
+      }}
       className={((isActive & nextPath === null) | isLoading) ? styles.button_selected : styles.button_default}
     >
       {icon}
