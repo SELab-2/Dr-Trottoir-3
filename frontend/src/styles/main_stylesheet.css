@@ -1,6 +1,6 @@
 /*main project stylesheet definition*/
 
-:root.colors {
+:root {
     --primary-yellow: #E6E600;
     --primary-dark: #1C1C1C;
     --secondary-dark: #2D2F33;
@@ -8,12 +8,20 @@
     --secondary-light: #E9EDF4;
 }
 
-:root.corners {
+:root {
     --small_corner: 8px;
     --large-corner: 16px;
     --scrollbar-corner: 4px;
 }
 
-:root.fonts {
+:root {
     font-family: 'Inter', sans-serif;
+}
+
+.ant-btn-primary {
+    color: black !important;
+}
+
+.ant-form-item-required {
+    color: white !important;
 }

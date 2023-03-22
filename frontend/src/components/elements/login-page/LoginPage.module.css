@@ -1,0 +1,43 @@
+.loginpage {
+    min-width: min(100%, 100vw);
+    min-height: min(100%, 100vh);
+    background-color: var(--primary-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loginpageformwrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 75px;
+    justify-content: center;
+}
+
+.loginpageformwrapper > img {
+    margin: auto;
+    max-width: 80%;
+}
+
+.loginpageform {
+    width: min(600px, 100vw);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.centerformbuttonwrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.centerformbutton {
+    flex-grow: 1;
+    min-width: 200px;
+}
+
+.hideinputlabel > .ant-form-item-required {
+    display: none;
+}
