@@ -1,11 +1,12 @@
-import Head from 'next/head'
-import Image from 'next/image'
+import Head from 'next/head';
 import { Inter } from '@next/font/google'
+import NavBar from '../components/elements/navbarElement/navbar';
 import styles from '@/styles/Home.module.css'
-import LoginButton from "@/components/elements/login-button/login-button";
 
-const inter = Inter({ subsets: ['latin'] })
+// eslint-disable-next-line new-cap
+const inter = Inter({subsets: ['latin']});
 
+// eslint-disable-next-line require-jsdoc
 export default function Home() {
   return (
     <>
@@ -16,7 +17,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <LoginButton />
+        <NavBar>
+          <div style={{backgroundColor: 'white', width: '100%', height: '100%'}}/>
+        </NavBar>
       </main>
     </>
   )

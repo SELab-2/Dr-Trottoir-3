@@ -215,13 +215,14 @@ def insert_dummy_schedule_assignment(
 
 def insert_dummy_schedule_work_entry(creator: User) -> ScheduleWorkEntry:
     building = insert_dummy_building()
-    schedule_definition = insert_dummy_schedule_definition()
+    schedule_definition = insert_dummy_schedule_definition(buildings=[building])
+    schedule_assignment = insert_dummy_schedule_assignment(creator, schedule_definition)
     work_entry = ScheduleWorkEntry(
         creation_timestamp="2022-01-26 06:00",
         image="image.png",
         creator=creator,
         building=building,
-        schedule_definition=schedule_definition,
+        schedule_assignment=schedule_assignment,
     )
     work_entry.save()
     return work_entry

@@ -190,7 +190,7 @@ class Command(BaseCommand):
                 image="/some/path",
                 creator=random.choice(students).user,
                 building=random.choice(buildings),
-                schedule_definition=random.choice(schedule_definitions),
+                schedule_assignment=random.choice(schedule_assignments),
             )
         ]
 

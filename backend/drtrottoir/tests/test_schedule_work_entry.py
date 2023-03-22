@@ -79,7 +79,7 @@ def test_schedule_work_entry_get_existing_returns_200() -> None:
     assert response.status_code == 200
     assert response.data["creator"] == work_entry.creator.id
     assert response.data["building"] == work_entry.building.id
-    assert response.data["schedule_definition"] == work_entry.schedule_definition.id
+    assert response.data["schedule_assignment"] == work_entry.schedule_assignment.id
     assert date_equals(
         response.data["creation_timestamp"], str(work_entry.creation_timestamp)
     )
@@ -484,12 +484,14 @@ def test_schedule_work_entry_post_correct_format_returns_201() -> None:
     schedule_definition = insert_dummy_schedule_definition(buildings=[building])
     creation_timestamp = "2222-02-02 22:22"
     image = _create_dummy_image("image.jpg")
-    insert_dummy_schedule_assignment(creator.user, schedule_definition)
+    schedule_assignment = insert_dummy_schedule_assignment(
+        creator.user, schedule_definition
+    )
 
     data = {
         "creator": creator.user.id,
         "building": building.id,
-        "schedule_definition": schedule_definition.id,
+        "schedule_assignment": schedule_assignment.id,
         "creation_timestamp": creation_timestamp,
         "image": image,
     }
@@ -506,7 +508,7 @@ def test_schedule_work_entry_post_correct_format_returns_201() -> None:
     assert response.data["id"] > 0
     assert response.data["creator"] == creator.user.id
     assert response.data["building"] == building.id
-    assert response.data["schedule_definition"] == schedule_definition.id
+    assert response.data["schedule_assignment"] == schedule_assignment.id
     assert date_equals(response.data["creation_timestamp"], creation_timestamp)
     assert response.data["image"].endswith(".jpg")
 
@@ -517,12 +519,14 @@ def test_schedule_work_entry_post_incorrect_field_returns_400() -> None:
     building = insert_dummy_building()
     schedule_definition = insert_dummy_schedule_definition(buildings=[building])
     image = _create_dummy_image("image.jpg")
-    insert_dummy_schedule_assignment(creator.user, schedule_definition)
+    schedule_assignment = insert_dummy_schedule_assignment(
+        creator.user, schedule_definition
+    )
 
     data = {
         "creator": creator.user.id,
         "building": building.id,
-        "schedule_definition": schedule_definition.id,
+        "schedule_assignment": schedule_assignment.id,
         "creation_timestamp": "this is a wrong field",
         "image": image,
     }
@@ -545,12 +549,14 @@ def test_schedule_work_entry_post_incorrect_image_extension_returns_400() -> Non
     schedule_definition = insert_dummy_schedule_definition(buildings=[building])
     creation_timestamp = "2222-02-02 22:22"
     image = _create_dummy_image("image")  # Explicitly does not end with .jpg
-    insert_dummy_schedule_assignment(creator.user, schedule_definition)
+    schedule_assignment = insert_dummy_schedule_assignment(
+        creator.user, schedule_definition
+    )
 
     data = {
         "creator": creator.user.id,
         "building": building.id,
-        "schedule_definition": schedule_definition.id,
+        "schedule_assignment": schedule_assignment.id,
         "creation_timestamp": creation_timestamp,
         "image": image,
     }
@@ -577,12 +583,14 @@ def test_schedule_work_entry_post_wrong_creator_returns_400() -> None:
     schedule_definition = insert_dummy_schedule_definition(buildings=[building])
     creation_timestamp = "2222-02-02 22:22"
     image = _create_dummy_image("image.jpg")
-    insert_dummy_schedule_assignment(creator.user, schedule_definition)
+    schedule_assignment = insert_dummy_schedule_assignment(
+        creator.user, schedule_definition
+    )
 
     data = {
         "creator": creator.user.id,
         "building": building.id,
-        "schedule_definition": schedule_definition.id,
+        "schedule_assignment": schedule_assignment.id,
         "creation_timestamp": creation_timestamp,
         "image": image,
     }
@@ -601,41 +609,7 @@ def test_schedule_work_entry_post_wrong_creator_returns_400() -> None:
 
 
 @pytest.mark.django_db
-def test_schedule_work_entry_post_no_matching_schedule_assignment_returns_400() -> None:
-    """
-    POST requires that the creator is in at least one schedule assignment containing
-    the schedule definition.
-    """
-    creator = insert_dummy_student()
-    building = insert_dummy_building()
-    schedule_definition = insert_dummy_schedule_definition(buildings=[building])
-    creation_timestamp = "2222-02-02 22:22"
-    image = _create_dummy_image("image.jpg")
-    # Explicitly commented out
-    # insert_dummy_schedule_assignment(creator.user, schedule_definition)
-
-    data = {
-        "creator": creator.user.id,
-        "building": building.id,
-        "schedule_definition": schedule_definition.id,
-        "creation_timestamp": creation_timestamp,
-        "image": image,
-    }
-
-    client = APIClient()
-    client.force_login(creator.user)
-
-    response = client.post(
-        "/schedule_work_entries/",
-        data,
-        format="multipart",
-    )
-
-    assert response.status_code == 400
-
-
-@pytest.mark.django_db
-def test_schedule_work_entry_post_building_not_matching_schedule_definition_returns_400():  # noqa: E501
+def test_schedule_work_entry_post_building_not_matching_schedule_assignment_returns_400():  # noqa: E501
     """
     POST requires that the creator is in at least one schedule assignment containing
     the schedule definition.
@@ -645,12 +619,14 @@ def test_schedule_work_entry_post_building_not_matching_schedule_definition_retu
     schedule_definition = insert_dummy_schedule_definition(buildings=[])
     creation_timestamp = "2222-02-02 22:22"
     image = _create_dummy_image("image.jpg")
-    insert_dummy_schedule_assignment(creator.user, schedule_definition)
+    schedule_assignment = insert_dummy_schedule_assignment(
+        creator.user, schedule_definition
+    )
 
     data = {
         "creator": creator.user.id,
         "building": building.id,
-        "schedule_definition": schedule_definition.id,
+        "schedule_assignment": schedule_assignment.id,
         "creation_timestamp": creation_timestamp,
         "image": image,
     }
@@ -686,12 +662,12 @@ def _test_schedule_work_entry_post_correct_information_give_user(
     schedule_definition = insert_dummy_schedule_definition(buildings=[building])
     creation_timestamp = "2222-02-02 22:22"
     image = _create_dummy_image("image.jpg")
-    insert_dummy_schedule_assignment(user, schedule_definition)
+    schedule_assignment = insert_dummy_schedule_assignment(user, schedule_definition)
 
     data = {
         "creator": user.id,
         "building": building.id,
-        "schedule_definition": schedule_definition.id,
+        "schedule_assignment": schedule_assignment.id,
         "creation_timestamp": creation_timestamp,
         "image": image,
     }
