@@ -1,6 +1,6 @@
 import styles from './navbar.module.css';
 import Button from '@mui/material/Button';
-import React, {useEffect} from 'react';
+import React from 'react';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
 import DateRangeIcon from '@mui/icons-material/DateRange';
@@ -56,7 +56,6 @@ function NavButton({href, text, router, icon}) {
   return (
     <Link href={href === '/' ? '/scheduler' : href} passHref>
       <Button id={styles.button}
-              // onClick={router.push(href, undefined, { shallow: true })}
         className={isActive ? styles.button_selected : styles.button_default}
       >
         {icon}

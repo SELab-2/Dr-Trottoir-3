@@ -18,7 +18,7 @@ clean:
 # =====BACKEND=====
 ## VENV
 ### Create the venv
-$(VENV)/bin/activate:
+$(VENV)/bin/activate: requirements.txt requirements-dev.txt
 	@ '$(PYTHON)' -m venv '$(VENV)'
 	@ '$(VENV)'/bin/pip install -r requirements.txt -r requirements-dev.txt
 
