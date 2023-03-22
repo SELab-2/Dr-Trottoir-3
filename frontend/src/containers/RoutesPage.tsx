@@ -4,9 +4,7 @@ import NavBar from '../components/elements/navbarElement/navbar';
 export default function RoutesPage() {
     return (
         <>
-            <NavBar>
                 <h1 style={{color: 'black'}}>ROUTES</h1>
-            </NavBar>
         </>
     );
 }

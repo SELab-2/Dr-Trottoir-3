@@ -4,9 +4,7 @@ import NavBar from '../components/elements/navbarElement/navbar';
 export default function SchedulerPage() {
   return (
     <>
-      <NavBar>
           <h1 style={{color: 'black'}}>SCHEDULER</h1>
-      </NavBar>
     </>
   );
 }

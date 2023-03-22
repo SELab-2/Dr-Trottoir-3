@@ -4,9 +4,7 @@ import NavBar from '../components/elements/navbarElement/navbar';
 export default function BuildingsPage() {
     return (
         <>
-            <NavBar>
                 <h1 style={{color: 'black'}}>BUILDINGS</h1>
-            </NavBar>
         </>
     );
 }
