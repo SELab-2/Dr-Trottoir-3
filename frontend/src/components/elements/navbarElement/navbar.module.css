@@ -19,7 +19,15 @@
 }
 
 
+
 @media screen and (min-width:900px) {
+
+    #button {
+        font-size: 16px;
+        text-align: left;
+        height: 40px;
+        min-width: 256px;
+    }
 
     .left_flex_container {
         flex-basis: 256px;
@@ -33,7 +41,7 @@
         display: flex;
         flex-flow: column;
         gap: 16px;
-        padding: 16px;
+        padding: 40px 16px 16px 16px;
         flex-basis: 0;
         flex-grow: 999;
         background-color: #1C1C1C;
@@ -51,14 +59,21 @@
         display: flex;
         flex-flow: column;
         gap: 16px;
-        padding: 16px;
-        flex-basis: 80px;
+        padding: 16px 16px 40px 16px;
+        flex-basis: 56px;
         flex-grow: 1;
         background-color: #1C1C1C;
     }
 }
 
 @media screen and (max-width:900px) {
+
+    #button {
+        /* Hide the text. */
+        font-size: 0;
+        height: 40px;
+        min-width: 40px;
+    }
 
     .left_flex_container {
         flex-basis: 56px;
@@ -72,7 +87,7 @@
         display: flex;
         flex-flow: column;
         gap: 16px;
-        padding: 16px;
+        padding: 40px 16px 16px 16px;
         flex-basis: 0;
         flex-grow: 999;
         background-color: #1C1C1C;
@@ -85,14 +100,14 @@
         background-image: url('../../../../public/media/drtrottoir_icon.svg');
         background-repeat: no-repeat;
         background-position: center;
-        background-size: 40px;
+        background-size: 32px;
     }
 
     .side_bar_bot {
         display: flex;
         flex-flow: column;
         gap: 16px;
-        padding: 16px;
+        padding: 16px 16px 40px 16px;
         flex-basis: 56px;
         flex-grow: 1;
         background-color: #1C1C1C;
@@ -113,12 +128,31 @@
 
 
 
+.icon {
+    position: absolute;
+    left: 8px;
+}
 
+.text {
+    position: absolute;
+    left: 48px;
+    line-break: unset;
+}
 
+.button_default {
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    color: #F3F5F9;
+    text-transform: none;
+    background-color: #1C1C1C;
+    border-radius: 8px;
+}
 
-.button {
-    height: 40px;
-    min-width: 40px;
+.button_selected {
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    color: #E6E600;
+    text-transform: none;
     background-color: #2D2F33;
     border-radius: 8px;
 }

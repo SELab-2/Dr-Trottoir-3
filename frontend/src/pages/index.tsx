@@ -10,9 +10,9 @@ const inter = Inter({subsets: ['latin']});
 export default function Home() {
   return (
     <>
-        <NavBar>
-            <div style={{backgroundColor: 'white', width: '100%', height: '100%'}}/>
-        </NavBar>
+      <NavBar>
+        <div style={{backgroundColor: 'white', width: '100%', height: '100%'}}/>
+      </NavBar>
     </>
   );
 }
