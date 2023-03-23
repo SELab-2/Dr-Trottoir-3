@@ -34,17 +34,20 @@ export enum Api {
  * @param {any[]} args
  * @return {Promise<T>}
  * **/
-async function fetcher<T>(...args: any[]): Promise<T> {
+async function fetcher<T>(token: string, url: string): Promise<T> {
     // @ts-ignore
-    return fetch(...args).then(res => res.json<T>());
+    return fetch(url, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        }}).then((res) => res.json<T>());
 }
 
 /**
  * @param {Api} route
  * @return {SWRResponse}
  * **/
-export function get<T>(route: Api): SWRResponse<T, any> {
-    return useSWR<T>(route, fetcher);
+export function get<T>(token: string, route: Api): SWRResponse<T, any> {
+    return useSWR<T>([token, route], fetcher);
 }
 
 /**
@@ -52,10 +55,10 @@ export function get<T>(route: Api): SWRResponse<T, any> {
  * @param {any} params
  * @return {SWRResponse}
  * **/
-export function getParams<T>(route: string, params: any): SWRResponse<T, any> {
+export function getParams<T>(token: string, route: Api, params: any): SWRResponse<T, any> {
     for (const property in params) {
         route = route.replace(':' + property, params[property]);
     }
 
-    return useSWR<T>(route, fetcher);
+    return useSWR<T>([token, route], fetcher);
 }
