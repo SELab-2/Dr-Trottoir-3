@@ -49,7 +49,7 @@ export type ScheduleWorkEntry = {
     image: string;
     creator: number;
     building: number;
-    schedule_definition: number;
+    schedule_assignment: number;
 };
 
 export type ScheduleDefinition = {
