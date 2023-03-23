@@ -31,7 +31,8 @@ export enum Api {
 }
 
 /**
- * @param {any[]} args
+ * @param {string} token
+ * @param {string} url
  * @return {Promise<T>}
  * **/
 async function fetcher<T>(token: string, url: string): Promise<T> {
@@ -46,8 +47,9 @@ async function fetcher<T>(token: string, url: string): Promise<T> {
  * @param {Api} route
  * @return {SWRResponse}
  * **/
-export function get<T>(token: string, route: Api): SWRResponse<T, any> {
-    return useSWR<T>([token, route], fetcher);
+export function get<T>(route: Api): SWRResponse<T, any> {
+    const { data: session } = useSession();
+    return useSWR<T>([session.accessToken, route], fetcher);
 }
 
 /**
@@ -55,10 +57,11 @@ export function get<T>(token: string, route: Api): SWRResponse<T, any> {
  * @param {any} params
  * @return {SWRResponse}
  * **/
-export function getParams<T>(token: string, route: Api, params: any): SWRResponse<T, any> {
+export function getParams<T>(route: Api, params: any): SWRResponse<T, any> {
     for (const property in params) {
         route = route.replace(':' + property, params[property]);
     }
 
-    return useSWR<T>([token, route], fetcher);
+    const { data: session } = useSession();
+    return useSWR<T>([session.accessToken, route], fetcher);
 }
