@@ -94,6 +94,7 @@ const callbacks = {
         session.accessTokenExpires = token.accessTokenExpires;
         session.error = token.error;
         session.userid = token.userid
+        session.refreshToken = token.refreshToken
 
         // TODO - Should retrieve the permission roles, username, email, ... here and add it to the session.
 
