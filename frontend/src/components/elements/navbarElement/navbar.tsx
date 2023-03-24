@@ -11,8 +11,6 @@ import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import {OverridableComponent} from '@mui/types';
-import {SvgIconTypeMap} from '@mui/material';
 
 const topButtons = [
     {id: '0', text: 'Planner', href: '/scheduler', icon: <DateRangeIcon className={styles.icon}/>},
@@ -29,7 +27,7 @@ const ignoreRoute = [
 export default function NavBar(props: any) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const [nextPath, setNextPath] = useState(null);
+    const [nextPath, setNextPath] = useState<string | null>(null);
 
     useEffect(() => {
         router.events.on('routeChangeError', (e) => setLoading(false));
@@ -79,9 +77,17 @@ export default function NavBar(props: any) {
     );
 }
 
-const NavButton = (href: string, text: string, router: NextRouter,
-    icon: OverridableComponent<SvgIconTypeMap>,
-    nextPath: string, setNextPath: React.Dispatch<React.SetStateAction<string>>) => {
+
+type navButtonProps = {
+    href: string,
+    text: string,
+    router: NextRouter,
+    icon: JSX.Element,
+    nextPath: string | null,
+    setNextPath: React.Dispatch<React.SetStateAction<string | null>>
+}
+
+const NavButton = ({href, text, router, icon, nextPath, setNextPath}: navButtonProps) => {
     const isActive: boolean = router.asPath === href;
     const isLoading: boolean = href === nextPath;
 

@@ -43,6 +43,7 @@ export default function SchedulerDetails() {
         },
     ];
 
+    // @ts-ignore
     const getCalInstance = useCallback(() => calendarRef.current?.getInstance?.(), []);
 
     const updateRenderRangeText = useCallback(() => {

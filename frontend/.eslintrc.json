@@ -13,5 +13,9 @@
     "indent": ["warn", 4],
     "max-len": ["warn", 120],
     "require-jsdoc": "off"
+  },
+  "globals": {
+    "JSX": true,
+    "console": true
   }
 }
