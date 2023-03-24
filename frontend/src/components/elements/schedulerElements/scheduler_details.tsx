@@ -158,10 +158,11 @@ export default function SchedulerDetails() {
         getCalInstance().createEvents([event]);
     };
 
+    // @ts-ignore
     return (
         <div style={{height: '100%'}}>
             <Calendar
-                height={'100%'}
+                height={{height: '100%'}}
                 calendars={initialCalendars}
                 month={{startDayOfWeek: 1}}
                 events={initialEvents}
