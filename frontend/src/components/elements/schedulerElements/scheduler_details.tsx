@@ -162,7 +162,7 @@ export default function SchedulerDetails() {
     return (
         <div style={{height: '100%'}}>
             <Calendar
-                height={{height: '100%'}}
+                height={'100%'}
                 calendars={initialCalendars}
                 month={{startDayOfWeek: 1}}
                 events={initialEvents}

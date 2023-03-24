@@ -51,7 +51,7 @@ export default function NavBar(props: any) {
                         <div className={styles.side_bar_top}></div>
                         <div className={styles.side_bar_mid}>
                             { topButtons.map((term, index) =>
-                                <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
+                                <NavButton key={term.id} router={router} nextPath={nextPath} setNextPath={setNextPath}
                                     href={term.href} text={term.text} icon={term.icon} />
                             )}
                         </div>
