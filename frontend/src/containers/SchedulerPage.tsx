@@ -1,10 +1,13 @@
-import NavBar from '../components/elements/navbarElement/navbar';
+import SchedulerSelect from '../components/elements/schedulerElements/scheduler_select';
+import SchedulerDetails from '../components/elements/schedulerElements/scheduler_details';
 
 // eslint-disable-next-line require-jsdoc
 export default function SchedulerPage() {
-  return (
-    <>
-          <h1 style={{color: 'black'}}>SCHEDULER</h1>
-    </>
-  );
+    return (
+        <>
+            <SchedulerSelect>
+                <SchedulerDetails/>
+            </SchedulerSelect>
+        </>
+    );
 }

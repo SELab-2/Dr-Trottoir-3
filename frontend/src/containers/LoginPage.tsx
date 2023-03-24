@@ -1,4 +1,3 @@
-// eslint-disable-next-line require-jsdoc
 export default function LoginPage() {
     return (
         <div>

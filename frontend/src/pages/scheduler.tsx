@@ -1,3 +1,12 @@
-import SchedulerPage from '../containers/SchedulerPage';
+import dynamic from 'next/dynamic';
 
-export default SchedulerPage;
+const DynamicSchedulerComponent = dynamic(() =>
+    import('../containers/SchedulerPage'), {ssr: false}
+);
+
+// eslint-disable-next-line require-jsdoc
+export default function SchedulerPage() {
+    return (
+        <DynamicSchedulerComponent/>
+    );
+}

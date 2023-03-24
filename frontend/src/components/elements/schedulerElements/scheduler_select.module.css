@@ -5,7 +5,7 @@
 }
 
 .top_bar {
-    flex-basis: 128px;
+    flex-basis: 100px;
     flex-grow: 1;
     background-color: #E9EDF4;
 }

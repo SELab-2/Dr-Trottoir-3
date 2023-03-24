@@ -1,3 +1,12 @@
-import UsersPage from '../containers/UsersPage';
+import dynamic from 'next/dynamic';
 
-export default UsersPage;
+const DynamicRoutesComponent = dynamic(() =>
+    import('../containers/UsersPage'), {ssr: false}
+);
+
+// eslint-disable-next-line require-jsdoc
+export default function UsersPage() {
+    return (
+        <DynamicRoutesComponent/>
+    );
+}

@@ -1,3 +1,12 @@
-import RoutesPage from '../containers/RoutesPage';
+import dynamic from 'next/dynamic';
 
-export default RoutesPage;
+const DynamicRoutesComponent = dynamic(() =>
+    import('../containers/RoutesPage'), {ssr: false}
+);
+
+// eslint-disable-next-line require-jsdoc
+export default function RoutesPage() {
+    return (
+        <DynamicRoutesComponent/>
+    );
+}
