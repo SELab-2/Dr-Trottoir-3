@@ -1,7 +1,7 @@
 import styles from './navbar.module.css';
 import Button from '@mui/material/Button';
 import React, {useEffect, useState} from 'react';
-import Router from 'next/router';
+import Router, {NextRouter} from 'next/router';
 import {useRouter} from 'next/router';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import RouteIcon from '@mui/icons-material/Route';
@@ -11,6 +11,8 @@ import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import {OverridableComponent} from '@mui/types';
+import {SvgIconTypeMap} from '@mui/material';
 
 const topButtons = [
     {id: '0', text: 'Planner', href: '/scheduler', icon: <DateRangeIcon className={styles.icon}/>},
@@ -24,8 +26,6 @@ const ignoreRoute = [
     '/auth/signin',
 ];
 
-// eslint-disable max-len
-// eslint-disable-next-line require-jsdoc
 export default function NavBar(props: any) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
@@ -53,25 +53,17 @@ export default function NavBar(props: any) {
                         <div className={styles.side_bar_top}></div>
                         <div className={styles.side_bar_mid}>
                             { topButtons.map((term, index) =>
-                                <NavButton
-                                    router={router}
-                                    nextPath={nextPath}
-                                    setNextPath={setNextPath}
-                                    href={term.href}
-                                    text={term.text}
-                                    icon={term.icon} />
+                                <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
+                                    href={term.href} text={term.text} icon={term.icon} />
                             )}
                         </div>
                         <div className={styles.side_bar_bot}>
-                            <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
-                                href={'/users/[id]'} text={'Account'}
-                                icon={<PersonRoundedIcon className={styles.icon}/>}/>
-                            <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
-                                href={'/settings'} text={'Instellingen'}
-                                icon={<TuneRoundedIcon className={styles.icon}/>}/>
-                            <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
-                                href={'/login'} text={'Logout'}
-                                icon={<LogoutRoundedIcon className={styles.icon}/>}/>
+                            <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath} href={'/users'}
+                                text={'Account'} icon={<PersonRoundedIcon className={styles.icon}/>}/>
+                            <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath} href={'/settings'}
+                                text={'Instellingen'} icon={<TuneRoundedIcon className={styles.icon}/>}/>
+                            <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath} href={'/login'}
+                                text={'Logout'} icon={<LogoutRoundedIcon className={styles.icon}/>}/>
                         </div>
                     </div>
                     <div className={styles.right_flex_container} style={{backgroundColor: 'red'}}>
@@ -87,20 +79,23 @@ export default function NavBar(props: any) {
     );
 }
 
-// eslint-disable-next-line require-jsdoc
-function NavButton({href, text, router, icon, nextPath, setNextPath}) {
-    const isActive = router.asPath === href;
-    const isLoading = href === nextPath;
+const NavButton = (href: string, text: string, router: NextRouter,
+    icon: OverridableComponent<SvgIconTypeMap>,
+    nextPath: string, setNextPath: React.Dispatch<React.SetStateAction<string>>) => {
+    const isActive: boolean = router.asPath === href;
+    const isLoading: boolean = href === nextPath;
 
     return (
         <Button id={styles.button}
             onClick={() => {
                 Router.push(href, undefined, {shallow: true}); setNextPath(href);
             }}
-            className={((isActive & nextPath === null) | isLoading) ? styles.button_selected : styles.button_default}
+            className={((isActive && nextPath === null) || isLoading) ? styles.button_selected : styles.button_default}
         >
-            {icon}
-            <p className={styles.text}>{text}</p>
+            <>
+                {icon}
+                <p className={styles.text}>{text}</p>
+            </>
         </Button>
     );
-}
+};

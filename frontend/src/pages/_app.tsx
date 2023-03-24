@@ -5,8 +5,6 @@ import {SessionProvider} from 'next-auth/react';
 
 import NavBar from '../components/elements/navbarElement/navbar';
 
-
-// eslint-disable-next-line require-jsdoc
 export default function App(
     {Component, pageProps: {session, ...pageProps}}: AppProps
 ) {

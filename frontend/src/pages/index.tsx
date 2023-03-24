@@ -3,7 +3,6 @@ import NavBar from '../components/elements/navbarElement/navbar';
 import styles from '@/styles/Home.module.css';
 import {useSession} from 'next-auth/react';
 
-// eslint-disable-next-line require-jsdoc
 export default function Home() {
     const {data: session} = useSession();
 

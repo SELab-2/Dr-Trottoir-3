@@ -1,4 +1,3 @@
-// eslint-disable-next-line max-len
 import type {EventObject, ExternalEventTypes, Options} from '@toast-ui/calendar';
 import {TZDate} from '@toast-ui/calendar';
 import {useCallback, useEffect, useRef, useState} from 'react';
@@ -11,7 +10,6 @@ type ViewType = 'month' | 'week' | 'day';
 
 const today = new TZDate();
 
-// eslint-disable-next-line require-jsdoc
 export default function SchedulerDetails() {
     const view: ViewType = 'week';
 
@@ -45,7 +43,6 @@ export default function SchedulerDetails() {
         },
     ];
 
-    // eslint-disable-next-line max-len
     const getCalInstance = useCallback(() => calendarRef.current?.getInstance?.(), []);
 
     const updateRenderRangeText = useCallback(() => {
