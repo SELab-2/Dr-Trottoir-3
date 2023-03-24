@@ -1,0 +1,29 @@
+.topBar {
+    width: 100%;
+    height: 15vh;
+    margin-bottom: 100px;
+    padding: 1vw;
+    border: none;
+    border-radius: 10px;
+    font-size: 20px;
+    background-color: white;
+    color: black;
+    overflow: hidden;
+}
+
+#title {
+    padding-right: 10vh;
+    float: left;
+}
+
+#title p {
+    padding: 10px;
+    font-size: 15px;
+}
+
+#search{
+    float: left;
+    background-color: #F3F5F9;
+    border-radius: 20px;
+    width: 40vh;
+}
