@@ -15,7 +15,7 @@ jobs:
 #        run: ./test.sh frontend --build
 #      - name: Backend
 #        run: ./test.sh backend --build
-  Backend linting:
+  backend-linting:
     runs-on: linting
     env:
       SRC: "drtrottoir"
@@ -41,7 +41,7 @@ jobs:
       - name: Run Mypy
         run: mypy $(SRC)
 
-  Frontend linting:
+  frontend-linting:
     runs-on: linting
     defaults:
       run:
