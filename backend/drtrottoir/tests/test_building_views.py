@@ -92,6 +92,7 @@ def test_buildings_post_invalid_image():
     tmp_img_file = tempfile.NamedTemporaryFile(suffix=".jpg")
     image.save(tmp_img_file)
     tmp_img_file.seek(0)
+    tmp_img_file.name = "temp_file"
 
     data = {
         "address": "address 1",
