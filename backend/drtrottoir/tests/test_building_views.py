@@ -2,6 +2,7 @@ import datetime
 import tempfile
 
 import pytest
+from PIL import Image
 from rest_framework.test import APIClient
 
 from .dummy_data import (
@@ -52,11 +53,18 @@ def test_buildings_post():
     tmp_file.write(b"Hello world!")
     tmp_file.seek(0)
 
+    image = Image.new("RGB", (100, 100))
+
+    tmp_img_file = tempfile.NamedTemporaryFile(suffix=".jpg")
+    image.save(tmp_img_file)
+    tmp_img_file.seek(0)
+
     data = {
         "address": "address 1",
         "is_active": True,
         "location_group": dummy_location_group.id,
         "pdf_guide": tmp_file,
+        "image": tmp_img_file,
     }
     student = insert_dummy_student(is_super_student=True)
     client = APIClient()
@@ -67,7 +75,37 @@ def test_buildings_post():
     assert response.data["is_active"]
     assert response.data["location_group"] == dummy_location_group.id
     assert response.data["pdf_guide"].endswith(".pdf")
+    assert response.data["image"].endswith(".jpg")
     assert response.status_code == 201
+
+
+@pytest.mark.django_db
+def test_buildings_post_invalid_image():
+    dummy_location_group = insert_dummy_location_group()
+
+    tmp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
+    tmp_file.write(b"Hello world!")
+    tmp_file.seek(0)
+
+    image = Image.new("RGB", (100, 100))
+
+    tmp_img_file = tempfile.NamedTemporaryFile(suffix=".jpg")
+    image.save(tmp_img_file)
+    tmp_img_file.seek(0)
+
+    data = {
+        "address": "address 1",
+        "is_active": True,
+        "location_group": dummy_location_group.id,
+        "pdf_guide": tmp_file,
+        "image": tmp_img_file,
+    }
+    student = insert_dummy_student(is_super_student=True)
+    client = APIClient()
+    client.force_login(student.user)
+    response = client.post("/buildings/", data)
+
+    assert response.status_code == 400
 
 
 @pytest.mark.django_db
