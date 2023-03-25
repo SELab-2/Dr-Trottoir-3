@@ -16,7 +16,7 @@ jobs:
 #      - name: Backend
 #        run: ./test.sh backend --build
   backend-linting:
-    runs-on: ubuntu-latest
+    runs-on: linting
     env:
       SRC: "drtrottoir"
     defaults:
