@@ -24,6 +24,12 @@ def get_file_path_building_pdf_guide(instance, filename):
     return os.path.join("building_pdf_guides/", filename)
 
 
+def get_file_path_building_image(instance, filename):
+    extension = filename.split(".")[-1]
+    filename = str(uuid.uuid4()) + "." + extension
+    return os.path.join("building_images/", filename)
+
+
 class Building(models.Model):
     """
     Represents a building.
@@ -41,6 +47,8 @@ class Building(models.Model):
         LocationGroup, on_delete=models.RESTRICT, related_name="buildings"
     )
     is_active = models.BooleanField(default=True)
+    description = models.TextField(null=True)
+    image = models.ImageField(upload_to=get_file_path_building_image, null=True)
 
 
 class ScheduleDefinition(models.Model):
@@ -318,3 +326,4 @@ class GarbageCollectionSchedule(models.Model):
     garbage_type = models.ForeignKey(
         GarbageType, on_delete=models.RESTRICT, related_name="collection_schedules"
     )
+    note = models.TextField(null=True)
