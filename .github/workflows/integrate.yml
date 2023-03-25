@@ -16,7 +16,7 @@ jobs:
 #      - name: Backend
 #        run: ./test.sh backend --build
   backend-linting:
-    runs-on: linting
+    runs-on: ubuntu-latest
     env:
       SRC: "drtrottoir"
     defaults:
@@ -33,13 +33,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt -r requirements-dev.txt
       - name: Run Black
-        run: black --check $(SRC)
+        run: black --check $SRC
       - name: Run Flake8
-        run: flake8 $(SRC)
+        run: flake8 $SRC
       - name: Run Isort
-        run: isort --check $(SRC)
+        run: isort --check $SRC
       - name: Run Mypy
-        run: mypy $(SRC)
+        run: mypy $SRC
 
   frontend-linting:
     runs-on: linting
