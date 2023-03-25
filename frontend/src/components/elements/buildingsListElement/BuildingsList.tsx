@@ -21,9 +21,8 @@ export default function BuildingsList() {
             <TopBar></TopBar>
             <div className={styles.under_columns}>
                 <div className={styles.list_bar}>
-                    {dummyBuildings.map(x => )}
+                    {dummyBuildings.map(x => <ListItem name={x.name} adress={x.adress} locationGroup={x.locationGroup} />)}
                 </div>
-                axa
             </div>
 
         </div>
@@ -67,11 +66,18 @@ type ListItemProps = {
     locationGroup: string
 }
 
-const NavButton = ({name, adress, locationGroup}: ListItemProps) => {
+const ListItem = ({name, adress, locationGroup}: ListItemProps) => {
     return (
         <Button id={styles.item_button} className={styles.button_default}>
-            {name}
-
-                    </Button>
+            <div className={styles.big_item_text}>
+                {name}
+            </div>
+            <div className={styles.small_item_text}>
+                {adress}
+            </div>
+            <div className={styles.small_item_text}>
+                {locationGroup}
+            </div>
+        </Button>
     );
 };
