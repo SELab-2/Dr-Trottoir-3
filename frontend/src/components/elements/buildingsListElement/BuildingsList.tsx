@@ -3,7 +3,7 @@ import styles from "@/components/elements/buildingsListElement/BuildingsList.mod
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import {IconButton, InputBase} from "@mui/material";
+import {Button, IconButton, InputBase} from "@mui/material";
 
 
 
@@ -16,11 +16,17 @@ const dummyBuildings = [
 
 export default function BuildingsList() {
     return (
-        <>
+        <div className={styles.full_outer}>
 
             <TopBar></TopBar>
+            <div className={styles.under_columns}>
+                <div className={styles.list_bar}>
+                    {dummyBuildings.map(x => )}
+                </div>
+                axa
+            </div>
 
-        </>
+        </div>
     );
 }
 
@@ -54,3 +60,18 @@ function TopBar(){
 function Filter(){
 
 }
+
+type ListItemProps = {
+    name: string,
+    adress: string,
+    locationGroup: string
+}
+
+const NavButton = ({name, adress, locationGroup}: ListItemProps) => {
+    return (
+        <Button id={styles.item_button} className={styles.button_default}>
+            {name}
+
+                    </Button>
+    );
+};

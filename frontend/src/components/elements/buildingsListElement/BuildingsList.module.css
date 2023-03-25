@@ -1,7 +1,6 @@
 .topBar {
     width: 100%;
     height: 15vh;
-    margin-bottom: 100px;
     padding: 1vw;
     border: none;
     border-radius: 10px;
@@ -26,4 +25,55 @@
     background-color: #F3F5F9;
     border-radius: 20px;
     width: 40vh;
+}
+
+.list_bar {
+        display: flex;
+        flex-flow: column;
+        gap: 16px;
+        padding: 40px 16px 16px 16px;
+        background-color: white;
+        flex-basis: 200px;
+        flex-grow: 0;
+        flex-wrap: wrap;
+    }
+
+.full_outer {
+        padding: 40px 16px 16px 16px;
+        background-color: white;
+        height: 100%;
+    }
+
+.under_columns {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#item_button {
+    display: flex;
+    flex-flow: column;
+    flex-wrap: wrap;
+    text-align: left;
+    align-items: flex-start;
+    background-color: #E9EDF4;
+}
+
+.button_default {
+    font-family: 'Inter', sans-serif;
+    color: #1C1C1C;
+    text-transform: none;
+    background-color: #1C1C1C;
+    border-radius: 8px;
+}
+
+.big_item_text {
+    color: #1C1C1C;
+    font-size: 20px;
+    font-weight: bold;
+
+}
+
+.small_item_text {
+    color: #808080;
+    font-size: 10px;
 }
