@@ -11,6 +11,15 @@ const dummyBuildings = [
     {name: "building 1", adress: "building 1 street 69", locationGroup: "Gent"},
     {name: "building 2", adress: "building 2 street 42", locationGroup: "Antwerpen"},
     {name: "building 3", adress: "building 3 lane 21", locationGroup: "Gent"},
+    {name: "building 1", adress: "building 1 street 69", locationGroup: "Gent"},
+    {name: "building 2", adress: "building 2 street 42", locationGroup: "Antwerpen"},
+    {name: "building 3", adress: "building 3 lane 21", locationGroup: "Gent"},
+    {name: "building 1", adress: "building 1 street 69", locationGroup: "Gent"},
+    {name: "building 2", adress: "building 2 street 42", locationGroup: "Antwerpen"},
+    {name: "building 3", adress: "building 3 lane 21", locationGroup: "Gent"},
+    {name: "building 1", adress: "building 1 street 69", locationGroup: "Gent"},
+    {name: "building 2", adress: "building 2 street 42", locationGroup: "Antwerpen"},
+    {name: "building 3", adress: "building 3 lane 21", locationGroup: "Gent"},
 ]
 
 
