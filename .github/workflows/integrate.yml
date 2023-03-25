@@ -2,21 +2,21 @@ name: Linting & Testing
 
 on:
   pull_request:
-    branches: [main, development]
+    branches: [ main, development ]
   push:
-    branches: [jorispeeters/fix-ci-linting-and-testing]
+    branches: [ jorispeeters/fix-ci-linting-and-testing ]
 
 jobs:
-#  testing:
-#    runs-on: testing
-#    steps:
-#      - uses: actions/checkout@v3
-#      - name: Frontend
-#        run: ./test.sh frontend --build
-#      - name: Backend
-#        run: ./test.sh backend --build
+  #  testing:
+  #    runs-on: testing
+  #    steps:
+  #      - uses: actions/checkout@v3
+  #      - name: Frontend
+  #        run: ./test.sh frontend --build
+  #      - name: Backend
+  #        run: ./test.sh backend --build
   backend-linting:
-    runs-on: linting
+    runs-on: [ self-hosted, ci ]
     env:
       SRC: "drtrottoir"
     defaults:
@@ -42,7 +42,7 @@ jobs:
         run: mypy $SRC
 
   frontend-linting:
-    runs-on: linting
+    runs-on: [ self-hosted, ci ]
     defaults:
       run:
         working-directory: frontend
@@ -55,3 +55,56 @@ jobs:
         run: npm ci
       - name: Run linter
         run: npm run lint
+
+  backend-testing:
+    runs-on: [ self-hosted, no-parallel-1 ]
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: devdb
+          POSTGRES_USER: hello_django
+          POSTGRES_PASSWORD: hello_django
+        ports:
+          - 5432:5432
+    env:
+      SRC: "drtrottoir"
+      SECRET_KEY: devsecretkey
+      DEBUG: 1
+      DB_HOST: localhost
+      DB_NAME: devdb
+      DB_USER: hello_django
+      DB_PASS: hello_django
+      DATABASE: postgres
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+      - name: Wait for database to be ready
+        run: python manage.py wait_for_db
+      - name: Run tests
+        run: pytest --cov --cov-config=.coveragerc $SRC/tests
+
+  frontend-testing:
+    runs-on: [ self-hosted, ci ]
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+      - name: Try building
+        run: npm run build
