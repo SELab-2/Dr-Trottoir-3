@@ -87,7 +87,19 @@ display: flex;
     flex-wrap: wrap;
     text-align: left;
     align-items: flex-start;
+    color: #1C1C1C;
     background-color: #E9EDF4;
+
+}
+
+#item_button_select {
+    display: flex;
+    flex-flow: column;
+    flex-wrap: wrap;
+    text-align: left;
+    align-items: flex-start;
+    color: white;
+    background-color: #1C1C1C;
 }
 
 .button_wrapper {
@@ -109,8 +121,8 @@ display: flex;
     width: 100%;
 }
 
+
 .big_item_text {
-    color: #1C1C1C;
     font-size: 100%;
     font-weight: bolder;
 

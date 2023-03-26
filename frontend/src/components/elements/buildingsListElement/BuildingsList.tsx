@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import styles from "@/components/elements/buildingsListElement/BuildingsList.module.css";
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
@@ -33,6 +33,8 @@ const dummyBuildings = [
 
 
 export default function BuildingsList() {
+    const [current, setCurrent] = useState(0);
+
     return (
         <div className={styles.full_outer}>
 
@@ -40,7 +42,8 @@ export default function BuildingsList() {
             <div className={styles.under_columns}>
                 <div className={styles.list_wrapper}>
                     <div className={styles.list_bar} id={styles.scroll_style}>
-                        {dummyBuildings.map(x => <ListItem name={x.name} adress={x.adress} locationGroup={x.locationGroup} />)}
+                        {dummyBuildings.map((x,i) => <ListItem
+                            id={i} current={current} name={x.name} adress={x.adress} locationGroup={x.locationGroup} onClick={setCurrent} />)}
                     </div>
                 </div>
             </div>
@@ -154,15 +157,21 @@ function TopBar(){
 }
 
 type ListItemProps = {
+    id: number,
+    current: number,
     name: string,
     adress: string,
     locationGroup: string
+    onClick: React.Dispatch<React.SetStateAction<number>>
 }
 
-const ListItem = ({name, adress, locationGroup}: ListItemProps) => {
+const ListItem = ({id, current, name, adress, locationGroup, onClick}: ListItemProps) => {
+    const isCurrent = id == current
     return (
         <div className={styles.button_wrapper}>
-            <Button id={styles.item_button} className={styles.button_default}>
+            <Button id={(isCurrent)?styles.item_button_select : styles.item_button}
+                    className={styles.button_default}
+                    onClick={()=>onClick(id)}>
                 <div className={styles.big_item_text}>
                     {name}
                 </div>
