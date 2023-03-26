@@ -95,6 +95,7 @@ function TopBar(){
                     <InputBase
                         sx={{ p: '5px'}}
                         autoComplete={"true"}
+                        fullWidth={true}
                         placeholder="Zoek op naam"
                         value={searchEntry}
                         onChange={handleChangeSearchEntry}
