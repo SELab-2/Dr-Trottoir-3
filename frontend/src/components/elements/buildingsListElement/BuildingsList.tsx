@@ -8,7 +8,7 @@ import {Button, IconButton, InputBase} from "@mui/material";
 
 
 const dummyBuildings = [
-    {name: "building 1", adress: "building 1 street 69", locationGroup: "Gent"},
+    {name: "Upkot SintPieters", adress: "Uilkenslaan 93, Gent", locationGroup: "Gent"},
     {name: "building 2", adress: "building 2 street 42", locationGroup: "Antwerpen"},
     {name: "building 3", adress: "building 3 lane 21", locationGroup: "Gent"},
     {name: "building 1", adress: "building 1 street 69", locationGroup: "Gent"},
@@ -29,8 +29,10 @@ export default function BuildingsList() {
 
             <TopBar></TopBar>
             <div className={styles.under_columns}>
-                <div className={styles.list_bar} id={styles.scroll_style}>
-                    {dummyBuildings.map(x => <ListItem name={x.name} adress={x.adress} locationGroup={x.locationGroup} />)}
+                <div className={styles.list_wrapper}>
+                    <div className={styles.list_bar} id={styles.scroll_style}>
+                        {dummyBuildings.map(x => <ListItem name={x.name} adress={x.adress} locationGroup={x.locationGroup} />)}
+                    </div>
                 </div>
             </div>
 
@@ -77,16 +79,18 @@ type ListItemProps = {
 
 const ListItem = ({name, adress, locationGroup}: ListItemProps) => {
     return (
-        <Button id={styles.item_button} className={styles.button_default}>
-            <div className={styles.big_item_text}>
-                {name}
-            </div>
-            <div className={styles.small_item_text}>
-                {adress}
-            </div>
-            <div className={styles.small_item_text}>
-                {locationGroup}
-            </div>
-        </Button>
+        <div className={styles.button_wrapper}>
+            <Button id={styles.item_button} className={styles.button_default}>
+                <div className={styles.big_item_text}>
+                    {name}
+                </div>
+                <div className={styles.small_item_text}>
+                    {adress}
+                </div>
+                <div className={styles.small_item_text}>
+                    {locationGroup}
+                </div>
+            </Button>
+        </div>
     );
 };

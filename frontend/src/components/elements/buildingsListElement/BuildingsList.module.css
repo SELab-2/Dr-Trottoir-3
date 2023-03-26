@@ -3,7 +3,6 @@
     height: 10%;
     padding: 1vw;
     border: none;
-    border-radius: 10px;
     font-size: 20px;
     background-color: white;
     color: black;
@@ -27,46 +26,47 @@
     width: 40vh;
 }
 
+.list_wrapper {
+        padding: 0px 8px 16px 16px;
+display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    background-color: white;
+    width: 25%;
+}
+
 .list_bar {
         display: flex;
         gap: 16px;
-        padding: 40px 16px 16px 16px;
         background-color: white;
-        flex-basis: 200px;
-        flex-grow: 0;
         flex-wrap: wrap;
         max-height: 100%;
-        overflow: auto;
+        overflow-y: auto;
+    overflow-x: hidden;
+        width: 100%;
     }
-#scroll_style::-webkit-scrollbar-track
-{
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	border-radius: 10px;
-	background-color: #F5F5F5;
-}
 
 #scroll_style::-webkit-scrollbar
 {
-	width: 12px;
-	background-color: #F5F5F5;
+	width: 8px;
+	background-color: white;
 }
 
 #scroll_style::-webkit-scrollbar-thumb
 {
-	border-radius: 10px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-clip: padding-box;
+    border-radius: 8px;
 	background-color: #E6E600;
 }
 .full_outer {
         padding: 40px 16px 16px 16px;
-        background-color: white;
         height: 100%;
     }
 
 .under_columns {
     display: flex;
     flex-wrap: wrap;
-    height: 90%;
+    height: 40%;
 }
 
 #item_button {
@@ -78,22 +78,33 @@
     background-color: #E9EDF4;
 }
 
+.button_wrapper {
+    flex-wrap: wrap;
+    background-color: white;
+    width: 100%;
+    padding: 0px 8px 0px 0px;
+
+}
+
 .button_default {
+        word-break: break-word;
+
     font-family: 'Inter', sans-serif;
     color: #1C1C1C;
     text-transform: none;
     background-color: #1C1C1C;
     border-radius: 8px;
+    width: 100%;
 }
 
 .big_item_text {
     color: #1C1C1C;
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 100%;
+    font-weight: bolder;
 
 }
 
 .small_item_text {
     color: #808080;
-    font-size: 10px;
+    font-size: 75%;
 }
