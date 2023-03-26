@@ -2,9 +2,18 @@ import React from "react";
 import styles from "@/components/elements/buildingsListElement/BuildingsList.module.css";
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import {Button, IconButton, InputBase} from "@mui/material";
-
+import {
+    Button,
+    FormControl,
+    IconButton,
+    InputBase,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+} from "@mui/material";
+import SortIcon from '@mui/icons-material/Sort';
+import AddIcon from '@mui/icons-material/Add';
 
 
 const dummyBuildings = [
@@ -41,34 +50,107 @@ export default function BuildingsList() {
 }
 
 function TopBar(){
+    const regions = [
+        'Gent',
+        'Antwerpen',
+        'Brussel',
+    ];
+
+    const [region, setRegion] = React.useState("")
+    const handleChangeRegion = (event: SelectChangeEvent) => {
+        setRegion(event.target.value as string);
+    };
+
+    const sorttypes = [
+        "naam",
+        'adres',
+        'regio'
+    ];
+
+    const [sorttype, setSorttype] = React.useState("naam")
+
+    const handleChangeSorttype = (event: SelectChangeEvent) => {
+        setSorttype(event.target.value as string);
+    };
+
+    const [searchEntry, setSearchEntry] = React.useState("")
+
+    const handleChangeSearchEntry = (event: SelectChangeEvent) => {
+        setSearchEntry(event.target.value as string);
+    };
+
     return (
-        <div className={styles.topBar}>
-            <div id={styles.title}>
+        <div  className={styles.topBar}>
+            <div className={styles.title}>
                 <h1>Gebouwen</h1>
                 <p>{dummyBuildings.length} gebouwen gevonden</p>
             </div>
 
-            <div id={styles.search}>
+            <div className={styles.search}>
                 <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                     <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
                         <SearchIcon />
                     </IconButton>
                     <InputBase
-                        sx={{ p: '5px' }}
+                        sx={{ p: '5px'}}
                         autoComplete={"true"}
+                        fullWidth={true}
                         placeholder="Zoek op naam"
+                        value={searchEntry}
+                        onChange={handleChangeSearchEntry}
                     />
                 </Box>
             </div>
 
+            <div className={styles.filters}>
+                <FormControl sx={{ m: 1, minWidth: 120 }}>
+                    <InputLabel>Sorteer op</InputLabel>
+                    <Select
+                        IconComponent={() => (
+                            <SortIcon/>
+                        )}
+                        value={sorttype}
+                        onChange={handleChangeSorttype}
+                        label="Sorteer op"
+                    >
+                        {sorttypes.map((option) => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </div>
+
+            <div className={styles.filters}>
+                <FormControl sx={{ m: 1, minWidth: 120 }}>
+                    <InputLabel>Regio</InputLabel>
+                    <Select
+                        value={region}
+                        onChange={handleChangeRegion}
+                        label="Regio"
+                    >
+                        <MenuItem value="">
+                            <em>Alle</em>
+                        </MenuItem>
+                        {regions.map((option) => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </div>
+
+            <Button variant="contained" className={styles.button}>
+                <AddIcon />
+                Gebouw Toevoegen
+
+            </Button>
         </div>
 
+
     );
-}
-
-
-function Filter(){
-
 }
 
 type ListItemProps = {
