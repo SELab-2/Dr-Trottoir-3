@@ -16,6 +16,7 @@ services:
       - DB_PASS=${DB_PASS}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
       - DATABASE=postgres
+      - STATIC_DATA_DIR=/vol/web/
     depends_on:
       - db
   db:
