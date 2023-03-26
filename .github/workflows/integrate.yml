@@ -3,18 +3,8 @@ name: Linting & Testing
 on:
   pull_request:
     branches: [ main, development ]
-  push:
-    branches: [ jorispeeters/fix-ci-linting-and-testing ]
 
 jobs:
-  #  testing:
-  #    runs-on: testing
-  #    steps:
-  #      - uses: actions/checkout@v3
-  #      - name: Frontend
-  #        run: ./test.sh frontend --build
-  #      - name: Backend
-  #        run: ./test.sh backend --build
   backend-linting:
     runs-on: [ self-hosted, ci ]
     env:
