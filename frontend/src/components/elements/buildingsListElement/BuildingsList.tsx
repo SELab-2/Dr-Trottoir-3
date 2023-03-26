@@ -29,7 +29,7 @@ export default function BuildingsList() {
 
             <TopBar></TopBar>
             <div className={styles.under_columns}>
-                <div className={styles.list_bar}>
+                <div className={styles.list_bar} id={styles.scroll_style}>
                     {dummyBuildings.map(x => <ListItem name={x.name} adress={x.adress} locationGroup={x.locationGroup} />)}
                 </div>
             </div>
