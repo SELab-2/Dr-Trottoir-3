@@ -1,4 +1,4 @@
-.topBar {
+#topBar {
     width: 100%;
     height: 10%;
     padding: 1vw;
@@ -8,11 +8,12 @@
     background-color: white;
     color: black;
     overflow: hidden;
+    display: flex;
+    flex-direction: row;
 }
 
 #title {
-    padding-right: 10vh;
-    float: left;
+    padding-right: 5vh;
 }
 
 #title p {
@@ -21,10 +22,25 @@
 }
 
 #search{
-    float: left;
+    margin-right: 5vh;
     background-color: #F3F5F9;
     border-radius: 20px;
     width: 40vh;
+    height: 5vh;
+}
+
+#search Box{
+    width: 40vh;
+}
+
+.filters{
+
+}
+
+.button{
+    height: 5vh;
+    background-color: var(--primary-yellow);
+    color: var(--primary-dark);
 }
 
 .list_bar {
