@@ -11,12 +11,9 @@ import {
     MenuItem,
     Select,
     SelectChangeEvent,
-    Stack
 } from "@mui/material";
 import SortIcon from '@mui/icons-material/Sort';
 import AddIcon from '@mui/icons-material/Add';
-import TextField from '@mui/material/TextField';
-
 
 
 const dummyBuildings = [
@@ -81,13 +78,13 @@ function TopBar(){
     };
 
     return (
-        <div  id={styles.topBar}>
-            <div id={styles.title}>
+        <div  className={styles.topBar}>
+            <div className={styles.title}>
                 <h1>Gebouwen</h1>
                 <p>{dummyBuildings.length} gebouwen gevonden</p>
             </div>
 
-            <div id={styles.search}>
+            <div className={styles.search}>
                 <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                     <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
                         <SearchIcon />
@@ -149,6 +146,7 @@ function TopBar(){
 
             </Button>
         </div>
+
 
     );
 }

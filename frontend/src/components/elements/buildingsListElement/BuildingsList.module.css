@@ -1,6 +1,6 @@
-#topBar {
+.topBar {
     width: 100%;
-    height: 10%;
+    min-height: 10%;
     padding: 1vw;
     border: none;
     border-radius: 10px;
@@ -10,19 +10,20 @@
     overflow: hidden;
     display: flex;
     flex-direction: row;
+    gap: 16px;
+    flex-wrap: wrap;
 }
 
-#title {
+.title {
     padding-right: 5vh;
 }
 
-#title p {
+.title p {
     padding: 10px;
     font-size: 15px;
 }
 
-#search{
-    margin-right: 5vh;
+.search{
     background-color: #F3F5F9;
     border-radius: 20px;
     width: 40vh;
@@ -30,7 +31,6 @@
 }
 
 .filters{
-
 }
 
 .button{
