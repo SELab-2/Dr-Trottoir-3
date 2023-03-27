@@ -64,6 +64,10 @@ REST_FRAMEWORK = {
     )
 }
 
+SIMPLE_JWT = {
+    "TOKEN_OBTAIN_SERIALIZER": "drtrottoir.auth.MyTokenObtainPairSerializer",
+}
+
 ROOT_URLCONF = "drtrottoir.urls"
 
 TEMPLATES = [
@@ -146,8 +150,9 @@ BASE_PATH = os.environ.get("BASE_PATH", "")
 STATIC_URL = BASE_PATH + "static/static/"
 MEDIA_URL = BASE_PATH + "static/media/"
 
-STATIC_ROOT = "/vol/web/static"
-MEDIA_ROOT = "/vol/web/media"
+STATIC_ROOT_BASE = os.environ.get("STATIC_DATA_DIR", "./static_files/")
+STATIC_ROOT = STATIC_ROOT_BASE + "static"
+MEDIA_ROOT = STATIC_ROOT_BASE + "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

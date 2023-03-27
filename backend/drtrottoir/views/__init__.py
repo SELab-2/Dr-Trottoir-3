@@ -11,6 +11,7 @@ from .location_group import LocationGroupViewSet
 from .schedule_assignment_views import ScheduleAssignmentViewSet
 from .schedule_definition import ScheduleDefinitionViewSet
 from .schedule_work_entry_views import ScheduleWorkEntryViewSet
+from .users import UserViewSet
 
 __all__ = [
     "LocationGroupViewSet",
@@ -27,4 +28,5 @@ __all__ = [
     "IssueImageView",
     "IssueImageDetailView",
     "ScheduleDefinitionViewSet",
+    "UserViewSet",
 ]
