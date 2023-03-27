@@ -17,65 +17,59 @@ import SortIcon from '@mui/icons-material/Sort';
 import AddIcon from '@mui/icons-material/Add';
 import {ClickAwayListener} from "@mui/base";
 
-interface Building {
+interface Route {
     id: number
     naam: string,
-    adres: string,
-    regio: string
+    regio: string,
+    distance: string
 }
 
-const dummyBuildings:Building[] = [
-    {id: 7, naam: "Bavo", adres: "Radijsweg 93", regio: "Gent"},
-    {id: 1, naam: "Lander", adres: "Pompoenstraat 6", regio: "Antwerpen"},
-    {id: 2, naam: "Jef", adres: "Paprikalaan 7", regio: "Gent"},
-    {id: 3, naam: "Maxim", adres: "Komkommerlaan 69", regio: "Gent"},
-    {id: 4, naam: "Pim", adres: "Wortelsesteenweg 42", regio: "Antwerpen"},
-    {id: 5, naam: "Joris", adres: "Tomaatstraat 21", regio: "Gent"},
-    {id: 6, naam: "Jahid", adres: "Bonenwegel 69", regio: "Gent"},
-    {id: 0, naam: "building 2", adres: "Courgettelaan 42", regio: "Antwerpen"},
-    {id: 8, naam: "building 3", adres: "Slastraat 21", regio: "Gent"},
-    {id: 9, naam: "building 1", adres: "Spinaziewegel 69", regio: "Gent"},
-    {id: 10, naam: "Upkot SintPieters", adres: "Bloemkoolsesteenweg 42", regio: "Antwerpen"},
-    {id: 11, naam: "Jail", adres: "Ajuinwegel 21", regio: "Gent"},
+const dummyRoutes:Route[] = [
+    {id: 7, naam: "Bavo", regio: "Gent", distance: "10km"},
+    {id: 1, naam: "Lander", regio: "Antwerpen", distance: "17km"},
+    {id: 2, naam: "Jef", regio: "Gent", distance: "8km"},
+    {id: 3, naam: "Maxim", regio: "Gent", distance: "69km"},
+    {id: 4, naam: "Pim", regio: "Antwerpen", distance: "42km"},
+    {id: 5, naam: "Joris", regio: "Gent", distance: "25km"},
+    {id: 6, naam: "Jahid", regio: "Gent", distance: "13km"},
+    {id: 0, naam: "route 2", regio: "Antwerpen", distance: "11km"},
+    {id: 8, naam: "route 3", regio: "Gent", distance: "42km"},
+    {id: 9, naam: "route 1", regio: "Gent", distance: "23km"},
+    {id: 10, naam: "centrum", regio: "Antwerpen", distance: "42km"},
+    {id: 11, naam: "zuid", regio: "Gent", distance: "7km"},
 ]
 
-const dummySindici = [
-    {name: "joe mama"},
-    {name: "gay bowser"},
-    {name: "willie stroker"}
-];
 
-
-export default function BuildingsList() {
+export default function RoutesList() {
     const [current, setCurrent] = useState<number | null>(null);
-    const [sorttype , setSorttype] = React.useState("naam");
-    const [region, setRegion] = React.useState("");
+    const [sorttype , setSorttype] = React.useState("naam")
+    const [region, setRegion] = React.useState("")
 
-    const sortedBuildings = dummyBuildings.sort(function(first, second) {
-        return (first[sorttype as keyof Building] as string).localeCompare(second[sorttype as keyof Building] as string);})
+    const sortedRoutes = dummyRoutes.sort(function(first, second) {
+        return (first[sorttype as keyof Route] as string).localeCompare(second[sorttype as keyof Route] as string);})
     useEffect(() => {
         const element = document.getElementById(styles.scroll_style);
         if(element != null){
-            element.scrollTo({top: 0, behavior: 'smooth'});
+            element.scrollTo({top: 0, behavior: 'smooth'})
         }
-      }, [sorttype,region]);
+    }, [sorttype,region]);
     return (
         <>
             <div className={styles.full_outer}>
 
                 <TopBar sorttype={sorttype} setSorttype={setSorttype} region={region} setRegion={setRegion}></TopBar>
-            <div className={styles.under_columns}>
-                <div className={styles.list_wrapper}>
-                    <div className={styles.list_bar} id={styles.scroll_style}>
-                        {sortedBuildings.map(x => <ListItem
-                            id={x.id} current={current} naam={x.naam} adres={x.adres} regio={x.regio} onClick={setCurrent} />)}
+                <div className={styles.under_columns}>
+                    <div className={styles.list_wrapper}>
+                        <div className={styles.list_bar} id={styles.scroll_style}>
+                            {sortedRoutes.map(x => <ListItem
+                                id={x.id} current={current} naam={x.naam} distance={x.distance} regio={x.regio} onClick={setCurrent} />)}
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div><script type="text/javascript">
-                window.scrollTo(0)
-                document.getElementById(styles.scroll_style).scrollTop=50
-            </script>
+            </div><script type="text/javascript">
+            window.scrollTo(0)
+            document.getElementById(styles.scroll_style).scrollTop=50
+        </script>
         </>
     );
 }
@@ -83,9 +77,9 @@ export default function BuildingsList() {
 
 type TopBarProps = {
     sorttype: string,
-    setSorttype: React.Dispatch<React.SetStateAction<string>>,
+    setSorttype: React.Dispatch<React.SetStateAction<string>>
     region: string,
-    setRegion: React.Dispatch<React.SetStateAction<string>>,
+    setRegion: React.Dispatch<React.SetStateAction<string>>
 }
 
 function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
@@ -95,16 +89,21 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
         'Brussel',
     ];
 
+
+    const dummyTypes = [
+        "actief",
+        "niet actief"
+    ]
+
     const handleChangeRegion = (event: SelectChangeEvent) => {
         setRegion(event.target.value as string);
     };
 
     const sorttypes = [
         "naam",
-        'adres',
-        'regio'
+        'regio',
+        'distance'
     ];
-
 
     const handleChangeSorttype = (event: SelectChangeEvent) => {
         setSorttype(event.target.value as string);
@@ -116,6 +115,11 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
         setSearchEntry(event.target.value as string);
     };
 
+    const [active, setActive] = React.useState("");
+
+    const handleChangeActive = (event: SelectChangeEvent) => {
+        setActive(event.target.value as string);
+    }
 
     const [open, setOpen] = React.useState(false);
 
@@ -140,19 +144,10 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
         setFormName(event.target.value as string);
     };
 
-    const [formAdres, setFormAdres] = React.useState("")
-    const handleChangeFormAdres = (event: SelectChangeEvent) => {
-        setFormAdres(event.target.value as string);
-    };
 
     const [formRegion, setFormRegion] = React.useState("")
     const handleChangeFormRegion = (event: SelectChangeEvent) => {
         setFormRegion(event.target.value as string);
-    };
-
-    const [formSyndic, setFormSyndic] = React.useState("")
-    const handleChangeFormSyndic = (event: SelectChangeEvent) => {
-        setFormSyndic(event.target.value as string);
     };
 
     const Form = ()=>{
@@ -164,7 +159,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
             <ClickAwayListener onClickAway={handleClose}>
                 <div className={styles.formCenter}>
                     <div className={styles.form}>
-                        <h2 style={{color:"black"}}>Gebouw Toevoegen</h2>
+                        <h2 style={{color:"black"}}>Route Toevoegen</h2>
                         <div className={styles.formFields}>
                             <div className={styles.field}>
                                 <TextField
@@ -190,33 +185,6 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                     ))}
                                 </Select>
                             </FormControl>
-                            <div className={styles.field}>
-                                <TextField
-                                    required
-                                    label="adres"
-                                    value={formAdres}
-                                    onChange={handleChangeFormAdres}
-                                />
-                            </div>
-                            <FormControl sx={{minWidth: 200 }}>
-                                <InputLabel>syndicus</InputLabel>
-                                <Select
-                                    value={formSyndic}
-                                    onChange={handleChangeFormSyndic}
-                                    label="syndicus"
-                                    defaultValue=""
-                                    MenuProps={{ disablePortal: true }}
-                                >
-                                    <MenuItem value="">
-                                        <em>geen</em>
-                                    </MenuItem>
-                                    {dummySindici.map((option) => (
-                                        <MenuItem id="menuitem" key={option.name} value={option.name}>
-                                            {option.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
                         </div>
                         <div className={styles.formButtons}>
                             <Button variant="contained" className={styles.button} onClick={handleClose}>
@@ -235,8 +203,8 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
     return (
         <div  className={styles.topBar}>
             <div className={styles.title}>
-                <h1>Gebouwen</h1>
-                <p>{dummyBuildings.length} gevonden resultaten</p>
+                <h1>Routes</h1>
+                <p>{dummyRoutes.length} gevonden resultaten</p>
             </div>
 
             <div className={styles.search}>
@@ -295,11 +263,29 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                             </Select>
                         </FormControl>
                     </div>
-
+                    <div className={styles.filters}>
+                        <FormControl sx={{ m: 1, minWidth: 120 }}>
+                            <InputLabel>type</InputLabel>
+                            <Select
+                                value={active}
+                                onChange={handleChangeActive}
+                                label="Type"
+                            >
+                                <MenuItem value="">
+                                    <em>Alle</em>
+                                </MenuItem>
+                                {dummyTypes.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </div>
                 </div>
                 <Button variant="contained" className={styles.button} onMouseUp={handleToggle}>
                     <AddIcon />
-                    Gebouw Toevoegen
+                    Route toevoegen
                 </Button>
                 <Backdrop
                     sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -320,12 +306,12 @@ type ListItemProps = {
     id: number,
     current: number | null,
     naam: string,
-    adres: string,
+    distance: string,
     regio: string
     onClick: React.Dispatch<React.SetStateAction<number|null>>
 }
 
-const ListItem = ({id, current, naam, adres, regio, onClick}: ListItemProps) => {
+const ListItem = ({id, current, naam, distance, regio, onClick}: ListItemProps) => {
     const isCurrent = id == current
     return (
         <div className={styles.button_wrapper}>
@@ -336,10 +322,10 @@ const ListItem = ({id, current, naam, adres, regio, onClick}: ListItemProps) => 
                     {naam}
                 </div>
                 <div className={styles.small_item_text}>
-                    {adres}
+                    {regio}
                 </div>
                 <div className={styles.small_item_text}>
-                    {regio}
+                    {distance}
                 </div>
             </Button>
         </div>
