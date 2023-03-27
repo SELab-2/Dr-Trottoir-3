@@ -65,7 +65,9 @@ router.register(
 )
 
 
-router.register(r"schedule_assignments", ScheduleAssignmentViewSet)
+router.register(
+    r"schedule_assignments", ScheduleAssignmentViewSet, basename="schedule-assignments"
+)
 router.register(
     r"schedule_work_entries", ScheduleWorkEntryViewSet, basename="schedule-work-entries"
 )
@@ -92,11 +94,11 @@ urlpatterns = [
     ),
     # Schedule assignments uses ViewSet, but this particular url has
     # two ids, so it's easier to do it like this
-    path(
-        settings.BASE_PATH
-        + "schedule_assignments/date/<str:assigned_date>/user/<int:user_id>/",
-        ScheduleAssignmentViewSet.retrieve_list_by_date_and_user,
-    ),
+    # path(
+    #     settings.BASE_PATH
+    #     + "schedule_assignments/date/<str:assigned_date>/user/<int:user_id>/",
+    #     ScheduleAssignmentViewSet.retrieve_list_by_date_and_user,
+    # ),
     # path(
     #     settings.BASE_PATH + "schedule_work_entries/users/<int:user_id>/",
     #     ScheduleWorkEntryViewSet.retrieve_by_user_id,

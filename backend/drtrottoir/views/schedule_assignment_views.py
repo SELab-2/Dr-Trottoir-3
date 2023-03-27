@@ -1,92 +1,20 @@
 from typing import Any, List
 
-import rest_framework
-from rest_framework import mixins, permissions, status, viewsets
-from rest_framework.decorators import api_view
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from drtrottoir.models import ScheduleAssignment
 from drtrottoir.permissions import (
+    IsStudent,
     IsSuperstudentOrAdmin,
-    user_is_student,
     user_is_superstudent_or_admin,
 )
 from drtrottoir.serializers import ScheduleAssignmentSerializer
 
 
-class ScheduleAssignmentPermission(permissions.BasePermission):
-    """Custom permissions class for the GET method ScheduleAssignmentViewSet class. The
-    GET item in ScheduleAssignment also allows students to access the entry, as long
-    as that user is the same as the ScheduleAssignment's user field.
-
-    To summarize, a user is allowed to GET an entry in ScheduleAssignment if:
-        - They are an admin or a super student
-        - They are a user and request.user.id == schedule_assignment.user.id
-    """
-
-    def has_permission(self, request: Request, view: APIView) -> bool:
-        if request.method == "GET":
-            # Super students and admins are allowed
-            if user_is_superstudent_or_admin(request.user):
-                return True
-            # The user must be a student
-            if not user_is_student(request.user):
-                return False
-
-            # If no ID is given, we are requesting the list. In this case, refuse access
-            if "pk" not in view.kwargs.keys():
-                return False
-
-            schedule_assignment_id = int(view.kwargs["pk"])
-            try:
-                schedule_assignment = ScheduleAssignment.objects.get(
-                    pk=schedule_assignment_id
-                )
-            except ScheduleAssignment.DoesNotExist:
-                return False
-            return schedule_assignment.user.id == request.user.id
-        return False
-
-
-class ScheduleAssignmentByDateAndUserPermission(permissions.BasePermission):
-    """
-    Custom permissions class for the ScheduleAssignmentViewSet
-    retrieve_list_by_date_and_user method in the
-    `/schedule_assignments/date/<date>/users/<user_id>/` url.
-
-    A user is granted permission if:
-        - They are an admin or a super student
-        - They are a student and their user ID matches the ID
-          in the url: request.user.id == user_id
-
-    Note: even though GET is the only allowed method, we don't need to
-    check for that. If for example the user tries to do a DELETE method,
-    they'll get a 403 error if they don't have the permission or a 405
-    error if they do, because of the `@api_view(["GET"])` decorator at
-    retrieve_list_by_date_and_user.
-    """
-
-    def has_permission(self, request: Request, view: APIView) -> bool:
-        # Super students or admins are allowed
-        if user_is_superstudent_or_admin(request.user):
-            return True
-        # Otherwise the user must be a student
-        if not user_is_student(request.user):
-            return False
-        # and their user_id must match the request user's id
-        user_id = view.kwargs["user_id"]
-        return request.user.id == user_id
-
-
-class ScheduleAssignmentViewSet(
-    mixins.CreateModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet,
-):
+class ScheduleAssignmentViewSet(viewsets.ModelViewSet):
     """
     Viewset for schedule assignments.
 
@@ -127,16 +55,32 @@ class ScheduleAssignmentViewSet(
 
     """  # noqa
 
-    queryset = ScheduleAssignment.objects.all()
     serializer_class = ScheduleAssignmentSerializer
 
     filterset_fields = ["assigned_date", "user"]
     search_fields: List[str] = []
 
-    permission_classes = [
-        permissions.IsAuthenticated,
-        (ScheduleAssignmentPermission | IsSuperstudentOrAdmin),
-    ]
+    permission_classes = [IsAuthenticated, IsSuperstudentOrAdmin]
+    permission_classes_by_action = {
+        "retrieve": [IsAuthenticated, IsStudent | IsSuperstudentOrAdmin],
+        "list": [IsAuthenticated, IsStudent | IsSuperstudentOrAdmin],
+    }
+
+    def get_permissions(self):
+        if self.action not in self.permission_classes_by_action:
+            return [perm() for perm in self.permission_classes]
+
+        return [perm() for perm in self.permission_classes_by_action[self.action]]
+
+    def get_queryset(self):
+        """
+        Admins and superstudents can access all schedule assignments, while
+        regular users can only see their own.
+        """
+        if user_is_superstudent_or_admin(self.request.user):
+            return ScheduleAssignment.objects.all()
+
+        return ScheduleAssignment.objects.filter(user=self.request.user.id)
 
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """The POST method for the Schedule Assignment API. The assigned_date and
@@ -158,33 +102,33 @@ class ScheduleAssignmentViewSet(
             request.data.pop(field, False)
         return super().update(request, *args, **kwargs)
 
-    @staticmethod
-    @api_view(["GET"])
-    @rest_framework.decorators.permission_classes(
-        [permissions.IsAuthenticated, ScheduleAssignmentByDateAndUserPermission]
-    )
-    def retrieve_list_by_date_and_user(
-        request: Request, assigned_date: str, user_id: int
-    ) -> Response:
-        """Custom GET method to allow for the
-        `/schedule_assignments/date/<date>/users/<user_id>/` url.
+    # @staticmethod
+    # @api_view(["GET"])
+    # @rest_framework.decorators.permission_classes(
+    #     [permissions.IsAuthenticated, ScheduleAssignmentByDateAndUserPermission]
+    # )
+    # def retrieve_list_by_date_and_user(
+    #     request: Request, assigned_date: str, user_id: int
+    # ) -> Response:
+    #     """Custom GET method to allow for the
+    #     `/schedule_assignments/date/<date>/users/<user_id>/` url.
 
-        Args:
-            request (Request): A rest_framework Request containing the necessary
-                fields.
-            assigned_date (str): The date in string format we're asking for, in
-                YYYY-MM-DD format.
-            user_id (int): The int id of the user we're requesting the data for.
+    #     Args:
+    #         request (Request): A rest_framework Request containing the necessary
+    #             fields.
+    #         assigned_date (str): The date in string format we're asking for, in
+    #             YYYY-MM-DD format.
+    #         user_id (int): The int id of the user we're requesting the data for.
 
-        Returns:
-            Response: A list containing all the schedule assignments matching the
-            user and date.
+    #     Returns:
+    #         Response: A list containing all the schedule assignments matching the
+    #         user and date.
 
-        """
-        schedule_assignments = self.paginate_queryset(
-            ScheduleAssignment.objects.filter(
-                assigned_date=assigned_date, user_id=user_id
-            )
-        )
-        serializer = ScheduleAssignmentSerializer(schedule_assignments, many=True)
-        return self.get_paginated_response(serializer.data, status=status.HTTP_200_OK)
+    #     """
+    #     schedule_assignments = self.paginate_queryset(
+    #         ScheduleAssignment.objects.filter(
+    #             assigned_date=assigned_date, user_id=user_id
+    #         )
+    #     )
+    #     serializer = ScheduleAssignmentSerializer(schedule_assignments, many=True)
+    #     return self.get_paginated_response(serializer.data, status=status.HTTP_200_OK)

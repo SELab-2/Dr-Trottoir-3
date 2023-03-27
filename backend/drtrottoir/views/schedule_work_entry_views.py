@@ -1,12 +1,11 @@
 from typing import Any, List
 
 from django.contrib.auth.models import AnonymousUser
-from rest_framework import mixins, permissions, status, viewsets
+from rest_framework import mixins, status, viewsets
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from drtrottoir.models import (
     ScheduleAssignment,
@@ -16,7 +15,6 @@ from drtrottoir.models import (
 from drtrottoir.permissions import (
     IsStudent,
     IsSuperstudentOrAdmin,
-    user_is_student,
     user_is_superstudent_or_admin,
 )
 from drtrottoir.serializers import ScheduleWorkEntrySerializer
