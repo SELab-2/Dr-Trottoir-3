@@ -147,7 +147,7 @@ display: flex;
     display: flex;
     width: 100%;
     justify-content: end;
-    align-items: end;
+    align-items: center;
 }
 
 .listItemLeftSide{
