@@ -225,6 +225,6 @@ class ScheduleWorkEntryViewSet(
             requested, or a 404 message if the permission class doesn't allow it.
 
         """
-        work_entries = ScheduleWorkEntry.objects.filter(creator=user_id)
+        work_entries = self.paginate_queryset(ScheduleWorkEntry.objects.filter(creator=user_id))
         serializer = ScheduleWorkEntrySerializer(work_entries, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return self.get_paginated_response(serializer.data, status=status.HTTP_200_OK)

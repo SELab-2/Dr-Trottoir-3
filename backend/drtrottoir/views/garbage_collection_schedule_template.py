@@ -120,19 +120,19 @@ class GarbageCollectionScheduleTemplateViewSet(
     @action(detail=True)
     def entries(self, request, pk=None):
         template = self.get_object()
-        entries = template.entries.all()
+        entries = self.paginate_queryset(template.entries.all())
         serializer = GarbageCollectionScheduleTemplateEntrySerializer(
             entries, many=True
         )
 
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
 
     @action(detail=True, methods=["GET"], url_path=r"days/(?P<day>[0-9]+)/entries")
     def days(self, request, day, pk=None):
         template = self.get_object()
-        entries = template.entries.filter(day=day)
+        entries = self.paginate_queryset(template.entries.filter(day=day))
         serializer = GarbageCollectionScheduleTemplateEntrySerializer(
             entries, many=True
         )
 
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)

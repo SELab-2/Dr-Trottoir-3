@@ -54,9 +54,9 @@ class IssuesListApiView(APIView):
             request, None
         ) or not IsSuperStudent().has_permission(request, None):
             return Response(status=status.HTTP_403_FORBIDDEN)
-        issues = Issue.objects
+        issues = self.paginate_queryset(Issue.objects)
         serializer = IssueSerializer(issues, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return self.get_paginated_response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         if not IsAuthenticated().has_permission(
@@ -187,6 +187,6 @@ class IssueNotApprovedApiView(APIView):
             request, None
         ) or not IsSuperStudent().has_permission(request, None):
             return Response(status=status.HTTP_403_FORBIDDEN)
-        issues = Issue.objects.filter(approval_user=None)
+        issues = self.paginate_queryset(Issue.objects.filter(approval_user=None))
         serializer = IssueSerializer(issues, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return self.get_paginated_response(serializer.data, status=status.HTTP_200_OK)

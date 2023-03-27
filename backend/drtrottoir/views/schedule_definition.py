@@ -87,25 +87,27 @@ class ScheduleDefinitionViewSet(
     @action(detail=True)
     def buildings(self, request, pk=None):
         schedule_definition = self.get_object()
-        serializer = BuildingSerializer(schedule_definition.buildings, many=True)
+        buildings = self.paginate_queryset(schedule_definition.buildings)
+        serializer = BuildingSerializer(buildings, many=True)
 
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
 
     @action(detail=True)
     def schedule_assignments(self, request, pk=None):
         schedule_definition = self.get_object()
+        assignments = self.paginate_queryset(schedule_definition.assignments)
         serializer = ScheduleAssignmentSerializer(
-            schedule_definition.assignments, many=True
+            assignments, many=True
         )
 
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
 
     @action(detail=True)
     def schedule_work_entries(self, request, pk=None):
         schedule_definition = self.get_object()
-        schedule_work_entries = ScheduleWorkEntry.objects.filter(
+        schedule_work_entries = self.paginate_queryset(ScheduleWorkEntry.objects.filter(
             schedule_assignment__schedule_definition=schedule_definition
-        )
+        ))
         serializer = ScheduleWorkEntrySerializer(schedule_work_entries, many=True)
 
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
