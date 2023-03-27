@@ -80,10 +80,6 @@ export default function BuildingsList() {
                 </div>
 
             </div>
-            <script type="text/javascript">
-                window.scrollTo(0)
-                document.getElementById(styles.scroll_style).scrollTop=50
-            </script>
         </>
     );
 }
