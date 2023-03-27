@@ -3,6 +3,7 @@ import styles from "@/components/elements/buildingsListElement/BuildingsList.mod
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import {
+    Backdrop,
     Button,
     FormControl,
     IconButton,
@@ -14,7 +15,14 @@ import {
 } from "@mui/material";
 import SortIcon from '@mui/icons-material/Sort';
 import AddIcon from '@mui/icons-material/Add';
+import {ClickAwayListener} from "@mui/base";
 
+interface Building {
+    id: number
+    naam: string,
+    adres: string,
+    regio: string
+}
 
 const dummyBuildings:Building[] = [
     {id: 7, naam: "Bavo", adres: "Radijsweg 93", regio: "Gent"},
@@ -68,7 +76,6 @@ export default function BuildingsList() {
     );
 }
 
-function TopBar(){
 
 type TopBarProps = {
     sorttype: string,
