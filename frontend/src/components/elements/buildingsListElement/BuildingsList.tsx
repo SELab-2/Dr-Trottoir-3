@@ -62,7 +62,7 @@ export default function BuildingsList() {
     useEffect(() => {
         const element = document.getElementById(styles.scroll_style);
         if(element != null){
-            element.scrollTop=0
+            element.scrollTo({top: 0, behavior: 'smooth'})
         }
       }, [sorttype,region]);
     return (
