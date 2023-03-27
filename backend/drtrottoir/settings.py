@@ -159,5 +159,5 @@ MEDIA_ROOT = STATIC_ROOT_BASE + "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-DJANGO_ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+DJANGO_ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
