@@ -66,7 +66,9 @@ router.register(
 
 
 router.register(r"schedule_assignments", ScheduleAssignmentViewSet)
-router.register(r"schedule_work_entries", ScheduleWorkEntryViewSet)
+router.register(
+    r"schedule_work_entries", ScheduleWorkEntryViewSet, basename="schedule-work-entries"
+)
 router.register(r"schedule_definitions", ScheduleDefinitionViewSet)
 router.register(r"users", UserViewSet)
 
@@ -95,10 +97,10 @@ urlpatterns = [
         + "schedule_assignments/date/<str:assigned_date>/user/<int:user_id>/",
         ScheduleAssignmentViewSet.retrieve_list_by_date_and_user,
     ),
-    path(
-        settings.BASE_PATH + "schedule_work_entries/users/<int:user_id>/",
-        ScheduleWorkEntryViewSet.retrieve_by_user_id,
-    ),
+    # path(
+    #     settings.BASE_PATH + "schedule_work_entries/users/<int:user_id>/",
+    #     ScheduleWorkEntryViewSet.retrieve_by_user_id,
+    # ),
     path(
         settings.BASE_PATH + "api-auth/",
         include("rest_framework.urls", namespace="rest_framework"),

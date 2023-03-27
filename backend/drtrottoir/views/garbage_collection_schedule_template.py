@@ -2,7 +2,6 @@ from typing import List
 
 from rest_framework import mixins, permissions, viewsets
 from rest_framework.decorators import action
-from rest_framework.response import Response
 
 from drtrottoir.models import (
     GarbageCollectionScheduleTemplate,
