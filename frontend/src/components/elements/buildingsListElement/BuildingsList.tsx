@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import styles from "@/components/elements/buildingsListElement/BuildingsList.module.css";
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
@@ -41,40 +41,53 @@ const dummyBuildings:Building[] = [
 export default function BuildingsList() {
     const [current, setCurrent] = useState<number | null>(null);
     const [sorttype , setSorttype] = React.useState("naam")
+    const [region, setRegion] = React.useState("")
 
     const sortedBuildings = dummyBuildings.sort(function(first, second) {
         return (first[sorttype as keyof Building] as string).localeCompare(second[sorttype as keyof Building] as string);})
-
+    useEffect(() => {
+        const element = document.getElementById(styles.scroll_style);
+        if(element != null){
+            element.scrollTop=0
+        }
+      }, [sorttype,region]);
     return (
-        <div className={styles.full_outer}>
+        <>
+            <div className={styles.full_outer}>
 
-            <TopBar sorttype={sorttype} setSorttype={setSorttype}></TopBar>
-            <div className={styles.under_columns}>
-                <div className={styles.list_wrapper}>
-                    <div className={styles.list_bar} id={styles.scroll_style}>
-                        {sortedBuildings.map(x => <ListItem
-                            id={x.id} current={current} naam={x.naam} adres={x.adres} regio={x.regio} onClick={setCurrent} />)}
+                <TopBar sorttype={sorttype} setSorttype={setSorttype} region={region} setRegion={setRegion}></TopBar>
+                <div className={styles.under_columns}>
+                    <div className={styles.list_wrapper}>
+                        <div className={styles.list_bar} id={styles.scroll_style}>
+                            {sortedBuildings.map(x => <ListItem
+                                id={x.id} current={current} naam={x.naam} adres={x.adres} regio={x.regio} onClick={setCurrent} />)}
+                        </div>
                     </div>
                 </div>
-            </div>
 
-        </div>
+            </div>
+            <script type="text/javascript">
+                window.scrollTo(0)
+                document.getElementById(styles.scroll_style).scrollTop=50
+            </script>
+        </>
     );
 }
 
 type TopBarProps = {
     sorttype: string,
     setSorttype: React.Dispatch<React.SetStateAction<string>>
+    region: string,
+    setRegion: React.Dispatch<React.SetStateAction<string>>
 }
 
-function TopBar({sorttype, setSorttype}:TopBarProps){
+function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
     const regions = [
         'Gent',
         'Antwerpen',
         'Brussel',
     ];
 
-    const [region, setRegion] = React.useState("")
     const handleChangeRegion = (event: SelectChangeEvent) => {
         setRegion(event.target.value as string);
     };
