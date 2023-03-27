@@ -181,8 +181,10 @@ class ScheduleAssignmentViewSet(
             user and date.
 
         """
-        schedule_assignments = self.paginate_queryset(ScheduleAssignment.objects.filter(
-            assigned_date=assigned_date, user_id=user_id
-        ))
+        schedule_assignments = self.paginate_queryset(
+            ScheduleAssignment.objects.filter(
+                assigned_date=assigned_date, user_id=user_id
+            )
+        )
         serializer = ScheduleAssignmentSerializer(schedule_assignments, many=True)
         return self.get_paginated_response(serializer.data, status=status.HTTP_200_OK)

@@ -1,7 +1,7 @@
 from rest_framework import status
+from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from drtrottoir.models import Issue
 from drtrottoir.permissions import (
@@ -32,7 +32,7 @@ from drtrottoir.serializers import IssueSerializer
 #     serializer_class = IssueSerializer
 
 
-class IssuesListApiView(APIView):
+class IssuesListApiView(GenericAPIView):
     """The list endpoint for the issue object.
 
     Endpoints:
@@ -54,9 +54,9 @@ class IssuesListApiView(APIView):
             request, None
         ) or not IsSuperStudent().has_permission(request, None):
             return Response(status=status.HTTP_403_FORBIDDEN)
-        issues = self.paginate_queryset(Issue.objects)
+        issues = self.paginate_queryset(Issue.objects.all())
         serializer = IssueSerializer(issues, many=True)
-        return self.get_paginated_response(serializer.data, status=status.HTTP_200_OK)
+        return self.get_paginated_response(serializer.data)
 
     def post(self, request, *args, **kwargs):
         if not IsAuthenticated().has_permission(
@@ -78,7 +78,7 @@ class IssuesListApiView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class IssueDetailApiView(APIView):
+class IssueDetailApiView(GenericAPIView):
     """The detail endpoint for the issue object.
 
     Endpoints:
@@ -170,7 +170,7 @@ class IssueDetailApiView(APIView):
             )
 
 
-class IssueNotApprovedApiView(APIView):
+class IssueNotApprovedApiView(GenericAPIView):
     """The list endpoint for the issue object with approval_user equal to None.
 
     Endpoints:
@@ -189,4 +189,4 @@ class IssueNotApprovedApiView(APIView):
             return Response(status=status.HTTP_403_FORBIDDEN)
         issues = self.paginate_queryset(Issue.objects.filter(approval_user=None))
         serializer = IssueSerializer(issues, many=True)
-        return self.get_paginated_response(serializer.data, status=status.HTTP_200_OK)
+        return self.get_paginated_response(serializer.data)
