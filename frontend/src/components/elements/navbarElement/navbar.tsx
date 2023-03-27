@@ -45,23 +45,29 @@ export default function NavBar(props: any) {
 
     return (
         <>
-            <div className={styles.full} style={hideNavBar ? {display: 'none'}: {display: 'initial'}}>
+            <div className={styles.full} style={hideNavBar ? {display: 'none'}: {display: 'flex'}}>
                 <div className={styles.row_flex_container}>
-                    <div className={styles.left_flex_container} style={{backgroundColor: 'green'}}>
+                    <div className={styles.left_flex_container}>
                         <div className={styles.side_bar_top}></div>
-                        <div className={styles.side_bar_mid}>
-                            { topButtons.map((term, index) =>
-                                <NavButton key={term.id} router={router} nextPath={nextPath} setNextPath={setNextPath}
-                                    href={term.href} text={term.text} icon={term.icon} />
-                            )}
-                        </div>
-                        <div className={styles.side_bar_bot}>
-                            <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath} href={'/users'}
-                                text={'Account'} icon={<PersonRoundedIcon className={styles.icon}/>}/>
-                            <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath} href={'/settings'}
-                                text={'Instellingen'} icon={<TuneRoundedIcon className={styles.icon}/>}/>
-                            <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath} href={'/login'}
-                                text={'Logout'} icon={<LogoutRoundedIcon className={styles.icon}/>}/>
+                        <div className={styles.scrollable}>
+                            <div className={styles.side_bar_mid}>
+                                { topButtons.map((term, index) =>
+                                    <NavButton key={term.id} router={router} nextPath={nextPath}
+                                        setNextPath={setNextPath} href={term.href} text={term.text}
+                                        icon={term.icon} />
+                                )}
+                            </div>
+                            <div className={styles.side_bar_bot}>
+                                <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
+                                    href={'/users'}
+                                    text={'Account'} icon={<PersonRoundedIcon className={styles.icon}/>}/>
+                                <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
+                                    href={'/settings'} text={'Instellingen'}
+                                    icon={<TuneRoundedIcon className={styles.icon}/>}/>
+                                <NavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
+                                    href={'/login'} text={'Logout'}
+                                    icon={<LogoutRoundedIcon className={styles.icon}/>}/>
+                            </div>
                         </div>
                     </div>
                     <div className={styles.right_flex_container} style={{backgroundColor: 'red'}}>
