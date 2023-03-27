@@ -3,6 +3,7 @@ import styles from "@/components/elements/buildingsListElement/BuildingsList.mod
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import {
+    Backdrop,
     Button,
     FormControl,
     IconButton,
@@ -10,10 +11,11 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    SelectChangeEvent,
+    SelectChangeEvent, TextField,
 } from "@mui/material";
 import SortIcon from '@mui/icons-material/Sort';
 import AddIcon from '@mui/icons-material/Add';
+import {ClickAwayListener} from "@mui/base";
 
 interface Building {
     id: number
@@ -36,6 +38,18 @@ const dummyBuildings:Building[] = [
     {id: 10, naam: "Upkot SintPieters", adres: "Bloemkoolsesteenweg 42", regio: "Antwerpen"},
     {id: 11, naam: "Jail", adres: "Ajuinwegel 21", regio: "Gent"},
 ]
+
+const dummySindici = [
+    {name: "joe mama"},
+    {name: "gay bowser"},
+    {name: "willie stroker"}
+]
+
+const dummyRegions = [
+    'Gent',
+    'Antwerpen',
+    'Brussel',
+];
 
 
 export default function BuildingsList() {
@@ -74,6 +88,7 @@ export default function BuildingsList() {
     );
 }
 
+
 type TopBarProps = {
     sorttype: string,
     setSorttype: React.Dispatch<React.SetStateAction<string>>
@@ -108,6 +123,118 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
     const handleChangeSearchEntry = (event: SelectChangeEvent) => {
         setSearchEntry(event.target.value as string);
     };
+
+    const [open, setOpen] = React.useState(false);
+
+    const [canClose, setCanClose] = React.useState(true);
+    const handleClose = () => {
+        if (canClose){
+            setOpen(false);
+        }
+
+    };
+    const handleToggle = () => {
+        setCanClose(false);
+        setOpen(!open);
+    };
+
+    const handleSubmitForm = () =>{
+
+    }
+
+    const [formName, setFormName] = React.useState("")
+    const handleChangeFormName = (event: SelectChangeEvent) => {
+        setFormName(event.target.value as string);
+    };
+
+    const [formAdres, setFormAdres] = React.useState("")
+    const handleChangeFormAdres = (event: SelectChangeEvent) => {
+        setFormAdres(event.target.value as string);
+    };
+
+    const [formRegion, setFormRegion] = React.useState("")
+    const handleChangeFormRegion = (event: SelectChangeEvent) => {
+        setFormRegion(event.target.value as string);
+    };
+
+    const [formSyndic, setFormSyndic] = React.useState("")
+    const handleChangeFormSyndic = (event: SelectChangeEvent) => {
+        setFormSyndic(event.target.value as string);
+    };
+
+    const Form = ()=>{
+
+        React.useEffect(() =>{
+            setCanClose(true)
+        });
+        return(
+            <ClickAwayListener onClickAway={handleClose}>
+                <div className={styles.formCenter}>
+                    <div className={styles.form}>
+                        <h2 style={{color:"black"}}>Gebouw Toevoegen</h2>
+                        <div className={styles.formFields}>
+                            <div className={styles.field}>
+                                <TextField
+                                    required
+                                    label="naam"
+                                    value={formName}
+                                    onChange={handleChangeFormName}
+                                />
+                            </div>
+                            <FormControl sx={{minWidth: 150 }}>
+                                <InputLabel>regio</InputLabel>
+                                <Select
+                                    value={formRegion}
+                                    onChange={handleChangeFormRegion}
+                                    label="regio"
+                                    defaultValue=""
+                                    MenuProps={{ disablePortal: true }}
+                                >
+                                    {dummyRegions.map((option) => (
+                                        <MenuItem id="menuitem" key={option} value={option}>
+                                            {option}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            <div className={styles.field}>
+                                <TextField
+                                    required
+                                    label="adres"
+                                    value={formAdres}
+                                    onChange={handleChangeFormAdres}
+                                />
+                            </div>
+                            <FormControl sx={{minWidth: 200 }}>
+                                <InputLabel>syndicus</InputLabel>
+                                <Select
+                                    value={formSyndic}
+                                    onChange={handleChangeFormSyndic}
+                                    label="syndicus"
+                                    defaultValue=""
+                                    MenuProps={{ disablePortal: true }}
+                                >
+                                    {dummySindici.map((option) => (
+                                        <MenuItem id="menuitem" key={option.name} value={option.name}>
+                                            {option.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </div>
+                        <div className={styles.formButtons}>
+                            <Button variant="contained" className={styles.button} onClick={handleClose}>
+                                Cancel
+                            </Button>
+                            <Button variant="contained" className={styles.button} onClick={handleSubmitForm}>
+                                Submit
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </ClickAwayListener>
+        )
+    }
 
     return (
         <div  className={styles.topBar}>
@@ -154,7 +281,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
 
             <div className={styles.filters}>
                 <FormControl sx={{ m: 1, minWidth: 120 }}>
-                    <InputLabel>Regio</InputLabel>
+                    <InputLabel>regio</InputLabel>
                     <Select
                         value={region}
                         onChange={handleChangeRegion}
@@ -163,7 +290,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                         <MenuItem value="">
                             <em>Alle</em>
                         </MenuItem>
-                        {regions.map((option) => (
+                        {dummyRegions.map((option) => (
                             <MenuItem key={option} value={option}>
                                 {option}
                             </MenuItem>
@@ -172,16 +299,24 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                 </FormControl>
             </div>
 
-            <Button variant="contained" className={styles.button}>
+            <Button variant="contained" className={styles.button} onMouseUp={handleToggle}>
                 <AddIcon />
                 Gebouw Toevoegen
-
             </Button>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={open}
+                invisible={false}
+            >
+                {/*<Form></Form>*/}
+                {Form()}
+            </Backdrop>
         </div>
 
 
     );
 }
+
 
 type ListItemProps = {
     id: number,
