@@ -11,7 +11,30 @@
     flex-direction: row;
     gap: 16px;
     flex-wrap: wrap;
+    align-items: center;
+
 }
+
+
+.generic_wrapper {
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border: none;
+    padding-bottom: 1vh;
+    padding-top: 1vh;
+    justify-content: space-around;
+}
+
+.filter_wrapper {
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border: none;
+}
+
 
 .title {
     padding-right: 5vh;
@@ -25,8 +48,6 @@
 .search{
     background-color: #F3F5F9;
     border-radius: 20px;
-    width: 40vh;
-    height: 5vh;
 }
 
 .filters{

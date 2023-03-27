@@ -258,59 +258,61 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                     />
                 </Box>
             </div>
+            <div className={styles.generic_wrapper}>
+                <div className={styles.filter_wrapper}>
+                    <div className={styles.filters}>
+                        <FormControl sx={{ m: 1, minWidth: 120 }}>
+                            <InputLabel>Sorteer op</InputLabel>
+                            <Select
+                                IconComponent={() => (
+                                    <SortIcon/>
+                                )}
+                                value={sorttype}
+                                onChange={handleChangeSorttype}
+                                label="Sorteer op"
+                            >
+                                {sorttypes.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </div>
 
-            <div className={styles.filters}>
-                <FormControl sx={{ m: 1, minWidth: 120 }}>
-                    <InputLabel>Sorteer op</InputLabel>
-                    <Select
-                        IconComponent={() => (
-                            <SortIcon/>
-                        )}
-                        value={sorttype}
-                        onChange={handleChangeSorttype}
-                        label="Sorteer op"
-                    >
-                        {sorttypes.map((option) => (
-                            <MenuItem key={option} value={option}>
-                                {option}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
+                    <div className={styles.filters}>
+                        <FormControl sx={{ m: 1, minWidth: 120 }}>
+                            <InputLabel>regio</InputLabel>
+                            <Select
+                                value={region}
+                                onChange={handleChangeRegion}
+                                label="Regio"
+                            >
+                                <MenuItem value="">
+                                    <em>Alle</em>
+                                </MenuItem>
+                                {dummyRegions.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+                </div>
+                <Button variant="contained" className={styles.button} onMouseUp={handleToggle}>
+                    <AddIcon />
+                    Gebouw Toevoegen
+                </Button>
+                <Backdrop
+                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={open}
+                    invisible={false}
+                >
+                    {/*<Form></Form>*/}
+                    {Form()}
+                </Backdrop>
             </div>
-
-            <div className={styles.filters}>
-                <FormControl sx={{ m: 1, minWidth: 120 }}>
-                    <InputLabel>regio</InputLabel>
-                    <Select
-                        value={region}
-                        onChange={handleChangeRegion}
-                        label="Regio"
-                    >
-                        <MenuItem value="">
-                            <em>Alle</em>
-                        </MenuItem>
-                        {dummyRegions.map((option) => (
-                            <MenuItem key={option} value={option}>
-                                {option}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-            </div>
-
-            <Button variant="contained" className={styles.button} onMouseUp={handleToggle}>
-                <AddIcon />
-                Gebouw Toevoegen
-            </Button>
-            <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={open}
-                invisible={false}
-            >
-                {/*<Form></Form>*/}
-                {Form()}
-            </Backdrop>
         </div>
 
 
