@@ -14,22 +14,21 @@ import {
 } from "@mui/material";
 import SortIcon from '@mui/icons-material/Sort';
 import AddIcon from '@mui/icons-material/Add';
-import Backdrop from '@mui/material/Backdrop';
-import {ClickAwayListener} from "@mui/base";
 
-const dummyBuildings = [
-    {name: "Upkot SintPieters", adress: "Uilkenslaan 93, Gent", locationGroup: "Gent"},
-    {name: "building 2", adress: "building 2 street 42", locationGroup: "Antwerpen"},
-    {name: "building 3", adress: "building 3 lane 21", locationGroup: "Gent"},
-    {name: "building 1", adress: "building 1 street 69", locationGroup: "Gent"},
-    {name: "building 2", adress: "building 2 street 42", locationGroup: "Antwerpen"},
-    {name: "building 3", adress: "building 3 lane 21", locationGroup: "Gent"},
-    {name: "building 1", adress: "building 1 street 69", locationGroup: "Gent"},
-    {name: "building 2", adress: "building 2 street 42", locationGroup: "Antwerpen"},
-    {name: "building 3", adress: "building 3 lane 21", locationGroup: "Gent"},
-    {name: "building 1", adress: "building 1 street 69", locationGroup: "Gent"},
-    {name: "building 2", adress: "building 2 street 42", locationGroup: "Antwerpen"},
-    {name: "building 3", adress: "building 3 lane 21", locationGroup: "Gent"},
+
+const dummyBuildings:Building[] = [
+    {id: 7, naam: "Bavo", adres: "Radijsweg 93", regio: "Gent"},
+    {id: 1, naam: "Lander", adres: "Pompoenstraat 6", regio: "Antwerpen"},
+    {id: 2, naam: "Jef", adres: "Paprikalaan 7", regio: "Gent"},
+    {id: 3, naam: "Maxim", adres: "Komkommerlaan 69", regio: "Gent"},
+    {id: 4, naam: "Pim", adres: "Wortelsesteenweg 42", regio: "Antwerpen"},
+    {id: 5, naam: "Joris", adres: "Tomaatstraat 21", regio: "Gent"},
+    {id: 6, naam: "Jahid", adres: "Bonenwegel 69", regio: "Gent"},
+    {id: 0, naam: "building 2", adres: "Courgettelaan 42", regio: "Antwerpen"},
+    {id: 8, naam: "building 3", adres: "Slastraat 21", regio: "Gent"},
+    {id: 9, naam: "building 1", adres: "Spinaziewegel 69", regio: "Gent"},
+    {id: 10, naam: "Upkot SintPieters", adres: "Bloemkoolsesteenweg 42", regio: "Antwerpen"},
+    {id: 11, naam: "Jail", adres: "Ajuinwegel 21", regio: "Gent"},
 ]
 
 const dummySindici = [
@@ -46,17 +45,21 @@ const dummyRegions = [
 
 
 export default function BuildingsList() {
-    const [current, setCurrent] = useState(0);
+    const [current, setCurrent] = useState<number | null>(null);
+    const [sorttype , setSorttype] = React.useState("naam")
+
+    const sortedBuildings = dummyBuildings.sort(function(first, second) {
+        return (first[sorttype as keyof Building] as string).localeCompare(second[sorttype as keyof Building] as string);})
 
     return (
         <div className={styles.full_outer}>
 
-            <TopBar></TopBar>
+            <TopBar sorttype={sorttype} setSorttype={setSorttype}></TopBar>
             <div className={styles.under_columns}>
                 <div className={styles.list_wrapper}>
                     <div className={styles.list_bar} id={styles.scroll_style}>
-                        {dummyBuildings.map((x,i) => <ListItem
-                            id={i} current={current} name={x.name} adress={x.adress} locationGroup={x.locationGroup} onClick={setCurrent} />)}
+                        {sortedBuildings.map(x => <ListItem
+                            id={x.id} current={current} naam={x.naam} adres={x.adres} regio={x.regio} onClick={setCurrent} />)}
                     </div>
                 </div>
             </div>
@@ -67,6 +70,17 @@ export default function BuildingsList() {
 
 function TopBar(){
 
+type TopBarProps = {
+    sorttype: string,
+    setSorttype: React.Dispatch<React.SetStateAction<string>>
+}
+
+function TopBar({sorttype, setSorttype}:TopBarProps){
+    const regions = [
+        'Gent',
+        'Antwerpen',
+        'Brussel',
+    ];
 
     const [region, setRegion] = React.useState("")
     const handleChangeRegion = (event: SelectChangeEvent) => {
@@ -79,7 +93,6 @@ function TopBar(){
         'regio'
     ];
 
-    const [sorttype, setSorttype] = React.useState("naam")
 
     const handleChangeSorttype = (event: SelectChangeEvent) => {
         setSorttype(event.target.value as string);
@@ -118,7 +131,7 @@ function TopBar(){
     const handleChangeFormAdres = (event: SelectChangeEvent) => {
         setFormAdres(event.target.value as string);
     };
-    
+
     const [formRegion, setFormRegion] = React.useState("")
     const handleChangeFormRegion = (event: SelectChangeEvent) => {
         setFormRegion(event.target.value as string);
@@ -242,7 +255,6 @@ function TopBar(){
                                 {option}
                             </MenuItem>
                         ))}
-
                     </Select>
                 </FormControl>
             </div>
@@ -280,20 +292,22 @@ function TopBar(){
                 {Form()}
             </Backdrop>
         </div>
+
+
     );
 }
 
 
 type ListItemProps = {
     id: number,
-    current: number,
-    name: string,
-    adress: string,
-    locationGroup: string
-    onClick: React.Dispatch<React.SetStateAction<number>>
+    current: number | null,
+    naam: string,
+    adres: string,
+    regio: string
+    onClick: React.Dispatch<React.SetStateAction<number|null>>
 }
 
-const ListItem = ({id, current, name, adress, locationGroup, onClick}: ListItemProps) => {
+const ListItem = ({id, current, naam, adres, regio, onClick}: ListItemProps) => {
     const isCurrent = id == current
     return (
         <div className={styles.button_wrapper}>
@@ -301,13 +315,13 @@ const ListItem = ({id, current, name, adress, locationGroup, onClick}: ListItemP
                     className={styles.button_default}
                     onClick={()=>onClick(id)}>
                 <div className={styles.big_item_text}>
-                    {name}
+                    {naam}
                 </div>
                 <div className={styles.small_item_text}>
-                    {adress}
+                    {adres}
                 </div>
                 <div className={styles.small_item_text}>
-                    {locationGroup}
+                    {regio}
                 </div>
             </Button>
         </div>
