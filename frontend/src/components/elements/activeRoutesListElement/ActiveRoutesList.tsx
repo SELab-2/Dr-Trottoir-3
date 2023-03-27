@@ -13,15 +13,14 @@ import {
     SelectChangeEvent, TextField,
 } from "@mui/material";
 import SortIcon from '@mui/icons-material/Sort';
-import {ClickAwayListener} from "@mui/base";
-import {CheckBox} from "@mui/icons-material";
+import CheckIcon from '@mui/icons-material/Check';
 
 interface LiveRoute {
     id: number
     naam: string,
     regio: string,
     distance: string,
-    completion: number
+    completion: number,
 }
 
 const dummyRoutes:LiveRoute[] = [
@@ -244,8 +243,8 @@ const ListItem = ({id, current, naam, distance, regio, completion, onClick}: Lis
                             </div>
                         </div>
                         <div className={styles.listItemRightSide}>
+                            {conditionalCheckmark(completion === 1)}
                             <div className={styles.very_big_item_text}>
-                                {conditionalCheckmark(completion === 1)}
                                 {Math.round(completion*100)}%
                             </div>
                         </div>
@@ -258,7 +257,7 @@ const ListItem = ({id, current, naam, distance, regio, completion, onClick}: Lis
 const conditionalCheckmark = (checkmark: boolean) => {
     if (checkmark){
         return (
-            <CheckBox></CheckBox>
+            <CheckIcon></CheckIcon>
         );
     }
 }
