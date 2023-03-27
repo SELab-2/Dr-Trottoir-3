@@ -354,7 +354,7 @@ def test_schedule_assignment_by_get_date_and_user_get_nonexistent_date_returns_e
     client.force_login(super_student.user)
 
     response = client.get(f"/schedule_assignments/date/{date}/user/{student.user.id}/")
-    response_ids = [data["id"] for data in response.data]
+    response_ids = [data["id"] for data in response.data["results"]]
 
     assert response.status_code == 200
     assert len(response_ids) == 0
@@ -372,7 +372,7 @@ def test_schedule_assignment_by_get_date_and_user_get_nonexistent_user_returns_e
     response = client.get(
         f"/schedule_assignments/date/{date}/user/{nonexistent_user_id}/"
     )
-    response_ids = [data["id"] for data in response.data]
+    response_ids = [data["id"] for data in response.data["results"]]
 
     assert response.status_code == 200
     assert len(response_ids) == 0

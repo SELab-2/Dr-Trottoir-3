@@ -53,7 +53,7 @@ def test_schedule_work_entry_get_list_multiple_entries_return_200() -> None:
 
     client.force_login(super_student.user)
     response = client.get("/schedule_work_entries/")
-    response_ids = [data["id"] for data in response.data]
+    response_ids = [data["id"] for data in response.data["results"]]
 
     assert response.status_code == 200
     assert sorted(work_entry_ids) == sorted(response_ids)
@@ -122,7 +122,7 @@ def test_schedule_work_entry_get_by_user_existing_returns_200() -> None:
     client.force_login(super_student.user)
 
     response = client.get(f"/schedule_work_entries/users/{student.user.id}/")
-    response_ids = [data["id"] for data in response.data]
+    response_ids = [data["id"] for data in response.data["results"]]
 
     assert response.status_code == 200
     assert sorted(response_ids) == sorted(work_entry_ids)
@@ -142,7 +142,7 @@ def test_schedule_work_entry_get_by_user_empty_returns_empty_list_and_200() -> N
     client.force_login(super_student.user)
 
     response = client.get(f"/schedule_work_entries/users/{student.user.id}/")
-    response_ids = [data["id"] for data in response.data]
+    response_ids = [data["id"] for data in response.data["results"]]
 
     assert response.status_code == 200
     assert len(response_ids) == 0

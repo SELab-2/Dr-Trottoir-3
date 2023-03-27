@@ -41,9 +41,9 @@ def test_schedule_definition_list_success():
 
     scheds, res = _test_schedule_definition_list(student.user)
 
-    assert res.status_code == 200 and sorted([x["id"] for x in res.data]) == sorted(
-        [x.id for x in scheds]
-    )
+    assert res.status_code == 200 and sorted(
+        [x["id"] for x in res.data["results"]]
+    ) == sorted([x.id for x in scheds])
 
 
 @pytest.mark.django_db
@@ -150,7 +150,9 @@ def test_schedule_definition_schedule_assignments_success():
         student1.user, student2.user
     )
 
-    assert res.status_code == 200 and [x["id"] for x in res.data] == [assignment.id]
+    assert res.status_code == 200 and [x["id"] for x in res.data["results"]] == [
+        assignment.id
+    ]
 
 
 @pytest.mark.django_db
@@ -190,7 +192,9 @@ def test_schedule_definition_schedule_work_entries_success():
         student.user, student.user
     )
 
-    assert res.status_code == 200 and [x["id"] for x in res.data] == [work_entry.id]
+    assert res.status_code == 200 and [x["id"] for x in res.data["results"]] == [
+        work_entry.id
+    ]
 
 
 @pytest.mark.django_db

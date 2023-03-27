@@ -22,7 +22,7 @@ def test_garbage_type_api_view_get_success_return_200():
     client.force_login(student.user)
 
     response = client.get("/garbage_types/")
-    response_ids = [e["id"] for e in response.data]
+    response_ids = [e["id"] for e in response.data["data"]]
 
     assert sorted(response_ids) == sorted([dummy_entry_1.id, dummy_entry_2.id])
     assert response.status_code == 200
