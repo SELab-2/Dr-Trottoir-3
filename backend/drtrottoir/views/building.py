@@ -107,7 +107,7 @@ class BuildingViewSet(
     """
 
     filterset_fields = ["is_active"]
-    search_fields = ["address"]
+    search_fields = ["address", "description"]
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
     permission_classes_by_action = {
         "retrieve": [permissions.IsAuthenticated],

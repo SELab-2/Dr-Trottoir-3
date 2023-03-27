@@ -66,6 +66,8 @@ class LocationGroupViewSet(
                 All the schedule definitions that are in this location group.
     """
 
+    filterset_fields = ["name"]
+    search_fields = ["name"]
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
     permission_classes_by_action = {
         "retrieve": [permissions.IsAuthenticated],

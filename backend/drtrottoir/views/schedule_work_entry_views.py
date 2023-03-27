@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, List
 
 import rest_framework.decorators
 from django.contrib.auth.models import AnonymousUser
@@ -133,6 +133,9 @@ class ScheduleWorkEntryViewSet(
     queryset = ScheduleWorkEntry.objects.all()
     serializer_class = ScheduleWorkEntrySerializer
     parser_classes = (MultiPartParser,)
+
+    filterset_fields = ["creator", "entry_type"]
+    search_fields: List[str] = []
 
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """Overrides the default POST method of mixins.CreateModelMixin to add

@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, List
 
 import rest_framework
 from rest_framework import mixins, permissions, status, viewsets
@@ -129,6 +129,9 @@ class ScheduleAssignmentViewSet(
 
     queryset = ScheduleAssignment.objects.all()
     serializer_class = ScheduleAssignmentSerializer
+
+    filterset_fields = ["assigned_date", "user"]
+    search_fields: List[str] = []
 
     permission_classes = [
         permissions.IsAuthenticated,

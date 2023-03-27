@@ -43,10 +43,13 @@ class UserViewSet(ModelViewSet):
             Required permission: `permissions.IsAuthenticated`
     """
 
-    permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
-
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    filterset_fields = ["student__is_super_student", "student__location_group"]
+    search_fields = ["first_name", "last_name", "username"]
+
+    permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
 
     @action(detail=False)
     def students(self, request):

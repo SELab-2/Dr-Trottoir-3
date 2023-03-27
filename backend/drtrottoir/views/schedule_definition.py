@@ -67,6 +67,9 @@ class ScheduleDefinitionViewSet(
     queryset = ScheduleDefinition.objects.all()
     serializer_class = ScheduleDefinitionSerializer
 
+    filterset_fields = ["version"]
+    search_fields = ["name"]
+
     # This method allows more granular selection of permissions for any given
     # action
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]

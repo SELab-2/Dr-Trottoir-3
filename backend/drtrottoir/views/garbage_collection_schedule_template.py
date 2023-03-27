@@ -1,3 +1,5 @@
+from typing import List
+
 from rest_framework import mixins, permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -54,6 +56,9 @@ class GarbageCollectionScheduleTemplateEntryViewSet(
     queryset = GarbageCollectionScheduleTemplateEntry.objects.all()
     serializer_class = GarbageCollectionScheduleTemplateEntrySerializer
 
+    filterset_fields = ["day", "garbage_type"]
+    search_fields: List[str] = []
+
 
 class GarbageCollectionScheduleTemplateViewSet(
     mixins.CreateModelMixin,
@@ -108,6 +113,9 @@ class GarbageCollectionScheduleTemplateViewSet(
 
     queryset = GarbageCollectionScheduleTemplate.objects.all()
     serializer_class = GarbageCollectionScheduleTemplateSerializer
+
+    filterset_fields = ["building"]
+    search_fields = ["name"]
 
     @action(detail=True)
     def entries(self, request, pk=None):
