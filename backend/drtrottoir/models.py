@@ -238,6 +238,12 @@ class ScheduleWorkEntry(models.Model):
 
     """
 
+    TYPE_CHOICES = [
+        ("AR", "Arrival"),
+        ("WO", "Working"),
+        ("DE", "Departure"),
+    ]
+
     creation_timestamp = models.DateTimeField()
     image = models.ImageField(upload_to=get_file_path_schedule_work_entry_image)
     creator = models.ForeignKey(
@@ -249,6 +255,7 @@ class ScheduleWorkEntry(models.Model):
     schedule_assignment = models.ForeignKey(
         ScheduleAssignment, on_delete=models.RESTRICT, related_name="work_entries"
     )
+    entry_type = models.CharField(max_length=2, choices=TYPE_CHOICES, default="AR")
 
 
 class GarbageCollectionScheduleTemplate(models.Model):
