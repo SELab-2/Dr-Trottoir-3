@@ -36,7 +36,7 @@ def test_schedule_work_entry_get_list_empty_returns_empty_list_200() -> None:
     response = client.get("/schedule_work_entries/")
 
     assert response.status_code == 200
-    assert len(response.data) == 0
+    assert len(response.data["results"]) == 0
 
 
 @pytest.mark.django_db

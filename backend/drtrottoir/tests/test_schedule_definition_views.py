@@ -109,9 +109,9 @@ def test_schedule_definition_buildings_success():
     student = insert_dummy_student()
     assignment, res = _test_schedule_definition_buildings(student.user, student.user)
 
-    assert res.status_code == 200 and sorted(x["id"] for x in res.data) == sorted(
-        x.id for x in assignment.schedule_definition.buildings.all()
-    )
+    assert res.status_code == 200 and sorted(
+        x["id"] for x in res.data["results"]
+    ) == sorted(x.id for x in assignment.schedule_definition.buildings.all())
 
 
 @pytest.mark.django_db
