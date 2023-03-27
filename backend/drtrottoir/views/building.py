@@ -106,6 +106,8 @@ class BuildingViewSet(
                 All the garbage collection schedules of this building on this given day.
     """
 
+    filterset_fields = ["is_active"]
+    search_fields = ["address"]
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
     permission_classes_by_action = {
         "retrieve": [permissions.IsAuthenticated],
