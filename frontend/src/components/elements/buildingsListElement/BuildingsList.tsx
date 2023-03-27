@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import styles from "@/components/elements/buildingsListElement/BuildingsList.module.css";
+import styles from "@/styles/ListView.module.css";
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import {
