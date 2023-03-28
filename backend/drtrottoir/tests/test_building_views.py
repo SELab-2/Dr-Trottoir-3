@@ -2,6 +2,7 @@ import datetime
 import tempfile
 
 import pytest
+from PIL import Image
 from rest_framework.test import APIClient
 
 from .dummy_data import (
@@ -28,7 +29,7 @@ def test_buildings_get_list():
     client.force_login(student.user)
     response = client.get("/buildings/")
 
-    response_ids = [e["id"] for e in response.data]
+    response_ids = [e["id"] for e in response.data["results"]]
     assert dummy_building_1.id in response_ids
     assert dummy_building_2.id in response_ids
     assert non_existent_building_id not in response_ids
@@ -52,11 +53,18 @@ def test_buildings_post():
     tmp_file.write(b"Hello world!")
     tmp_file.seek(0)
 
+    image = Image.new("RGB", (100, 100))
+
+    tmp_img_file = tempfile.NamedTemporaryFile(suffix=".jpg")
+    image.save(tmp_img_file)
+    tmp_img_file.seek(0)
+
     data = {
         "address": "address 1",
         "is_active": True,
         "location_group": dummy_location_group.id,
         "pdf_guide": tmp_file,
+        "image": tmp_img_file,
     }
     student = insert_dummy_student(is_super_student=True)
     client = APIClient()
@@ -67,7 +75,38 @@ def test_buildings_post():
     assert response.data["is_active"]
     assert response.data["location_group"] == dummy_location_group.id
     assert response.data["pdf_guide"].endswith(".pdf")
+    assert response.data["image"].endswith(".jpg")
     assert response.status_code == 201
+
+
+@pytest.mark.django_db
+def test_buildings_post_invalid_image():
+    dummy_location_group = insert_dummy_location_group()
+
+    tmp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
+    tmp_file.write(b"Hello world!")
+    tmp_file.seek(0)
+
+    image = Image.new("RGB", (100, 100))
+
+    tmp_img_file = tempfile.NamedTemporaryFile(suffix=".jpg")
+    image.save(tmp_img_file)
+    tmp_img_file.seek(0)
+    tmp_img_file.name = "temp_file"
+
+    data = {
+        "address": "address 1",
+        "is_active": True,
+        "location_group": dummy_location_group.id,
+        "pdf_guide": tmp_file,
+        "image": tmp_img_file,
+    }
+    student = insert_dummy_student(is_super_student=True)
+    client = APIClient()
+    client.force_login(student.user)
+    response = client.post("/buildings/", data)
+
+    assert response.status_code == 400
 
 
 @pytest.mark.django_db
@@ -202,7 +241,7 @@ def test_building_delete_detail_forbidden():
 
 
 @pytest.mark.django_db
-def test_get_buildings_from_syndicus():
+def test_buildings_from_syndicus():
     dummy_building_1 = insert_dummy_building()
     dummy_building_2 = insert_dummy_building()
     dummy_building_3 = insert_dummy_building()
@@ -215,7 +254,7 @@ def test_get_buildings_from_syndicus():
     client.force_login(dummy_syndicus.user)
     response = client.get(f"/buildings/users/{dummy_syndicus.user_id}/")
 
-    response_ids = [e["id"] for e in response.data]
+    response_ids = [e["id"] for e in response.data["results"]]
     assert dummy_building_1.id in response_ids
     assert dummy_building_2.id in response_ids
     assert dummy_building_3.id not in response_ids
@@ -240,7 +279,7 @@ def test_building_get_schedule_definitions_list():
     client.force_login(student.user)
     response = client.get(f"/buildings/{dummy_building_1.id}/schedule_definitions/")
 
-    response_ids = [e["id"] for e in response.data]
+    response_ids = [e["id"] for e in response.data["results"]]
 
     assert dummy_schedule_definition_1.id in response_ids
     assert dummy_schedule_definition_2.id in response_ids
@@ -263,7 +302,7 @@ def test_building_get_issues_list():
     client = APIClient()
     client.force_login(dummy_syndicus.user)
     response = client.get(f"/buildings/{building_1.id}/issues/")
-    response_ids = [e["id"] for e in response.data]
+    response_ids = [e["id"] for e in response.data["results"]]
 
     assert issue_1.id in response_ids
     assert issue_2.id in response_ids
@@ -284,7 +323,7 @@ def test_building_get_schedule_templates_list():
     response = client.get(
         f"/buildings/{building_1.id}/garbage_collection_schedule_templates/"
     )
-    response_ids = [e["id"] for e in response.data]
+    response_ids = [e["id"] for e in response.data["results"]]
 
     assert template_1.id in response_ids
     assert template_2.id in response_ids
@@ -303,7 +342,7 @@ def test_building_get_schedules_list():
     client = APIClient()
     client.force_login(student.user)
     response = client.get(f"/buildings/{building_1.id}/garbage_collection_schedules/")
-    response_ids = [e["id"] for e in response.data]
+    response_ids = [e["id"] for e in response.data["results"]]
 
     assert schedule_1.id in response_ids
     assert schedule_2.id in response_ids
@@ -330,7 +369,7 @@ def test_building_get_schedules_by_date_list():
         f"/buildings/{building_1.id}/for_day/{schedule_1.for_day}"
         f"/garbage_collection_schedules/"
     )
-    response_ids = [e["id"] for e in response.data]
+    response_ids = [e["id"] for e in response.data["results"]]
 
     assert schedule_1.id in response_ids
     assert schedule_2.id in response_ids

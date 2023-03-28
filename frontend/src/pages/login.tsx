@@ -1,3 +1,12 @@
-import LoginPage from '../containers/LoginPage';
+import dynamic from 'next/dynamic';
 
-export default LoginPage;
+const DynamicLoginComponent = dynamic(() =>
+    import('../containers/LoginPage'), {ssr: false}
+);
+
+// eslint-disable-next-line require-jsdoc
+export default function LoginPage() {
+    return (
+        <DynamicLoginComponent/>
+    );
+}

@@ -1,0 +1,6 @@
+.calendar_component {
+    flex-basis: 0;
+    flex-grow: 999;
+    background-color: #F3F5F9;
+    padding: 20px;
+}

@@ -1,3 +1,11 @@
-import BuildingsPage from '../containers/BuildingsPage';
+import dynamic from 'next/dynamic';
 
-export default BuildingsPage;
+const DynamicBuildingsComponent = dynamic(() =>
+    import('../containers/BuildingsPage'), {ssr: false}
+);
+
+export default function BuildingsPage() {
+    return (
+        <DynamicBuildingsComponent/>
+    );
+}

@@ -5,3 +5,6 @@ services:
       context: .
     restart: always
     command: sh -c "npm run build && npm run start"
+    environment:
+      - NEXT_API_URL="https://sel2-3.ugent.be"
+      - NEXT_INTERNAL_API_URL="https://sel2-3.ugent.be/api/"

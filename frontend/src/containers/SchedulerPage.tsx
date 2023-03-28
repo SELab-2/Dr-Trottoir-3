@@ -1,10 +1,17 @@
 import SchedulesList from "@/components/elements/ScheduleListElement/ScheduleList";
+import SchedulerSelect from '../components/elements/schedulerElements/SchedulerSelect';
+import SchedulerDetails from '../components/elements/schedulerElements/SchedulerDetails';
+import styles from './SchedulerPage.module.css';
 
-// eslint-disable-next-line require-jsdoc
+
 export default function SchedulerPage() {
   return (
     <>
-          <SchedulesList></SchedulesList>
+        <SchedulesList></SchedulesList>
+        <div className={styles.full_calendar_flex_container}>
+            <SchedulerSelect/>
+            <SchedulerDetails/>
+        </div>
     </>
   );
 }
