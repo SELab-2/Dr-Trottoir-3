@@ -19,24 +19,24 @@ interface LiveRoute {
     id: number
     naam: string,
     regio: string,
-    distance: string,
+    distance: number,
     completion: number,
     student: string,
 }
 
 const dummyRoutes:LiveRoute[] = [
-    {id: 7, naam: "aardappel", regio: "Gent", distance: "10km", completion: 0.10, student: "Bavo"},
-    {id: 1, naam: "water", regio: "Antwerpen", distance: "17km", completion: 0.55, student: "Jef"},
-    {id: 2, naam: "aardpeer", regio: "Gent", distance: "8km", completion: 0.90, student: "Maxim"},
-    {id: 3, naam: "courgette", regio: "Gent", distance: "69km", completion: 0.50, student: "Jahid"},
-    {id: 4, naam: "wortel", regio: "Antwerpen", distance: "42km", completion: 1, student: "Pim"},
-    {id: 5, naam: "tomaat", regio: "Gent", distance: "25km", completion: 0.75, student: "Joris"},
-    {id: 6, naam: "aardappelsalade", regio: "Gent", distance: "13km", completion: 0.33, student: "Obama"},
-    {id: 0, naam: "route 2", regio: "Antwerpen", distance: "11km", completion: 0.66, student: "Dababy"},
-    {id: 8, naam: "route 3", regio: "Gent", distance: "42km", completion: 0.89, student: "Kanye"},
-    {id: 9, naam: "route 1", regio: "Gent", distance: "23km", completion: 1, student: "Big Ounce"},
-    {id: 10, naam: "centrum", regio: "Antwerpen", distance: "42km", completion: 0.5, student: "Babo"},
-    {id: 11, naam: "zuid", regio: "Gent", distance: "7km", completion: 0.5, student: "Cringe"},
+    {id: 7, naam: "aardappel", regio: "Gent", distance: 10000, completion: 0.10, student: "Bavo"},
+    {id: 1, naam: "water", regio: "Antwerpen", distance: 17000, completion: 0.55, student: "Jef"},
+    {id: 2, naam: "aardpeer", regio: "Gent", distance: 8000, completion: 0.90, student: "Maxim"},
+    {id: 3, naam: "courgette", regio: "Gent", distance: 69000, completion: 0.50, student: "Jahid"},
+    {id: 4, naam: "wortel", regio: "Antwerpen", distance: 42000, completion: 1, student: "Pim"},
+    {id: 5, naam: "tomaat", regio: "Gent", distance: 25000, completion: 0.75, student: "Joris"},
+    {id: 6, naam: "aardappelsalade", regio: "Gent", distance: 13000, completion: 0.33, student: "Obama"},
+    {id: 0, naam: "route 2", regio: "Antwerpen", distance: 11000, completion: 0.66, student: "Dababy"},
+    {id: 8, naam: "route 3", regio: "Gent", distance: 42000, completion: 0.89, student: "Kanye"},
+    {id: 9, naam: "route 1", regio: "Gent", distance: 23000, completion: 1, student: "Big Ounce"},
+    {id: 10, naam: "centrum", regio: "Antwerpen", distance: 42000, completion: 0.5, student: "Babo"},
+    {id: 11, naam: "zuid", regio: "Gent", distance: 7000, completion: 0.5, student: "Cringe"},
 ]
 
 
@@ -48,7 +48,7 @@ export default function ActiveRoutesList() {
     const sortedRoutes = dummyRoutes.sort(function(first, second) {
         const value = first[sorttype as keyof LiveRoute];
         if(typeof value == "number"){
-            return value-(second[sorttype as keyof LiveRoute] as number);
+            return (second[sorttype as keyof LiveRoute] as number)-value;
         }
         return value.localeCompare(second[sorttype as keyof LiveRoute] as string);
     })
@@ -221,7 +221,7 @@ type ListItemProps = {
     id: number,
     current: number | null,
     naam: string,
-    distance: string,
+    distance: number,
     regio: string,
     completion: number,
     onClick: React.Dispatch<React.SetStateAction<number|null>>
@@ -244,7 +244,7 @@ const ListItem = ({id, current, naam, distance, regio, completion, onClick}: Lis
                                 {regio}
                             </div>
                             <div className={styles.small_item_text}>
-                                {distance}
+                                {(Math.round(distance/10))/100}km
                             </div>
                         </div>
                         <div className={styles.listItemRightSide}>

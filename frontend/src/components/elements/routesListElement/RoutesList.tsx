@@ -48,7 +48,7 @@ export default function RoutesList() {
     const sortedRoutes = dummyRoutes.sort(function(first, second) {
         const value = first[sorttype as keyof Route];
         if(typeof value == "number"){
-            return value-(second[sorttype as keyof Route] as number);
+            return (second[sorttype as keyof LiveRoute] as number)-value;
         }
         return value.localeCompare(second[sorttype as keyof Route] as string);
 
