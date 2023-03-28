@@ -3,7 +3,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from drtrottoir.models import GarbageType
 from drtrottoir.permissions import IsSuperstudentOrAdminOrSafe
-from drtrottoir.serializers.garbage_type import GarbageTypeSerializer
+from drtrottoir.serializers import GarbageTypeSerializer
 
 
 class GarbageTypeViewSet(ModelViewSet):
