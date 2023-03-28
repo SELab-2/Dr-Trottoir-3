@@ -262,6 +262,7 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
                         <FormControl sx={{ m: 1, minWidth: 120 }}>
                             <InputLabel>Sorteer op</InputLabel>
                             <Select
+                                style={{width:200}}
                                 IconComponent={() => (
                                     <SortIcon/>
                                 )}
