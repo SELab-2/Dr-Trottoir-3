@@ -224,7 +224,7 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
                             <Button variant="contained" className={styles.button} onClick={handleClose}>
                                 Cancel
                             </Button>
-                            <Button variant="contained" className={styles.button} onClick={handleSubmitForm}>
+                            <Button variant="contained" className={styles.button} onClick={handleSubmitForm} style={{backgroundColor: "#E6E600"}}>
                                 Submit
                             </Button>
                         </div>
