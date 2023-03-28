@@ -1,5 +1,5 @@
 import useSWR, {SWRResponse} from 'swr';
-import { useSession } from "next-auth/react";
+import {useSession} from 'next-auth/react';
 
 export enum Api {
     /* eslint-disable no-unused-vars */
@@ -49,7 +49,7 @@ async function fetcher<T>(token: string, url: string): Promise<T> {
  * @return {SWRResponse}
  * **/
 export function get<T>(route: Api): SWRResponse<T, any> {
-    const { data: session } = useSession();
+    const {data: session} = useSession();
     return useSWR<T>([session.accessToken, route], fetcher);
 }
 
@@ -63,6 +63,6 @@ export function getParams<T>(route: Api, params: any): SWRResponse<T, any> {
         route = route.replace(':' + property, params[property]);
     }
 
-    const { data: session } = useSession();
+    const {data: session} = useSession();
     return useSWR<T>([session.accessToken, route], fetcher);
 }
