@@ -21,22 +21,22 @@ interface Route {
     id: number
     naam: string,
     regio: string,
-    distance: number
+    afstand: number
 }
 
 const dummyRoutes:Route[] = [
-    {id: 7, naam: "Bavo", regio: "Gent", distance: 10000},
-    {id: 1, naam: "Lander", regio: "Antwerpen", distance: 17050},
-    {id: 2, naam: "Jef", regio: "Gent", distance: 8000},
-    {id: 3, naam: "Maxim", regio: "Gent", distance: 6900},
-    {id: 4, naam: "Pim", regio: "Antwerpen", distance: 42000},
-    {id: 5, naam: "Joris", regio: "Gent", distance: 25000},
-    {id: 6, naam: "Jahid", regio: "Gent", distance: 13000},
-    {id: 0, naam: "route 2", regio: "Antwerpen", distance: 11000},
-    {id: 8, naam: "route 3", regio: "Gent", distance: 42000},
-    {id: 9, naam: "route 1", regio: "Gent", distance: 23000},
-    {id: 10, naam: "centrum", regio: "Antwerpen", distance: 42000},
-    {id: 11, naam: "zuid", regio: "Gent", distance: 7000},
+    {id: 7, naam: "Bavo", regio: "Gent", afstand: 10000},
+    {id: 1, naam: "Lander", regio: "Antwerpen", afstand: 17050},
+    {id: 2, naam: "Jef", regio: "Gent", afstand: 8000},
+    {id: 3, naam: "Maxim", regio: "Gent", afstand: 6900},
+    {id: 4, naam: "Pim", regio: "Antwerpen", afstand: 42000},
+    {id: 5, naam: "Joris", regio: "Gent", afstand: 25000},
+    {id: 6, naam: "Jahid", regio: "Gent", afstand: 13000},
+    {id: 0, naam: "route 2", regio: "Antwerpen", afstand: 11000},
+    {id: 8, naam: "route 3", regio: "Gent", afstand: 42000},
+    {id: 9, naam: "route 1", regio: "Gent", afstand: 23000},
+    {id: 10, naam: "centrum", regio: "Antwerpen", afstand: 42000},
+    {id: 11, naam: "zuid", regio: "Gent", afstand: 7000},
 ]
 
 
@@ -48,7 +48,7 @@ export default function RoutesList() {
     const sortedRoutes = dummyRoutes.sort(function(first, second) {
         const value = first[sorttype as keyof Route];
         if(typeof value == "number"){
-            return value-(second[sorttype as keyof Route] as number);
+            return (second[sorttype as keyof Route] as number)-value;
         }
         return value.localeCompare(second[sorttype as keyof Route] as string);
 
@@ -68,7 +68,7 @@ export default function RoutesList() {
                     <div className={styles.list_wrapper}>
                         <div className={styles.list_bar} id={styles.scroll_style}>
                             {sortedRoutes.map(x => <ListItem
-                                id={x.id} current={current} naam={x.naam} distance={x.distance} regio={x.regio} onClick={setCurrent} />)}
+                                id={x.id} current={current} naam={x.naam} afstand={x.afstand} regio={x.regio} onClick={setCurrent} />)}
                         </div>
                     </div>
                 </div>
@@ -105,7 +105,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
     const sorttypes = [
         "naam",
         'regio',
-        'distance'
+        'afstand'
     ];
 
     const handleChangeSorttype = (event: SelectChangeEvent) => {
@@ -309,12 +309,12 @@ type ListItemProps = {
     id: number,
     current: number | null,
     naam: string,
-    distance: number,
+    afstand: number,
     regio: string
     onClick: React.Dispatch<React.SetStateAction<number|null>>
 }
 
-const ListItem = ({id, current, naam, distance, regio, onClick}: ListItemProps) => {
+const ListItem = ({id, current, naam, afstand, regio, onClick}: ListItemProps) => {
     const isCurrent = id == current
     return (
         <div className={styles.button_wrapper}>
@@ -328,7 +328,7 @@ const ListItem = ({id, current, naam, distance, regio, onClick}: ListItemProps) 
                     {regio}
                 </div>
                 <div className={styles.small_item_text}>
-                    {(Math.round(distance/10))/100}km
+                    {(Math.round(afstand/10))/100}km
                 </div>
             </Button>
         </div>

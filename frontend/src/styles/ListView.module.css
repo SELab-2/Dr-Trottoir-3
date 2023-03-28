@@ -151,10 +151,11 @@ display: flex;
 }
 
 .listItemLeftSide{
-    min-width: 100px;
-    max-width: 100%;
-    justify-content: end;
-
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    justify-content: center;
 }
 
 .button_default {
