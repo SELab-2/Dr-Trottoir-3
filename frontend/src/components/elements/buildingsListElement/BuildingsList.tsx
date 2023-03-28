@@ -40,9 +40,9 @@ const dummyBuildings:Building[] = [
 ]
 
 const dummySindici = [
-    {name: "joe mama"},
-    {name: "gay bowser"},
-    {name: "willie stroker"}
+    {name: "Jan Tomas"},
+    {name: "Peter Selie"},
+    {name: "Wily Willson"}
 ];
 
 const dummyRegions = [
