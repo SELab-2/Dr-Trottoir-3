@@ -7,10 +7,10 @@
     <list default="true" id="ea4caa2d-6378-4997-a5c5-7797e292c071" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.eslintrc.json" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/icons/drtrottoir_icon.svg" beforeDir="false" afterPath="$PROJECT_DIR$/public/media/drtrottoir_icon.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/elements/navbarElement/navbar.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/elements/navbarElement/navbar.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/elements/navbarElement/navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/elements/navbarElement/navbar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/api.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/api.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/tempAPI/hello.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/tempAPI/hello.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,7 +20,6 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript JSX File" />
         <option value="CSS File" />
       </list>
     </option>
@@ -60,11 +59,11 @@
       <recent name="C:\Users\lander\Documents\ugent\ba3\selab\Dr-Trottoir-3\frontend\public\media" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\lander\Documents\ugent\ba3\selab\Dr-Trottoir-3\frontend\public\media" />
       <recent name="C:\Users\lander\Documents\ugent\ba3\selab\Dr-Trottoir-3\frontend\public\icons" />
       <recent name="C:\Users\lander\Documents\ugent\ba3\selab\Dr-Trottoir-3\frontend\public" />
       <recent name="C:\Users\lander\Documents\ugent\ba3\selab\Dr-Trottoir-3\frontend\public\images" />
       <recent name="C:\Users\lander\Documents\ugent\ba3\selab\Dr-Trottoir-3\frontend\src\api\tempAPI" />
+      <recent name="C:\Users\lander\Documents\ugent\ba3\selab\Dr-Trottoir-3\frontend\src\api" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -85,8 +84,8 @@
       <workItem from="1679309310396" duration="1739000" />
       <workItem from="1679311148031" duration="185000" />
       <workItem from="1679313438574" duration="478000" />
-      <workItem from="1679391722149" duration="6365000" />
-      <workItem from="1679404944318" duration="2782000" />
+      <workItem from="1679327478673" duration="808000" />
+      <workItem from="1679329521445" duration="1249000" />
     </task>
     <servers />
   </component>

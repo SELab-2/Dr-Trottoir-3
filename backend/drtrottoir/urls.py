@@ -16,9 +16,7 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from drtrottoir import settings
 from drtrottoir.views import (
@@ -103,16 +101,6 @@ urlpatterns = [
     path(
         settings.BASE_PATH + "api-auth/",
         include("rest_framework.urls", namespace="rest_framework"),
-    ),
-    path(
-        settings.BASE_PATH + "auth/token/",
-        TokenObtainPairView.as_view(),
-        name="token_obtain_pair",
-    ),
-    path(
-        settings.BASE_PATH + "auth/token/refresh/",
-        TokenRefreshView.as_view(),
-        name="token_refresh",
     ),
 ]
 

@@ -14,10 +14,5 @@ extend-exclude = '''
 [tool.mypy]
 plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
 
-# This module does not provide a stubs file or any typing hints
-[[tool.mypy.overrides]]
-module = "rest_framework_simplejwt.*"
-ignore_missing_imports = true
-
 [tool.django-stubs]
 django_settings_module = "drtrottoir.settings"

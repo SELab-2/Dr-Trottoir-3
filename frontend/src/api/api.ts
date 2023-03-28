@@ -32,8 +32,7 @@ export enum Api {
 }
 
 /**
- * @param {string} token
- * @param {string} url
+ * @param {any[]} args
  * @return {Promise<T>}
  * **/
 async function fetcher<T>(token: string, url: string): Promise<T> {
@@ -65,7 +64,7 @@ export function get<T>(route: Api): SWRResponse<T, any> {
  * @param {any} params
  * @return {SWRResponse}
  * **/
-export function getParams<T>(route: Api, params: any): SWRResponse<T, any> {
+export function getParams<T>(token: string, route: Api, params: any): SWRResponse<T, any> {
     for (const property in params) {
         // @ts-ignore
         route = route.replace(':' + property, params[property]);
