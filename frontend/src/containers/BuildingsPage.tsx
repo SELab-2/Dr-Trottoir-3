@@ -1,4 +1,3 @@
-import NavBar from '../components/elements/navbarElement/navbar';
 import BuildingsList from "@/components/elements/buildingsListElement/BuildingsList";
 
 // eslint-disable-next-line require-jsdoc

@@ -7,8 +7,9 @@ import styles from './SchedulerPage.module.css';
 export default function SchedulerPage() {
   return (
     <>
-        <SchedulesList></SchedulesList>
+
         <div className={styles.full_calendar_flex_container}>
+            <SchedulesList></SchedulesList>
             <SchedulerSelect/>
             <SchedulerDetails/>
         </div>
