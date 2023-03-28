@@ -103,13 +103,11 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                 value    );
       };
 
-
     const sorttypes = [
         "naam",
         'adres',
         'regio'
     ];
-
 
     const handleChangeSorttype = (event: SelectChangeEvent) => {
         setSorttype(event.target.value as string);
