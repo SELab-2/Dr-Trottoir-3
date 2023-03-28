@@ -29,7 +29,7 @@ def test_buildings_get_list():
     client.force_login(student.user)
     response = client.get("/buildings/")
 
-    response_ids = [e["id"] for e in response.data]
+    response_ids = [e["id"] for e in response.data["results"]]
     assert dummy_building_1.id in response_ids
     assert dummy_building_2.id in response_ids
     assert non_existent_building_id not in response_ids
@@ -241,7 +241,7 @@ def test_building_delete_detail_forbidden():
 
 
 @pytest.mark.django_db
-def test_get_buildings_from_syndicus():
+def test_buildings_from_syndicus():
     dummy_building_1 = insert_dummy_building()
     dummy_building_2 = insert_dummy_building()
     dummy_building_3 = insert_dummy_building()
@@ -254,7 +254,7 @@ def test_get_buildings_from_syndicus():
     client.force_login(dummy_syndicus.user)
     response = client.get(f"/buildings/users/{dummy_syndicus.user_id}/")
 
-    response_ids = [e["id"] for e in response.data]
+    response_ids = [e["id"] for e in response.data["results"]]
     assert dummy_building_1.id in response_ids
     assert dummy_building_2.id in response_ids
     assert dummy_building_3.id not in response_ids
@@ -279,7 +279,7 @@ def test_building_get_schedule_definitions_list():
     client.force_login(student.user)
     response = client.get(f"/buildings/{dummy_building_1.id}/schedule_definitions/")
 
-    response_ids = [e["id"] for e in response.data]
+    response_ids = [e["id"] for e in response.data["results"]]
 
     assert dummy_schedule_definition_1.id in response_ids
     assert dummy_schedule_definition_2.id in response_ids
@@ -302,7 +302,7 @@ def test_building_get_issues_list():
     client = APIClient()
     client.force_login(dummy_syndicus.user)
     response = client.get(f"/buildings/{building_1.id}/issues/")
-    response_ids = [e["id"] for e in response.data]
+    response_ids = [e["id"] for e in response.data["results"]]
 
     assert issue_1.id in response_ids
     assert issue_2.id in response_ids
@@ -323,7 +323,7 @@ def test_building_get_schedule_templates_list():
     response = client.get(
         f"/buildings/{building_1.id}/garbage_collection_schedule_templates/"
     )
-    response_ids = [e["id"] for e in response.data]
+    response_ids = [e["id"] for e in response.data["results"]]
 
     assert template_1.id in response_ids
     assert template_2.id in response_ids
@@ -342,7 +342,7 @@ def test_building_get_schedules_list():
     client = APIClient()
     client.force_login(student.user)
     response = client.get(f"/buildings/{building_1.id}/garbage_collection_schedules/")
-    response_ids = [e["id"] for e in response.data]
+    response_ids = [e["id"] for e in response.data["results"]]
 
     assert schedule_1.id in response_ids
     assert schedule_2.id in response_ids
@@ -369,7 +369,7 @@ def test_building_get_schedules_by_date_list():
         f"/buildings/{building_1.id}/for_day/{schedule_1.for_day}"
         f"/garbage_collection_schedules/"
     )
-    response_ids = [e["id"] for e in response.data]
+    response_ids = [e["id"] for e in response.data["results"]]
 
     assert schedule_1.id in response_ids
     assert schedule_2.id in response_ids

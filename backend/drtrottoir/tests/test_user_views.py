@@ -42,9 +42,9 @@ def test_users_get_all_success():
     syndici, students, admins, res = _test_users_get_all(student.user)
     users = [x.user for x in syndici + students + admins]
 
-    assert res.status_code == 200 and sorted([x["id"] for x in res.data]) == sorted(
-        [x.id for x in users] + [student.user.id]
-    )
+    assert res.status_code == 200 and sorted(
+        [x["id"] for x in res.data["results"]]
+    ) == sorted([x.id for x in users] + [student.user.id])
 
 
 @pytest.mark.django_db
@@ -80,9 +80,9 @@ def test_users_get_students_success():
 
     students, res = _test_users_get_students(student.user)
 
-    assert res.status_code == 200 and sorted([x["id"] for x in res.data]) == sorted(
-        [x.user.id for x in students] + [student.user.id]
-    )
+    assert res.status_code == 200 and sorted(
+        [x["id"] for x in res.data["results"]]
+    ) == sorted([x.user.id for x in students] + [student.user.id])
 
 
 @pytest.mark.django_db
@@ -118,9 +118,9 @@ def test_users_get_admins_success():
 
     admins, res = _test_users_get_admins(student.user)
 
-    assert res.status_code == 200 and sorted([x["id"] for x in res.data]) == sorted(
-        [x.user.id for x in admins]
-    )
+    assert res.status_code == 200 and sorted(
+        [x["id"] for x in res.data["results"]]
+    ) == sorted([x.user.id for x in admins])
 
 
 @pytest.mark.django_db
@@ -156,9 +156,9 @@ def test_users_get_syndici_success():
 
     syndici, res = _test_users_get_syndici(student.user)
 
-    assert res.status_code == 200 and sorted([x["id"] for x in res.data]) == sorted(
-        [x.user.id for x in syndici]
-    )
+    assert res.status_code == 200 and sorted(
+        [x["id"] for x in res.data["results"]]
+    ) == sorted([x.user.id for x in syndici])
 
 
 @pytest.mark.django_db

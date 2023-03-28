@@ -65,8 +65,12 @@ router.register(
 )
 
 
-router.register(r"schedule_assignments", ScheduleAssignmentViewSet)
-router.register(r"schedule_work_entries", ScheduleWorkEntryViewSet)
+router.register(
+    r"schedule_assignments", ScheduleAssignmentViewSet, basename="schedule-assignments"
+)
+router.register(
+    r"schedule_work_entries", ScheduleWorkEntryViewSet, basename="schedule-work-entries"
+)
 router.register(r"schedule_definitions", ScheduleDefinitionViewSet)
 router.register(r"users", UserViewSet)
 
@@ -87,17 +91,6 @@ urlpatterns = [
     path(
         settings.BASE_PATH + "issue_images/<int:issue_image_id>/",
         IssueImageDetailView.as_view(),
-    ),
-    # Schedule assignments uses ViewSet, but this particular url has
-    # two ids, so it's easier to do it like this
-    path(
-        settings.BASE_PATH
-        + "schedule_assignments/date/<str:assigned_date>/user/<int:user_id>/",
-        ScheduleAssignmentViewSet.retrieve_list_by_date_and_user,
-    ),
-    path(
-        settings.BASE_PATH + "schedule_work_entries/users/<int:user_id>/",
-        ScheduleWorkEntryViewSet.retrieve_by_user_id,
     ),
     path(
         settings.BASE_PATH + "api-auth/",

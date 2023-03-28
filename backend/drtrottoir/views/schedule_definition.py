@@ -1,6 +1,5 @@
 from rest_framework import mixins, permissions, viewsets
 from rest_framework.decorators import action
-from rest_framework.response import Response
 
 from drtrottoir.models import ScheduleDefinition, ScheduleWorkEntry
 from drtrottoir.permissions import (
@@ -67,6 +66,9 @@ class ScheduleDefinitionViewSet(
     queryset = ScheduleDefinition.objects.all()
     serializer_class = ScheduleDefinitionSerializer
 
+    filterset_fields = ["version"]
+    search_fields = ["name"]
+
     # This method allows more granular selection of permissions for any given
     # action
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
@@ -84,25 +86,27 @@ class ScheduleDefinitionViewSet(
     @action(detail=True)
     def buildings(self, request, pk=None):
         schedule_definition = self.get_object()
-        serializer = BuildingSerializer(schedule_definition.buildings, many=True)
+        buildings = self.paginate_queryset(schedule_definition.buildings.all())
+        serializer = BuildingSerializer(buildings, many=True)
 
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
 
     @action(detail=True)
     def schedule_assignments(self, request, pk=None):
         schedule_definition = self.get_object()
-        serializer = ScheduleAssignmentSerializer(
-            schedule_definition.assignments, many=True
-        )
+        assignments = self.paginate_queryset(schedule_definition.assignments.all())
+        serializer = ScheduleAssignmentSerializer(assignments, many=True)
 
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
 
     @action(detail=True)
     def schedule_work_entries(self, request, pk=None):
         schedule_definition = self.get_object()
-        schedule_work_entries = ScheduleWorkEntry.objects.filter(
-            schedule_assignment__schedule_definition=schedule_definition
+        schedule_work_entries = self.paginate_queryset(
+            ScheduleWorkEntry.objects.filter(
+                schedule_assignment__schedule_definition=schedule_definition
+            )
         )
         serializer = ScheduleWorkEntrySerializer(schedule_work_entries, many=True)
 
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)

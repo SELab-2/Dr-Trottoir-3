@@ -43,31 +43,34 @@ class UserViewSet(ModelViewSet):
             Required permission: `permissions.IsAuthenticated`
     """
 
-    permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
-
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    filterset_fields = ["student__is_super_student", "student__location_group"]
+    search_fields = ["first_name", "last_name", "username"]
+
+    permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
+
     @action(detail=False)
     def students(self, request):
-        users = User.objects.filter(student__isnull=False)
+        users = self.paginate_queryset(User.objects.filter(student__isnull=False))
         serializer = UserSerializer(users, many=True)
 
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
 
     @action(detail=False)
     def syndici(self, request):
-        users = User.objects.filter(syndicus__isnull=False)
+        users = self.paginate_queryset(User.objects.filter(syndicus__isnull=False))
         serializer = UserSerializer(users, many=True)
 
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
 
     @action(detail=False)
     def admins(self, request):
-        users = User.objects.filter(admin__isnull=False)
+        users = self.paginate_queryset(User.objects.filter(admin__isnull=False))
         serializer = UserSerializer(users, many=True)
 
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
 
     @action(detail=False, permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
