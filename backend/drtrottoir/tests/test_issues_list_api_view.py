@@ -48,7 +48,7 @@ def test_issues_list_api_view_get():
 
     response = client.get("/issues/")
 
-    response_data_ids = [e["id"] for e in response.data]
+    response_data_ids = [e["id"] for e in response.data["results"]]
 
     assert dummy_issue_id_1 in response_data_ids
     assert dummy_issue_id_2 in response_data_ids

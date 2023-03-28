@@ -1,6 +1,7 @@
+from typing import List
+
 from rest_framework import mixins, permissions, viewsets
 from rest_framework.decorators import action
-from rest_framework.response import Response
 
 from drtrottoir.models import (
     GarbageCollectionScheduleTemplate,
@@ -53,6 +54,9 @@ class GarbageCollectionScheduleTemplateEntryViewSet(
 
     queryset = GarbageCollectionScheduleTemplateEntry.objects.all()
     serializer_class = GarbageCollectionScheduleTemplateEntrySerializer
+
+    filterset_fields = ["day", "garbage_type"]
+    search_fields: List[str] = []
 
 
 class GarbageCollectionScheduleTemplateViewSet(
@@ -109,22 +113,25 @@ class GarbageCollectionScheduleTemplateViewSet(
     queryset = GarbageCollectionScheduleTemplate.objects.all()
     serializer_class = GarbageCollectionScheduleTemplateSerializer
 
+    filterset_fields = ["building"]
+    search_fields = ["name"]
+
     @action(detail=True)
     def entries(self, request, pk=None):
         template = self.get_object()
-        entries = template.entries.all()
+        entries = self.paginate_queryset(template.entries.all())
         serializer = GarbageCollectionScheduleTemplateEntrySerializer(
             entries, many=True
         )
 
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
 
     @action(detail=True, methods=["GET"], url_path=r"days/(?P<day>[0-9]+)/entries")
     def days(self, request, day, pk=None):
         template = self.get_object()
-        entries = template.entries.filter(day=day)
+        entries = self.paginate_queryset(template.entries.filter(day=day))
         serializer = GarbageCollectionScheduleTemplateEntrySerializer(
             entries, many=True
         )
 
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)

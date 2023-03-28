@@ -1,14 +1,11 @@
-from typing import Any
+from typing import Any, List
 
-import rest_framework.decorators
 from django.contrib.auth.models import AnonymousUser
-from rest_framework import mixins, permissions, status, viewsets
-from rest_framework.decorators import api_view
+from rest_framework import mixins, status, viewsets
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from drtrottoir.models import (
     ScheduleAssignment,
@@ -16,74 +13,11 @@ from drtrottoir.models import (
     ScheduleWorkEntry,
 )
 from drtrottoir.permissions import (
+    IsStudent,
     IsSuperstudentOrAdmin,
-    user_is_student,
     user_is_superstudent_or_admin,
 )
 from drtrottoir.serializers import ScheduleWorkEntrySerializer
-
-
-class ScheduleWorkEntryPermission(IsSuperstudentOrAdmin):
-    """Custom permission class for ScheduleWorkEntryViewSet. This permission class
-    is identical to IsSuperstudentOrAdmin except that POST also grants permission
-    to students.
-    """
-
-    def has_permission(self, request: Request, view: APIView) -> bool:
-        if request.method == "POST":
-            return user_is_student(request.user) or user_is_superstudent_or_admin(
-                request.user
-            )
-        # If not a post request, return default permissions
-        return super().has_permission(request, view)
-
-
-class ScheduleWorkEntryGetByIdPermission(permissions.BasePermission):
-    """Custom permission class to allow students to also get a schedule
-    work entry by id, if the work entry in question's creator is the
-    same as the id of the request user:
-    work_entry.creator.id==request.user.id
-    """
-
-    def has_permission(self, request: Request, view: APIView) -> bool:
-        if request.method == "GET":
-            if not (
-                user_is_student(request.user)
-                or user_is_superstudent_or_admin(request.user)
-            ):
-                return False
-            str_work_entry_id = view.kwargs.get("pk", None)
-            if str_work_entry_id is None:
-                # If no ID is given, we are requesting the list. In this case,
-                # refuse access
-                return False
-            work_entry_id = int(str_work_entry_id)
-            try:
-                work_entry = ScheduleWorkEntry.objects.get(pk=work_entry_id)
-                return work_entry.creator.id == request.user.id
-            except ScheduleWorkEntry.DoesNotExist:
-                return False
-        return False
-
-
-class ScheduleWorkEntryByUserIdPermission(permissions.BasePermission):
-    """Custom permission class for the retrieve_by_user_id method in
-    ScheduleWorkEntryViewSet, for the `schedule_work_entries/users/<user_id>/`
-    url. Allows super students and admins to GET work entries by user id, and
-    students if their user id matches the request user's id:
-    user_id==request.user.id
-
-    """
-
-    def has_permission(self, request: Request, view: APIView) -> bool:
-        # Super students or admins always have access
-        if user_is_superstudent_or_admin(request.user):
-            return True
-        # Students have access if request.user is the same as the user in the url
-        if not user_is_student(request.user):
-            return False
-        user_id = int(view.kwargs["user_id"])
-        return request.user.id == user_id
 
 
 class ScheduleWorkEntryViewSet(
@@ -125,14 +59,23 @@ class ScheduleWorkEntryViewSet(
 
     """  # noqa
 
-    permission_classes = [
-        IsAuthenticated,
-        (ScheduleWorkEntryPermission | ScheduleWorkEntryGetByIdPermission),
-    ]
+    permission_classes = [IsAuthenticated, IsStudent | IsSuperstudentOrAdmin]
 
-    queryset = ScheduleWorkEntry.objects.all()
     serializer_class = ScheduleWorkEntrySerializer
     parser_classes = (MultiPartParser,)
+
+    filterset_fields = ["creator", "entry_type"]
+    search_fields: List[str] = []
+
+    def get_queryset(self):
+        """
+        Admins and superstudents can access all work entries, while regular
+        users can only see their own.
+        """
+        if user_is_superstudent_or_admin(self.request.user):
+            return ScheduleWorkEntry.objects.all()
+
+        return ScheduleWorkEntry.objects.filter(creator=self.request.user.id)
 
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """Overrides the default POST method of mixins.CreateModelMixin to add
@@ -202,26 +145,3 @@ class ScheduleWorkEntryViewSet(
 
         # If at this point all checks passed, POST as mixins.CreateModelMixin
         return super().create(request, *args, **kwargs)
-
-    # Get schedule work entry by user id
-    @staticmethod
-    @api_view(["GET"])
-    @rest_framework.decorators.permission_classes(
-        [IsAuthenticated, ScheduleWorkEntryByUserIdPermission]
-    )
-    def retrieve_by_user_id(request, user_id):
-        """Custom GET method for the url `schedule_work_entries/users/<user_id>/`.
-
-        Args:
-            request (Request): A request containing the necessary fields.
-            user_id (int): The id of the user we're getting the schedule work
-            entries for.
-
-        Returns:
-            Response: The response containing all the schedule work entries as
-            requested, or a 404 message if the permission class doesn't allow it.
-
-        """
-        work_entries = ScheduleWorkEntry.objects.filter(creator=user_id)
-        serializer = ScheduleWorkEntrySerializer(work_entries, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)

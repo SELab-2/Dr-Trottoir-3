@@ -1,3 +1,5 @@
+from typing import List
+
 from rest_framework import permissions
 from rest_framework.viewsets import ModelViewSet
 
@@ -45,3 +47,6 @@ class GarbageTypeViewSet(ModelViewSet):
 
     queryset = GarbageType.objects.all()
     serializer_class = GarbageTypeSerializer
+
+    filterset_fields: List[str] = []
+    search_fields = ["name"]
