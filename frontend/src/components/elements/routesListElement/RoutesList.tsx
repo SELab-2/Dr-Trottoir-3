@@ -21,22 +21,22 @@ interface Route {
     id: number
     naam: string,
     regio: string,
-    distance: string
+    distance: number
 }
 
 const dummyRoutes:Route[] = [
-    {id: 7, naam: "Bavo", regio: "Gent", distance: "10km"},
-    {id: 1, naam: "Lander", regio: "Antwerpen", distance: "17km"},
-    {id: 2, naam: "Jef", regio: "Gent", distance: "8km"},
-    {id: 3, naam: "Maxim", regio: "Gent", distance: "69km"},
-    {id: 4, naam: "Pim", regio: "Antwerpen", distance: "42km"},
-    {id: 5, naam: "Joris", regio: "Gent", distance: "25km"},
-    {id: 6, naam: "Jahid", regio: "Gent", distance: "13km"},
-    {id: 0, naam: "route 2", regio: "Antwerpen", distance: "11km"},
-    {id: 8, naam: "route 3", regio: "Gent", distance: "42km"},
-    {id: 9, naam: "route 1", regio: "Gent", distance: "23km"},
-    {id: 10, naam: "centrum", regio: "Antwerpen", distance: "42km"},
-    {id: 11, naam: "zuid", regio: "Gent", distance: "7km"},
+    {id: 7, naam: "Bavo", regio: "Gent", distance: 10000},
+    {id: 1, naam: "Lander", regio: "Antwerpen", distance: 17050},
+    {id: 2, naam: "Jef", regio: "Gent", distance: 8000},
+    {id: 3, naam: "Maxim", regio: "Gent", distance: 6900},
+    {id: 4, naam: "Pim", regio: "Antwerpen", distance: 42000},
+    {id: 5, naam: "Joris", regio: "Gent", distance: 25000},
+    {id: 6, naam: "Jahid", regio: "Gent", distance: 13000},
+    {id: 0, naam: "route 2", regio: "Antwerpen", distance: 11000},
+    {id: 8, naam: "route 3", regio: "Gent", distance: 42000},
+    {id: 9, naam: "route 1", regio: "Gent", distance: 23000},
+    {id: 10, naam: "centrum", regio: "Antwerpen", distance: 42000},
+    {id: 11, naam: "zuid", regio: "Gent", distance: 7000},
 ]
 
 
@@ -46,7 +46,13 @@ export default function RoutesList() {
     const [region, setRegion] = React.useState("")
 
     const sortedRoutes = dummyRoutes.sort(function(first, second) {
-        return (first[sorttype as keyof Route] as string).localeCompare(second[sorttype as keyof Route] as string);})
+        const value = first[sorttype as keyof Route];
+        if(typeof value == "number"){
+            return value-(second[sorttype as keyof Route] as number);
+        }
+        return value.localeCompare(second[sorttype as keyof Route] as string);
+
+    })
     useEffect(() => {
         const element = document.getElementById(styles.scroll_style);
         if(element != null){
@@ -303,7 +309,7 @@ type ListItemProps = {
     id: number,
     current: number | null,
     naam: string,
-    distance: string,
+    distance: number,
     regio: string
     onClick: React.Dispatch<React.SetStateAction<number|null>>
 }
@@ -322,7 +328,7 @@ const ListItem = ({id, current, naam, distance, regio, onClick}: ListItemProps) 
                     {regio}
                 </div>
                 <div className={styles.small_item_text}>
-                    {distance}
+                    {(Math.round(distance/10))/100}km
                 </div>
             </Button>
         </div>

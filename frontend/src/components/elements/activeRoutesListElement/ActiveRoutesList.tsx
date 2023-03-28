@@ -21,21 +21,22 @@ interface LiveRoute {
     regio: string,
     distance: string,
     completion: number,
+    student: string,
 }
 
 const dummyRoutes:LiveRoute[] = [
-    {id: 7, naam: "Bavo", regio: "Gent", distance: "10km", completion: 0.10},
-    {id: 1, naam: "Lander", regio: "Antwerpen", distance: "17km", completion: 0.55},
-    {id: 2, naam: "Jef", regio: "Gent", distance: "8km", completion: 0.90},
-    {id: 3, naam: "Maxim", regio: "Gent", distance: "69km", completion: 0.50},
-    {id: 4, naam: "Pim", regio: "Antwerpen", distance: "42km", completion: 1},
-    {id: 5, naam: "Joris", regio: "Gent", distance: "25km", completion: 0.75},
-    {id: 6, naam: "Jahid", regio: "Gent", distance: "13km", completion: 0.33},
-    {id: 0, naam: "route 2", regio: "Antwerpen", distance: "11km", completion: 0.66},
-    {id: 8, naam: "route 3", regio: "Gent", distance: "42km", completion: 0.89},
-    {id: 9, naam: "route 1", regio: "Gent", distance: "23km", completion: 1},
-    {id: 10, naam: "centrum", regio: "Antwerpen", distance: "42km", completion: 0.5},
-    {id: 11, naam: "zuid", regio: "Gent", distance: "7km", completion: 0.5},
+    {id: 7, naam: "aardappel", regio: "Gent", distance: "10km", completion: 0.10, student: "Bavo"},
+    {id: 1, naam: "water", regio: "Antwerpen", distance: "17km", completion: 0.55, student: "Jef"},
+    {id: 2, naam: "aardpeer", regio: "Gent", distance: "8km", completion: 0.90, student: "Maxim"},
+    {id: 3, naam: "courgette", regio: "Gent", distance: "69km", completion: 0.50, student: "Jahid"},
+    {id: 4, naam: "wortel", regio: "Antwerpen", distance: "42km", completion: 1, student: "Pim"},
+    {id: 5, naam: "tomaat", regio: "Gent", distance: "25km", completion: 0.75, student: "Joris"},
+    {id: 6, naam: "aardappelsalade", regio: "Gent", distance: "13km", completion: 0.33, student: "Obama"},
+    {id: 0, naam: "route 2", regio: "Antwerpen", distance: "11km", completion: 0.66, student: "Dababy"},
+    {id: 8, naam: "route 3", regio: "Gent", distance: "42km", completion: 0.89, student: "Kanye"},
+    {id: 9, naam: "route 1", regio: "Gent", distance: "23km", completion: 1, student: "Big Ounce"},
+    {id: 10, naam: "centrum", regio: "Antwerpen", distance: "42km", completion: 0.5, student: "Babo"},
+    {id: 11, naam: "zuid", regio: "Gent", distance: "7km", completion: 0.5, student: "Cringe"},
 ]
 
 
@@ -45,7 +46,12 @@ export default function ActiveRoutesList() {
     const [region, setRegion] = React.useState("")
 
     const sortedRoutes = dummyRoutes.sort(function(first, second) {
-        return (first[sorttype as keyof LiveRoute] as string).localeCompare(second[sorttype as keyof LiveRoute] as string);})
+        const value = first[sorttype as keyof LiveRoute];
+        if(typeof value == "number"){
+            return value-(second[sorttype as keyof LiveRoute] as number);
+        }
+        return value.localeCompare(second[sorttype as keyof LiveRoute] as string);
+    })
     useEffect(() => {
         const element = document.getElementById(styles.scroll_style);
         if(element != null){
@@ -101,7 +107,9 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
     const sorttypes = [
         "naam",
         'regio',
-        'distance'
+        'distance',
+        "student",
+        "completion",
     ];
 
     const handleChangeSorttype = (event: SelectChangeEvent) => {
