@@ -26,8 +26,9 @@ const ignoreRoute = [
 
 export default function NavBar(props: any) {
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [nextPath, setNextPath] = useState<string | null>(null);
+
 
     useEffect(() => {
         router.events.on('routeChangeError', (e) => setLoading(false));
@@ -40,6 +41,7 @@ export default function NavBar(props: any) {
             router.events.off('routeChangeComplete', (e) => setLoading(true));
         };
     }, [router.events]);
+
 
     const hideNavBar = ignoreRoute.includes(router.asPath);
 
