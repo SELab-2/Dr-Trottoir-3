@@ -3,11 +3,11 @@ import styles from "@/styles/ListView.module.css";
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import {
-    Button,
+    Button, Checkbox,
     FormControl,
     IconButton,
     InputBase,
-    InputLabel,
+    InputLabel, ListItemText,
     MenuItem,
     Select,
     SelectChangeEvent,
@@ -39,11 +39,16 @@ const dummyRoutes:LiveRoute[] = [
     {id: 11, naam: "zuid", regio: "Gent", afstand: 7000, voortgang: 0.5, student: "Cringe"},
 ]
 
+const dummyRegions = [
+    'Gent',
+    'Antwerpen',
+    'Brussel',
+];
 
 export default function ActiveRoutesList() {
     const [current, setCurrent] = useState<number | null>(null);
     const [sorttype , setSorttype] = React.useState("naam")
-    const [region, setRegion] = React.useState("")
+    const [region, setRegion] = React.useState<string[]>(dummyRegions)
 
     const sortedRoutes = dummyRoutes.sort(function(first, second) {
         const value = first[sorttype as keyof LiveRoute];
@@ -80,26 +85,27 @@ export default function ActiveRoutesList() {
 type TopBarProps = {
     sorttype: string,
     setSorttype: React.Dispatch<React.SetStateAction<string>>
-    region: string,
-    setRegion: React.Dispatch<React.SetStateAction<string>>
+    region: string[],
+    setRegion: React.Dispatch<React.SetStateAction<string[]>>
 }
 
 function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
-    const dummyRegions = [
-        'Gent',
-        'Antwerpen',
-        'Brussel',
-    ];
+    const AllesSelected = region.length>=dummyRegions.length
 
+    const handleChangeRegion = (event: SelectChangeEvent<string[]>) => {
+        const value = event.target.value as string[];
+        setRegion(
+            (value.indexOf("Alles")>-1)?
+                (AllesSelected)?
+                    []:
+                    dummyRegions:
+                value    );
+      };
 
     const dummyTypes = [
         "actief",
         "compleet"
     ]
-
-    const handleChangeRegion = (event: SelectChangeEvent) => {
-        setRegion(event.target.value as string);
-    };
 
     const sorttypes = [
         "naam",
@@ -172,18 +178,21 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
 
                     <div className={styles.filters}>
                         <FormControl sx={{ m: 1, minWidth: 120 }}>
-                            <InputLabel>regio</InputLabel>
                             <Select
+                                displayEmpty={true}
+                                multiple
                                 value={region}
                                 onChange={handleChangeRegion}
-                                label="Regio"
+                                renderValue={() => "regio"}
                             >
-                                <MenuItem value="">
-                                    <em>Alle</em>
+                                <MenuItem key={"Alles "+((AllesSelected)?"deselecteren":"selecteren")} value={"Alles"}>
+                                    <Checkbox style ={{color: "#1C1C1C",}} checked={AllesSelected} />
+                                        <ListItemText style ={{width: 150, }} primary={"Alles "+((AllesSelected)?"deselecteren":"selecteren")} />
                                 </MenuItem>
                                 {dummyRegions.map((option) => (
-                                    <MenuItem key={option} value={option} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
-                                        {option}
+                                    <MenuItem key={option} value={option}>
+                                        <Checkbox style ={{color: "#1C1C1C",}} checked={region.indexOf(option) > -1} />
+                                        <ListItemText primaryTypographyProps={{ style: { whiteSpace: "normal", wordBreak: "break-all" } }}  primary={option} />
                                     </MenuItem>
                                 ))}
                             </Select>
