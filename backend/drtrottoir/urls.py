@@ -95,6 +95,16 @@ urlpatterns = [
         settings.BASE_PATH + "api-auth/",
         include("rest_framework.urls", namespace="rest_framework"),
     ),
+        path(
+        settings.BASE_PATH + "auth/token/",
+        TokenObtainPairView.as_view(),
+        name="token_obtain_pair",
+    ),
+    path(
+        settings.BASE_PATH + "auth/token/refresh/",
+        TokenRefreshView.as_view(),
+        name="token_refresh",
+    ),
 ]
 
 if settings.DEBUG:
