@@ -41,7 +41,9 @@ async function fetcher<T>(token: string, url: string): Promise<T> {
     return fetch(url, {
         headers: {
             'Authorization': `Bearer ${token}`,
-        }}).then((res) => res.json<T>());
+        }}).then((res) => {
+        return res.json() as Promise<T>;
+    });
 }
 
 /**
@@ -50,7 +52,12 @@ async function fetcher<T>(token: string, url: string): Promise<T> {
  * **/
 export function get<T>(route: Api): SWRResponse<T, any> {
     const {data: session} = useSession();
-    return useSWR<T>([session.accessToken, route], fetcher);
+    if (session !== null) {
+        // @ts-ignore
+        return useSWR<T>([session.accessToken, route], fetcher);
+    } else {
+        return useSWR<T>(['', route], fetcher);
+    }
 }
 
 /**
@@ -60,9 +67,15 @@ export function get<T>(route: Api): SWRResponse<T, any> {
  * **/
 export function getParams<T>(route: Api, params: any): SWRResponse<T, any> {
     for (const property in params) {
+        // @ts-ignore
         route = route.replace(':' + property, params[property]);
     }
 
     const {data: session} = useSession();
-    return useSWR<T>([session.accessToken, route], fetcher);
+    if (session !== null) {
+        // @ts-ignore
+        return useSWR<T>([session.accessToken, route], fetcher);
+    } else {
+        return useSWR<T>(['', route], fetcher);
+    }
 }
