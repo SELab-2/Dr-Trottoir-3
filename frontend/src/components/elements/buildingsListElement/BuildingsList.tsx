@@ -291,7 +291,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                 renderValue={() => "regio"}
                             >
                                 <MenuItem key={"Alles "+((AllesSelected)?"deselecteren":"selecteren")} value={"Alles"}>
-                                    <Checkbox style ={{color: "#1C1C1C",}} checked={region.length >= dummyRegions.length} />
+                                    <Checkbox style ={{color: "#1C1C1C",}} checked={AllesSelected} />
                                         <ListItemText style ={{width: 150, }} primary={"Alles "+((AllesSelected)?"deselecteren":"selecteren")} />
                                 </MenuItem>
                                 {dummyRegions.map((option) => (

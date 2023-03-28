@@ -4,11 +4,11 @@ import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import {
     Backdrop,
-    Button,
+    Button, Checkbox,
     FormControl,
     IconButton,
     InputBase,
-    InputLabel,
+    InputLabel, ListItemText,
     MenuItem,
     Select,
     SelectChangeEvent, TextField,
@@ -19,25 +19,35 @@ import {ClickAwayListener} from "@mui/base";
 
 interface User {
     id: number
-    naam: string,
-    regio: string,
-    type: string
+    voornaam: string,
+    achternaam: string,
+    "uren gewerkt": number,
+    type: string,
+    regio: string
 }
 
+
 const dummyUsers:User[] = [
-    {id: 7, naam: "Bavo", type: "student", regio: "Gent"},
-    {id: 1, naam: "Lander", type: "superstudent", regio: "Antwerpen"},
-    {id: 2, naam: "Jef", type: "admin", regio: "Gent"},
-    {id: 3, naam: "Maxim", type: "syndicus", regio: "Gent"},
-    {id: 4, naam: "Pim", type: "syndicus", regio: "Antwerpen"},
-    {id: 5, naam: "Joris", type: "student", regio: "Gent"},
-    {id: 6, naam: "Jahid", type: "student", regio: "Gent"},
-    {id: 0, naam: "persoon 2", type: "admin", regio: "Antwerpen"},
-    {id: 8, naam: "persoon 3", type: "syndicus", regio: "Gent"},
-    {id: 9, naam: "persoon 1", type: "superstudent", regio: "Gent"},
-    {id: 10, naam: "Trump", type: "superstudent", regio: "Antwerpen"},
-    {id: 11, naam: "Biden", type: "superstudent", regio: "Gent"},
+    {id: 7, voornaam: "Bavo", achternaam:"Verstraeten", "uren gewerkt":15, type: "student", regio: "Gent"},
+    {id: 1, voornaam: "Lander", achternaam:"Durie", "uren gewerkt":30, type: "superstudent", regio: "Antwerpen"},
+    {id: 2, voornaam: "Jef", achternaam:"Roosens", "uren gewerkt":6, type: "admin", regio: "Gent"},
+    {id: 3, voornaam: "Maxim", achternaam:"Stockmans", "uren gewerkt":45, type: "syndicus", regio: "Gent"},
+    {id: 4, voornaam: "Pim", achternaam:"Pieters", "uren gewerkt":15, type: "syndicus", regio: "Antwerpen"},
+    {id: 5, voornaam: "Joris", achternaam:"Peeters", "uren gewerkt":6, type: "student", regio: "Gent"},
+    {id: 6, voornaam: "Jahid", achternaam:"Chetti", "uren gewerkt":15, type: "student", regio: "Gent"},
+    {id: 0, voornaam: "persoon 2", achternaam:"Foo", "uren gewerkt":2, type: "admin", regio: "Antwerpen"},
+    {id: 8, voornaam: "persoon 3", achternaam:"Bar", "uren gewerkt":3, type: "syndicus", regio: "Gent"},
+    {id: 9, voornaam: "persoon 1", achternaam:"Baz", "uren gewerkt":1, type: "superstudent", regio: "Gent"},
+    {id: 10, voornaam: "Donald", achternaam:"Trump", "uren gewerkt":99, type: "superstudent", regio: "Antwerpen"},
+    {id: 11, voornaam: "Joe", achternaam:"Biden", "uren gewerkt":1, type: "superstudent", regio: "Gent"},
 ]
+
+const dummyType = [
+    "student",
+    "superstudent",
+    "admin",
+    "syndicus",
+];
 
 const dummyRegions = [
     'Gent',
@@ -45,25 +55,18 @@ const dummyRegions = [
     'Brussel',
 ];
 
-const dummyTypes = [
-    'student',
-    'superstudent',
-    'admin',
-    'syndicus',
-];
-
-export default function UserList() {
+export default function UsersList() {
     const [current, setCurrent] = useState<number | null>(null);
-    const [sorttype , setSorttype] = React.useState("naam")
-    const [region, setRegion] = React.useState("")
-    const [type, setType] = React.useState("")
-
+    const [sorttype , setSorttype] = React.useState("uren gewerkt");
+    const [region, setRegion] = React.useState<string[]>(dummyRegions);
+    const [type, setType] = React.useState<string[]>(dummyType);
     const sortedUsers = dummyUsers.sort(function(first, second) {
-        return (first[sorttype as keyof User] as string).localeCompare(second[sorttype as keyof User] as string);})
+        console.log(String(5).localeCompare("5"))
+        return String(first[sorttype as keyof User]).localeCompare(String(second[sorttype as keyof User]));})
     useEffect(() => {
         const element = document.getElementById(styles.scroll_style);
         if(element != null){
-            element.scrollTo({top: 0, behavior: 'smooth'})
+            element.scrollTo({top: 0, behavior: 'smooth'});
         }
       }, [sorttype,region]);
     return (
@@ -71,15 +74,15 @@ export default function UserList() {
             <div className={styles.full_outer}>
 
                 <TopBar sorttype={sorttype} setSorttype={setSorttype} region={region} setRegion={setRegion} type={type} setType={setType}></TopBar>
-                <div className={styles.under_columns}>
-                    <div className={styles.list_wrapper}>
-                        <div className={styles.list_bar} id={styles.scroll_style}>
-                            {sortedUsers.map(x => <ListItem
-                                id={x.id} current={current} naam={x.naam} type={x.type} regio={x.regio} onClick={setCurrent} />)}
-                        </div>
+            <div className={styles.under_columns}>
+                <div className={styles.list_wrapper}>
+                    <div className={styles.list_bar} id={styles.scroll_style}>
+                        {sortedUsers.map(x => <ListItem
+                            id={x.id} current={current} naam={x.voornaam+' .'+x.achternaam[0]} type={x.type} regio={x.regio} onClick={setCurrent} />)}
                     </div>
                 </div>
             </div>
+        </div>
         </>
     );
 }
@@ -87,32 +90,42 @@ export default function UserList() {
 
 type TopBarProps = {
     sorttype: string,
-    setSorttype: React.Dispatch<React.SetStateAction<string>>
-    region: string,
-    setRegion: React.Dispatch<React.SetStateAction<string>>
-    type: string,
-    setType: React.Dispatch<React.SetStateAction<string>>
+    setSorttype: React.Dispatch<React.SetStateAction<string>>,
+    region: string[],
+    setRegion: React.Dispatch<React.SetStateAction<string[]>>,
+    type: string[],
+    setType: React.Dispatch<React.SetStateAction<string[]>>,
 }
 
 function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBarProps){
-    const regions = [
-        'Gent',
-        'Antwerpen',
-        'Brussel',
-    ];
+    const RegionAllesSelected = region.length>=dummyRegions.length
 
-    const handleChangeRegion = (event: SelectChangeEvent) => {
-        setRegion(event.target.value as string);
-    };
+    const handleChangeRegion = (event: SelectChangeEvent<string[]>) => {
+        const value = event.target.value as string[];
+        setRegion(
+            (value.indexOf("Alles")>-1)?
+                (RegionAllesSelected)?
+                    []:
+                    dummyRegions:
+                value    );
+      };
 
-    const handleChangeType = (event: SelectChangeEvent) => {
-        setType(event.target.value as string);
-    };
+    const TypeAllesSelected = type.length>=dummyType.length
+
+    const handleChangeType = (event: SelectChangeEvent<string[]>) => {
+        const value = event.target.value as string[];
+        setType(
+            (value.indexOf("Alles")>-1)?
+                (TypeAllesSelected)?
+                    []:
+                    dummyType:
+                value    );
+      };
 
     const sorttypes = [
-        "naam",
-        'type',
-        'regio'
+        "voornaam",
+        'achternaam',
+        'uren gewerkt',
     ];
 
 
@@ -125,6 +138,7 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
     const handleChangeSearchEntry = (event: SelectChangeEvent) => {
         setSearchEntry(event.target.value as string);
     };
+
 
     const [open, setOpen] = React.useState(false);
 
@@ -144,9 +158,9 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
 
     }
 
-    const [formName, setFormName] = React.useState("")
-    const handleChangeFormName = (event: SelectChangeEvent) => {
-        setFormName(event.target.value as string);
+    const [formFirstName, setFormFirstName] = React.useState("")
+    const handleChangeFormFirstName = (event: SelectChangeEvent) => {
+        setFormFirstName(event.target.value as string);
     };
 
     const [formType, setFormType] = React.useState("")
@@ -154,9 +168,9 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
         setFormType(event.target.value as string);
     };
 
-    const [formRegion, setFormRegion] = React.useState("")
-    const handleChangeFormRegion = (event: SelectChangeEvent) => {
-        setFormRegion(event.target.value as string);
+    const [formSurName, setFormSurName] = React.useState("")
+    const handleChangeFormSurName = (event: SelectChangeEvent) => {
+        setFormSurName(event.target.value as string);
     };
 
     const Form = ()=>{
@@ -173,28 +187,20 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
                             <div className={styles.field}>
                                 <TextField
                                     required
-                                    label="naam"
-                                    value={formName}
-                                    onChange={handleChangeFormName}
+                                    label="voornaam"
+                                    value={formFirstName}
+                                    onChange={handleChangeFormFirstName}
                                 />
                             </div>
-                            <FormControl sx={{minWidth: 150 }}>
-                                <InputLabel>regio</InputLabel>
-                                <Select
-                                    value={formRegion}
-                                    onChange={handleChangeFormRegion}
-                                    label="regio"
-                                    defaultValue=""
-                                    MenuProps={{ disablePortal: true }}
-                                >
-                                    {dummyRegions.map((option) => (
-                                        <MenuItem id="menuitem" key={option} value={option}>
-                                            {option}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                            <FormControl sx={{minWidth: 150 }}>
+                            <div className={styles.field}>
+                                <TextField
+                                    required
+                                    label="achternaam"
+                                    value={formSurName}
+                                    onChange={handleChangeFormSurName}
+                                />
+                            </div>
+                            <FormControl sx={{minWidth: 150 }} required>
                                 <InputLabel>type</InputLabel>
                                 <Select
                                     value={formType}
@@ -203,7 +209,7 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
                                     defaultValue=""
                                     MenuProps={{ disablePortal: true }}
                                 >
-                                    {dummyTypes.map((option) => (
+                                    {dummyType.map((option) => (
                                         <MenuItem id="menuitem" key={option} value={option}>
                                             {option}
                                         </MenuItem>
@@ -229,7 +235,7 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
         <div  className={styles.topBar}>
             <div className={styles.title}>
                 <h1>Gebruikers</h1>
-                <p>{dummyUsers.length} gebruikers gevonden</p>
+                <p>{dummyUsers.length} gevonden resultaten</p>
             </div>
 
             <div className={styles.search}>
@@ -261,7 +267,7 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
                                 label="Sorteer op"
                             >
                                 {sorttypes.map((option) => (
-                                    <MenuItem key={option} value={option}>
+                                    <MenuItem key={option} value={option} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
                                         {option}
                                     </MenuItem>
                                 ))}
@@ -271,38 +277,43 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
 
                     <div className={styles.filters}>
                         <FormControl sx={{ m: 1, minWidth: 120 }}>
-                            <InputLabel>regio</InputLabel>
                             <Select
+                                displayEmpty={true}
+                                multiple
                                 value={region}
                                 onChange={handleChangeRegion}
-                                label="Regio"
+                                renderValue={() => "regio"}
                             >
-                                <MenuItem value="">
-                                    <em>Alle</em>
+                                <MenuItem key={"Alles "+((RegionAllesSelected)?"deselecteren":"selecteren")} value={"Alles"}>
+                                    <Checkbox style ={{color: "#1C1C1C",}} checked={RegionAllesSelected} />
+                                        <ListItemText style ={{width: 150, }} primary={"Alles "+((RegionAllesSelected)?"deselecteren":"selecteren")} />
                                 </MenuItem>
                                 {dummyRegions.map((option) => (
                                     <MenuItem key={option} value={option}>
-                                        {option}
+                                        <Checkbox style ={{color: "#1C1C1C",}} checked={region.indexOf(option) > -1} />
+                                        <ListItemText primaryTypographyProps={{ style: { whiteSpace: "normal", wordBreak: "break-all" } }}  primary={option} />
                                     </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
                     </div>
-
                     <div className={styles.filters}>
                         <FormControl sx={{ m: 1, minWidth: 120 }}>
-                            <InputLabel>type</InputLabel>
                             <Select
+                                displayEmpty={true}
+                                multiple
                                 value={type}
-                                onChange={handleChangeRegion}
-                                label="type"
+                                onChange={handleChangeType}
+                                renderValue={() => "type"}
                             >
-                                <MenuItem value="">
-                                    <em>Alle</em>
+                                <MenuItem key={"Alles "+((TypeAllesSelected)?"deselecteren":"selecteren")} value={"Alles"}>
+                                    <Checkbox style ={{color: "#1C1C1C",}} checked={TypeAllesSelected} />
+                                        <ListItemText style ={{width: 150, }} primary={"Alles "+((TypeAllesSelected)?"deselecteren":"selecteren")} />
                                 </MenuItem>
-                                {dummyTypes.map((option) => (
+                                {dummyType.map((option) => (
                                     <MenuItem key={option} value={option}>
-                                        {option}
+                                        <Checkbox style ={{color: "#1C1C1C",}} checked={type.indexOf(option) > -1} />
+                                        <ListItemText primaryTypographyProps={{ style: { whiteSpace: "normal", wordBreak: "break-all" } }}  primary={option} />
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -318,7 +329,6 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
                     open={open}
                     invisible={false}
                 >
-                    {/*<Form></Form>*/}
                     {Form()}
                 </Backdrop>
             </div>
