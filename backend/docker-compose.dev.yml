@@ -14,6 +14,7 @@ services:
       - "8000:8000"
     environment:
       - SECRET_KEY=devsecretkey
+      - BASE_PATH=api/
       - DEBUG=1
       - DB_HOST=db
       - DB_NAME=devdb
@@ -28,5 +29,9 @@ services:
       - POSTGRES_DB=devdb
       - POSTGRES_USER=hello_django
       - POSTGRES_PASSWORD=hello_django
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
     ports:
       - "5432:5432"
+volumes:
+  postgres-data:
