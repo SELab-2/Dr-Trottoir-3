@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import MediaQuery from 'react-responsive';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import {useRouter} from 'next/router';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import RouteIcon from '@mui/icons-material/Route';
@@ -25,7 +25,7 @@ export default function Navbar(props: any) {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [nextPath, setNextPath] = useState<string | null>(null);
-
+    const mobileView = useMediaQuery('(max-width:450px)');
 
     useEffect(() => {
         router.events.on('routeChangeError', (e) => setLoading(false));
@@ -45,17 +45,16 @@ export default function Navbar(props: any) {
     if (hideNavBar) {
         return props.children;
     } else {
-        return (
-            <>
-                <MediaQuery query='(min-device-width: 450px)'>
-                    <DesktopNavbarComponent loading={loading} nextPath={nextPath} setNextPath={setNextPath}
-                        router={router} children={props.children} topButtons={topButtons}/>
-                </MediaQuery>
-                <MediaQuery query='(max-device-width: 450px)'>
-                    <MobileNavbarComponent loading={loading} nextPath={nextPath} setNextPath={setNextPath}
-                        router={router} children={props.children} topButtons={topButtons}/>
-                </MediaQuery>
-            </>
-        );
+        if (mobileView) {
+            return (
+                <MobileNavbarComponent loading={loading} nextPath={nextPath} setNextPath={setNextPath}
+                    router={router} children={props.children} topButtons={topButtons}/>
+            );
+        } else {
+            return (
+                <DesktopNavbarComponent loading={loading} nextPath={nextPath} setNextPath={setNextPath}
+                    router={router} children={props.children} topButtons={topButtons}/>
+            );
+        }
     }
 }

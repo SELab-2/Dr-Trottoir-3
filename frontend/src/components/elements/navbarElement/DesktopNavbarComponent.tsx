@@ -1,6 +1,6 @@
 import React from 'react';
 import Router from 'next/router';
-import styles from '@/components/elements/navbarElement/navbar.desktop.module.css';
+import styles from './navbar.desktop.module.css';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
