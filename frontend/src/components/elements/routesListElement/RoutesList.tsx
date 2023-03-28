@@ -66,10 +66,7 @@ export default function RoutesList() {
                         </div>
                     </div>
                 </div>
-            </div><script type="text/javascript">
-            window.scrollTo(0)
-            document.getElementById(styles.scroll_style).scrollTop=50
-        </script>
+            </div>
         </>
     );
 }
@@ -179,7 +176,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                     MenuProps={{ disablePortal: true }}
                                 >
                                     {dummyRegions.map((option) => (
-                                        <MenuItem id="menuitem" key={option} value={option}>
+                                        <MenuItem id="menuitem" key={option} value={option} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
                                             {option}
                                         </MenuItem>
                                     ))}
@@ -236,7 +233,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                 label="Sorteer op"
                             >
                                 {sorttypes.map((option) => (
-                                    <MenuItem key={option} value={option}>
+                                    <MenuItem key={option} value={option} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
                                         {option}
                                     </MenuItem>
                                 ))}
@@ -256,7 +253,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                     <em>Alle</em>
                                 </MenuItem>
                                 {dummyRegions.map((option) => (
-                                    <MenuItem key={option} value={option}>
+                                    <MenuItem key={option} value={option} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
                                         {option}
                                     </MenuItem>
                                 ))}
@@ -275,7 +272,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                     <em>Alle</em>
                                 </MenuItem>
                                 {dummyTypes.map((option) => (
-                                    <MenuItem key={option} value={option}>
+                                    <MenuItem key={option} value={option} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
                                         {option}
                                     </MenuItem>
                                 ))}

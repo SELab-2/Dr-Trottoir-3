@@ -213,7 +213,7 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
                                     MenuProps={{ disablePortal: true }}
                                 >
                                     {dummyType.map((option) => (
-                                        <MenuItem id="menuitem" key={option} value={option}>
+                                        <MenuItem id="menuitem" key={option} value={option} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
                                             {option}
                                         </MenuItem>
                                     ))}

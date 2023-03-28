@@ -189,7 +189,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                     MenuProps={{ disablePortal: true }}
                                 >
                                     {dummyRegions.map((option) => (
-                                        <MenuItem id="menuitem" key={option} value={option}>
+                                        <MenuItem id="menuitem" key={option} value={option} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
                                             {option}
                                         </MenuItem>
                                     ))}
@@ -216,7 +216,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                         <em>geen</em>
                                     </MenuItem>
                                     {dummySindici.map((option) => (
-                                        <MenuItem id="menuitem" key={option.name} value={option.name}>
+                                        <MenuItem id="menuitem" key={option.name} value={option.name} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
                                             {option.name}
                                         </MenuItem>
                                     ))}
