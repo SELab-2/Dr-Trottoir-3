@@ -177,9 +177,22 @@ display: flex;
     font-weight: bolder;
 }
 
-.very_big_item_text {
-    font-size: 125%;
-    font-weight: bolder;
+
+@media screen and (min-width:800px) {
+
+    .very_big_item_text {
+        font-size: 125%;
+        font-weight: bolder;
+                word-break: keep-all;
+    }
+}
+
+@media screen and (max-width:800px) {
+
+    .very_big_item_text {
+        font-size: 75%;
+        font-weight: bolder;
+    }
 }
 
 .small_item_text {
