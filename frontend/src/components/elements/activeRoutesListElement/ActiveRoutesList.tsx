@@ -19,24 +19,24 @@ interface LiveRoute {
     id: number
     naam: string,
     regio: string,
-    distance: number,
-    completion: number,
+    afstand: number,
+    voortgang: number,
     student: string,
 }
 
 const dummyRoutes:LiveRoute[] = [
-    {id: 7, naam: "aardappel", regio: "Gent", distance: 10000, completion: 0.10, student: "Bavo"},
-    {id: 1, naam: "water", regio: "Antwerpen", distance: 17000, completion: 0.55, student: "Jef"},
-    {id: 2, naam: "aardpeer", regio: "Gent", distance: 8000, completion: 0.90, student: "Maxim"},
-    {id: 3, naam: "courgette", regio: "Gent", distance: 69000, completion: 0.50, student: "Jahid"},
-    {id: 4, naam: "wortel", regio: "Antwerpen", distance: 42000, completion: 1, student: "Pim"},
-    {id: 5, naam: "tomaat", regio: "Gent", distance: 25000, completion: 0.75, student: "Joris"},
-    {id: 6, naam: "aardappelsalade", regio: "Gent", distance: 13000, completion: 0.33, student: "Obama"},
-    {id: 0, naam: "route 2", regio: "Antwerpen", distance: 11000, completion: 0.66, student: "Dababy"},
-    {id: 8, naam: "route 3", regio: "Gent", distance: 42000, completion: 0.89, student: "Kanye"},
-    {id: 9, naam: "route 1", regio: "Gent", distance: 23000, completion: 1, student: "Big Ounce"},
-    {id: 10, naam: "centrum", regio: "Antwerpen", distance: 42000, completion: 0.5, student: "Babo"},
-    {id: 11, naam: "zuid", regio: "Gent", distance: 7000, completion: 0.5, student: "Cringe"},
+    {id: 7, naam: "aardappel", regio: "Gent", afstand: 10000, voortgang: 0.10, student: "Bavo"},
+    {id: 1, naam: "water", regio: "Antwerpen", afstand: 17000, voortgang: 0.55, student: "Jef"},
+    {id: 2, naam: "aardpeer", regio: "Gent", afstand: 8000, voortgang: 0.90, student: "Maxim"},
+    {id: 3, naam: "courgette", regio: "Gent", afstand: 69000, voortgang: 0.50, student: "Jahid"},
+    {id: 4, naam: "wortel", regio: "Antwerpen", afstand: 42000, voortgang: 1, student: "Pim"},
+    {id: 5, naam: "tomaat", regio: "Gent", afstand: 25000, voortgang: 0.75, student: "Joris"},
+    {id: 6, naam: "aardappelsalade", regio: "Gent", afstand: 13000, voortgang: 0.33, student: "Obama"},
+    {id: 0, naam: "route 2", regio: "Antwerpen", afstand: 11000, voortgang: 0.66, student: "Dababy"},
+    {id: 8, naam: "route 3", regio: "Gent", afstand: 42000, voortgang: 0.89, student: "Kanye"},
+    {id: 9, naam: "route 1", regio: "Gent", afstand: 23000, voortgang: 1, student: "Big Ounce"},
+    {id: 10, naam: "centrum", regio: "Antwerpen", afstand: 42000, voortgang: 0.5, student: "Babo"},
+    {id: 11, naam: "zuid", regio: "Gent", afstand: 7000, voortgang: 0.5, student: "Cringe"},
 ]
 
 
@@ -67,7 +67,7 @@ export default function ActiveRoutesList() {
                     <div className={styles.list_wrapper}>
                         <div className={styles.list_bar} id={styles.scroll_style}>
                             {sortedRoutes.map(x => <ListItem
-                                id={x.id} current={current} naam={x.naam} distance={x.distance} regio={x.regio} completion={x.completion} onClick={setCurrent} />)}
+                                id={x.id} current={current} naam={x.naam} afstand={x.afstand} regio={x.regio} voortgang={x.voortgang} onClick={setCurrent} />)}
                         </div>
                     </div>
                 </div>
@@ -104,9 +104,9 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
     const sorttypes = [
         "naam",
         'regio',
-        'distance',
+        'afstand',
         "student",
-        "completion",
+        "voortgang",
     ];
 
     const handleChangeSorttype = (event: SelectChangeEvent) => {
@@ -221,13 +221,13 @@ type ListItemProps = {
     id: number,
     current: number | null,
     naam: string,
-    distance: number,
+    afstand: number,
     regio: string,
-    completion: number,
+    voortgang: number,
     onClick: React.Dispatch<React.SetStateAction<number|null>>
 }
 
-const ListItem = ({id, current, naam, distance, regio, completion, onClick}: ListItemProps) => {
+const ListItem = ({id, current, naam, afstand, regio, voortgang, onClick}: ListItemProps) => {
     const isCurrent = id == current
     return (
 
@@ -244,13 +244,13 @@ const ListItem = ({id, current, naam, distance, regio, completion, onClick}: Lis
                                 {regio}
                             </div>
                             <div className={styles.small_item_text}>
-                                {(Math.round(distance/10))/100}km
+                                {(Math.round(afstand/10))/100}km
                             </div>
                         </div>
                         <div className={styles.listItemRightSide}>
-                            {conditionalCheckmark(completion === 1)}
+                            {conditionalCheckmark(voortgang === 1)}
                             <div className={styles.very_big_item_text}>
-                                {Math.round(completion*100)}%
+                                {Math.round(voortgang*100)}%
                             </div>
                         </div>
                     </div>
