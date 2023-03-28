@@ -8,6 +8,7 @@ services:
     volumes:
       - static-data:/vol/web
     environment:
+      - DEBUG=0
       - BASE_PATH=api/
       - SECRET_KEY=${SECRET_KEY}
       - DB_HOST=db
