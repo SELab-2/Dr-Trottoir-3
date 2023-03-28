@@ -1,6 +1,5 @@
 import {Html, Head, Main, NextScript} from 'next/document';
 
-// eslint-disable-next-line require-jsdoc
 export default function Document() {
     return (
         <Html lang="en">

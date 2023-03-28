@@ -110,6 +110,6 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(
-        settings.BASE_PATH + settings.MEDIA_URL,
+        settings.MEDIA_URL,
         document_root=settings.MEDIA_ROOT,
     )
