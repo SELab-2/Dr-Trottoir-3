@@ -179,7 +179,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                     onChange={handleChangeFormName}
                                 />
                             </div>
-                            <FormControl sx={{minWidth: 150 }}>
+                            <FormControl required sx={{minWidth: 150 }}>
                                 <InputLabel>regio</InputLabel>
                                 <Select
                                     value={formRegion}

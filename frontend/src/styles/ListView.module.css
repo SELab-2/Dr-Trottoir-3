@@ -190,13 +190,10 @@ display: flex;
     display: flex;
     flex-direction: column;
     height: 100%;
-    /*gap: 1vh;*/
-    /*padding-top: 10px;*/
+    padding: 20px;
 }
 
 .formCenter{
-    /*width: 400px;*/
-    /*height: 600px;*/
     background-color: white;
     border-radius: 5px;
     display: flex;
