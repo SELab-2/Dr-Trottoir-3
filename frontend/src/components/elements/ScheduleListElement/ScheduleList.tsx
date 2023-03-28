@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import styles from "@/styles/ListView.module.css";
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import {
-    Button,
     FormControl,
     IconButton,
     InputBase,
@@ -12,8 +11,6 @@ import {
     Select,
     SelectChangeEvent, TextField,
 } from "@mui/material";
-import SortIcon from '@mui/icons-material/Sort';
-import CheckIcon from '@mui/icons-material/Check';
 
 
 export default function SchedulesList() {
@@ -100,8 +97,6 @@ function TopBar({region, setRegion}:TopBarProps){
                 </div>
             </div>
         </div>
-
-
     );
 }
 
