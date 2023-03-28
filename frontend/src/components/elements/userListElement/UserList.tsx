@@ -57,12 +57,15 @@ const dummyRegions = [
 
 export default function UsersList() {
     const [current, setCurrent] = useState<number | null>(null);
-    const [sorttype , setSorttype] = React.useState("uren gewerkt");
+    const [sorttype , setSorttype] = React.useState("voornaam");
     const [region, setRegion] = React.useState<string[]>(dummyRegions);
     const [type, setType] = React.useState<string[]>(dummyType);
     const sortedUsers = dummyUsers.sort(function(first, second) {
-        console.log(String(5).localeCompare("5"))
-        return String(first[sorttype as keyof User]).localeCompare(String(second[sorttype as keyof User]));})
+        const value = first[sorttype as keyof User]
+        if(typeof value == "number"){
+            return value-(second[sorttype as keyof User] as number);
+        }
+        return value.localeCompare(second[sorttype as keyof User] as string);})
     useEffect(() => {
         const element = document.getElementById(styles.scroll_style);
         if(element != null){
