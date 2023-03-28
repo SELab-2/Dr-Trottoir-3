@@ -158,10 +158,14 @@ def test_schedule_work_entry_get_by_user_empty_returns_empty_list_and_200() -> N
 
 
 @pytest.mark.django_db
-def test_schedule_work_entry_get_list_allowed_superstudent_admin() -> None:
+def test_schedule_work_entry_get_list_allowed_student_superstudent_admin() -> None:
+    student = insert_dummy_student("student@gmail.com", is_super_student=False)
     super_student = insert_dummy_student("super@gmail.com", is_super_student=True)
     admin = insert_dummy_admin("admin@gmail.com")
     client = APIClient()
+
+    client.force_login(student.user)
+    response_student = client.get("/schedule_work_entries/")
 
     client.force_login(super_student.user)
     response_super_student = client.get("/schedule_work_entries/")
@@ -169,27 +173,23 @@ def test_schedule_work_entry_get_list_allowed_superstudent_admin() -> None:
     client.force_login(admin.user)
     response_admin = client.get("/schedule_work_entries/")
 
+    assert response_student.status_code == 200
     assert response_super_student.status_code == 200
     assert response_admin.status_code == 200
 
 
 @pytest.mark.django_db
 def test_schedule_work_entry_get_list_not_allowed_anonymous_student_syndicus() -> None:
-    student = insert_dummy_student("super@gmail.com", is_super_student=False)
     syndicus = insert_dummy_syndicus(insert_dummy_user("syndicus@gmail.com"))
     client = APIClient()
 
     client.logout()
     response_anonymous = client.get("/schedule_work_entries/")
 
-    client.force_login(student.user)
-    response_student = client.get("/schedule_work_entries/")
-
     client.force_login(syndicus.user)
     response_syndicus = client.get("/schedule_work_entries/")
 
     assert response_anonymous.status_code == 403
-    assert response_student.status_code == 200
     assert response_syndicus.status_code == 403
 
 
@@ -319,9 +319,9 @@ def test_schedule_work_entry_get_non_existent_permissions() -> None:
     response_syndicus = client.get(f"/schedule_work_entries/{non_existent_entry_id}/")
 
     assert response_anonymous.status_code == 403
-    assert response_student.status_code == 404
     assert response_syndicus.status_code == 403
 
+    assert response_student.status_code == 404
     assert response_super.status_code == 404
     assert response_admin.status_code == 404
 
@@ -359,8 +359,8 @@ def test_schedule_work_entry_get_by_user_matching_user_allowed_non_matching_user
 def test_schedule_work_entry_forbidden_methods() -> None:
     """
     The forbidden methods for list are: PUT, PATCH, DELETE
-    Anonymous user, syndicus and student gets 403
-    Student and admin get 405
+    Anonymous user and syndicus get 403
+    Student, super student and admin get 405
     """
     student = insert_dummy_student("student@gmail.com", is_super_student=False)
     super_student = insert_dummy_student(
@@ -382,7 +382,7 @@ def test_schedule_work_entry_forbidden_methods() -> None:
     assert client.patch("/schedule_work_entries/").status_code == 403
     assert client.delete("/schedule_work_entries/").status_code == 403
 
-    # Student gets 403
+    # Student gets 405
     client.force_login(student.user)
     assert client.put("/schedule_work_entries/").status_code == 405
     assert client.patch("/schedule_work_entries/").status_code == 405
