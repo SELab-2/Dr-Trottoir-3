@@ -92,17 +92,6 @@ urlpatterns = [
         settings.BASE_PATH + "issue_images/<int:issue_image_id>/",
         IssueImageDetailView.as_view(),
     ),
-    # Schedule assignments uses ViewSet, but this particular url has
-    # two ids, so it's easier to do it like this
-    # path(
-    #     settings.BASE_PATH
-    #     + "schedule_assignments/date/<str:assigned_date>/user/<int:user_id>/",
-    #     ScheduleAssignmentViewSet.retrieve_list_by_date_and_user,
-    # ),
-    # path(
-    #     settings.BASE_PATH + "schedule_work_entries/users/<int:user_id>/",
-    #     ScheduleWorkEntryViewSet.retrieve_by_user_id,
-    # ),
     path(
         settings.BASE_PATH + "api-auth/",
         include("rest_framework.urls", namespace="rest_framework"),

@@ -101,34 +101,3 @@ class ScheduleAssignmentViewSet(viewsets.ModelViewSet):
         for field in read_only_fields:
             request.data.pop(field, False)
         return super().update(request, *args, **kwargs)
-
-    # @staticmethod
-    # @api_view(["GET"])
-    # @rest_framework.decorators.permission_classes(
-    #     [permissions.IsAuthenticated, ScheduleAssignmentByDateAndUserPermission]
-    # )
-    # def retrieve_list_by_date_and_user(
-    #     request: Request, assigned_date: str, user_id: int
-    # ) -> Response:
-    #     """Custom GET method to allow for the
-    #     `/schedule_assignments/date/<date>/users/<user_id>/` url.
-
-    #     Args:
-    #         request (Request): A rest_framework Request containing the necessary
-    #             fields.
-    #         assigned_date (str): The date in string format we're asking for, in
-    #             YYYY-MM-DD format.
-    #         user_id (int): The int id of the user we're requesting the data for.
-
-    #     Returns:
-    #         Response: A list containing all the schedule assignments matching the
-    #         user and date.
-
-    #     """
-    #     schedule_assignments = self.paginate_queryset(
-    #         ScheduleAssignment.objects.filter(
-    #             assigned_date=assigned_date, user_id=user_id
-    #         )
-    #     )
-    #     serializer = ScheduleAssignmentSerializer(schedule_assignments, many=True)
-    #     return self.get_paginated_response(serializer.data, status=status.HTTP_200_OK)
