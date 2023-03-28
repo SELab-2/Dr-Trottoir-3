@@ -17,6 +17,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from drtrottoir import settings
 from drtrottoir.views import (
@@ -95,7 +96,7 @@ urlpatterns = [
         settings.BASE_PATH + "api-auth/",
         include("rest_framework.urls", namespace="rest_framework"),
     ),
-        path(
+    path(
         settings.BASE_PATH + "auth/token/",
         TokenObtainPairView.as_view(),
         name="token_obtain_pair",
