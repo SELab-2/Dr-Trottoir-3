@@ -77,10 +77,7 @@ export default function BuildingsList() {
                     </div>
                 </div>
             </div>
-        </div><script type="text/javascript">
-                window.scrollTo(0)
-                document.getElementById(styles.scroll_style).scrollTop=50
-            </script>
+        </div>
         </>
     );
 }
@@ -94,22 +91,18 @@ type TopBarProps = {
 }
 
 function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
+    const AllesSelected = region.length>=dummyRegions.length
 
     const handleChangeRegion = (event: SelectChangeEvent<string[]>) => {
-    const value = event.target.value as string[];
-    console.log(value)
-        console.log((value.indexOf("Alles")>-1)?
-            (value.length>=dummyRegions.length)?
-                []:
-                dummyRegions:
-            value    )
-    setRegion(
-        (value.indexOf("Alles")>-1)?
-            (value.length>=dummyRegions.length+1)?
-                []:
-                dummyRegions:
-            value    );
-  };
+        const value = event.target.value as string[];
+        setRegion(
+            (value.indexOf("Alles")>-1)?
+                (AllesSelected)?
+                    []:
+                    dummyRegions:
+                value    );
+      };
+
 
     const sorttypes = [
         "naam",
@@ -280,7 +273,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                 label="Sorteer op"
                             >
                                 {sorttypes.map((option) => (
-                                    <MenuItem key={option} value={option}>
+                                    <MenuItem key={option} value={option} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
                                         {option}
                                     </MenuItem>
                                 ))}
@@ -297,14 +290,14 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                 onChange={handleChangeRegion}
                                 renderValue={() => "regio"}
                             >
-                                <MenuItem key={"Alles"} value={"Alles"}>
+                                <MenuItem key={"Alles "+((AllesSelected)?"deselecteren":"selecteren")} value={"Alles"}>
                                     <Checkbox style ={{color: "#1C1C1C",}} checked={region.length >= dummyRegions.length} />
-                                        <ListItemText primary={"Alles"} />
+                                        <ListItemText style ={{width: 150, }} primary={"Alles "+((AllesSelected)?"deselecteren":"selecteren")} />
                                 </MenuItem>
                                 {dummyRegions.map((option) => (
                                     <MenuItem key={option} value={option}>
                                         <Checkbox style ={{color: "#1C1C1C",}} checked={region.indexOf(option) > -1} />
-                                        <ListItemText primary={option} />
+                                        <ListItemText primaryTypographyProps={{ style: { whiteSpace: "normal", wordBreak: "break-all" } }}  primary={option} />
                                     </MenuItem>
                                 ))}
                             </Select>
