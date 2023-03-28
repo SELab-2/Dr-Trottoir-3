@@ -3,11 +3,11 @@ import styles from "@/styles/ListView.module.css";
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import {
-    Button,
+    Button, Checkbox,
     FormControl,
     IconButton,
     InputBase,
-    InputLabel,
+    InputLabel, ListItemText,
     MenuItem,
     Select,
     SelectChangeEvent, TextField,
@@ -19,31 +19,36 @@ interface LiveRoute {
     id: number
     naam: string,
     regio: string,
-    distance: string,
-    completion: number,
+    afstand: string,
+    voortgang: number,
     student: string,
 }
 
 const dummyRoutes:LiveRoute[] = [
-    {id: 7, naam: "aardappel", regio: "Gent", distance: "10km", completion: 0.10, student: "Bavo"},
-    {id: 1, naam: "water", regio: "Antwerpen", distance: "17km", completion: 0.55, student: "Jef"},
-    {id: 2, naam: "aardpeer", regio: "Gent", distance: "8km", completion: 0.90, student: "Maxim"},
-    {id: 3, naam: "courgette", regio: "Gent", distance: "69km", completion: 0.50, student: "Jahid"},
-    {id: 4, naam: "wortel", regio: "Antwerpen", distance: "42km", completion: 1, student: "Pim"},
-    {id: 5, naam: "tomaat", regio: "Gent", distance: "25km", completion: 0.75, student: "Joris"},
-    {id: 6, naam: "aardappelsalade", regio: "Gent", distance: "13km", completion: 0.33, student: "Obama"},
-    {id: 0, naam: "route 2", regio: "Antwerpen", distance: "11km", completion: 0.66, student: "Dababy"},
-    {id: 8, naam: "route 3", regio: "Gent", distance: "42km", completion: 0.89, student: "Kanye"},
-    {id: 9, naam: "route 1", regio: "Gent", distance: "23km", completion: 1, student: "Big Ounce"},
-    {id: 10, naam: "centrum", regio: "Antwerpen", distance: "42km", completion: 0.5, student: "Babo"},
-    {id: 11, naam: "zuid", regio: "Gent", distance: "7km", completion: 0.5, student: "Cringe"},
+    {id: 7, naam: "aardappel", regio: "Gent", afstand: "10km", voortgang: 0.10, student: "Bavo"},
+    {id: 1, naam: "water", regio: "Antwerpen", afstand: "17km", voortgang: 0.55, student: "Jef"},
+    {id: 2, naam: "aardpeer", regio: "Gent", afstand: "8km", voortgang: 0.90, student: "Maxim"},
+    {id: 3, naam: "courgette", regio: "Gent", afstand: "69km", voortgang: 0.50, student: "Jahid"},
+    {id: 4, naam: "wortel", regio: "Antwerpen", afstand: "42km", voortgang: 1, student: "Pim"},
+    {id: 5, naam: "tomaat", regio: "Gent", afstand: "25km", voortgang: 0.75, student: "Joris"},
+    {id: 6, naam: "aardappelsalade", regio: "Gent", afstand: "13km", voortgang: 0.33, student: "Obama"},
+    {id: 0, naam: "route 2", regio: "Antwerpen", afstand: "11km", voortgang: 0.66, student: "Dababy"},
+    {id: 8, naam: "route 3", regio: "Gent", afstand: "42km", voortgang: 0.89, student: "Kanye"},
+    {id: 9, naam: "route 1", regio: "Gent", afstand: "23km", voortgang: 1, student: "Big Ounce"},
+    {id: 10, naam: "centrum", regio: "Antwerpen", afstand: "42km", voortgang: 0.5, student: "Babo"},
+    {id: 11, naam: "zuid", regio: "Gent", afstand: "7km", voortgang: 0.5, student: "Cringe"},
 ]
 
+const dummyRegions = [
+    'Gent',
+    'Antwerpen',
+    'Brussel',
+];
 
 export default function ActiveRoutesList() {
     const [current, setCurrent] = useState<number | null>(null);
     const [sorttype , setSorttype] = React.useState("naam")
-    const [region, setRegion] = React.useState("")
+    const [region, setRegion] = React.useState<string[]>(dummyRegions)
 
     const sortedRoutes = dummyRoutes.sort(function(first, second) {
         const value = first[sorttype as keyof LiveRoute];
@@ -67,7 +72,7 @@ export default function ActiveRoutesList() {
                     <div className={styles.list_wrapper}>
                         <div className={styles.list_bar} id={styles.scroll_style}>
                             {sortedRoutes.map(x => <ListItem
-                                id={x.id} current={current} naam={x.naam} distance={x.distance} regio={x.regio} completion={x.completion} onClick={setCurrent} />)}
+                                id={x.id} current={current} naam={x.naam} afstand={x.afstand} regio={x.regio} voortgang={x.voortgang} onClick={setCurrent} />)}
                         </div>
                     </div>
                 </div>
@@ -80,33 +85,34 @@ export default function ActiveRoutesList() {
 type TopBarProps = {
     sorttype: string,
     setSorttype: React.Dispatch<React.SetStateAction<string>>
-    region: string,
-    setRegion: React.Dispatch<React.SetStateAction<string>>
+    region: string[],
+    setRegion: React.Dispatch<React.SetStateAction<string[]>>
 }
 
 function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
-    const dummyRegions = [
-        'Gent',
-        'Antwerpen',
-        'Brussel',
-    ];
+    const AllesSelected = region.length>=dummyRegions.length
 
+    const handleChangeRegion = (event: SelectChangeEvent<string[]>) => {
+        const value = event.target.value as string[];
+        setRegion(
+            (value.indexOf("Alles")>-1)?
+                (AllesSelected)?
+                    []:
+                    dummyRegions:
+                value    );
+      };
 
     const dummyTypes = [
         "actief",
         "compleet"
     ]
 
-    const handleChangeRegion = (event: SelectChangeEvent) => {
-        setRegion(event.target.value as string);
-    };
-
     const sorttypes = [
         "naam",
         'regio',
-        'distance',
+        'afstand',
         "student",
-        "completion",
+        "voortgang",
     ];
 
     const handleChangeSorttype = (event: SelectChangeEvent) => {
@@ -172,18 +178,21 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
 
                     <div className={styles.filters}>
                         <FormControl sx={{ m: 1, minWidth: 120 }}>
-                            <InputLabel>regio</InputLabel>
                             <Select
+                                displayEmpty={true}
+                                multiple
                                 value={region}
                                 onChange={handleChangeRegion}
-                                label="Regio"
+                                renderValue={() => "regio"}
                             >
-                                <MenuItem value="">
-                                    <em>Alle</em>
+                                <MenuItem key={"Alles "+((AllesSelected)?"deselecteren":"selecteren")} value={"Alles"}>
+                                    <Checkbox style ={{color: "#1C1C1C",}} checked={AllesSelected} />
+                                        <ListItemText style ={{width: 150, }} primary={"Alles "+((AllesSelected)?"deselecteren":"selecteren")} />
                                 </MenuItem>
                                 {dummyRegions.map((option) => (
-                                    <MenuItem key={option} value={option} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
-                                        {option}
+                                    <MenuItem key={option} value={option}>
+                                        <Checkbox style ={{color: "#1C1C1C",}} checked={region.indexOf(option) > -1} />
+                                        <ListItemText primaryTypographyProps={{ style: { whiteSpace: "normal", wordBreak: "break-all" } }}  primary={option} />
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -221,13 +230,13 @@ type ListItemProps = {
     id: number,
     current: number | null,
     naam: string,
-    distance: string,
+    afstand: string,
     regio: string,
-    completion: number,
+    voortgang: number,
     onClick: React.Dispatch<React.SetStateAction<number|null>>
 }
 
-const ListItem = ({id, current, naam, distance, regio, completion, onClick}: ListItemProps) => {
+const ListItem = ({id, current, naam, afstand, regio, voortgang, onClick}: ListItemProps) => {
     const isCurrent = id == current
     return (
 
@@ -244,13 +253,13 @@ const ListItem = ({id, current, naam, distance, regio, completion, onClick}: Lis
                                 {regio}
                             </div>
                             <div className={styles.small_item_text}>
-                                {distance}
+                                {afstand}
                             </div>
                         </div>
                         <div className={styles.listItemRightSide}>
-                            {conditionalCheckmark(completion === 1)}
+                            {conditionalCheckmark(voortgang === 1)}
                             <div className={styles.very_big_item_text}>
-                                {Math.round(completion*100)}%
+                                {Math.round(voortgang*100)}%
                             </div>
                         </div>
                     </div>
