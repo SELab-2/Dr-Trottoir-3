@@ -264,10 +264,14 @@ def test_schedule_work_entry_get_by_user_allowed_superstudent_admin() -> None:
     client = APIClient()
 
     client.force_login(super_student.user)
-    response_super_student = client.get("/schedule_work_entries/?creator=1")
+    response_super_student = client.get(
+        f"/schedule_work_entries/?creator={super_student.user.id}"
+    )
 
     client.force_login(admin.user)
-    response_admin = client.get("/schedule_work_entries/?creator=1")
+    response_admin = client.get(
+        f"/schedule_work_entries/?creator={super_student.user.id}"
+    )
 
     assert response_super_student.status_code == 200
     assert response_admin.status_code == 200

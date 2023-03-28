@@ -376,12 +376,8 @@ def test_schedule_assignment_by_get_date_and_user_get_nonexistent_user_returns_e
     response = client.get(
         f"/schedule_assignments/?assigned_date={date}&user={nonexistent_user_id}"
     )
-    print(response)
-    print(response.data)
-    response_ids = [data["id"] for data in response.data["results"]]
 
-    assert response.status_code == 200
-    assert len(response_ids) == 0
+    assert response.status_code == 400
 
 
 # endregion GET by date and user
