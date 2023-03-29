@@ -1,7 +1,7 @@
-import LoginPageElement from "@/components/elements/LoginPageElement/LoginPageElement";
+import LoginPageElement from '@/components/elements/LoginPageElement/LoginPageElement';
 
 export default function LoginPage() {
     return (
-            <LoginPageElement />
+        <LoginPageElement />
     );
 }
