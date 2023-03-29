@@ -34,7 +34,7 @@ export default function DesktopNavbar({loading, nextPath, setNextPath, router, c
                         </div>
                     </div>
                 </div>
-                <div className={styles.right_flex_container} style={{backgroundColor: 'red'}}>
+                <div className={styles.right_flex_container}>
                     <div className={styles.top_bar}></div>
                     <div className={styles.content_space}>
                         {loading ? children : <h1 style={{color: 'black'}}>LOADING</h1>}

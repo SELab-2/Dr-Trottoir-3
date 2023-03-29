@@ -85,18 +85,7 @@ display: flex;
         width: 100%;
     }
 
-#scroll_style::-webkit-scrollbar
-{
-	width: 8px;
-	background-color: white;
-}
 
-#scroll_style::-webkit-scrollbar-thumb
-{
-    background-clip: padding-box;
-    border-radius: 8px;
-	background-color: #E6E600;
-}
 .full_outer {
         padding: 40px 16px 16px 16px;
         height: 100%;

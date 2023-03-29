@@ -57,6 +57,8 @@ const dummyRegions = [
 
 export default function UsersList() {
     const [current, setCurrent] = useState<number | null>(null);
+
+
     const [sorttype , setSorttype] = React.useState("voornaam");
     const [region, setRegion] = React.useState<string[]>(dummyRegions);
     const [type, setType] = React.useState<string[]>(dummyType);
@@ -72,6 +74,8 @@ export default function UsersList() {
             element.scrollTo({top: 0, behavior: 'smooth'});
         }
       }, [sorttype,region]);
+
+
     return (
         <>
             <div className={styles.full_outer}>

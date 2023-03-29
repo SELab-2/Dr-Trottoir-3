@@ -1,0 +1,69 @@
+#item_button {
+    display: flex;
+    flex-flow: column;
+    flex-wrap: wrap;
+    text-align: left;
+    align-items: flex-start;
+    color: #1C1C1C;
+    background-color: #E9EDF4;
+}
+
+#item_button_select {
+    display: flex;
+    flex-flow: column;
+    flex-wrap: wrap;
+    text-align: left;
+    align-items: flex-start;
+    color: white;
+    background-color: #1C1C1C;
+}
+
+.button_wrapper {
+    flex-wrap: wrap;
+    background-color: white;
+    width: 100%;
+    padding: 0px 8px 0px 0px;
+}
+
+
+.button_default {
+    word-break: break-word;
+    font-family: 'Inter', sans-serif;
+    color: #1C1C1C;
+    text-transform: none;
+    background-color: #1C1C1C;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.button_default:hover{
+    color: #E6E600;
+}
+
+.big_item_text {
+    font-size: 100%;
+    font-weight: bolder;
+}
+
+
+@media screen and (min-width:800px) {
+
+    .very_big_item_text {
+        font-size: 125%;
+        font-weight: bolder;
+        word-break: keep-all;
+    }
+}
+
+@media screen and (max-width:800px) {
+
+    .very_big_item_text {
+        font-size: 75%;
+        font-weight: bolder;
+    }
+}
+
+.small_item_text {
+    color: #808080;
+    font-size: 75%;
+}
