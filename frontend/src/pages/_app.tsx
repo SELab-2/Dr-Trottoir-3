@@ -11,7 +11,7 @@ export default function App(
     const getLayout = (props: any) => <Navbar>{props}</Navbar>;
 
     return (
-        <SessionProvider session={session} basePath={'http://localhost:3002/api/auth'}>
+        <SessionProvider session={session} basePath={'http://localhost:3000/api/auth'}>
             {getLayout(<Component {...pageProps} />)}
         </SessionProvider>
     );

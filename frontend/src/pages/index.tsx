@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { Inter } from '@next/font/google'
-import NavBar from '../components/elements/navbarElement/navbar';
+import NavBar from '../components/elements/navbarElement/Navbar';
 import styles from '@/styles/Home.module.css'
 import {useSession} from "next-auth/react";
 
@@ -9,9 +9,9 @@ const inter = Inter({subsets: ['latin']});
 
 // eslint-disable-next-line require-jsdoc
 export default function Home() {
-    const { data: session } = useSession()
+    const { data: session } = useSession();
 
-    console.log(session)
+    console.log(session);
 
     if (session && session.user) {
         return (
