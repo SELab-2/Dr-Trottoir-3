@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import {getCsrfToken} from 'next-auth/react';
+// import {getCsrfToken} from 'next-auth/react';
 import axios from 'axios';
 
 // TODO
