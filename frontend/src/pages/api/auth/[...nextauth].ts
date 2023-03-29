@@ -39,7 +39,8 @@ const providers = [
             try {
                 if (credentials) {
                     const user = await axios.post(
-                        'http://localhost:8000/auth/token/', {
+                        // eslint-disable-next-line no-undef
+                        `${process.env.NEXT_API_URL}auth/token/`, {
                             username: credentials.username,
                             password: credentials.password,
                         }, {
@@ -114,7 +115,7 @@ export const options = {
     providers,
     callbacks,
     pages: {
-        signIn: '/auth/signin',
+        signIn: '/login',
     },
 };
 
