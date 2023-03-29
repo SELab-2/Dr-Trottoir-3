@@ -1,11 +1,7 @@
 import Head from 'next/head';
-import {Inter} from '@next/font/google';
 import NavBar from '../components/elements/navbarElement/Navbar';
 import styles from '@/styles/Home.module.css';
 import {useSession} from 'next-auth/react';
-
-// eslint-disable-next-line new-cap
-const inter = Inter({subsets: ['latin']});
 
 // eslint-disable-next-line require-jsdoc
 export default function Home() {

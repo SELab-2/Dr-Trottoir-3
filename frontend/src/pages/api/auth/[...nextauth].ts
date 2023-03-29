@@ -37,7 +37,7 @@ const providers = [
         },
         authorize: async (credentials) => {
             try {
-                if(credentials) {
+                if (credentials) {
                     const user = await axios.post(
                         'http://localhost:8000/auth/token/', {
                             username: credentials.username,
@@ -73,6 +73,7 @@ const callbacks = {
     jwt: async ({token, user}) => {
         if (user) {
             // Only at login
+            // eslint-disable-next-line no-undef
             const decodedJwt = JSON.parse(Buffer.from(user.access.split('.')[1], 'base64').toString());
 
             token.accessToken = user['access'];
@@ -118,5 +119,6 @@ export const options = {
 };
 
 // @ts-ignore
+// eslint-disable-next-line new-cap
 const Auth = (req, res) => NextAuth(req, res, options);
 export default Auth;
