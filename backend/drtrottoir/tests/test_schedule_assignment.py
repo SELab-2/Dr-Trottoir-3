@@ -335,9 +335,11 @@ def test_schedule_assignment_get_by_date_and_user_get_existing_returns_200() -> 
     super_student = insert_dummy_student("super@gmail.com", is_super_student=True)
     client.force_login(super_student.user)
 
-    response = client.get(f"/schedule_assignments/date/{date}/user/{student.user.id}/")
+    response = client.get(
+        f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
+    )
 
-    response_ids = [data["id"] for data in response.data]
+    response_ids = [data["id"] for data in response.data["results"]]
 
     assert response.status_code == 200
     assert assignment.id in response_ids
@@ -353,8 +355,10 @@ def test_schedule_assignment_by_get_date_and_user_get_nonexistent_date_returns_e
     super_student = insert_dummy_student("super@gmail.com", is_super_student=True)
     client.force_login(super_student.user)
 
-    response = client.get(f"/schedule_assignments/date/{date}/user/{student.user.id}/")
-    response_ids = [data["id"] for data in response.data]
+    response = client.get(
+        f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
+    )
+    response_ids = [data["id"] for data in response.data["results"]]
 
     assert response.status_code == 200
     assert len(response_ids) == 0
@@ -370,12 +374,10 @@ def test_schedule_assignment_by_get_date_and_user_get_nonexistent_user_returns_e
     client.force_login(super_student.user)
 
     response = client.get(
-        f"/schedule_assignments/date/{date}/user/{nonexistent_user_id}/"
+        f"/schedule_assignments/?assigned_date={date}&user={nonexistent_user_id}"
     )
-    response_ids = [data["id"] for data in response.data]
 
-    assert response.status_code == 200
-    assert len(response_ids) == 0
+    assert response.status_code == 400
 
 
 # endregion GET by date and user
@@ -520,7 +522,7 @@ def test_schedule_assignment_get_not_allowed_non_existing_assignment() -> None:
     client.force_login(dummy_student.user)
     response = client.get(f"/schedule_assignments/{non_existent_assignment}/")
 
-    assert response.status_code == 403
+    assert response.status_code == 404
 
 
 @pytest.mark.django_db
@@ -550,7 +552,7 @@ def test_schedule_assignment_get_matching_user_allowed_non_matching_user_not_all
     response_other = client.get(
         f"/schedule_assignments/{dummy_schedule_assignment.id}/"
     )
-    assert response_other.status_code == 403
+    assert response_other.status_code == 404
 
 
 # endregion GET item
@@ -700,12 +702,12 @@ def test_schedule_assignment_get_by_date_and_user_allowed_superstudent_admin() -
 
     client.force_login(super_student.user)
     response_super_student = client.get(
-        f"/schedule_assignments/date/{date}/user/{student.user.id}/"
+        f"/schedule_assignments/?assigned_date{date}&user={student.user.id}"
     )
 
     client.force_login(admin.user)
     response_admin = client.get(
-        f"/schedule_assignments/date/{date}/user/{student.user.id}/"
+        f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
     )
 
     assert response_super_student.status_code == 200
@@ -725,12 +727,12 @@ def test_schedule_assignment_get_by_date_and_user_not_allowed_anonymous_syndicus
 
     client.logout()
     response_anonymous = client.get(
-        f"/schedule_assignments/date/{date}/user/{student.user.id}/"
+        f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
     )
 
     client.force_login(syndicus.user)
     response_syndicus = client.get(
-        f"/schedule_assignments/date/{date}/user/{student.user.id}/"
+        f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
     )
 
     assert response_anonymous.status_code == 403
@@ -755,7 +757,7 @@ def test_schedule_assignment_by_user_and_date_get_matching_user_allowed_non_matc
     # Test if the matching user is allowed to get the resource
     client.force_login(student.user)
     response_student = client.get(
-        f"/schedule_assignments/date/{date}/user/{student.user.id}/"
+        f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
     )
     assert response_student.status_code == 200
 
@@ -763,9 +765,11 @@ def test_schedule_assignment_by_user_and_date_get_matching_user_allowed_non_matc
     other_student = insert_dummy_student("otherstudent@gmail.com")
     client.force_login(other_student.user)
     response_other = client.get(
-        f"/schedule_assignments/date/{date}/user/{student.user.id}/"
+        f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
     )
-    assert response_other.status_code == 403
+    assert (
+        response_other.status_code == 200 and len(response_other.data["results"]) == 0
+    )
 
 
 # endregion GET by date and user
@@ -804,21 +808,21 @@ def test_schedule_assignment_forbidden_methods() -> None:
 
     # Student gets 403
     client.force_login(student.user)
-    assert client.get("/schedule_assignments/").status_code == 403
+    assert client.get("/schedule_assignments/").status_code == 200
     assert client.put("/schedule_assignments/").status_code == 403
     assert client.patch("/schedule_assignments/").status_code == 403
     assert client.delete("/schedule_assignments/").status_code == 403
 
     # Super student gets 405
     client.force_login(super_student.user)
-    assert client.get("/schedule_assignments/").status_code == 405
+    assert client.get("/schedule_assignments/").status_code == 200
     assert client.put("/schedule_assignments/").status_code == 405
     assert client.patch("/schedule_assignments/").status_code == 405
     assert client.delete("/schedule_assignments/").status_code == 405
 
     # Admin gets 405
     client.force_login(admin.user)
-    assert client.get("/schedule_assignments/").status_code == 405
+    assert client.get("/schedule_assignments/").status_code == 200
     assert client.put("/schedule_assignments/").status_code == 405
     assert client.patch("/schedule_assignments/").status_code == 405
     assert client.delete("/schedule_assignments/").status_code == 405
@@ -838,7 +842,7 @@ def test_schedule_assignment_by_user_and_date_forbidden_methods() -> None:
     syndicus = insert_dummy_syndicus(insert_dummy_user("syndicus@gmail.com"))
     client = APIClient()
 
-    url = "/schedule_assignments/date/1999-01-01/user/9999/"
+    url = "/schedule_assignments/?assigned_date=1999-01-01&user=9999"
 
     # Anonymous user gets 404
     client.logout()
@@ -847,7 +851,7 @@ def test_schedule_assignment_by_user_and_date_forbidden_methods() -> None:
     assert client.patch(url).status_code == 403
     assert client.delete(url).status_code == 403
 
-    # Syndicus gets 404
+    # Syndicus gets 403
     client.force_login(syndicus.user)
     assert client.post(url).status_code == 403
     assert client.put(url).status_code == 403
@@ -863,14 +867,14 @@ def test_schedule_assignment_by_user_and_date_forbidden_methods() -> None:
 
     # Super student gets 405
     client.force_login(super_student.user)
-    assert client.post(url).status_code == 405
+    assert client.post(url).status_code == 400
     assert client.put(url).status_code == 405
     assert client.patch(url).status_code == 405
     assert client.delete(url).status_code == 405
 
     # Admin gets 405
     client.force_login(admin.user)
-    assert client.post(url).status_code == 405
+    assert client.post(url).status_code == 400
     assert client.put(url).status_code == 405
     assert client.patch(url).status_code == 405
     assert client.delete(url).status_code == 405

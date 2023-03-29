@@ -45,3 +45,5 @@ services:
 
 networks:
   selab:
+volumes:
+  postgres-data:

@@ -1,0 +1,149 @@
+
+.full {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+.row_flex_container {
+    display: flex;
+    flex-basis: 100%;
+}
+
+.right_flex_container {
+    flex-grow: 999;
+    display: flex;
+    flex-flow: column;
+    flex-wrap: wrap;
+}
+
+.left_flex_container {
+    display: flex;
+    flex-direction: column;
+    background-color: #1C1C1C;
+}
+
+.scrollable {
+    display: flex;
+    overflow-x: scroll;
+    flex-direction: column;
+    margin: 40px 0 8px;
+    flex: 999;
+}
+
+.side_bar_mid {
+    display: flex;
+    flex-flow: column;
+    gap: 16px;
+    padding: 0 16px 0 16px;
+    flex: 999;
+    background-color: #1C1C1C;
+}
+
+.side_bar_top {
+    display: flex;
+    flex-basis: 56px;
+    background-color: #1C1C1C;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 144px;
+}
+
+.side_bar_bot {
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+    gap: 16px;
+    padding: 50px 16px 40px 16px;
+    background-color: #1C1C1C;
+}
+
+
+
+@media screen and (min-width:900px) {
+
+    #button {
+        font-size: 16px;
+        text-align: left;
+        height: 40px;
+        min-width: 200px;
+    }
+
+    .left_flex_container {
+        flex-basis: 200px;
+    }
+
+    .side_bar_top {
+        background-image: url('../../../../public/media/logo_drtrottoir.svg');
+        background-size: 144px;
+    }
+}
+
+@media screen and (max-width:900px) {
+
+    #button {
+        /* Hide the text. */
+        font-size: 0;
+        height: 40px;
+        min-width: 40px;
+    }
+
+    .left_flex_container {
+        flex-basis: 72px;
+    }
+
+    .side_bar_top {
+        background-image: url('../../../../public/media/drtrottoir_icon.svg');
+        background-size: 32px;
+    }
+}
+
+
+.content_space {
+    display: flex;
+    flex-basis: 0;
+    flex-grow: 999;
+    background-color: #F3F5F9;
+}
+
+.top_bar {
+    display: flex;
+    flex-basis: 56px;
+    flex-grow: 0;
+    background-color: #1C1C1C;
+}
+
+
+
+.icon {
+    position: absolute;
+    left: 8px;
+}
+
+.text {
+    position: absolute;
+    left: 48px;
+    line-break: unset;
+}
+
+.button_default {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    color: #F3F5F9;
+    text-transform: none;
+    background-color: #1C1C1C;
+    border-radius: 8px;
+}
+
+.button_selected {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    color: #E6E600;
+    text-transform: none;
+    background-color: #2D2F33;
+    border-radius: 8px;
+}
+
+.button:hover {
+    background-color: #2D2F33;
+}

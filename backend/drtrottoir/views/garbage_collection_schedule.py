@@ -48,3 +48,6 @@ class GarbageCollectionScheduleViewSet(
 
     queryset = GarbageCollectionSchedule.objects.all()
     serializer_class = GarbageCollectionScheduleSerializer
+
+    filterset_fields = ["for_day", "building", "garbage_type"]
+    search_fields = ["note"]
