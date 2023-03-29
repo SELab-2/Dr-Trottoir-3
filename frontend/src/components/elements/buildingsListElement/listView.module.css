@@ -34,7 +34,6 @@
 .side_bar_list {
     display: flex;
     flex-flow: column;
-    gap: 16px;
     padding: 0 16px 0 16px;
     flex: 999;
     background-color: red;
@@ -43,10 +42,7 @@
 .side_bar_top {
     display: flex;
     flex-basis: 100px;
-    background-color: blue;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 144px;
+    background-color: #F3F5F9;
 }
 
 

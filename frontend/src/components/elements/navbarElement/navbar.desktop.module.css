@@ -24,11 +24,15 @@
 
 .scrollable {
     display: flex;
-    overflow-y: auto;
+    overflow-y: sc;
+    overflow-x: hidden;
     flex-direction: column;
     margin: 40px 0 8px;
     flex: 999;
 }
+
+
+
 
 
 .side_bar_mid {

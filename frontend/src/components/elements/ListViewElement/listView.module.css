@@ -19,14 +19,14 @@
 .left_flex_container {
     display: flex;
     flex-direction: column;
-    background-color: green;
+    background-color: #F3F5F9;
 }
 
 .scrollable {
     display: flex;
     overflow-y: auto;
     flex-direction: column;
-    margin: 40px 0 8px;
+    margin: 4px 0 20px;
     flex: 999;
     background-color: red;
 }
@@ -34,21 +34,18 @@
 .side_bar_list {
     display: flex;
     flex-flow: column;
-    gap: 16px;
+    gap: 8px;
     padding: 0 16px 0 16px;
     flex: 999;
-    background-color: red;
+    background-color: #F3F5F9;
 }
 
 .side_bar_top {
     display: flex;
     flex-basis: 100px;
-    background-color: blue;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 144px;
+    background-color: #F3F5F9;
+    padding: 20px 0 20px 20px;
 }
-
 
 
 @media screen and (min-width:900px) {
@@ -61,7 +58,7 @@
     }
 
     .left_flex_container {
-        flex-basis: 200px;
+        flex-basis: 250px;
     }
 
     .side_bar_top {

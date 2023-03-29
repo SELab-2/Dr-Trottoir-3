@@ -1,6 +1,8 @@
 import ListViewComponent from '@/components/elements/ListViewElement/ListViewComponent';
 import BuildingListButtonComponent from '@/components/elements/ListViewElement/ListButtonElements/BuildingListButtonComponent';
-import {useState} from 'react';
+import BuildingTopBarComponent from '@/components/elements/ListViewElement/TopBarElements/BuildingTopBarComponent';
+import React from 'react';
+
 interface Building {
     id: number
     naam: string,
@@ -23,11 +25,27 @@ const dummyBuildings:Building[] = [
     {id: 11, naam: 'Jail', adres: 'Ajuinwegel 21', regio: 'Gent'},
 ];
 
+const dummySindici = [
+    {name: 'Jan Tomas'},
+    {name: 'Peter Selie'},
+    {name: 'Wily Willson'},
+];
+
+const dummyRegions = [
+    'Gent',
+    'Antwerpen',
+    'Brussel',
+];
+
 
 export default function BuildingsPage() {
+
     return (
         <>
-            <ListViewComponent buttons={dummyBuildings} ListItem={BuildingListButtonComponent}/>
+            <ListViewComponent listData={dummyBuildings} regionData={dummyRegions}
+                ListItem={BuildingListButtonComponent} TopBar={BuildingTopBarComponent}>
+                <h1>CONTENT</h1>
+            </ListViewComponent>
         </>
     );
 }
