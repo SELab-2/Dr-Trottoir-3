@@ -1,11 +1,12 @@
 import * as React from 'react';
+import {useEffect} from 'react';
 import styles from './buildingdetail.module.css';
 import {AddRounded, CreateRounded, ErrorOutline, PictureAsPdf}
   from '@mui/icons-material';
-import Tooltip from '@mui/material/Tooltip';
-import {Box, Card, IconButton, Link, List, ListItem, Table, TableBody,
-  TableCell, TableRow, Typography} from '@mui/material';
+import {Box, Card, IconButton, Link, List, ListItem, Tooltip, Typography}
+  from '@mui/material';
 
+// TODO add a proper default image
 const defaultBuildingImage = 'https://images.pexels.com/photos/162539/architecture-building-amsterdam-blue-sky-162539.jpeg';
 
 // Create fake building data
@@ -69,27 +70,25 @@ export default function BuildingDetail(props: { id: number }) {
 
   // eslint-disable-next-line require-jsdoc
   function createScheduleWarningSymbol(id: number, text: string) {
-    if (text.length == 0) {
-      return (
-        <IconButton onClick={() => createScheduleEntryNote(id)}>
-          <AddRounded fontSize="small"/>
-        </IconButton>
-      );
-    }
+    const [issueExists, setIssueExists] = React.useState(false);
+    useEffect(() => setIssueExists(text.length > 0), []);
+
     return (
       <>
-        <Box sx={{
-          display: 'inline-flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
-          <Tooltip title={text} arrow>
-            <ErrorOutline fontSize="small"/>
-          </Tooltip>
-          <IconButton onClick={() => createScheduleEntryNote(id)}>
-            <CreateRounded fontSize="small"/>
-          </IconButton>
-        </Box>
+        {
+          issueExists ?
+            <>
+              <Tooltip title={text} arrow>
+                <ErrorOutline fontSize="small"/>
+              </Tooltip>
+              <IconButton onClick={() => createScheduleEntryNote(id)}>
+                <CreateRounded fontSize="small"/>
+              </IconButton>
+            </> :
+            <IconButton onClick={() => createScheduleEntryNote(id)}>
+              <AddRounded fontSize="small"/>
+            </IconButton>
+        }
       </>
     );
   }
@@ -116,23 +115,35 @@ export default function BuildingDetail(props: { id: number }) {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-          <Table
-            sx={{tableLayout: 'fixed', width: '100%',
-              background: 'var(--secondary-light)'}}>
-            <TableBody>
-              <TableRow>
-                <TableCell align='left' sx={{width: '33%', fontWeight: 'bold'}}>
-                  {schedule.type}
-                </TableCell>
-                <TableCell align='justify' sx={{width: '33%'}}>
-                  {schedule.date}
-                </TableCell>
-                <TableCell align={'right'} sx={{width: '33%'}}>
-                  {createScheduleWarningSymbol(schedule.id, schedule.issue)}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+          <Box sx={{
+            display: 'flex', width: '100%', height: '100%',
+            background: 'var(--secondary-light)', alignItems: 'center',
+          }}>
+            {/* Schedule type */}
+            <Box sx={{
+              display: 'flex', width: '33%', height: '100%',
+              flexGrow: 1, fontWeight: 'bold',
+              paddingLeft: '10px', alignItems: 'center',
+            }}>
+              {schedule.type}
+            </Box>
+            {/* Schedule date */}
+            <Box sx={{
+              display: 'flex', width: '33%', height: '100%',
+              flexGrow: 1, justifyContent: 'center',
+              alignItems: 'center', fontSize: '14px',
+            }}>
+              {schedule.date}
+            </Box>
+            {/* Schedule issue icons */}
+            <Box sx={{
+              display: 'flex', width: '33%', height: '100%',
+              flexGrow: 1, justifyContent: 'flex-end',
+              alignItems: 'center',
+            }}>
+              {createScheduleWarningSymbol(schedule.id, schedule.issue)}
+            </Box>
+          </Box>
         </Card>
       </ListItem>
     );
@@ -140,7 +151,7 @@ export default function BuildingDetail(props: { id: number }) {
 
   // eslint-disable-next-line require-jsdoc
   function createBuildingManualElement(path: string) {
-    if (path.length == 0) {
+    if (!path || path.length == 0) {
       return (<></>);
     }
     return (
@@ -163,7 +174,8 @@ export default function BuildingDetail(props: { id: number }) {
 
       <Box className={styles.full}>
         {/* Top row */}
-        <Box className={styles.top_row_container}>
+        <Box className={styles.top_row_container}
+          sx={{background: 'var(--secondary-light)'}}>
           {/* Building data container */}
           <Box className={styles.building_data_container}>
             <Typography variant="h1" className={styles.building_data_header}>
@@ -191,8 +203,8 @@ export default function BuildingDetail(props: { id: number }) {
           {/* Building image container */}
           <Box className={styles.building_imag_container}>
             <img src={dummyBuilding.image ?
-                      dummyBuilding.image :
-                      defaultBuildingImage}
+              dummyBuilding.image :
+              defaultBuildingImage}
             alt={'Building'}/>
           </Box>
         </Box>

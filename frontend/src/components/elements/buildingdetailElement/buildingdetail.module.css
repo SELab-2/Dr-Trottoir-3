@@ -6,8 +6,14 @@
     align-items: stretch;
     color: black;
     flex-grow: 1;
-
+    padding: 20px;
     font-family: 'Inter', sans-serif;
+
+    --primary-yellow: #E6E600;
+    --primary-dark: #1C1C1C;
+    --secondary-dark: #2D2F33;
+    --primary-light: #F3F5F9;
+    --secondary-light: #E9EDF4;
 }
 
 
@@ -100,7 +106,7 @@
     max-height: 100%;
     width: auto;
     height: auto;
-    border: solid 1px var(--secondary-dark);
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
 }
 
 /* =============================================
