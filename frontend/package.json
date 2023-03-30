@@ -34,6 +34,8 @@
     "typescript": "4.9.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.21.3",
+    "@babel/eslint-parser": "^7.21.3",
     "@jest/globals": "^29.5.0",
     "eslint": "^8.36.0",
     "eslint-config-google": "^0.14.0",
