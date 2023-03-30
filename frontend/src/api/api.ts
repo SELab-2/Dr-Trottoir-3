@@ -31,6 +31,13 @@ export enum Api {
     ScheduleDefinitionDetailScheduleWorkEntries = '/schedule_definitions/:id/schedule_work_entries/',
 }
 
+type PaginatedResponse<T> = {
+    count: number;
+    next: string | null;
+    previous: string | null;
+    results: T[];
+};
+
 /**
  * @param {string} token
  * @param {string} url
@@ -47,35 +54,38 @@ async function fetcher<T>(token: string, url: string): Promise<T> {
 }
 
 /**
- * @param {Api} route
+ * @param {Api} route API route to request
+ * @param {any} params :param parameters to replace in request URL (e.g. :id)
+ * @param {any} query query parameters to include in request
  * @return {SWRResponse}
  * **/
-export function get<T>(route: Api): SWRResponse<T, any> {
-    const {data: session} = useSession();
-    if (session !== null) {
-        // @ts-ignore
-        return useSWR<T>([session.accessToken, route], fetcher);
-    } else {
-        return useSWR<T>(['', route], fetcher);
+export function getList<T>(route: Api, params: any, query: any): SWRResponse<PaginatedResponse<T>, any> {
+    let routeStr = route.toString();
+    for (const property in params) {
+        routeStr = routeStr.replace(':' + property, params[property]);
     }
+
+    const queryParams = new URLSearchParams(query);
+    routeStr += queryParams.toString();
+
+    const {data: session} = useSession();
+    // @ts-ignore
+    const token = session !== null ? session.accessToken : '';
+
+    return useSWR<PaginatedResponse<T>>([token, routeStr], fetcher);
 }
 
 /**
- * @param {Api} route
- * @param {any} params
+ * @param {Api} route API route to request
+ * @param {any} id ID of detail route to use
  * @return {SWRResponse}
  * **/
-export function getParams<T>(route: Api, params: any): SWRResponse<T, any> {
-    for (const property in params) {
-        // @ts-ignore
-        route = route.replace(':' + property, params[property]);
-    }
+export function getDetail<T>(route: Api, id: number): SWRResponse<T, any> {
+    const routeStr = route.replace(':id', id.toString());
 
     const {data: session} = useSession();
-    if (session !== null) {
-        // @ts-ignore
-        return useSWR<T>([session.accessToken, route], fetcher);
-    } else {
-        return useSWR<T>(['', route], fetcher);
-    }
+    // @ts-ignore
+    const token = session !== null ? session.accessToken : '';
+
+    return useSWR<T>([token, routeStr], fetcher);
 }
