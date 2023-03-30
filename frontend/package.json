@@ -10,7 +10,7 @@
     "fixlint": "eslint --fix --ext .ts,.tsx .",
     "fmt": "next lint --fix",
     "docs": "cd docs && typedoc",
-    "test": "jest",
+    "test": "jest"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
