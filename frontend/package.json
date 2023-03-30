@@ -11,9 +11,12 @@
     "fmt": "next lint --fix",
     "docs": "cd docs && typedoc",
     "test": "jest",
-    "docs": "cd docs && typedoc"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/icons-material": "^5.11.11",
+    "@mui/material": "^5.11.14",
     "@next/font": "13.1.6",
     "@toast-ui/calendar": "^2.1.3",
     "@toast-ui/react-calendar": "^2.1.3",
