@@ -3,5 +3,19 @@
   "parserOptions": {
     "requireConfigFile": false
   },
-  "extends": ["eslint:recommended", "google"]
+  "extends": ["eslint:recommended", "google"],
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "guard-for-in": "off",
+    "no-redeclare": "off",
+    "indent": ["warn", 4],
+    "max-len": ["warn", 120],
+    "require-jsdoc": "off"
+  },
+  "globals": {
+    "JSX": true,
+    "console": true
+  }
 }

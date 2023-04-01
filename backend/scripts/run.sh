@@ -1,5 +1,5 @@
 #!/bin/sh
-
+# Script to run on start of deployment container
 set -e
 
 python manage.py wait_for_db

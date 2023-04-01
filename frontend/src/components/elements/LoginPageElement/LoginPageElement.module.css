@@ -1,0 +1,59 @@
+.loginpage {
+    min-width: min(100%, 100vw);
+    min-height: min(100%, 100vh);
+    background-color: var(--primary-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loginpageformwrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+    justify-content: center;
+    width: min(90%, 600px)
+
+}
+
+.loginpageformwrapper > img {
+    margin: auto;
+    max-width: 80%;
+}
+
+.loginpageform {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.centerformbuttonwrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.centerformbutton {
+    flex-grow: 1;
+    min-width: 200px;
+}
+
+.hideinputlabel > .ant-form-item-required {
+    display: none;
+}
+
+.form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.formfields {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
+    align-items: center;
+}

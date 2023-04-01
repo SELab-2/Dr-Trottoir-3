@@ -15,8 +15,12 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from drtrottoir import settings
 from drtrottoir.views import (
@@ -34,6 +38,17 @@ from drtrottoir.views import (
     ScheduleAssignmentViewSet,
     ScheduleDefinitionViewSet,
     ScheduleWorkEntryViewSet,
+    UserViewSet,
+)
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Dr. Trottoir Group 3",
+        default_version="v1",
+        description="",
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],
 )
 
 router = DefaultRouter()
@@ -63,9 +78,14 @@ router.register(
 )
 
 
-router.register(r"schedule_assignments", ScheduleAssignmentViewSet)
-router.register(r"schedule_work_entries", ScheduleWorkEntryViewSet)
-router.register("schedule_definitions", ScheduleDefinitionViewSet)
+router.register(
+    r"schedule_assignments", ScheduleAssignmentViewSet, basename="schedule-assignments"
+)
+router.register(
+    r"schedule_work_entries", ScheduleWorkEntryViewSet, basename="schedule-work-entries"
+)
+router.register(r"schedule_definitions", ScheduleDefinitionViewSet)
+router.register(r"users", UserViewSet)
 
 
 urlpatterns = [
@@ -85,25 +105,37 @@ urlpatterns = [
         settings.BASE_PATH + "issue_images/<int:issue_image_id>/",
         IssueImageDetailView.as_view(),
     ),
-    # Schedule assignments uses ViewSet, but this particular url has
-    # two ids, so it's easier to do it like this
-    path(
-        settings.BASE_PATH
-        + "schedule_assignments/date/<str:assigned_date>/user/<int:user_id>/",
-        ScheduleAssignmentViewSet.retrieve_list_by_date_and_user,
-    ),
-    path(
-        settings.BASE_PATH + "schedule_work_entries/users/<int:user_id>/",
-        ScheduleWorkEntryViewSet.retrieve_by_user_id,
-    ),
     path(
         settings.BASE_PATH + "api-auth/",
         include("rest_framework.urls", namespace="rest_framework"),
+    ),
+    path(
+        settings.BASE_PATH + "auth/token/",
+        TokenObtainPairView.as_view(),
+        name="token_obtain_pair",
+    ),
+    path(
+        settings.BASE_PATH + "auth/token/refresh/",
+        TokenRefreshView.as_view(),
+        name="token_refresh",
+    ),
+    re_path(
+        r"^swagger(?P<format>\.json|\.yaml)$",
+        schema_view.without_ui(cache_timeout=0),
+        name="schema-json",
+    ),
+    re_path(
+        r"^swagger/$",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    re_path(
+        r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
     ),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(
-        settings.BASE_PATH + settings.MEDIA_URL,
+        settings.MEDIA_URL,
         document_root=settings.MEDIA_ROOT,
     )
