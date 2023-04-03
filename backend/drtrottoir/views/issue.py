@@ -1,4 +1,5 @@
 from rest_framework import permissions, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -29,6 +30,10 @@ class IssueViewSet(PermissionsByActionMixin, viewsets.ModelViewSet):
             permissions.IsAuthenticated,
             IsStudent | IsSuperstudentOrAdmin | IsSyndicus,
         ],
+        "not_approved": [
+            permissions.IsAuthenticated,
+            IsStudent | IsSuperstudentOrAdmin | IsSyndicus,
+        ],
         "create": [permissions.IsAuthenticated, IsStudent | IsSuperstudentOrAdmin],
         "update": [
             permissions.IsAuthenticated,
@@ -53,6 +58,14 @@ class IssueViewSet(PermissionsByActionMixin, viewsets.ModelViewSet):
         # Only other option is a regular student
         else:
             return Issue.objects.filter(from_user=self.request.user)
+
+    @action(detail=False)
+    def not_approved(self, request):
+        issues = self.filter_queryset(self.get_queryset().filter(approval_user=None))
+        serializer = self.get_serializer_class()(
+            self.paginate_queryset(issues), many=True
+        )
+        return self.get_paginated_response(serializer.data)
 
 
 # TODO - maybe move logic implemented in views to ViewSet.
