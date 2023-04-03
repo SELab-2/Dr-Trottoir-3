@@ -1,4 +1,4 @@
-from rest_framework import status
+from rest_framework import permissions, status, viewsets
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -8,10 +8,52 @@ from drtrottoir.permissions import (
     IsFromUserOfIssue,
     IsStudent,
     IsSuperStudent,
+    IsSuperstudentOrAdmin,
+    IsSyndicus,
     IsSyndicusOfBuildingAndApprovalNotNull,
     IsSyndicusOfBuildingAndApprovalNull,
+    user_is_superstudent_or_admin,
+    user_is_syndicus,
 )
 from drtrottoir.serializers import IssueSerializer
+
+from .mixins import PermissionsByActionMixin
+
+
+class IssueViewSet(PermissionsByActionMixin, viewsets.ModelViewSet):
+    serializer_class = IssueSerializer
+
+    permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
+    permission_classes_by_action = {
+        "list": [
+            permissions.IsAuthenticated,
+            IsStudent | IsSuperstudentOrAdmin | IsSyndicus,
+        ],
+        "create": [permissions.IsAuthenticated, IsStudent | IsSuperstudentOrAdmin],
+        "update": [
+            permissions.IsAuthenticated,
+            IsStudent | IsSuperstudentOrAdmin | IsSyndicus,
+        ],
+    }
+
+    filterset_fields = ["building", "resolved", "from_user", "approval_user"]
+    search_fields = ["message"]
+
+    def get_queryset(self):
+        """
+        Syndici can see the list of issues from buildings they own. Students
+        can see the list of issues they've created.
+        """
+        if user_is_superstudent_or_admin(self.request.user):
+            return Issue.objects.all()
+
+        elif user_is_syndicus(self.request.user):
+            return Issue.objects.filter(building__syndici=self.request.user.syndicus)
+
+        # Only other option is a regular student
+        else:
+            return Issue.objects.filter(from_user=self.request.user)
+
 
 # TODO - maybe move logic implemented in views to ViewSet.
 # class IssueCreateListRetrieveDestroyViewSet(
