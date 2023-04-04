@@ -6,7 +6,7 @@ from .garbage_collection_schedule_template import (
 )
 from .garbage_type import GarbageTypeViewSet
 from .issue import IssueViewSet
-from .issue_image import IssueImageDetailView, IssueImageView
+from .issue_image import IssueImageDetailView, IssueImageView, IssueImageViewSet
 from .location_group import LocationGroupViewSet
 from .schedule_assignment_views import ScheduleAssignmentViewSet
 from .schedule_definition import ScheduleDefinitionViewSet
@@ -27,4 +27,5 @@ __all__ = [
     "ScheduleDefinitionViewSet",
     "UserViewSet",
     "IssueViewSet",
+    "IssueImageViewSet",
 ]

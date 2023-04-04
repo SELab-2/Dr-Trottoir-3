@@ -1,12 +1,32 @@
-from rest_framework import status
+from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from drtrottoir.models import IssueImage
-from drtrottoir.permissions import IsStudent, IsSuperStudent
+from drtrottoir.permissions import IsStudent, IsSuperStudent, IsSuperstudentOrAdmin
 from drtrottoir.serializers import IssueImageSerializer
+
+from .mixins import PermissionsByActionMixin
+
+
+class IssueImageViewSet(
+    PermissionsByActionMixin,
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    parser_classes = (MultiPartParser,)
+    serializer_class = IssueImageSerializer
+    queryset = IssueImage.objects.all()
+
+    permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
+    permission_classes_by_action = {
+        "create": [permissions.IsAuthenticated, IsStudent | IsSuperstudentOrAdmin],
+        "destroy": [permissions.IsAuthenticated, IsSuperstudentOrAdmin],
+    }
 
 
 class IssueImageView(APIView):

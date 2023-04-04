@@ -31,6 +31,7 @@ from drtrottoir.views import (
     GarbageTypeViewSet,
     IssueImageDetailView,
     IssueImageView,
+    IssueImageViewSet,
     IssueViewSet,
     LocationGroupViewSet,
     ScheduleAssignmentViewSet,
@@ -85,6 +86,7 @@ router.register(
 router.register(r"schedule_definitions", ScheduleDefinitionViewSet)
 router.register(r"users", UserViewSet)
 router.register(r"issues", IssueViewSet, basename="issues")
+router.register(r"issue_images", IssueImageViewSet, basename="issue-images")
 
 
 urlpatterns = [
@@ -99,11 +101,11 @@ urlpatterns = [
         settings.BASE_PATH + "api-auth/",
         include("rest_framework.urls", namespace="rest_framework"),
     ),
-    path(settings.BASE_PATH + "issue_images/", IssueImageView.as_view()),
-    path(
-        settings.BASE_PATH + "issue_images/<int:issue_image_id>/",
-        IssueImageDetailView.as_view(),
-    ),
+    # path(settings.BASE_PATH + "issue_images/", IssueImageView.as_view()),
+    # path(
+    #     settings.BASE_PATH + "issue_images/<int:issue_image_id>/",
+    #     IssueImageDetailView.as_view(),
+    # ),
     path(
         settings.BASE_PATH + "api-auth/",
         include("rest_framework.urls", namespace="rest_framework"),
