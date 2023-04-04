@@ -49,6 +49,7 @@ class Building(models.Model):
     is_active = models.BooleanField(default=True)
     description = models.TextField(null=True)
     image = models.ImageField(upload_to=get_file_path_building_image, null=True)
+    secret_link = models.UUIDField(null=True, unique=True)
 
 
 class ScheduleDefinition(models.Model):

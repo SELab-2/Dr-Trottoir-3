@@ -7,6 +7,7 @@ class BuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Building
         fields = "__all__"
+        read_only_fields = ["secret_link"]
 
 
 class ScheduleDefinitionBuildingSerializer(serializers.ModelSerializer):

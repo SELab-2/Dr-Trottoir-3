@@ -1,4 +1,6 @@
-from rest_framework import mixins, permissions, viewsets
+import uuid
+
+from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -104,6 +106,14 @@ class BuildingViewSet(
                 required permission ``drtrottoir.models.Student``
 
                 All the garbage collection schedules of this building on this given day.
+
+        /buildings/:building_id/generate_link
+            **POST:**
+                required permission:
+                    ``drtrottoir.models.Student(is_super_student=True)`` or
+                    ``drtrottoir.models.Syndicus`` if the syndicus is the
+                    syndicus of that building
+                Generate a new UUID value for the building's hidden link.
     """
 
     filterset_fields = ["is_active"]
@@ -128,6 +138,10 @@ class BuildingViewSet(
         "retrieve_garbage_collection_schedule_list_by_building_and_date": [
             permissions.IsAuthenticated,
             IsStudent,
+        ],
+        "generate_link": [
+            permissions.IsAuthenticated,
+            IsSyndicusWithBuilding | IsSuperstudentOrAdmin,
         ],
     }
 
@@ -197,3 +211,11 @@ class BuildingViewSet(
 
         serializer = GarbageCollectionScheduleSerializer(schedules, many=True)
         return self.get_paginated_response(serializer.data)
+
+    @action(detail=True, methods=["POST"])
+    def generate_link(self, request, pk=None):
+        building = self.get_object()
+        building.secret_link = uuid.uuid4()
+        building.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
