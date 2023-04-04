@@ -15,7 +15,7 @@ def test_issues_all_not_approved():
     dummy_issue_id_1 = insert_dummy_issue(user.user).id
     dummy_issue_id_2 = insert_dummy_issue(user.user).id
 
-    response = client.get("/issues/?approved=0")
+    response = client.get("/issues/not_approved/")
 
     response_data_ids = [e["id"] for e in response.data["results"]]
 
