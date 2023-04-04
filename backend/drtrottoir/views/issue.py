@@ -17,6 +17,45 @@ from .mixins import PermissionsByActionMixin
 
 
 class IssueViewSet(PermissionsByActionMixin, viewsets.ModelViewSet):
+    """
+    Viewset handling issues.
+
+    Endpoints:
+        /issues/
+            **GET:**
+                required permission: ``drtrottoir.models.Student(is_super_student=True)``
+                All issues.
+
+            **POST:**
+                required permission: ``drtrottoir.models.Student``
+                Create a new issue type, return newly created object.
+
+        /issues/:issue_id/
+            **GET:**
+                required permission: ``drtrottoir.models.Student`` if the issue
+                    from_user field is the user of the request OR syndicus if they
+                    are the syndicus of the building for which the issue was made
+                    and approval_user is not NULL OR
+                    ``drtrottoir.models.Student(is_super_student=True)``
+                Get the issue object with the given ID.
+
+            **PUT:**
+                required permission: ``drtrottoir.models.Student(is_super_student=True)``
+                Update all fields of the issue.
+
+            **PATCH:**
+                required permission: ``drtrottoir.models.Student(is_super_student=True)``
+                Update some fields of the issue.
+
+            **DELETE:**
+                required permission:
+                    ``drtrottoir.models.Student(is_super_student=True)`` OR
+                    ``drtrottoir.models.Syndicus`` if they are the syndicus of the
+                    building for which the issue was made and approval_user is not
+                    NULL
+                Set the issue to resolved=True.
+    """  # noqa
+
     serializer_class = IssueSerializer
 
     permission_classes = [

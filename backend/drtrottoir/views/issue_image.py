@@ -15,6 +15,26 @@ class IssueImageViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
+    """
+    Viewset handling issue images.
+
+    Endpoints:
+        /issue_images/
+            **POST:**
+               required permission: ``drtrottoir.models.Student``
+                Create a new issue image and upload an image, return newly created object.
+                Request format: 'multipart'.
+
+        /issues_images/:issue_image_id/
+            **GET:**
+               required permission: ``drtrottoir.models.Student(is_super_student=True)``
+
+            **DELETE:**
+               required permission: ``drtrottoir.models.Student(is_super_student=True)``
+                Create a new issue image and upload an image, return newly created object.
+                Request format: 'multipart'.
+    """  # noqa
+
     parser_classes = (MultiPartParser,)
     serializer_class = IssueImageSerializer
     queryset = IssueImage.objects.all()
