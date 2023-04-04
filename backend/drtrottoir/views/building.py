@@ -219,3 +219,19 @@ class BuildingViewSet(
         building.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(
+        detail=False,
+        methods=["GET"],
+        # https://ihateregex.io/expr/uuid/
+        url_path=r"link/(?P<uuid>[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})",  # noqa
+    )
+    def uuid_link(self, request, uuid):
+        try:
+            building = Building.objects.get(secret_link=uuid)
+
+        except Building.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = BuildingSerializer(building)
+        return Response(serializer.data)
