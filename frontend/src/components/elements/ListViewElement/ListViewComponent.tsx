@@ -1,18 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import styles from './listView.module.css';
 
 
 type ListViewComponentProps = {
     listData: any[],
     regionData: any[],
+    current: number|null,
+    setCurrent: React.Dispatch<React.SetStateAction<number|null>>,
     ListItem: any,
     TopBar: any,
     props: any,
 }
 
-export default function ListViewComponent({listData, regionData, ListItem, TopBar, ...props}: ListViewComponentProps) {
-    const [current, setCurrent] = useState<number | null>(null);
-
+export default function ListViewComponent({listData, regionData, current, setCurrent, ListItem, TopBar, ...props}:
+    ListViewComponentProps) {
     const [sorttype, setSorttype] = React.useState('naam');
     const [region, setRegion] = React.useState<string[]>(regionData);
 
@@ -47,8 +48,7 @@ export default function ListViewComponent({listData, regionData, ListItem, TopBa
                             regions={regionData}/>;
                     </div>
                     <div className={styles.content_space}>
-                        {// @ts-ignore
-                            props.children}
+                        {props.children}
                     </div>
                 </div>
             </div>

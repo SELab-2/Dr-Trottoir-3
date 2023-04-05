@@ -1,7 +1,8 @@
 import ListViewComponent from '@/components/elements/ListViewElement/ListViewComponent';
 import BuildingListButtonComponent from '@/components/elements/ListViewElement/ListButtonElements/BuildingListButtonComponent';
 import BuildingTopBarComponent from '@/components/elements/ListViewElement/TopBarElements/BuildingTopBarComponent';
-import React from 'react';
+import BuildingDetail from '@/components/elements/buildingdetailElement/buildingDetail';
+import React, {useState} from 'react';
 
 interface Building {
     id: number
@@ -40,11 +41,14 @@ const dummyRegions = [
 
 export default function BuildingsPage() {
 
+    const [current, setCurrent] = useState<number | null>(null);
+
     return (
         <>
             <ListViewComponent listData={dummyBuildings} regionData={dummyRegions}
+                               current={current} setCurrent={setCurrent}
                 ListItem={BuildingListButtonComponent} TopBar={BuildingTopBarComponent}>
-                <h1>CONTENT</h1>
+                <BuildingDetail id={1}/>
             </ListViewComponent>
         </>
     );

@@ -169,7 +169,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                 label="Sorteer op"
                             >
                                 {sorttypes.map((option) => (
-                                    <MenuItem key={option} value={option} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
+                                    <MenuItem key={option} value={option} style={{wordBreak: "break-all",var(--primary-light)Space: 'normal',}}>
                                         {option}
                                     </MenuItem>
                                 ))}
@@ -187,13 +187,13 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                 renderValue={() => "regio"}
                             >
                                 <MenuItem key={"Alles "+((AllesSelected)?"deselecteren":"selecteren")} value={"Alles"}>
-                                    <Checkbox style ={{color: "#1C1C1C",}} checked={AllesSelected} />
+                                    <Checkbox style ={{color: "var(--primary-dark)",}} checked={AllesSelected} />
                                         <ListItemText style ={{width: 150, }} primary={"Alles "+((AllesSelected)?"deselecteren":"selecteren")} />
                                 </MenuItem>
                                 {dummyRegions.map((option) => (
                                     <MenuItem key={option} value={option}>
-                                        <Checkbox style ={{color: "#1C1C1C",}} checked={region.indexOf(option) > -1} />
-                                        <ListItemText primaryTypographyProps={{ style: { whiteSpace: "normal", wordBreak: "break-all" } }}  primary={option} />
+                                        <Checkbox style ={{color: "var(--primary-dark)",}} checked={region.indexOf(option) > -1} />
+                                        <ListItemText primaryTypographyProps={{ style: { var(--primary-light)Space: "normal", wordBreak: "break-all" } }}  primary={option} />
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -211,7 +211,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                     <em>Alle</em>
                                 </MenuItem>
                                 {dummyTypes.map((option) => (
-                                    <MenuItem key={option} value={option}  style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
+                                    <MenuItem key={option} value={option}  style={{wordBreak: "break-all",var(--primary-light)Space: 'normal',}}>
                                         {option}
                                     </MenuItem>
                                 ))}

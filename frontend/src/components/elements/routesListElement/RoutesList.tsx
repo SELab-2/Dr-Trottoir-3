@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import styles from "@/styles/ListView.module.css";
+import React, {useEffect, useState} from 'react';
+import styles from '@/styles/ListView.module.css';
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import {
@@ -12,10 +12,10 @@ import {
     MenuItem,
     Select,
     SelectChangeEvent, TextField,
-} from "@mui/material";
+} from '@mui/material';
 import SortIcon from '@mui/icons-material/Sort';
 import AddIcon from '@mui/icons-material/Add';
-import {ClickAwayListener} from "@mui/base";
+import {ClickAwayListener} from '@mui/base';
 
 interface Route {
     id: number
@@ -25,19 +25,19 @@ interface Route {
 }
 
 const dummyRoutes:Route[] = [
-    {id: 7, naam: "Bavo", regio: "Gent", afstand: 10000},
-    {id: 1, naam: "Lander", regio: "Antwerpen", afstand: 17050},
-    {id: 2, naam: "Jef", regio: "Gent", afstand: 8000},
-    {id: 3, naam: "Maxim", regio: "Gent", afstand: 6900},
-    {id: 4, naam: "Pim", regio: "Antwerpen", afstand: 42000},
-    {id: 5, naam: "Joris", regio: "Gent", afstand: 25000},
-    {id: 6, naam: "Jahid", regio: "Gent", afstand: 13000},
-    {id: 0, naam: "route 2", regio: "Antwerpen", afstand: 11000},
-    {id: 8, naam: "route 3", regio: "Gent", afstand: 42000},
-    {id: 9, naam: "route 1", regio: "Gent", afstand: 23000},
-    {id: 10, naam: "centrum", regio: "Antwerpen", afstand: 42000},
-    {id: 11, naam: "zuid", regio: "Gent", afstand: 7000},
-]
+    {id: 7, naam: 'Bavo', regio: 'Gent', afstand: 10000},
+    {id: 1, naam: 'Lander', regio: 'Antwerpen', afstand: 17050},
+    {id: 2, naam: 'Jef', regio: 'Gent', afstand: 8000},
+    {id: 3, naam: 'Maxim', regio: 'Gent', afstand: 6900},
+    {id: 4, naam: 'Pim', regio: 'Antwerpen', afstand: 42000},
+    {id: 5, naam: 'Joris', regio: 'Gent', afstand: 25000},
+    {id: 6, naam: 'Jahid', regio: 'Gent', afstand: 13000},
+    {id: 0, naam: 'route 2', regio: 'Antwerpen', afstand: 11000},
+    {id: 8, naam: 'route 3', regio: 'Gent', afstand: 42000},
+    {id: 9, naam: 'route 1', regio: 'Gent', afstand: 23000},
+    {id: 10, naam: 'centrum', regio: 'Antwerpen', afstand: 42000},
+    {id: 11, naam: 'zuid', regio: 'Gent', afstand: 7000},
+];
 
 const dummyRegions = [
     'Gent',
@@ -47,23 +47,22 @@ const dummyRegions = [
 
 export default function RoutesList() {
     const [current, setCurrent] = useState<number | null>(null);
-    const [sorttype , setSorttype] = React.useState("naam")
+    const [sorttype, setSorttype] = React.useState('naam');
     const [region, setRegion] = React.useState<string[]>(dummyRegions);
 
     const sortedRoutes = dummyRoutes.sort(function(first, second) {
         const value = first[sorttype as keyof Route];
-        if(typeof value == "number"){
+        if (typeof value == 'number') {
             return (second[sorttype as keyof Route] as number)-value;
         }
         return value.localeCompare(second[sorttype as keyof Route] as string);
-
-    })
+    });
     useEffect(() => {
         const element = document.getElementById(styles.scroll_style);
-        if(element != null){
-            element.scrollTo({top: 0, behavior: 'smooth'})
+        if (element != null) {
+            element.scrollTo({top: 0, behavior: 'smooth'});
         }
-    }, [sorttype,region]);
+    }, [sorttype, region]);
     return (
         <>
             <div className={styles.full_outer}>
@@ -72,7 +71,7 @@ export default function RoutesList() {
                 <div className={styles.under_columns}>
                     <div className={styles.list_wrapper}>
                         <div className={styles.list_bar} id={styles.scroll_style}>
-                            {sortedRoutes.map(x => <ListItem
+                            {sortedRoutes.map((x) => <ListItem
                                 id={x.id} current={current} naam={x.naam} afstand={x.afstand} regio={x.regio} onClick={setCurrent} />)}
                         </div>
                     </div>
@@ -90,54 +89,53 @@ type TopBarProps = {
     setRegion: React.Dispatch<React.SetStateAction<string[]>>,
 }
 
-function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
-    const AllesSelected = region.length>=dummyRegions.length
+function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps) {
+    const AllesSelected = region.length>=dummyRegions.length;
 
     const handleChangeRegion = (event: SelectChangeEvent<string[]>) => {
         const value = event.target.value as string[];
         setRegion(
-            (value.indexOf("Alles")>-1)?
+            (value.indexOf('Alles')>-1)?
                 (AllesSelected)?
                     []:
                     dummyRegions:
-                value    );
-      };
+                value );
+    };
 
     const dummyTypes = [
-        "actief",
-        "niet actief"
-    ]
+        'actief',
+        'niet actief',
+    ];
 
     const sorttypes = [
-        "naam",
+        'naam',
         'regio',
-        'afstand'
+        'afstand',
     ];
 
     const handleChangeSorttype = (event: SelectChangeEvent) => {
         setSorttype(event.target.value as string);
     };
 
-    const [searchEntry, setSearchEntry] = React.useState("")
+    const [searchEntry, setSearchEntry] = React.useState('');
 
     const handleChangeSearchEntry = (event: SelectChangeEvent) => {
         setSearchEntry(event.target.value as string);
     };
 
-    const [active, setActive] = React.useState("");
+    const [active, setActive] = React.useState('');
 
     const handleChangeActive = (event: SelectChangeEvent) => {
         setActive(event.target.value as string);
-    }
+    };
 
     const [open, setOpen] = React.useState(false);
 
     const [canClose, setCanClose] = React.useState(true);
     const handleClose = () => {
-        if (canClose){
+        if (canClose) {
             setOpen(false);
         }
-
     };
     const handleToggle = () => {
         setCanClose(false);
@@ -146,29 +144,28 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
 
     const handleSubmitForm = () =>{
 
-    }
+    };
 
-    const [formName, setFormName] = React.useState("")
+    const [formName, setFormName] = React.useState('');
     const handleChangeFormName = (event: SelectChangeEvent) => {
         setFormName(event.target.value as string);
     };
 
 
-    const [formRegion, setFormRegion] = React.useState("")
+    const [formRegion, setFormRegion] = React.useState('');
     const handleChangeFormRegion = (event: SelectChangeEvent) => {
         setFormRegion(event.target.value as string);
     };
 
     const Form = ()=>{
-
         React.useEffect(() =>{
-            setCanClose(true)
+            setCanClose(true);
         });
-        return(
+        return (
             <ClickAwayListener onClickAway={handleClose}>
                 <div className={styles.formCenter}>
                     <div className={styles.form}>
-                        <h2 style={{color:"black"}}>Route Toevoegen</h2>
+                        <h2 style={{color: 'black'}}>Route Toevoegen</h2>
                         <div className={styles.formFields}>
                             <div className={styles.field}>
                                 <TextField
@@ -178,17 +175,17 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                     onChange={handleChangeFormName}
                                 />
                             </div>
-                            <FormControl required sx={{minWidth: 150 }}>
+                            <FormControl required sx={{minWidth: 150}}>
                                 <InputLabel>regio</InputLabel>
                                 <Select
                                     value={formRegion}
                                     onChange={handleChangeFormRegion}
                                     label="regio"
                                     defaultValue=""
-                                    MenuProps={{ disablePortal: true }}
+                                    MenuProps={{disablePortal: true}}
                                 >
                                     {dummyRegions.map((option) => (
-                                        <MenuItem id="menuitem" key={option} value={option} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
+                                        <MenuItem id="menuitem" key={option} value={option} style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                             {option}
                                         </MenuItem>
                                     ))}
@@ -199,31 +196,31 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                             <Button variant="contained" className={styles.button} onClick={handleClose}>
                                 Cancel
                             </Button>
-                            <Button variant="contained" className={styles.button} onClick={handleSubmitForm} style={{backgroundColor: "#E6E600"}}>
+                            <Button variant="contained" className={styles.button} onClick={handleSubmitForm} style={{backgroundColor: 'var(--primary-yellow)'}}>
                                 Submit
                             </Button>
                         </div>
                     </div>
                 </div>
             </ClickAwayListener>
-        )
-    }
+        );
+    };
 
     return (
-        <div  className={styles.topBar}>
+        <div className={styles.topBar}>
             <div className={styles.title}>
                 <h1>Routes</h1>
                 <p>{dummyRoutes.length} gevonden resultaten</p>
             </div>
 
             <div className={styles.search}>
-                <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                    <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                <Box sx={{display: 'flex', alignItems: 'flex-end'}}>
+                    <IconButton type="button" sx={{p: '10px'}} aria-label="search">
                         <SearchIcon />
                     </IconButton>
                     <InputBase
-                        sx={{ p: '5px'}}
-                        autoComplete={"true"}
+                        sx={{p: '5px'}}
+                        autoComplete={'true'}
                         fullWidth={true}
                         placeholder="Zoek op naam"
                         value={searchEntry}
@@ -234,10 +231,10 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
             <div className={styles.generic_wrapper}>
                 <div className={styles.filter_wrapper}>
                     <div className={styles.filters}>
-                        <FormControl sx={{ m: 1, minWidth: 120 }}>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel>Sorteer op</InputLabel>
                             <Select
-                                style={{width:150}}
+                                style={{width: 150}}
                                 IconComponent={() => (
                                     <SortIcon/>
                                 )}
@@ -246,7 +243,8 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                 label="Sorteer op"
                             >
                                 {sorttypes.map((option) => (
-                                    <MenuItem key={option} value={option} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
+                                    <MenuItem key={option} value={option}
+                                        style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                         {option}
                                     </MenuItem>
                                 ))}
@@ -255,29 +253,29 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                     </div>
 
                     <div className={styles.filters}>
-                        <FormControl sx={{ m: 1, minWidth: 120 }}>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
                             <Select
                                 displayEmpty={true}
                                 multiple
                                 value={region}
                                 onChange={handleChangeRegion}
-                                renderValue={() => "regio"}
+                                renderValue={() => 'regio'}
                             >
-                                <MenuItem key={"Alles "+((AllesSelected)?"deselecteren":"selecteren")} value={"Alles"}>
-                                    <Checkbox style ={{color: "#1C1C1C",}} checked={AllesSelected} />
-                                        <ListItemText style ={{width: 150, }} primary={"Alles "+((AllesSelected)?"deselecteren":"selecteren")} />
+                                <MenuItem key={'Alles '+((AllesSelected)?'deselecteren':'selecteren')} value={'Alles'}>
+                                    <Checkbox style ={{color: 'var(--primary-dark)'}} checked={AllesSelected} />
+                                    <ListItemText style ={{width: 150}} primary={'Alles '+((AllesSelected)?'deselecteren':'selecteren')} />
                                 </MenuItem>
                                 {dummyRegions.map((option) => (
                                     <MenuItem key={option} value={option}>
-                                        <Checkbox style ={{color: "#1C1C1C",}} checked={region.indexOf(option) > -1} />
-                                        <ListItemText primaryTypographyProps={{ style: { whiteSpace: "normal", wordBreak: "break-all" } }}  primary={option} />
+                                        <Checkbox style ={{color: 'var(--primary-dark)'}} checked={region.indexOf(option) > -1} />
+                                        <ListItemText primaryTypographyProps={{style: {whiteSpace: 'normal', wordBreak: 'break-all'}}} primary={option} />
                                     </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
                     </div>
                     <div className={styles.filters}>
-                        <FormControl sx={{ m: 1, minWidth: 120 }}>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel>type</InputLabel>
                             <Select
                                 value={active}
@@ -288,7 +286,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                                     <em>Alle</em>
                                 </MenuItem>
                                 {dummyTypes.map((option) => (
-                                    <MenuItem key={option} value={option} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
+                                    <MenuItem key={option} value={option} style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                         {option}
                                     </MenuItem>
                                 ))}
@@ -301,7 +299,7 @@ function TopBar({sorttype, setSorttype, region, setRegion}:TopBarProps){
                     Route toevoegen
                 </Button>
                 <Backdrop
-                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
                     open={open}
                     invisible={false}
                 >
@@ -325,12 +323,12 @@ type ListItemProps = {
 }
 
 const ListItem = ({id, current, naam, afstand, regio, onClick}: ListItemProps) => {
-    const isCurrent = id == current
+    const isCurrent = id == current;
     return (
         <div className={styles.button_wrapper}>
             <Button id={(isCurrent)?styles.item_button_select : styles.item_button}
-                    className={styles.button_default}
-                    onClick={()=>onClick(id)}>
+                className={styles.button_default}
+                onClick={()=>onClick(id)}>
                 <div className={styles.big_item_text}>
                     {naam}
                 </div>

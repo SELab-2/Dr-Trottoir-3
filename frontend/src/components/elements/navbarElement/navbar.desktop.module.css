@@ -19,7 +19,7 @@
 .left_flex_container {
     display: flex;
     flex-direction: column;
-    background-color: #1C1C1C;
+    background-color: var(--primary-dark);
 }
 
 .scrollable {
@@ -41,13 +41,13 @@
     gap: 16px;
     padding: 0 16px 0 16px;
     flex: 999;
-    background-color: #1C1C1C;
+    background-color: var(--primary-dark);
 }
 
 .side_bar_top {
     display: flex;
     flex-basis: 56px;
-    background-color: #1C1C1C;
+    background-color: var(--primary-dark);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 144px;
@@ -59,7 +59,7 @@
     flex: 1;
     gap: 16px;
     padding: 50px 16px 40px 16px;
-    background-color: #1C1C1C;
+    background-color: var(--primary-dark);
 }
 
 
@@ -108,7 +108,7 @@
     flex-basis: 0;
     flex-shrink: 0;
     flex-grow: 999;
-    background-color: #F3F5F9;
+    background-color: var(--primary-light);
     overflow: hidden;
     position: relative;
 }
@@ -118,7 +118,7 @@
     flex-shrink: 0;
     flex-basis: 56px;
     flex-grow: 0;
-    background-color: #1C1C1C;
+    background-color: var(--primary-dark);
 }
 
 
@@ -137,16 +137,16 @@
 .button_default {
     font-family: 'Inter', sans-serif;
     font-weight: 500;
-    color: #F3F5F9;
+    color: var(--primary-light);
     text-transform: none;
-    background-color: #1C1C1C;
+    background-color: var(--primary-dark);
     border-radius: 8px;
 }
 
 .button_selected {
     font-family: 'Inter', sans-serif;
     font-weight: 500;
-    color: #E6E600;
+    color: var(--primary-yellow);
     text-transform: none;
     background-color: #2D2F33;
     border-radius: 8px;

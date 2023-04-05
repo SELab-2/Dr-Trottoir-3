@@ -9,11 +9,11 @@
     padding: 20px;
     font-family: 'Inter', sans-serif;
 
-    --primary-yellow: #E6E600;
-    --primary-dark: #1C1C1C;
+    --primary-yellow: var(--primary-yellow);
+    --primary-dark: var(--primary-dark);
     --secondary-dark: #2D2F33;
-    --primary-light: #F3F5F9;
-    --secondary-light: #E9EDF4;
+    --primary-light: var(--primary-light);
+    --secondary-light: var(--secondary-light);
 }
 
 

@@ -4,8 +4,8 @@
     flex-wrap: wrap;
     text-align: left;
     align-items: flex-start;
-    color: #1C1C1C;
-    background-color: #E9EDF4;
+    color: var(--primary-dark);
+    background-color: var(--secondary-light);
 }
 
 #item_button_select {
@@ -14,13 +14,13 @@
     flex-wrap: wrap;
     text-align: left;
     align-items: flex-start;
-    color: white;
-    background-color: #1C1C1C;
+    color: var(--primary-light);
+    background-color: var(--primary-dark);
 }
 
 .button_wrapper {
     flex-wrap: wrap;
-    background-color: white;
+    background-color: var(--primary-light);
     width: 100%;
 }
 
@@ -28,15 +28,15 @@
 .button_default {
     word-break: break-word;
     font-family: 'Inter', sans-serif;
-    color: #1C1C1C;
+    color: var(--primary-dark);
     text-transform: none;
-    background-color: #1C1C1C;
+    background-color: var(--primary-dark);
     border-radius: 8px;
     width: 100%;
 }
 
 .button_default:hover{
-    color: #E6E600;
+    color: var(--primary-yellow);
 }
 
 .big_item_text {

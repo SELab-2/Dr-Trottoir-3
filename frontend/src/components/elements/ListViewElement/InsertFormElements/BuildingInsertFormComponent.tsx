@@ -64,7 +64,7 @@ const BuildingInsertFormComponent = ()=>{
                                 MenuProps={{disablePortal: true}}
                             >
                                 {dummyRegions.map((option) => (
-                                    <MenuItem id="menuitem" key={option} value={option} style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                                    <MenuItem id="menuitem" key={option} value={option} style={{wordBreak: 'break-all', var(--primary-light)Space: 'normal'}}>
                                         {option}
                                     </MenuItem>
                                 ))}
@@ -91,7 +91,7 @@ const BuildingInsertFormComponent = ()=>{
                                     <em>geen</em>
                                 </MenuItem>
                                 {dummySindici.map((option) => (
-                                    <MenuItem id="menuitem" key={option.name} value={option.name} style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                                    <MenuItem id="menuitem" key={option.name} value={option.name} style={{wordBreak: 'break-all', var(--primary-light)Space: 'normal'}}>
                                         {option.name}
                                     </MenuItem>
                                 ))}
@@ -102,7 +102,7 @@ const BuildingInsertFormComponent = ()=>{
                         <Button variant="contained" className={styles.button} onClick={handleClose}>
                             Cancel
                         </Button>
-                        <Button variant="contained" className={styles.button} onClick={handleSubmitForm} style={{backgroundColor: '#E6E600'}}>
+                        <Button variant="contained" className={styles.button} onClick={handleSubmitForm} style={{backgroundColor: 'var(--primary-yellow)'}}>
                             Submit
                         </Button>
                     </div>

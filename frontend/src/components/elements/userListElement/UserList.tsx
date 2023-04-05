@@ -217,7 +217,7 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
                                     MenuProps={{ disablePortal: true }}
                                 >
                                     {dummyType.map((option) => (
-                                        <MenuItem id="menuitem" key={option} value={option} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
+                                        <MenuItem id="menuitem" key={option} value={option} style={{wordBreak: "break-all",var(--primary-light)Space: 'normal',}}>
                                             {option}
                                         </MenuItem>
                                     ))}
@@ -228,7 +228,7 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
                             <Button variant="contained" className={styles.button} onClick={handleClose}>
                                 Cancel
                             </Button>
-                            <Button variant="contained" className={styles.button} onClick={handleSubmitForm} style={{backgroundColor: "#E6E600"}}>
+                            <Button variant="contained" className={styles.button} onClick={handleSubmitForm} style={{backgroundColor: "var(--primary-yellow)"}}>
                                 Submit
                             </Button>
                         </div>
@@ -275,7 +275,7 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
                                 label="Sorteer op"
                             >
                                 {sorttypes.map((option) => (
-                                    <MenuItem key={option} value={option} style={{wordBreak: "break-all",whiteSpace: 'normal',}}>
+                                    <MenuItem key={option} value={option} style={{wordBreak: "break-all",var(--primary-light)Space: 'normal',}}>
                                         {option}
                                     </MenuItem>
                                 ))}
@@ -293,13 +293,13 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
                                 renderValue={() => "regio"}
                             >
                                 <MenuItem key={"Alles "+((RegionAllesSelected)?"deselecteren":"selecteren")} value={"Alles"}>
-                                    <Checkbox style ={{color: "#1C1C1C",}} checked={RegionAllesSelected} />
+                                    <Checkbox style ={{color: "var(--primary-dark)",}} checked={RegionAllesSelected} />
                                         <ListItemText style ={{width: 150, }} primary={"Alles "+((RegionAllesSelected)?"deselecteren":"selecteren")} />
                                 </MenuItem>
                                 {dummyRegions.map((option) => (
                                     <MenuItem key={option} value={option}>
-                                        <Checkbox style ={{color: "#1C1C1C",}} checked={region.indexOf(option) > -1} />
-                                        <ListItemText primaryTypographyProps={{ style: { whiteSpace: "normal", wordBreak: "break-all" } }}  primary={option} />
+                                        <Checkbox style ={{color: "var(--primary-dark)",}} checked={region.indexOf(option) > -1} />
+                                        <ListItemText primaryTypographyProps={{ style: { var(--primary-light)Space: "normal", wordBreak: "break-all" } }}  primary={option} />
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -315,13 +315,13 @@ function TopBar({sorttype, setSorttype, region, setRegion, type, setType}:TopBar
                                 renderValue={() => "type"}
                             >
                                 <MenuItem key={"Alles "+((TypeAllesSelected)?"deselecteren":"selecteren")} value={"Alles"}>
-                                    <Checkbox style ={{color: "#1C1C1C",}} checked={TypeAllesSelected} />
+                                    <Checkbox style ={{color: "var(--primary-dark)",}} checked={TypeAllesSelected} />
                                         <ListItemText style ={{width: 150, }} primary={"Alles "+((TypeAllesSelected)?"deselecteren":"selecteren")} />
                                 </MenuItem>
                                 {dummyType.map((option) => (
                                     <MenuItem key={option} value={option}>
-                                        <Checkbox style ={{color: "#1C1C1C",}} checked={type.indexOf(option) > -1} />
-                                        <ListItemText primaryTypographyProps={{ style: { whiteSpace: "normal", wordBreak: "break-all" } }}  primary={option} />
+                                        <Checkbox style ={{color: "var(--primary-dark)",}} checked={type.indexOf(option) > -1} />
+                                        <ListItemText primaryTypographyProps={{ style: { var(--primary-light)Space: "normal", wordBreak: "break-all" } }}  primary={option} />
                                     </MenuItem>
                                 ))}
                             </Select>

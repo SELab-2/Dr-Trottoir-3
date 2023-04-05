@@ -115,12 +115,12 @@ export default function BuildingTopBarComponent({sorttype, setSorttype, region, 
                                 renderValue={() => 'regio'}
                             >
                                 <MenuItem key={'Alles '+((AllesSelected)?'deselecteren':'selecteren')} value={'Alles'}>
-                                    <Checkbox style ={{color: '#1C1C1C'}} checked={AllesSelected} />
+                                    <Checkbox style ={{color: 'var(--primary-dark)'}} checked={AllesSelected} />
                                     <ListItemText style ={{width: 150}} primary={'Alles '+((AllesSelected)?'deselecteren':'selecteren')} />
                                 </MenuItem>
                                 {regions.map((option) => (
                                     <MenuItem key={option} value={option}>
-                                        <Checkbox style ={{color: '#1C1C1C'}} checked={region.indexOf(option) > -1} />
+                                        <Checkbox style ={{color: 'var(--primary-dark)'}} checked={region.indexOf(option) > -1} />
                                         <ListItemText primaryTypographyProps={{style: {whiteSpace: 'normal', wordBreak: 'break-all'}}} primary={option} />
                                     </MenuItem>
                                 ))}

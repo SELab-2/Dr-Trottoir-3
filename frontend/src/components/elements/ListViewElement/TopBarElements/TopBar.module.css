@@ -1,18 +1,11 @@
 .topBar {
     width: 100%;
     height: 100px;
-    padding: 1vw;
-    border: none;
     font-size: 20px;
-    background-color: white;
-    color: black;
-    overflow: hidden;
+    background-color: var(--primary-light);
     display: flex;
-    flex-direction: row;
     gap: 16px;
-    flex-wrap: wrap;
     align-items: center;
-
 }
 
 
@@ -46,7 +39,7 @@
 }
 
 .search{
-    background-color: #F3F5F9;
+    background-color: var(--secondary-light);
     border-radius: 20px;
     min-width: 40vh;
 }
@@ -56,7 +49,7 @@
 
 .button{
     height: 5vh;
-    background-color: #F3F5F9;
+    background-color: var(--primary-light);
     color: var(--primary-dark);
     bottom: 0;
 }
@@ -70,14 +63,14 @@
     display: flex;
     flex-wrap: wrap;
     height: 100%;
-    background-color: white;
+    background-color: var(--primary-light);
     width: 25%;
 }
 
 .list_bar {
     display: flex;
     gap: 16px;
-    background-color: white;
+    background-color: var(--primary-light);
     flex-wrap: wrap;
     max-height: 100%;
     overflow-y: auto;
@@ -103,8 +96,8 @@
     flex-wrap: wrap;
     text-align: left;
     align-items: flex-start;
-    color: #1C1C1C;
-    background-color: #E9EDF4;
+    color: var(--primary-dark);
+    background-color: var(--secondary-light);
 }
 
 #item_button_select {
@@ -113,13 +106,13 @@
     flex-wrap: wrap;
     text-align: left;
     align-items: flex-start;
-    color: white;
-    background-color: #1C1C1C;
+    color: var(--primary-light);
+    background-color: var(--primary-dark);
 }
 
 .button_wrapper {
     flex-wrap: wrap;
-    background-color: white;
+    background-color: var(--primary-light);
     width: 100%;
     padding: 0px 8px 0px 0px;
 }
@@ -150,15 +143,15 @@
 .button_default {
     word-break: break-word;
     font-family: 'Inter', sans-serif;
-    color: #1C1C1C;
+    color: var(--primary-dark);
     text-transform: none;
-    background-color: #1C1C1C;
+    background-color: var(--primary-dark);
     border-radius: 8px;
     width: 100%;
 }
 
 .button_default:hover{
-    color: #E6E600;
+    color: var(--primary-yellow);
 }
 
 .big_item_text {
@@ -197,7 +190,7 @@
 }
 
 .formCenter{
-    background-color: white;
+    background-color: var(--primary-light);
     border-radius: 5px;
     display: flex;
     flex-direction: row;
