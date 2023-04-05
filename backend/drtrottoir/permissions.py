@@ -53,7 +53,7 @@ class IsSyndicusOfBuildingAndApprovalNull(permissions.BasePermission):
     ) -> bool:
         if isinstance(request.user, AnonymousUser):
             return False
-        buildings = obj.building.syndicus_set.all().filter(user=request.user)
+        buildings = obj.building.syndici.all().filter(user=request.user)
         approval = obj.approval_user
         return len(buildings) > 0 and approval is None
 
@@ -64,7 +64,7 @@ class IsSyndicusOfBuildingAndApprovalNotNull(permissions.BasePermission):
     ) -> bool:
         if isinstance(request.user, AnonymousUser):
             return False
-        buildings = obj.building.syndicus_set.all().filter(user=request.user)
+        buildings = obj.building.syndici.all().filter(user=request.user)
         approval = obj.approval_user
         return len(buildings) > 0 and approval is not None
 

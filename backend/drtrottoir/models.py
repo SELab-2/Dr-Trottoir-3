@@ -149,7 +149,7 @@ class Syndicus(models.Model):
     """
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    buildings = models.ManyToManyField(Building)
+    buildings = models.ManyToManyField(Building, related_name="syndici")
 
 
 class Issue(models.Model):

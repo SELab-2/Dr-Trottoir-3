@@ -13,11 +13,14 @@ from drtrottoir.serializers import (
     ScheduleWorkEntrySerializer,
 )
 
+from .mixins import PermissionsByActionMixin
+
 
 class ScheduleDefinitionViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.ListModelMixin,
+    PermissionsByActionMixin,
     viewsets.GenericViewSet,
 ):
     """
@@ -76,12 +79,6 @@ class ScheduleDefinitionViewSet(
         "retrieve": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
         "buildings": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
     }
-
-    def get_permissions(self):
-        if self.action not in self.permission_classes_by_action:
-            return [perm() for perm in self.permission_classes]
-
-        return [perm() for perm in self.permission_classes_by_action[self.action]]
 
     @action(detail=True)
     def buildings(self, request, pk=None):

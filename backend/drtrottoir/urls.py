@@ -29,11 +29,8 @@ from drtrottoir.views import (
     GarbageCollectionScheduleTemplateViewSet,
     GarbageCollectionScheduleViewSet,
     GarbageTypeViewSet,
-    IssueDetailApiView,
-    IssueImageDetailView,
-    IssueImageView,
-    IssueNotApprovedApiView,
-    IssuesListApiView,
+    IssueImageViewSet,
+    IssueViewSet,
     LocationGroupViewSet,
     ScheduleAssignmentViewSet,
     ScheduleDefinitionViewSet,
@@ -86,25 +83,13 @@ router.register(
 )
 router.register(r"schedule_definitions", ScheduleDefinitionViewSet)
 router.register(r"users", UserViewSet)
+router.register(r"issues", IssueViewSet, basename="issues")
+router.register(r"issue_images", IssueImageViewSet, basename="issue-images")
 
 
 urlpatterns = [
     path(settings.BASE_PATH, include(router.urls)),
     path(settings.BASE_PATH + "admin/", admin.site.urls),
-    path(settings.BASE_PATH + "issues/", IssuesListApiView.as_view()),
-    path(settings.BASE_PATH + "issues/<int:issue_id>/", IssueDetailApiView.as_view()),
-    path(
-        settings.BASE_PATH + "issues/not_approved/", IssueNotApprovedApiView.as_view()
-    ),
-    path(
-        settings.BASE_PATH + "api-auth/",
-        include("rest_framework.urls", namespace="rest_framework"),
-    ),
-    path(settings.BASE_PATH + "issue_images/", IssueImageView.as_view()),
-    path(
-        settings.BASE_PATH + "issue_images/<int:issue_image_id>/",
-        IssueImageDetailView.as_view(),
-    ),
     path(
         settings.BASE_PATH + "api-auth/",
         include("rest_framework.urls", namespace="rest_framework"),

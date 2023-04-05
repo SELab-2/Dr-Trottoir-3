@@ -67,7 +67,8 @@ def test_issues_detail_api_view_patch_valid():
     assert response.status_code == 200
     assert response.data == {
         "id": dummy_issue_1.id,
-        "resolved": dummy_issue_data["resolved"],
+        # resolved is a read-only field and can only be changed using a DELETE request
+        "resolved": False,
         "message": dummy_issue_data["message"],
         "building": dummy_issue_1.building.id,
         "from_user": dummy_issue_1.from_user.id,
@@ -102,17 +103,7 @@ def test_issues_detail_api_view_delete_valid():
     client.force_authenticate(user.user)
     response = client.delete(f"/issues/{dummy_issue_1.id}/")
 
-    assert response.status_code == 200
-    assert response.data == {
-        "id": dummy_issue_1.id,
-        "resolved": True,
-        "message": dummy_issue_1.message,
-        "building": dummy_issue_1.building.id,
-        "from_user": dummy_issue_1.from_user.id,
-        "approval_user": None
-        if dummy_issue_1.approval_user is None
-        else dummy_issue_1.approval_user.id,
-    }
+    assert response.status_code == 204
 
 
 @pytest.mark.django_db
@@ -177,7 +168,7 @@ def test_issues_detail_api_view_get_student_fail():
 
     response = _test_issues_detail_api_view_get_valid_id(user=user.user)
 
-    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.status_code == 404
 
 
 @pytest.mark.django_db
@@ -208,7 +199,7 @@ def test_issues_detail_api_view_get_syndicus_fail():
         user=user.user, issue_user=issue_user
     )
 
-    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.status_code == 404
 
 
 @pytest.mark.django_db
@@ -298,7 +289,7 @@ def test_issues_detail_api_view_patch_super_student_success():
 
     response = _test_issues_detail_api_view_patch_valid_id(user.user)
 
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == 200
 
 
 @pytest.mark.django_db
@@ -308,7 +299,7 @@ def test_issues_detail_api_view_patch_admin_success():
 
     response = _test_issues_detail_api_view_patch_valid_id(user.user)
 
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == 200
 
 
 def _test_issues_detail_api_view_delete_invalid_id(user=None):
@@ -358,7 +349,7 @@ def test_issues_detail_api_view_delete_super_student_success():
 
     response = _test_issues_detail_api_view_delete_valid_id(user.user)
 
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == 204
 
 
 @pytest.mark.django_db
@@ -368,7 +359,7 @@ def test_issues_detail_api_view_delete_admin_success():
 
     response = _test_issues_detail_api_view_delete_valid_id(user.user)
 
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == 204
 
 
 @pytest.mark.django_db
@@ -399,4 +390,4 @@ def test_issues_detail_api_view_delete_syndicus_fail():
         user=user.user, issue_user=issue_user
     )
 
-    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.status_code == 404
