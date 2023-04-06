@@ -4,19 +4,17 @@
     margin: 5px;
     display: flex;
     flex-flow: column;
+    background-color: #E9EDF4;
 }
 
 .header {
     width: 100%;
     flex-grow: 1;
     flex-basis: 50px;
-    background-color: #E9EDF4;
 }
 
 .task_list {
-    margin-top: 10px;
     width: 100%;
     flex-basis: 0;
     flex-grow: 999;
-    background-color: #E9EDF4;
 }

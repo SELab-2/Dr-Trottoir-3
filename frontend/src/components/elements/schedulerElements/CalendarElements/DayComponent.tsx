@@ -1,39 +1,34 @@
+import {memo} from 'react';
+import {Droppable, Draggable} from 'react-beautiful-dnd';
+import {ITask} from './Interfaces';
+import {IColumn} from './Interfaces';
 import styles from './DayComponent.module.css';
-import Button from '@mui/material/Button';
-// import ListItem from '@mui/material/ListItem';
-// import ListItemButton from '@mui/material/ListItemButton';
-// import ListItemText from '@mui/material/ListItemText';
-// import {ListChildComponentProps} from 'react-window';
+import TaskListComponent from './TaskList';
 
-export default function CalendarDay() {
-    const date = '30/03/2023';
-    const day = 'monday';
-
-    return (
-        <div className={styles.full_day}>
-
-            <div className={styles.header}>
-                {date}{day}
-                <Button/>
-            </div>
-            <div className={styles.task_list}>
-                <li>
-                </li>
-            </div>
-
-        </div>
-    );
+interface Props {
+    column: IColumn;
+    tasks: ITask[];
+    index: number;
 }
 
+const DayComponent = ({column, tasks, index}: Props) => {
+    return (
+        <div className={styles.full_day}>
+            <div className={styles.header}>
+                {column.title}
+            </div>
+            <Droppable droppableId={column.id} type="task">
+                {(droppableProvided, droppableSnapshot) => (
+                    <div ref={droppableProvided.innerRef}
+                        {...droppableProvided.droppableProps}
+                        className={styles.task_list}>
+                        <TaskListComponent tasks={tasks} />
 
-// function renderRow(props: ListChildComponentProps) {
-//     const {index, style} = props;
-//
-//     return (
-//         <ListItem style={style} key={index} component="div" disablePadding>
-//             <ListItemButton>
-//                 <ListItemText primary={`Item ${index + 1}`} />
-//             </ListItemButton>
-//         </ListItem>
-//     );
-// }
+                        {droppableProvided.placeholder}
+                    </div>
+                )}
+            </Droppable>
+        </div>
+    );
+};
+export default memo(DayComponent);
