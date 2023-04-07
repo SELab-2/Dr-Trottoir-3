@@ -43,12 +43,14 @@ type PaginatedResponse<T> = {
  * @param {string} url
  * @return {Promise<T>}
  * **/
-async function fetcher<T>(token: string, url: string): Promise<T> {
+async function fetcher<T>(args: Array): Promise<T> {
     // @ts-ignore
-    return fetch(url, {
+    // eslint-disable-next-line no-undef
+    return fetch(process.env.NEXT_API_URL + args[1].slice(1), {
         headers: {
-            'Authorization': `Bearer ${token}`,
-        }}).then((res) => {
+            'Authorization': `Bearer ${args[0]}`,
+        },
+    }).then((res) => {
         return res.json() as Promise<T>;
     });
 }
@@ -69,8 +71,9 @@ export function getList<T>(route: Api, params: any, query: any): SWRResponse<Pag
     routeStr += queryParams.toString();
 
     const {data: session} = useSession();
+
     // @ts-ignore
-    const token = session !== null ? session.accessToken : '';
+    const token = session ? session.accessToken : '';
 
     return useSWR<PaginatedResponse<T>>([token, routeStr], fetcher);
 }
@@ -84,8 +87,9 @@ export function getDetail<T>(route: Api, id: number): SWRResponse<T, any> {
     const routeStr = route.replace(':id', id.toString());
 
     const {data: session} = useSession();
+
     // @ts-ignore
-    const token = session !== null ? session.accessToken : '';
+    const token = session ? session.accessToken : '';
 
     return useSWR<T>([token, routeStr], fetcher);
 }
