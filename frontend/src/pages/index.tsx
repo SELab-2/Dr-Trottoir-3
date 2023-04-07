@@ -16,11 +16,9 @@ export default function Home() {
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
                 <main className={styles.main}>
-                    {/* <NavBar>*/}
-                        <div style={{backgroundColor: 'white', width: '100%', height: '100%'}}>
-                            <p>Hi {session.user.name}, you are logged in (TODO: this is debug).</p>
-                        </div>
-                    {/* </NavBar>*/}
+                    <div style={{backgroundColor: 'white', width: '100%', height: '100%'}}>
+                        <p>Hi {session.user.name}, you are logged in (TODO: this is debug).</p>
+                    </div>
                 </main>
             </>
         );
@@ -36,11 +34,9 @@ export default function Home() {
             </Head>
             <body>
                 <main className={styles.main}>
-                    {/* <NavBar>*/}
-                        <div style={{backgroundColor: 'white', width: '100%', height: '100%'}}>
-                            <p>Not logged in, TODO: redirect to login page.</p>
-                        </div>
-                    {/* </NavBar>*/}
+                    <div style={{backgroundColor: 'white', width: '100%', height: '100%'}}>
+                        <p>Not logged in, TODO: redirect to login page.</p>
+                    </div>
                 </main>
             </body>
         </>

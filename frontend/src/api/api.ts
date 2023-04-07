@@ -39,11 +39,10 @@ type PaginatedResponse<T> = {
 };
 
 /**
- * @param {string} token
- * @param {string} url
+ * @param {Array<string>} args
  * @return {Promise<T>}
  * **/
-async function fetcher<T>(args: Array): Promise<T> {
+async function fetcher<T>(args: Array<string>): Promise<T> {
     // @ts-ignore
     // eslint-disable-next-line no-undef
     return fetch(process.env.NEXT_API_URL + args[1].slice(1), {

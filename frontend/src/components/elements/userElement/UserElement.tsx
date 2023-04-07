@@ -1,4 +1,4 @@
-import { Avatar } from '@mui/material';
+import {Avatar} from '@mui/material';
 import styles from './UserElement.module.css';
 
 export default function UserElement() {
