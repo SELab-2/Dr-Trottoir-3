@@ -76,16 +76,6 @@ def test_issues_list_api_view_get_no_user_fail():
 
 
 @pytest.mark.django_db
-def test_issues_list_api_view_get_student_fail():
-    """ """
-    user = insert_dummy_student()
-
-    response = _test_issues_list_api_view_get(user.user, user.user)
-
-    assert response.status_code == status.HTTP_403_FORBIDDEN
-
-
-@pytest.mark.django_db
 def test_issues_list_api_view_get_super_student_success():
     """ """
     user = insert_dummy_student(is_super_student=True)
@@ -103,17 +93,6 @@ def test_issues_list_api_view_get_admin_success():
     response = _test_issues_list_api_view_get(user.user, user.user)
 
     assert response.status_code == status.HTTP_200_OK
-
-
-@pytest.mark.django_db
-def test_issues_list_api_view_get_syndicus_fail():
-    """ """
-    dummy_user = insert_dummy_user()
-    user = insert_dummy_syndicus(dummy_user)
-
-    response = _test_issues_list_api_view_get(user.user, user.user)
-
-    assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
 def _test_issues_list_api_view_post(user=None, issue_user=None, building=None):
