@@ -10,6 +10,8 @@ from drtrottoir.serializers import (
     ScheduleDefinitionSerializer,
 )
 
+from .mixins import PermissionsByActionMixin
+
 
 class LocationGroupViewSet(
     mixins.ListModelMixin,
@@ -17,6 +19,7 @@ class LocationGroupViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
+    PermissionsByActionMixin,
     viewsets.GenericViewSet,
 ):
     """
@@ -73,12 +76,6 @@ class LocationGroupViewSet(
         "retrieve": [permissions.IsAuthenticated],
         "list": [permissions.IsAuthenticated],
     }
-
-    def get_permissions(self):
-        if self.action not in self.permission_classes_by_action:
-            return [perm() for perm in self.permission_classes]
-
-        return [perm() for perm in self.permission_classes_by_action[self.action]]
 
     queryset = LocationGroup.objects.all()
     serializer_class = LocationGroupSerializer
