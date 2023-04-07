@@ -1,4 +1,4 @@
-import {Box, IconButton, Table, TableBody, TableCell, TableRow, TextareaAutosize, TextField, Typography} from '@mui/material';
+import {Box, IconButton, TextareaAutosize, Typography} from '@mui/material';
 import Carousel from 'react-material-ui-carousel';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
@@ -8,6 +8,12 @@ import styles from './activeroute.module.css';
 import React from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PublishIcon from '@mui/icons-material/Publish';
+
+/**
+ * TODO
+ * - Add API
+ * - Fix the TODO in activeroute.module.css
+ */
 
 interface IActiveRouteData {
   building_id: number,
@@ -28,13 +34,14 @@ function activeRouteItemData(props: IActiveRouteData): JSX.Element {
             className={styles.active_route_data}
         >
             <h1>{props.name}</h1>
+            <br/>
             <p>{props.address}</p>
             <p>{props.garbage}</p>
             <br/>
             {
                 props.manual ?
                     <a href={props.manual} style={{textDecoration: 'underline'}}>Handleiding</a> :
-                    <></>
+                    <p></p>
             }
         </Box>
     );
@@ -45,8 +52,8 @@ function activeRouteItemImage(props: IActiveRouteData): JSX.Element {
         <Box className={styles.active_route_image_container}>
             {
                 props.image ?
-                    <img className={styles.active_route_image} src={props.image} alt={'building'}/> :
-                    <img className={styles.active_route_image} src={defaultBuildingImage} alt={'building'}/>
+                    <img src={props.image} alt={'building'}/> :
+                    <img src={defaultBuildingImage} alt={'building'}/>
             }
         </Box>
     );
@@ -92,25 +99,25 @@ function activeRouteItemEntries(props: IActiveRouteData): JSX.Element {
         <Box
             className={styles.active_route_entries}
         >
-            <Table>
-                <TableBody>
-                    <TableRow className={styles.active_route_entries_row}>
-                        <TableCell>Aankomst</TableCell>
-                        <TableCell>Afvalplaats</TableCell>
-                        <TableCell>Vertrek</TableCell>
-                    </TableRow>
-                    <TableRow className={styles.active_route_entries_row}>
-                        <TableCell>{activeRouteItemEntriesUpload(props, 'AR')}</TableCell>
-                        <TableCell>{activeRouteItemEntriesUpload(props, 'WO')}</TableCell>
-                        <TableCell>{activeRouteItemEntriesUpload(props, 'DE')}</TableCell>
-                    </TableRow>
-                    <TableRow className={styles.active_route_entries_row}>
-                        <TableCell>{activeRouteItemEntriesIcon(props.work_entries_done.AR)}</TableCell>
-                        <TableCell>{activeRouteItemEntriesIcon(props.work_entries_done.WO)}</TableCell>
-                        <TableCell>{activeRouteItemEntriesIcon(props.work_entries_done.DE)}</TableCell>
-                    </TableRow>
-                </TableBody>
-            </Table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Aankomst</td>
+                        <td>Afvalplaats</td>
+                        <td>Vertrek</td>
+                    </tr>
+                    <tr>
+                        <td>{activeRouteItemEntriesUpload(props, 'AR')}</td>
+                        <td>{activeRouteItemEntriesUpload(props, 'WO')}</td>
+                        <td>{activeRouteItemEntriesUpload(props, 'DE')}</td>
+                    </tr>
+                    <tr>
+                        <td>{activeRouteItemEntriesIcon(props.work_entries_done.AR)}</td>
+                        <td>{activeRouteItemEntriesIcon(props.work_entries_done.WO)}</td>
+                        <td>{activeRouteItemEntriesIcon(props.work_entries_done.DE)}</td>
+                    </tr>
+                </tbody>
+            </table>
         </Box>
     );
 }
@@ -127,7 +134,7 @@ function activeRouteItemIssues(props: IActiveRouteData): JSX.Element {
     return (
         <Box
             className={styles.active_route_issue}
-            style={{background: 'var(--secondary-light)', color: 'var(--secondary-dark)'}}
+            style={{background: 'var(--secondary-light)', color: 'var(--secondary-dark)', display: 'inline-block'}}
         >
             {/* Input text */}
             <TextareaAutosize
@@ -135,7 +142,7 @@ function activeRouteItemIssues(props: IActiveRouteData): JSX.Element {
                 minRows={3}
                 placeholder={'Issue'}
                 value={issueText}
-                style={{height: 'auto', width: '100%'}}
+                style={{width: '100%', height: '75%', resize: 'none'}}
                 onChange={(e) => setIssueText(e.target.value)}
             />
             <br/>
@@ -180,6 +187,8 @@ function activeRouteItemIssues(props: IActiveRouteData): JSX.Element {
                         // Clear issue data
                         setIssueText('');
                         setImages(new Set());
+                    } else {
+                        alert('Error: issue message is empty.');
                     }
                 }}>
                     <PublishIcon></PublishIcon>
@@ -191,18 +200,16 @@ function activeRouteItemIssues(props: IActiveRouteData): JSX.Element {
 
 function ActiveRouteItem(props: IActiveRouteData): JSX.Element {
     return (
-        <Box
-          className={styles.active_route_flex}
-        >
+        <div className={styles.grid_test}>
             {/* Building data */}
-            <Box>{activeRouteItemData(props)}</Box>
+            {activeRouteItemData(props)}
             {/* Building image */}
-            <Box>{activeRouteItemImage(props)}</Box>
+            {activeRouteItemImage(props)}
             {/* Work entries */}
-            <Box>{activeRouteItemEntries(props)}</Box>
+            {activeRouteItemEntries(props)}
             {/* Issues */}
-            <Box>{activeRouteItemIssues(props)}</Box>
-        </Box>
+            {activeRouteItemIssues(props)}
+        </div>
     );
 }
 
@@ -242,7 +249,7 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
     return (
         <>
             {/* TODO when implementing, remove the outer div */}
-            <div style={{width: '320px', height: '640px', background: 'red', overflow: 'scroll'}}>
+            <div style={{width: '360px', height: '640px', background: 'var(--primary-light)'}}>
                 <Carousel
                     NextIcon={<ChevronRight/>}
                     PrevIcon={<ChevronLeft/>}
@@ -252,7 +259,13 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
                     navButtonsAlwaysVisible={true}
                     fullHeightHover={false}
                     swipe={false}
-                >
+                    navButtonsWrapperProps={{
+                        style: {
+                            // Move them to the middle of the top row
+                            bottom: 'unset',
+                            top: '5%',
+                        },
+                    }} >
                     {
                         dummyItems.map((item, i) =>
                             <ActiveRouteItem
@@ -266,7 +279,8 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
                                 image={item.image}
                                 issue={item.issue}
                                 issue_images={item.issue_images}
-                                work_entries_done={item.work_entries_done}/>
+                                work_entries_done={item.work_entries_done}
+                            />
                         )
                     }
                 </Carousel>
