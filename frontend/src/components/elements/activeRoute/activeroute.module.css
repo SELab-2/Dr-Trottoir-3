@@ -1,0 +1,67 @@
+.active_route_flex {
+    display: flex;
+    flex-direction: column;
+    border: pink solid 3px;
+}
+
+/* =============================================
+    First row
+   ============================================= */
+
+.active_route_data {
+    display: block;
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    background: green;
+    height: 10%;
+}
+
+.active_route_data h1 {
+    font-size: 16px;
+    font-weight: 600; /* Semi-bold */
+}
+
+/* =============================================
+    Second row
+   ============================================= */
+
+
+.active_route_image_container {
+    flex: 1;
+    background: blue;
+    height: 160px;
+}
+
+.active_route_image {
+    height: 160px;
+    filter: drop-shadow(0px 0px 2px rgba(0, 0, 0, 20%));
+}
+
+/* =============================================
+    Third row
+   ============================================= */
+
+.active_route_entries {
+    height: 160px;
+    flex: 1;
+    flex-basis: 120px;
+
+    background: yellow;
+}
+
+.active_route_entries_row {
+}
+
+/* =============================================
+    Fourth row
+   ============================================= */
+
+
+.active_route_issue {
+    display: block;
+    flex: 1;
+    flex-basis: 120px;
+    width: 100%;
+    background: orange;
+}
