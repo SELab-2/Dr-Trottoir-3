@@ -1,24 +1,10 @@
 import Head from 'next/head';
-import NavBar from '../components/elements/navbarElement/Navbar';
 import styles from '@/styles/Home.module.css';
 import {useSession} from 'next-auth/react';
-import {Api, getDetail} from "@/api/api";
-import {useEffect} from "react";
 
 // eslint-disable-next-line require-jsdoc
 export default function Home() {
     const {data: session} = useSession();
-
-    console.log(session);
-
-    const {data, error, isLoading} = getDetail(Api.BuildingDetail, 1);
-
-    useEffect(() => {
-        console.log('Data');
-        console.log(data);
-        console.log(error);
-        console.log(isLoading);
-    }, [data, error, isLoading]);
 
     if (session && session.user) {
         return (
@@ -50,11 +36,11 @@ export default function Home() {
             </Head>
             <body>
                 <main className={styles.main}>
-                    <NavBar>
+                    {/* <NavBar>*/}
                         <div style={{backgroundColor: 'white', width: '100%', height: '100%'}}>
                             <p>Not logged in, TODO: redirect to login page.</p>
                         </div>
-                    </NavBar>
+                    {/* </NavBar>*/}
                 </main>
             </body>
         </>
