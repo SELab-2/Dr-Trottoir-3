@@ -2,10 +2,10 @@
 .userElement {
     display: flex;
     flex-direction: column;
-    width: 75%;
+    width: 100%;
     height: 100%;
-    padding: 3rem;
-    gap: 50px;
+    padding: 25px;
+    gap: 25px;
 }
 
 .userHeader {
@@ -13,7 +13,7 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    padding: 2rem;
+    padding: 25px;
     justify-content: space-between;
     border-radius: var(--large-corner) var(--large-corner) 0 0;
 }
@@ -63,7 +63,7 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 50px;
+    gap: 75px;
 }
 
 .stat {
@@ -86,16 +86,59 @@
 .userContent {
     display: flex;
     flex-direction: row;
-    gap: 50px;
+    gap: 25px;
+    height: 100%;
 }
 
 .userRoutes {
     display: flex;
     flex-direction: column;
+    gap: 50px;
 }
 
 .userRoutesPadding {
-    padding: 2rem;
+    padding: 0 0px;
+}
+
+.routesTitle {
+    font-size: 24px;
+    line-height: 24px;
+    font-weight: bold;
+}
+
+.routesSubtitle {
+    font-size: 20px;
+    line-height: 20px;
+    font-weight: lighter;
+}
+
+.routesItem {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    gap: 50px;
+    background-color: var(--secondary-light);
+    border-radius: var(--small_corner);
+    padding: 10px 25px;
+}
+
+.extraTitlePadding {
+    padding: 0 25px;
+}
+
+.routesItem > h4 {
+    flex-grow: 1;
+    font-size: 20px;
+    line-height: 20px;
+    font-weight: bold;
+}
+
+.routesItem > p {
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: lighter;
 }
 
 .userAnalytics {
@@ -106,4 +149,18 @@
     background-color: green;
     width: 100%;
     height: 100%;
+}
+
+.scrollList {
+    height: 100%;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.routesItems {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }

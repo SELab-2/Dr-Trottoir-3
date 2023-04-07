@@ -29,6 +29,8 @@ export enum Api {
     ScheduleDefinitionDetailBuildings = '/schedule_definitions/:id/buildings/',
     ScheduleDefinitionDetailScheduleAssignments = '/schedule_definitions/:id/schedule_assignments/',
     ScheduleDefinitionDetailScheduleWorkEntries = '/schedule_definitions/:id/schedule_work_entries/',
+    Users = '/users/',
+    UserDetail = '/users/:id/',
 }
 
 type PaginatedResponse<T> = {

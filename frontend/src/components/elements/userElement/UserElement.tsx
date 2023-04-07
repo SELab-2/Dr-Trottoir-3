@@ -1,7 +1,17 @@
 import {Avatar} from '@mui/material';
 import styles from './UserElement.module.css';
+import {Api, getDetail} from "@/api/api";
+import {useSession} from "next-auth/react";
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function UserElement() {
+    const {data: session} = useSession();
+    console.log(session);
+
+    const {data, error, isLoading} = getDetail(Api.UserDetail, 1);
+
+    console.log(data);
+
     return (
         <div className={styles.userElement}>
             <div className={styles.userHeader}>
@@ -51,8 +61,54 @@ export default function UserElement() {
                 </div>
             </div>
             <div className={styles.userContent}>
-                <div className={styles.userRoutes}>
-                    <h2 className={styles.userRoutesPadding}>Routes</h2>
+                <div className={styles.userRoutes + ' ' + styles.userRoutesPadding}>
+                    <h2 className={styles.routesTitle + ' ' + styles.extraTitlePadding}>Routes</h2>
+                    <div className={styles.scrollList}>
+                        <div className={styles.routesItems}>
+                            <h3 className={styles.routesSubtitle + ' ' + styles.extraTitlePadding}>Gepland</h3>
+
+                            <div className={styles.routesItem}>
+                                <h4>Route A</h4>
+                                <p>24-2-2023</p>
+                                <CloseIcon />
+                            </div>
+                            <div className={styles.routesItem}>
+                                <h4>Route A</h4>
+                                <p>24-2-2023</p>
+                                <CloseIcon />
+                            </div>
+                        </div>
+
+                        <div className={styles.routesItems}>
+                            <h3 className={styles.routesSubtitle + ' ' + styles.extraTitlePadding}>Geschiedenis</h3>
+
+                            <div className={styles.routesItem}>
+                                <h4>Route A</h4>
+                                <p>24-2-2023</p>
+                                <CloseIcon />
+                            </div>
+                            <div className={styles.routesItem}>
+                                <h4>Route A</h4>
+                                <p>24-2-2023</p>
+                                <CloseIcon />
+                            </div>
+                            <div className={styles.routesItem}>
+                                <h4>Route A</h4>
+                                <p>24-2-2023</p>
+                                <CloseIcon />
+                            </div>
+                            <div className={styles.routesItem}>
+                                <h4>Route A</h4>
+                                <p>24-2-2023</p>
+                                <CloseIcon />
+                            </div>
+                            <div className={styles.routesItem}>
+                                <h4>Route A</h4>
+                                <p>24-2-2023</p>
+                                <CloseIcon />
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className={styles.userAnalytics}>
                     <div className={styles.graph}></div>
