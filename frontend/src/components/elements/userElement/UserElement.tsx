@@ -6,15 +6,18 @@ import CloseIcon from '@mui/icons-material/Close';
 import {User} from '@/api/models';
 
 export default function UserElement() {
+    let user: User | undefined = undefined;
+
     const {data: session} = useSession();
-    console.log(session);
 
-    // @ts-ignore
-    // eslint-disable-next-line no-unused-vars
-    const {data, error, isLoading} = getDetail(Api.UserDetail, session.userid);
+    if (session) {
+        // @ts-ignore
+        // eslint-disable-next-line no-unused-vars
+        const {data, error, isLoading} = getDetail(Api.UserDetail, session.userid);
 
-    // @ts-ignore
-    const user: User | undefined = data;
+        // @ts-ignore
+        user = data;
+    }
 
     if (!user) {
         return (<div>Loading...</div>);
