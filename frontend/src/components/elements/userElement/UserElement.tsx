@@ -3,23 +3,30 @@ import styles from './UserElement.module.css';
 import {Api, getDetail} from "@/api/api";
 import {useSession} from "next-auth/react";
 import CloseIcon from '@mui/icons-material/Close';
+import {User} from "@/api/models";
 
 export default function UserElement() {
     const {data: session} = useSession();
     console.log(session);
 
-    const {data, error, isLoading} = getDetail(Api.UserDetail, 1);
+    // @ts-ignore
+    const {data, error, isLoading} = getDetail(Api.UserDetail, session.userid);
 
-    console.log(data);
+    // @ts-ignore
+    const user: User | undefined = data;
+
+    if (!user) {
+        return (<div>Loading...</div>);
+    }
 
     return (
         <div className={styles.userElement}>
             <div className={styles.userHeader}>
                 <div className={styles.firstColumn}>
                     <div className={styles.firstColumnRow}>
-                        <h1>Firstname</h1>
-                        <h1>Lastname</h1>
-                        <p>Student</p>
+                        <h1>{user.first_name}</h1>
+                        <h1>{user.last_name}</h1>
+                        <p>{user.admin ? 'Admin' : user.syndicus ? 'Syndicus' : user.student && user.student.is_super_student ? 'SuperStudent' : 'Student'}</p>
                     </div>
                     <div className={styles.firstColumnRow}>
                         <p>Gent</p>
