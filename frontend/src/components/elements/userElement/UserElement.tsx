@@ -1,15 +1,16 @@
 import {Avatar} from '@mui/material';
 import styles from './UserElement.module.css';
-import {Api, getDetail} from "@/api/api";
-import {useSession} from "next-auth/react";
+import {Api, getDetail} from '@/api/api';
+import {useSession} from 'next-auth/react';
 import CloseIcon from '@mui/icons-material/Close';
-import {User} from "@/api/models";
+import {User} from '@/api/models';
 
 export default function UserElement() {
     const {data: session} = useSession();
     console.log(session);
 
     // @ts-ignore
+    // eslint-disable-next-line no-unused-vars
     const {data, error, isLoading} = getDetail(Api.UserDetail, session.userid);
 
     // @ts-ignore
@@ -26,7 +27,14 @@ export default function UserElement() {
                     <div className={styles.firstColumnRow}>
                         <h1>{user.first_name}</h1>
                         <h1>{user.last_name}</h1>
-                        <p>{user.admin ? 'Admin' : user.syndicus ? 'Syndicus' : user.student && user.student.is_super_student ? 'SuperStudent' : 'Student'}</p>
+                        <p>
+                            {
+                                user.admin ? 'Admin' :
+                                    user.syndicus ? 'Syndicus' :
+                                        user.student && user.student.is_super_student ? 'SuperStudent' :
+                                            'Student'
+                            }
+                        </p>
                     </div>
                     <div className={styles.firstColumnRow}>
                         <p>Gent</p>
