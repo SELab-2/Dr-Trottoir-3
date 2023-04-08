@@ -1,8 +1,8 @@
-import styles from "./StudentTaskListElement.module.css";
-import {Button, Link} from "@mui/material";
-import React from "react";
-import CheckIcon from "@mui/icons-material/Check";
-import {PlayArrow} from "@mui/icons-material";
+import styles from './StudentTaskListElement.module.css';
+import {Button, Link} from '@mui/material';
+import React from 'react';
+import CheckIcon from '@mui/icons-material/Check';
+import {PlayArrow} from '@mui/icons-material';
 
 export default function StudentTaskList() {
     return (
@@ -11,7 +11,7 @@ export default function StudentTaskList() {
             <div>
 
                 {
-                    dummyDays.map(x => <Day date={x.date} routes={x.routes}/>)
+                    dummyDays.map((x) => <Day date={x.date} routes={x.routes}/>)
                 }
             </div>
 
@@ -39,15 +39,16 @@ type RouteForDisplay = {
 
 const Day = ({date, routes}: RoutesForDay) => {
     return (
-      <div className={styles.dayDiv}>
-          {DateOrToday(date)}
+        <div className={styles.dayDiv}>
+            {dateOrToday(date)}
 
-          {
-              routes.map(x => <RouteEntry name={x.name} totalBuildings={x.totalBuildings} buildingsDone={x.buildingsDone} isToday={isToday(date)}/>)
-          }
-      </div>
+            {
+                routes.map((x) => <RouteEntry name={x.name} totalBuildings={x.totalBuildings}
+                    buildingsDone={x.buildingsDone} isToday={isToday(date)}/>)
+            }
+        </div>
     );
-}
+};
 
 const RouteEntry = ({name, totalBuildings, buildingsDone, isToday}: RouteForDisplay) => {
     return (
@@ -55,7 +56,8 @@ const RouteEntry = ({name, totalBuildings, buildingsDone, isToday}: RouteForDisp
             <Button className={styles.button_default} >
                 <div className={styles.listItemLeftSide}>
                     <div className={styles.big_item_text}>
-                        <Link flexGrow={5} noWrap href={'/building/${id}'} color={'inherit'} underline={'none'}>{name}</Link>
+                        <Link flexGrow={5} noWrap href={'/building/${id}'} color={'inherit'}
+                            underline={'none'}>{name}</Link>
                     </div>
                 </div>
                 <div className={styles.listItemRightSide}>
@@ -70,55 +72,56 @@ const RouteEntry = ({name, totalBuildings, buildingsDone, isToday}: RouteForDisp
             </Button>
         </div>
     );
-}
+};
 
 const conditionalCheckmark = (checkmark: boolean, isToday: boolean) => {
-    if (checkmark){
+    if (checkmark) {
         return (
             <CheckIcon></CheckIcon>
         );
-    } else if(isToday){
+    } else if (isToday) {
         return (
             <PlayArrow></PlayArrow>
             // <div></div>
-        )
-    } else{
+        );
+    } else {
         return (
             <p></p>
-        )
+        );
     }
-}
+};
 
-const DateOrToday = (date: Date) => {
-    if (isToday(date)){
+const dateOrToday = (date: Date) => {
+    if (isToday(date)) {
         return (
             <p className={styles.dateText}>vandaag</p>
-        )
+        );
     } else {
         return (
             <p className={styles.dateText}>
                 {date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}
             </p>
-        )
+        );
     }
-}
+};
 
-function isToday(date: Date){
-    return date.getDate() == new Date().getDate() && date.getMonth() == new Date().getMonth() && date.getFullYear() == new Date().getFullYear()
+function isToday(date: Date) {
+    return date.getDate() == new Date().getDate() && date.getMonth() == new Date().getMonth() &&
+        date.getFullYear() == new Date().getFullYear();
 }
 
 const dummyRoutes:Route[] = [
-    {name: "aardappel", totalBuildings: 5, buildingsDone: 3},
-    {name: "peer", totalBuildings: 5, buildingsDone: 2},
-    {name: "salade", totalBuildings: 5, buildingsDone: 5},
-    {name: "water", totalBuildings: 5, buildingsDone: 0},
-    {name: "very very very long route name very big long name", totalBuildings: 5, buildingsDone: 0},
-    {name: "LOOONGLOOOOOOOOOOOOOOOOOOOOOOOONGNAAAAAMMMMMMMEEEE", totalBuildings: 7, buildingsDone: 7},
-]
+    {name: 'aardappel', totalBuildings: 5, buildingsDone: 3},
+    {name: 'peer', totalBuildings: 5, buildingsDone: 2},
+    {name: 'salade', totalBuildings: 5, buildingsDone: 5},
+    {name: 'water', totalBuildings: 5, buildingsDone: 0},
+    {name: 'very very very long route name very big long name', totalBuildings: 5, buildingsDone: 0},
+    {name: 'LOOONGLOOOOOOOOOOOOOOOOOOOOOOOONGNAAAAAMMMMMMMEEEE', totalBuildings: 7, buildingsDone: 7},
+];
 
 const dummyDays:RoutesForDay[] = [
     {date: new Date(), routes: dummyRoutes},
     {date: new Date('April 07, 2023'), routes: dummyRoutes},
     {date: new Date('April 06, 2023'), routes: dummyRoutes},
     {date: new Date('April 05, 2023'), routes: dummyRoutes},
-]
+];
