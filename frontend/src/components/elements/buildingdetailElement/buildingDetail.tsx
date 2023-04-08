@@ -28,6 +28,7 @@ interface IBuildingDetail {
  * - Add way of finding syndicus by building id
  * - Add building name to model
  * - Remove warning/write symbol from schedule garbage list item
+ * - Use API instead of custom fetch methods
  */
 
 // eslint-disable-next-line require-jsdoc
