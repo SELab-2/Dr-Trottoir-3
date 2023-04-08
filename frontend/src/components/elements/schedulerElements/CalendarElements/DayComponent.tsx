@@ -17,11 +17,11 @@ const DayComponent = ({date, tasks, onAddClick, onRemoveClick, onEditClick}: Pro
 
     const removeFromDay = (id: string) => {
         onRemoveClick(date, id);
-    }
+    };
 
     const editOnDay = (id: string) => {
-        onRemoveClick(date, id);
-    }
+        onEditClick(date, id);
+    };
 
     return (
         <div className={styles.full_day}>
@@ -35,7 +35,7 @@ const DayComponent = ({date, tasks, onAddClick, onRemoveClick, onEditClick}: Pro
                     <div ref={droppableProvided.innerRef}
                         {...droppableProvided.droppableProps}
                         className={styles.task_list}>
-                        <TaskListComponent tasks={tasks} onRemoveClick={onRemoveClick} onEditClick={onEditClick} />
+                        <TaskListComponent tasks={tasks} onRemoveClick={removeFromDay} onEditClick={editOnDay} />
                     </div>
                 )}
             </Droppable>

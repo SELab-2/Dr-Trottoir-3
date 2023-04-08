@@ -16,24 +16,24 @@ import {LocalizationProvider} from '@mui/x-date-pickers';
 type props = {
     routes: any,
     users: any,
-    setOpen: any,
+    setEditorState: any,
     addTask: any,
-    initState: any,
+    editorState: any,
 }
 
-export default function CreateActiveTaskForm({routes, users, setOpen, addTask, initState}:props) {
+export default function CreateActiveTaskForm({routes, users, setEditorState, addTask, editorState}:props) {
 
-    const [user, setUser] = useState<any|null>(initState.user);
-    const [route, setRoute] = useState<any|null>(initState.route);
-    const [date, setDate] = useState<Dayjs|null>(initState.date);
+    const [user, setUser] = useState<any|null>(editorState.user);
+    const [route, setRoute] = useState<any|null>(editorState.route);
+    const [date, setDate] = useState<Dayjs|null>(editorState.date);
 
     const handleClose = () => {
-        setOpen(null);
+        setEditorState({active: false, date: null, route: null, user: null});
     };
 
     const handleSubmitForm = () => {
         addTask(user, route, date, 'once');
-        setOpen(null);
+        setEditorState({active: false, date: null, route: null, user: null});
     };
 
     const Form = () => {

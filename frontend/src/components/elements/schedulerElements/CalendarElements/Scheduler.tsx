@@ -6,9 +6,9 @@ import {Backdrop} from '@mui/material';
 import CreateActiveTaskForm from './CreateActiveTaskForm';
 import {v4 as uuid} from 'uuid';
 import Button from '@mui/material/Button';
-import {User} from '@/api/models';
-import {useSession} from 'next-auth/react';
-import {Api, getDetail} from '@/api/api';
+import {Api, getDetail, getList} from '@/api/api';
+import {useSession} from "next-auth/react";
+import {User} from "@/api/models";
 
 type schedulerProps = {
     users: any[],
@@ -20,11 +20,13 @@ type schedulerProps = {
 export default function Scheduler({users, routes, start, days}: schedulerProps) {
     const [schedulerData, setSchedulerData] = useState(null);
     const [startDay, setStartDay] = useState<number>(start);
-    const [editorOverlay, setEditorOverlay] = useState<boolean>(false);
-    const [editorState, setEditorState] = useState({date: null, route: null, user: null});
+    const [editorState, setEditorState] = useState({active: false, date: null, route: null, user: null});
+
 
     let user: User | undefined = undefined;
     const {data: session} = useSession();
+
+    console.log(session);
 
     if (session) {
         // @ts-ignore
@@ -40,41 +42,42 @@ export default function Scheduler({users, routes, start, days}: schedulerProps) 
     }
 
 
-    // // load scheduler data
-    // useEffect(() => {
-    //     const weekData = {
-    //         'tasks': {},
-    //         'days': {},
-    //         'dayOrder': [],
-    //     };
-    //
-    //     for (let i: number = 0; i < days; i++) {
-    //         const currentDate: string = new Date(new Date().setDate(startDay + i)).toISOString().split('T')[0];
-    //
-    //         // get task from api for current day
-    //         // currently dummy data
-    //         const currentDayTasks: any[] = [
-    //             {id: uuid(), route: 'testroute0', user: 'testuser0'},
-    //             {id: uuid() + i.toString(), route: 'testroute1', user: 'testuser1'},
-    //         ];
-    //
-    //         currentDayTasks.forEach(function(task) {
-    //             weekData.tasks[task.id] = task;
-    //         });
-    //
-    //         // create new day
-    //         weekData.dayOrder.push(currentDate);
-    //         weekData.days[currentDate] = {
-    //             id: currentDate,
-    //             taskIds: [],
-    //         };
-    //
-    //         currentDayTasks.forEach(function(task) {
-    //             weekData.days[currentDate].taskIds.push(task.id);
-    //         });
-    //     }
-    //     setSchedulerData(weekData);
-    // }, [startDay]);
+    // load scheduler data
+    useEffect(() => {
+        const weekData = {
+            'tasks': {},
+            'days': {},
+            'dayOrder': [],
+        };
+
+
+        for (let i: number = 0; i < days; i++) {
+            const currentDate: string = new Date(new Date().setDate(startDay + i)).toISOString().split('T')[0];
+
+            // get task from api for current day
+            // currently dummy data
+            const currentDayTasks: any[] = [
+                {id: uuid(), route: 'testroute0', user: 'testuser0'},
+                {id: uuid() + i.toString(), route: 'testroute1', user: 'testuser1'},
+            ];
+
+            currentDayTasks.forEach(function(task) {
+                weekData.tasks[task.id] = task;
+            });
+
+            // create new day
+            weekData.dayOrder.push(currentDate);
+            weekData.days[currentDate] = {
+                id: currentDate,
+                taskIds: [],
+            };
+
+            currentDayTasks.forEach(function(task) {
+                weekData.days[currentDate].taskIds.push(task.id);
+            });
+        }
+        setSchedulerData(weekData);
+    }, [startDay]);
 
     const onDragEnd = (result: DropResult) => {
         document.body.style.color = 'inherit';
@@ -118,20 +121,22 @@ export default function Scheduler({users, routes, start, days}: schedulerProps) 
     };
 
 
-    const onEditClick = (id: string) => {
+    const onEditClick = (date: string, id: string) => {
         console.log('edit');
         console.log(id);
     };
 
-    const onRemoveClick = (id: string) => {
-        console.log('remove');
-        console.log(id);
-        console.log(schedulerData.tasks[id]);
+    const onRemoveClick = (date: string, id: string) => {
+        const newScheduleData = {...schedulerData};
+        delete newScheduleData.tasks[id];
+        const taskIndex = newScheduleData.days[date].taskIds.indexOf(id, 0);
+        newScheduleData.days[date].taskIds.splice(taskIndex, 1);
+        setSchedulerData(newScheduleData);
     };
 
-    const onAddClick = (id: string) => {
+    const onAddClick = (date: string) => {
         console.log('Add');
-        console.log(id);
+        console.log(date);
     };
 
     return (
@@ -157,15 +162,15 @@ export default function Scheduler({users, routes, start, days}: schedulerProps) 
 
             <Backdrop
                 sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
-                open={editorOverlay}
+                open={editorState.active}
                 invisible={false}
             >
                 <CreateActiveTaskForm
                     routes={routes}
                     users={users}
-                    setOpen={setEditorOverlay}
+                    setEditorState={setEditorState}
                     addTask={addTask}
-                    initState={editorState}/>
+                    editorState={editorState}/>
             </Backdrop>
         </div>
     );
