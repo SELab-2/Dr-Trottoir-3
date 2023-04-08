@@ -4,7 +4,6 @@
     margin: 5px;
     display: flex;
     flex-flow: column;
-    background-color: #E9EDF4;
 }
 
 .header {
@@ -17,4 +16,8 @@
     width: 100%;
     flex-basis: 0;
     flex-grow: 999;
+}
+
+.header > p {
+    color: #1C1C1C;
 }
