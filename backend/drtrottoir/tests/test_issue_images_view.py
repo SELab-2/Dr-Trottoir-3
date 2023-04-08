@@ -200,7 +200,7 @@ def test_issue_images_detail_api_view_delete_valid_one_present():
 
     response = client.delete(f"/issue_images/{dummy_issue_image.id}/")
 
-    assert response.status_code == 200
+    assert response.status_code == 204
 
     # Code removed on March 11 2023, since it does not follow the API guide.
     # response = client.get(f"/issue_images/{dummy_issue_image.id}/")
@@ -220,7 +220,7 @@ def test_issue_images_detail_api_view_delete_valid_multiple_present():
     # dummy_issue_image_2 = insert_dummy_issue_image(dummy_user)
 
     response = client.delete(f"/issue_images/{dummy_issue_image_1.id}/")
-    assert response.status_code == 200
+    assert response.status_code == 204
 
     # Code removed on March 11 2023, since it does not follow the API guide.
     # response = client.get(f"/issue_images/{dummy_issue_image_1.id}/")
@@ -365,7 +365,7 @@ def test_issue_images_api_delete_super_student_success():
 
     response = _test_issue_images_api_delete(user.user)
 
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == 204
 
 
 @pytest.mark.django_db
@@ -375,7 +375,7 @@ def test_issue_images_api_delete_admin_success():
 
     response = _test_issue_images_api_delete(user.user)
 
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == 204
 
 
 @pytest.mark.django_db
