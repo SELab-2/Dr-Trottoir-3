@@ -2,7 +2,8 @@
     background-color: white;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    min-height: 100%;
+    height: fit-content;
     width: 100%;
     color: black;
     align-items: center;
@@ -11,4 +12,64 @@
 
 .title {
     font-size: 30px;
+}
+
+.dayDiv{
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.dateText{
+    font-size: 13px;
+}
+
+.button_default {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    background-color: #F3F5F9;
+    text-transform: none;
+    color: #1C1C1C;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.button_wrapper {
+    flex-wrap: wrap;
+    width: 100%;
+    height: fit-content;
+    margin-top: 10px;
+}
+
+.big_item_text {
+    font-size: 100%;
+    font-weight: bolder;
+}
+
+.listItemRightSide{
+    display: flex;
+    flex-direction: row;
+    width: 50px;
+    margin-left: 5px;
+    justify-content: end;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.listItemLeftSide{
+    width: 250px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    overflow: hidden;
+    overflow-x: scroll;
+    text-overflow: ellipsis;
+}
+
+.checkmark {
+    width: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
 }
