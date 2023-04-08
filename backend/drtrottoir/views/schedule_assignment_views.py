@@ -13,8 +13,10 @@ from drtrottoir.permissions import (
 )
 from drtrottoir.serializers import ScheduleAssignmentSerializer
 
+from .mixins import PermissionsByActionMixin
 
-class ScheduleAssignmentViewSet(viewsets.ModelViewSet):
+
+class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet):
     """
     Viewset for schedule assignments.
 
@@ -65,12 +67,6 @@ class ScheduleAssignmentViewSet(viewsets.ModelViewSet):
         "retrieve": [IsAuthenticated, IsStudent | IsSuperstudentOrAdmin],
         "list": [IsAuthenticated, IsStudent | IsSuperstudentOrAdmin],
     }
-
-    def get_permissions(self):
-        if self.action not in self.permission_classes_by_action:
-            return [perm() for perm in self.permission_classes]
-
-        return [perm() for perm in self.permission_classes_by_action[self.action]]
 
     def get_queryset(self):
         """
