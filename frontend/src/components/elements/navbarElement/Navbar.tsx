@@ -19,7 +19,6 @@ const topButtons = [
 
 const ignoreRoute = [
     '/login',
-    '/test'
 ];
 
 export default function Navbar(props: any) {
