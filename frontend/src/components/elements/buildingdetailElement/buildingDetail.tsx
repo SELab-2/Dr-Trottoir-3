@@ -1,243 +1,201 @@
 import * as React from 'react';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import styles from './buildingdetail.module.css';
-import {AddRounded, CreateRounded, ErrorOutline, PictureAsPdf}
-  from '@mui/icons-material';
-import {Box, Card, IconButton, Link, List, ListItem, Tooltip, Typography}
-  from '@mui/material';
+import {Box, Link, List, Typography} from '@mui/material';
+import {Building, GarbageCollectionSchedule, GarbageType, LocationGroup} from '@/api/models';
+import {PictureAsPdf} from '@mui/icons-material';
+import useSWR, {SWRResponse} from "swr";
+import {useSession} from "next-auth/react";
+import {IScheduleGarbageListItem, ScheduleGarbageListItem} from "@/components/elements/buildingdetailElement/scheduleGarbageListItem";
+import { PaginatedResponse } from '@/api/api';
+import {defaultBuildingImage} from "@/constants/images";
 
-// TODO add a proper default image
-const defaultBuildingImage = 'https://images.pexels.com/photos/162539/architecture-building-amsterdam-blue-sky-162539.jpeg';
-
-// Create fake building data
-const dummyBuilding = {
-  id: 1,
-  name: 'Home Sterre',
-  address: 'Krijgslaan 281',
-  pdf_guide: 'https://example.com',
-  image: null,
-  // eslint-disable-next-line max-len
-  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus a risus lectus. Praesent vel sodales est. Nullam viverra est nisl, vel vehicula ante ornare et. Nulla vel vulputate tortor. Aenean sed consectetur justo. Phasellus aliquam tincidunt gravida.',
-  location_group: 1,
-  is_active: true,
-};
-
-// Create fake syndicus
-const dummySyndicus = {id: 3, name: 'Syndicus A'};
-
-// Create fake location group
-const dummyLocationGroup = {id: 1, name: 'Gent'};
-
-// Create face garbage collection schedules
-// eslint-disable-next-line max-len
-const dummyGarbageCollectionSchedules: { id: number; for_day: string; building: number; type: string; issue: string; }[] = [];
-for (let i = 0; i <= 200; i++) {
-  let issue = '';
-  // randomly give the garbage collection schedule an issue
-  if (Math.random() < 0.1) {
-    issue = 'Test issue';
-  }
-  const schedule = {
-    id: i,
-    for_day: `2022-01-${i}`,
-    building: 1,
-    type: 'PMD',
-    issue: issue,
-  };
-  dummyGarbageCollectionSchedules.push(schedule);
-}
-
-interface IScheduleGarbageListItem {
+interface IBuildingDetail {
   id: number,
-  type: string,
-  date: string,
-  issue: string,
+  location_group: string,
+  name: string,
+  address: string,
+  pdf_guide: string | null,
+  description: string | null
+  image: string | null,
+  syndicus: string,
+  schedules: IScheduleGarbageListItem[]
 }
+
+
+// eslint-disable-next-line require-jsdoc
+function createBuildingManualElement(path: string | null) {
+  if (!path || path.length == 0) {
+    return (<></>);
+  }
+  return (
+    <Link href={path} className={styles.building_data_manual}>Manual<PictureAsPdf fontSize="small"></PictureAsPdf></Link>
+  );
+}
+
+const sessionToken = () => {
+  const {data: session} = useSession();
+  // @ts-ignore
+  return session ? session.accessToken : '';
+}
+
+const headers = (token: string) => {
+  return {headers: {'Authorization': `Bearer  ${token}`}} as RequestInit
+}
+
+async function fetchDetail<T>(url: string, token: string) {
+  const apiUrl =  `${process.env.NEXT_API_URL}${url}`
+  return (await fetch(apiUrl, headers(token)).then(response => response.json())) as T
+}
+
+async function fetchSyndicus(buildingId: number, token: string) {
+  return "SYNDICUS TODO"
+}
+
+async function fetchLocationGroup(id: number, token: string) {
+  return await fetchDetail<LocationGroup>(`/location_groups/${id}/`, token)
+}
+
+async function fetchBuilding(id: number, token: string) {
+  return await fetchDetail<Building>(`/buildings/${id}/`, token)
+}
+
+async function fetchGarbageType(id: number, token: string) {
+  return await fetchDetail<GarbageType>(`/garbage_types/${id}/`, token)
+}
+
+async function fetchSchedules(id: number, token: string) {
+  const schedulesUrl = `${process.env.NEXT_API_URL}/buildings/${id}/garbage_collection_schedules/`
+  const schedules = (await fetch(schedulesUrl,headers(token)).then(response => response.json())) as PaginatedResponse<GarbageCollectionSchedule>
+
+  let results: IScheduleGarbageListItem[] = []
+  for (let schedule of schedules.results) {
+    const garbage = await fetchGarbageType(schedule.garbage_type, token)
+
+    const result: IScheduleGarbageListItem = {
+      id: schedule.id,
+      type: garbage.name,
+      date: schedule.for_day,
+      issue: ""
+    }
+    results.push(result)
+  }
+  return results
+}
+
+async function buildingFetch(args: any[]) {
+  const [buildingId, token] = args;
+
+  const buildingData = await fetchBuilding(buildingId, token)
+  const locationGroup = await fetchLocationGroup(buildingData.location_group, token)
+  const syndicus = await fetchSyndicus(buildingId, token)
+  const schedules = await fetchSchedules(buildingId, token)
+
+  const buildingDetail: IBuildingDetail = {
+    id: buildingData.id,
+    location_group: locationGroup.name,
+    name: 'BUILDING NAME TODO',
+    address: buildingData.address,
+    pdf_guide: buildingData.pdf_guide,
+    description: buildingData.description,
+    image: buildingData.description,
+    syndicus: syndicus,
+    schedules: schedules
+  }
+  return buildingDetail
+}
+
+
+function useBuildingData(id: number) {
+  const token = sessionToken()
+  return useSWR<IBuildingDetail>([id, token], buildingFetch)
+}
+
 
 // eslint-disable-next-line require-jsdoc
 export default function BuildingDetail(props: { id: number }) {
   // eslint-disable-next-line no-unused-vars
   const {id} = props;
 
-  // eslint-disable-next-line require-jsdoc
-  function createScheduleEntryNote(id: number) {
-    // TODO make this a proper function once API is available,
-    //  see https://mui.com/material-ui/react-dialog#form-dialogs
-    // eslint-disable-next-line no-undef
-    alert(`Changing note for entry ${id}`);
-  }
+  const [building, setBuilding] = useState<IBuildingDetail | null | undefined>(null);
+
+  const buildingData = useBuildingData(id);
+  useEffect(() => {
+    setBuilding(buildingData.data);
+  }, [id, buildingData]);
 
 
-  // eslint-disable-next-line require-jsdoc
-  function createScheduleWarningSymbol(id: number, text: string) {
-    const [issueExists, setIssueExists] = React.useState(false);
-    useEffect(() => setIssueExists(text.length > 0), []);
+  if (!building) return <p>Loading...</p>;
 
-    return (
-      <>
-        {
-          issueExists ?
-            <>
-              <Tooltip title={text} arrow>
-                <ErrorOutline fontSize="small"/>
-              </Tooltip>
-              <IconButton onClick={() => createScheduleEntryNote(id)}>
-                <CreateRounded fontSize="small"/>
-              </IconButton>
-            </> :
-            <IconButton onClick={() => createScheduleEntryNote(id)}>
-              <AddRounded fontSize="small"/>
-            </IconButton>
-        }
-      </>
-    );
-  }
-
-
-  // eslint-disable-next-line require-jsdoc
-  function scheduleGarbageListItem(schedule: IScheduleGarbageListItem) {
-    // @ts-ignore
-    return (
-      <ListItem
-        key={schedule.id}
-        sx={
-          {
-            display: 'flex',
-            flexGrow: 1,
-            flexDirection: 'row',
-            alignItems: 'stretch',
-            justifyContent: 'space-between',
-            verticalAlign: 'middle',
-          }}>
-        <Card sx={{
-          width: '100%', height: '40px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-          <Box sx={{
-            display: 'flex', width: '100%', height: '100%',
-            background: 'var(--secondary-light)', alignItems: 'center',
-          }}>
-            {/* Schedule type */}
-            <Box sx={{
-              display: 'flex', width: '33%', height: '100%',
-              flexGrow: 1, fontWeight: 'bold',
-              paddingLeft: '10px', alignItems: 'center',
-            }}>
-              {schedule.type}
-            </Box>
-            {/* Schedule date */}
-            <Box sx={{
-              display: 'flex', width: '33%', height: '100%',
-              flexGrow: 1, justifyContent: 'center',
-              alignItems: 'center', fontSize: '14px',
-            }}>
-              {schedule.date}
-            </Box>
-            {/* Schedule issue icons */}
-            <Box sx={{
-              display: 'flex', width: '33%', height: '100%',
-              flexGrow: 1, justifyContent: 'flex-end',
-              alignItems: 'center',
-            }}>
-              {createScheduleWarningSymbol(schedule.id, schedule.issue)}
-            </Box>
-          </Box>
-        </Card>
-      </ListItem>
-    );
-  }
-
-  // eslint-disable-next-line require-jsdoc
-  function createBuildingManualElement(path: string) {
-    if (!path || path.length == 0) {
-      return (<></>);
-    }
-    return (
-      <Link href={path} className={styles.building_data_manual}>
-        Handleiding<PictureAsPdf fontSize="small"></PictureAsPdf>
-      </Link>
-    );
-  }
 
   return (
-    // TODO: Temporarily add this to fix dimensions,
-    //  once combined the outer div should be removed
-    <div style={{
-      width: '100vw',
-      height: '100vh',
-      border: '1px solid red',
-      background: 'var(--primary-light)',
-    }}
-    >
 
-      <Box className={styles.full}>
-        {/* Top row */}
-        <Box className={styles.top_row_container}
-          sx={{background: 'var(--secondary-light)'}}>
-          {/* Building data container */}
-          <Box className={styles.building_data_container}>
-            <Typography variant="h1" className={styles.building_data_header}>
-              {dummyBuilding.name}
+    <Box className={styles.full}>
+      {/* Top row */}
+      <Box className={styles.top_row_container}
+           sx={{background: 'var(--secondary-light)'}}>
+        {/* Building data container */}
+        <Box className={styles.building_data_container}>
+          <Typography variant="h1" className={styles.building_data_header}>
+            {building.name}
+          </Typography>
+          <Box className={styles.building_data_container_data}>
+            <Typography className={styles.building_data_data}>
+              {building.location_group}
             </Typography>
-            <Box className={styles.building_data_container_data}>
-              <Typography className={styles.building_data_data}>
-                {dummyLocationGroup.name}
-              </Typography>
-              <Typography className={styles.building_data_data}>
-                {dummyBuilding.address}
-              </Typography>
-              <Typography className={styles.building_data_data}>
-                {dummySyndicus.name}
-              </Typography>
-            </Box>
-            {createBuildingManualElement(dummyBuilding.pdf_guide)}
+            <Typography className={styles.building_data_data}>
+              {building.address}
+            </Typography>
+            <Typography className={styles.building_data_data}>
+              {building.syndicus}
+            </Typography>
           </Box>
-
-          {/* Building description container */}
-          <Box className={styles.building_desc_container}>
-            <Typography>{dummyBuilding.description}</Typography>
-          </Box>
-
-          {/* Building image container */}
-          <Box className={styles.building_imag_container}>
-            <img src={dummyBuilding.image ?
-              dummyBuilding.image :
-              defaultBuildingImage}
-            alt={'Building'}/>
-          </Box>
+          {createBuildingManualElement(building.pdf_guide)}
         </Box>
 
-        {/* Middle row for spacing */}
-        <Box className={styles.middle_row_divider}></Box>
-
-        {/* Bottom row */}
-        <Box className={styles.bottom_row_container}>
-          {/* Garbage schedule list */}
-          <Box className={styles.garbage_schedule_list}>
-            <Typography
-              variant="h1"
-              className={styles.garbage_schedule_list_header}>
-              Planning
-            </Typography>
-            <List>
-              {dummyGarbageCollectionSchedules.map((schedule) =>
-                scheduleGarbageListItem({
-                  id: schedule.id, date: schedule.for_day,
-                  type: schedule.type, issue: schedule.issue,
-                })
-              )}
-            </List>
-          </Box>
-
-          {/* Garbage schedule calendar */}
-          <Box style={{background: 'limegreen', width: '100%'}}>
-            Calendar here
-          </Box>
+        {/* Building description container */}
+        <Box className={styles.building_desc_container}>
+          <Typography>{building.description}</Typography>
         </Box>
 
+        {/* Building image container */}
+        <Box className={styles.building_imag_container}>
+          <img src={
+            building.image ?
+            building.image :
+            defaultBuildingImage
+          }
+               alt={'Building'}/>
+        </Box>
       </Box>
-    </div>
+
+      {/* Middle row for spacing */}
+      <Box className={styles.middle_row_divider}></Box>
+
+      {/* Bottom row */}
+      <Box className={styles.bottom_row_container}>
+        {/* Garbage schedule list */}
+        <Box className={styles.garbage_schedule_list}>
+          <Typography
+            variant="h1"
+            className={styles.garbage_schedule_list_header}>
+            Planning
+          </Typography>
+          <List>
+            {building.schedules.map((schedule) =>
+              ScheduleGarbageListItem({
+                id: schedule.id, date: schedule.date,
+                type: schedule.type, issue: schedule.issue,
+              })
+            )}
+          </List>
+        </Box>
+
+        {/* Garbage schedule calendar */}
+        <Box style={{background: 'limegreen', width: '100%'}}>
+          Calendar here
+        </Box>
+      </Box>
+    </Box>
   );
 }

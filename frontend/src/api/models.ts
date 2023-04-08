@@ -34,6 +34,8 @@ export type Building = {
     pdf_guide: string;
     is_active: boolean;
     location_group: number;
+    image: string;
+    description: string;
 };
 
 export type ScheduleAssignment = {

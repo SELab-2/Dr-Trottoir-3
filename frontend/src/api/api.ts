@@ -33,7 +33,7 @@ export enum Api {
     UserDetail = '/users/:id/',
 }
 
-type PaginatedResponse<T> = {
+export type PaginatedResponse<T> = {
     count: number;
     next: string | null;
     previous: string | null;
