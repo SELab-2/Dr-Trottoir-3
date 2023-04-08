@@ -27,7 +27,7 @@ type Route = {
 
 type RoutesForDay = {
     date: Date,
-    routes: [Route],
+    routes: Route[],
 }
 
 type RouteForDisplay = {
