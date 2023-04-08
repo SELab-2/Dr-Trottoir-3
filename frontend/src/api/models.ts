@@ -59,3 +59,29 @@ export type ScheduleDefinition = {
     location_group: number;
     buildings: number[];
 }
+
+export type Student = {
+    id: number,
+    user: number,
+    is_super_student: boolean,
+    location_group: number,
+}
+
+export type Admin = {
+    id: number,
+    user: number,
+}
+
+export type Syndicus = {
+    id: number,
+    user: number,
+}
+
+export type User = {
+    id: number,
+    first_name: string,
+    last_name: string,
+    student: undefined | Student,
+    admin: undefined | Admin,
+    syndicus: undefined | Syndicus,
+}
