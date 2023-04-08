@@ -34,6 +34,8 @@ export type Building = {
     pdf_guide: string;
     is_active: boolean;
     location_group: number;
+    description: string | null,
+    image: string | null,
 };
 
 export type ScheduleAssignment = {
@@ -50,6 +52,7 @@ export type ScheduleWorkEntry = {
     creator: number;
     building: number;
     schedule_assignment: number;
+    entry_type: string;
 };
 
 export type ScheduleDefinition = {

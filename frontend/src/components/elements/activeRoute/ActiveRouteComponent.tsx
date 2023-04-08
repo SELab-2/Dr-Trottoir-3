@@ -8,7 +8,10 @@ import styles from './activeroute.module.css';
 import React from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PublishIcon from '@mui/icons-material/Publish';
-
+import {useSession} from 'next-auth/react';
+import useSWR from 'swr';
+import {Building, GarbageCollectionSchedule, GarbageType, ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry} from '@/api/models';
+import {PaginatedResponse} from '@/api/api';
 /**
  * TODO
  * - Add API
@@ -23,8 +26,6 @@ interface IActiveRouteData {
   garbage: string,
   manual: (string | null | undefined),
   image: (string | null | undefined),
-  issue: (string | null | undefined),
-  issue_images: string[],
   work_entries_done: { AR: boolean, WO: boolean, DE: boolean }
 }
 
@@ -214,9 +215,9 @@ function ActiveRouteItem(props: IActiveRouteData): JSX.Element {
 }
 
 export default function ActiveRouteComponent(props: { id: number; }): JSX.Element {
-    const {id} = props;
-    console.log(`Loading page for id ${id}`);
-
+    const {id: scheduleAssignmentId} = props;
+    console.log(`Loading page for id ${scheduleAssignmentId}`);
+    useActiveRoute(scheduleAssignmentId);
     // TODO use API instead of dummy items
     const dummyItems: IActiveRouteData[] = [
         {
@@ -227,8 +228,6 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
             garbage: 'PMD',
             manual: null,
             image: null,
-            issue: null,
-            issue_images: [],
             work_entries_done: {AR: true, WO: true, DE: false},
         },
         {
@@ -240,8 +239,6 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
             manual: 'https://www.example.com',
             // eslint-disable-next-line max-len
             image: 'https://media.architecturaldigest.com/photos/5d3f6c8084a5790008e99f37/master/w_3000,h_2123,c_limit/GettyImages-1143278588.jpg',
-            issue: null,
-            issue_images: [],
             work_entries_done: {AR: false, WO: false, DE: false},
         },
     ];
@@ -249,7 +246,7 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
     return (
         <>
             {/* TODO when implementing, remove the outer div */}
-            <div style={{width: '360px', height: '640px', background: 'var(--primary-light)'}}>
+            <div style={{width: '360px', height: '640px', background: 'var(--primary-light)', border: 'solid 3px red'}}>
                 <Carousel
                     NextIcon={<ChevronRight/>}
                     PrevIcon={<ChevronLeft/>}
@@ -265,7 +262,7 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
                             bottom: 'unset',
                             top: '5%',
                         },
-                    }} >
+                    }}>
                     {
                         dummyItems.map((item, i) =>
                             <ActiveRouteItem
@@ -277,8 +274,6 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
                                 garbage={item.garbage}
                                 manual={item.manual}
                                 image={item.image}
-                                issue={item.issue}
-                                issue_images={item.issue_images}
                                 work_entries_done={item.work_entries_done}
                             />
                         )
@@ -287,4 +282,72 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
             </div>
         </>
     );
+}
+
+const sessionToken = () => {
+    const {data: session} = useSession();
+    // @ts-ignore
+    return session ? session.accessToken : '';
+};
+
+const headers = (token: string) => {
+    // eslint-disable-next-line no-undef
+    return {headers: {'Authorization': `Bearer  ${token}`}} as RequestInit;
+};
+
+
+async function fetchDetail<T>(url: string, token: string) {
+    const apiUrl = `${process.env.NEXT_API_URL}${url}`;
+    return (await fetch(apiUrl, headers(token)).then((response) => response.json())) as T;
+}
+
+
+async function scheduleAssignmentFetch(args: any[]) {
+    const [scheduleAssignmentId, token] = args;
+    const scheduleAssignment = await fetchDetail<ScheduleAssignment>(
+        `/schedule_assignments/${scheduleAssignmentId}/`, token);
+    const scheduleDefinition = await fetchDetail<ScheduleDefinition>(
+        `/schedule_definitions/${scheduleAssignment.schedule_definition}/`, token);
+    const results: IActiveRouteData[] = [];
+    for (const building of scheduleDefinition.buildings) {
+        const buildingData = await fetchDetail<Building>(`/buildings/${building}/`, token);
+        let garbageSchedules = await fetchDetail<GarbageCollectionSchedule[]>(
+            `/buildings/${building}/garbage_collection_schedules/`, token);
+        garbageSchedules = garbageSchedules.filter((schedule) => schedule.for_day == scheduleAssignment.assigned_date);
+        const garbageTypeNames: string[] = [];
+        for (const garbageSchedule of garbageSchedules) {
+            const garbageType = await fetchDetail<GarbageType>(
+                `/garbage_types/${garbageSchedule.garbage_type}/`, token);
+            if (!garbageTypeNames.includes(garbageType.name)) {
+                garbageTypeNames.push(garbageType.name);
+            }
+        }
+        const garbageTypeStr = garbageTypeNames.sort().join(', ');
+        const routeData: IActiveRouteData = {
+            building_id: building,
+            schedule_assignment_id: scheduleAssignmentId,
+            name: 'BUILDING NAME TODO', // buildingData.name
+            address: buildingData.address,
+            manual: buildingData.pdf_guide,
+            image: buildingData.image,
+            work_entries_done: {AR: false, WO: false, DE: false},
+            garbage: garbageTypeStr,
+        };
+
+        const scheduleWorkEntriesPaginated = await fetchDetail<PaginatedResponse<ScheduleWorkEntry>>(
+            `/schedule_work_entries/?schedule_assignment=${scheduleAssignmentId}&building=${building}`, token);
+        for (const scheduleWorkEntry of scheduleWorkEntriesPaginated.results) {
+            if (scheduleWorkEntry.entry_type === 'AR') routeData.work_entries_done.AR = true;
+            else if (scheduleWorkEntry.entry_type === 'WO') routeData.work_entries_done.WO = true;
+            else if (scheduleWorkEntry.entry_type === 'DE') routeData.work_entries_done.DE = true;
+        }
+        results.push(routeData);
+    }
+    console.log(results)
+    return results;
+}
+
+async function useActiveRoute(scheduleAssignmentId: number) {
+    const token = sessionToken();
+    return useSWR<IActiveRouteData[]>([scheduleAssignmentId, token], scheduleAssignmentFetch);
 }

@@ -31,7 +31,7 @@ export enum Api {
     ScheduleDefinitionDetailScheduleWorkEntries = '/schedule_definitions/:id/schedule_work_entries/',
 }
 
-type PaginatedResponse<T> = {
+export type PaginatedResponse<T> = {
     count: number;
     next: string | null;
     previous: string | null;
