@@ -26,6 +26,7 @@ export type GarbageCollectionSchedule = {
     for_day: string;
     building: number;
     garbage_type: number;
+    note: string;
 };
 
 export type Building = {
