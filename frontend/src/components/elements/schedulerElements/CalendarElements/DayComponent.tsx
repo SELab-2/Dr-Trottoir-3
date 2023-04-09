@@ -30,7 +30,7 @@ const DayComponent = ({date, tasks, onAddClick, onRemoveClick, onEditClick}: Pro
                 <p>{weekday[new Date(date).getDay()]}</p>
                 <Button onClick={() => onAddClick(date)}>Add New</Button>
             </div>
-            <Droppable droppableId={date} type="task">
+            <Droppable droppableId={date} type="task" direction='horizontal'>
                 {(droppableProvided) => (
                     <div ref={droppableProvided.innerRef}
                         {...droppableProvided.droppableProps}

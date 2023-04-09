@@ -1,0 +1,7 @@
+.test {
+    display: flex;
+    width: 14.28%;
+    height: 30px;
+    background: green;
+    border-radius: var(--small_corner);
+}

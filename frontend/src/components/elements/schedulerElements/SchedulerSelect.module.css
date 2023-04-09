@@ -1,5 +1,5 @@
 .calendar_selector {
+    display: flex;
     flex-basis: 100px;
-    flex-grow: 1;
-    background-color: #E9EDF4;
+    background-color: var(--secondary-light);
 }
