@@ -13,7 +13,6 @@ type schedulerDetailsProps = {
 }
 
 export default function SchedulerDetails({users, routes, setRoutes, start, interval}: schedulerDetailsProps) {
-
     return (
         <div className={styles.calendar_component}>
             <WeekComponent users={users} routes={routes} setRoutes={setRoutes} start={start} interval={interval}/>

@@ -6,12 +6,7 @@ import {Backdrop} from '@mui/material';
 import CreateActiveTaskForm from './CreateActiveTaskForm';
 import {v4 as uuid} from 'uuid';
 import Button from '@mui/material/Button';
-import {Api, getDetail, getList} from '@/api/api';
-import {useSession} from 'next-auth/react';
-import {User} from '@/api/models';
-import RoutListComponent from './RouteListComponent';
-import RouteListComponent from './RouteListComponent';
-import DayHeader from "@/components/elements/schedulerElements/NewCalendar/DayHeader";
+import {Api, getList} from '@/api/api';
 
 type schedulerProps = {
     users: any[],
@@ -26,7 +21,7 @@ export default function WeekComponent({users, routes, start, days}: schedulerPro
     const [editorState, setEditorState] = useState({active: false, date: null, route: null, user: null});
 
 
-    const {data, error, isLoading} = getList(Api.ScheduleAssignments);
+    const data = getList(Api.ScheduleAssignments);
     console.log(data);
 
 
@@ -129,9 +124,9 @@ export default function WeekComponent({users, routes, start, days}: schedulerPro
 
     return (
         <div className={styles.full_week}>
-             <Button onClick={() => (setStartDay(startDay-7))}>previous</Button>
-             <Button onClick={() => (setStartDay(startDay+7))}>next</Button>
-             <DragDropContext onDragEnd={onDragEnd}>
+            <Button onClick={() => (setStartDay(startDay-7))}>previous</Button>
+            <Button onClick={() => (setStartDay(startDay+7))}>next</Button>
+            <DragDropContext onDragEnd={onDragEnd}>
                 {schedulerData != null && schedulerData.dayOrder.map((dayId) => {
                     const day = schedulerData.days[dayId];
                     const tasks = day.taskIds.map((taskId) => schedulerData.tasks[taskId]);
@@ -146,20 +141,20 @@ export default function WeekComponent({users, routes, start, days}: schedulerPro
                         />
                     );
                 })}
-             </DragDropContext>
+            </DragDropContext>
 
-             <Backdrop
+            <Backdrop
                 sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
                 open={editorState.active}
                 invisible={false}
-             >
+            >
                 <CreateActiveTaskForm
                     routes={routes}
                     users={users}
                     setEditorState={setEditorState}
                     addTask={addTask}
                     editorState={editorState}/>
-             </Backdrop>
+            </Backdrop>
 
         </div>
     );

@@ -1,0 +1,52 @@
+.full {
+    display: flex;
+    width: 14.28%;
+    height: 30px;
+}
+
+#padding_full {
+    padding: 0 4px;
+}
+
+#padding_left {
+    padding: 0 0 0 3px;
+}
+
+#padding_right {
+    padding: 0 2px 0 0;
+}
+
+.inner {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: #E9EDF4;
+}
+
+#link_none {
+    border-radius: 8px;
+}
+
+#link_left {
+    border-radius: 8px 0 0 8px;
+}
+
+#link_right {
+    border-radius: 0 8px 8px 0;
+}
+
+.content {
+    color: #1C1C1C;
+    display: flex;
+    flex-grow: 1;
+    margin: auto;
+    padding-left: 5px;
+}
+
+.icon {
+    color: var(--secondary-dark);
+}
+
+.text {
+    color: var(--secondary-dark);
+}

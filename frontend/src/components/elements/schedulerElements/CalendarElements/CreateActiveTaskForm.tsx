@@ -22,7 +22,6 @@ type props = {
 }
 
 export default function CreateActiveTaskForm({routes, users, setEditorState, addTask, editorState}:props) {
-
     const [user, setUser] = useState<any|null>(editorState.user);
     const [route, setRoute] = useState<any|null>(editorState.route);
     const [date, setDate] = useState<Dayjs|null>(editorState.date);

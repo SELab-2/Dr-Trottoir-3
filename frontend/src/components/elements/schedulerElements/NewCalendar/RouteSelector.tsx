@@ -1,6 +1,6 @@
 import React from 'react';
-import {Checkbox, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText} from '@mui/material';
-import styles from './RouteSelector.module.css';
+import {Checkbox, List, ListItem, ListItemButton, ListItemIcon, ListItemText} from '@mui/material';
+// import styles from './RouteSelector.module.css';
 
 type props = {
     showScheduleDefinitions: any,
@@ -9,11 +9,11 @@ type props = {
 }
 
 export default function RouteSelector({showScheduleDefinitions, setShowScheduleDefinitions, setScheduleDefenitionsSelector}:props) {
-    const handleClose = () => {
-        setScheduleDefenitionsSelector(false);
-    };
+    // const handleClose = () => {
+    //     setScheduleDefenitionsSelector(false);
+    // };
 
-    console.log(showScheduleDefinitions)
+    console.log(showScheduleDefinitions);
 
     const handleToggle = (value: any) => {
         // const newShowScheduleDefinitions = {...showScheduleDefinitions};
@@ -22,7 +22,7 @@ export default function RouteSelector({showScheduleDefinitions, setShowScheduleD
     };
 
     return (
-        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+        <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
             {showScheduleDefinitions.map((route) => {
                 return (
                     <ListItem key={route}>

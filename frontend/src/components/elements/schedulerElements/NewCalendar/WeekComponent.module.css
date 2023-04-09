@@ -17,27 +17,29 @@
 }
 
 .row_container {
+    gap: 100px;
 }
 
 .calendar_header_container {
     display: flex;
     width: 100%;
-    height: 50px;
+    height: 60px;
 }
 
 .calendar_header_task {
     display: flex;
-    background: red;
+    /*background: red;*/
     flex-basis: 100px;
     min-width: 100px;
 }
 
 .calendar_header_days {
     display: flex;
-    background: green;
+    /*background: green;*/
     flex-grow: 1;
+    padding: 0 25px 0 5px;
 }
 
 .add_route_button {
-    background: blue;
+    /*background: blue;*/
 }

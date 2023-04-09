@@ -14,7 +14,6 @@ interface Props {
 }
 
 const DayComponent = ({date, tasks, onAddClick, onRemoveClick, onEditClick}: Props) => {
-
     const removeFromDay = (id: string) => {
         onRemoveClick(date, id);
     };

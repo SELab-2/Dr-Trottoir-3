@@ -1,18 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {DragDropContext, Droppable, DropResult} from 'react-beautiful-dnd';
-import DayComponent from './DayComponent';
 import styles from './WeekComponent.module.css';
-import {Backdrop} from '@mui/material';
-import CreateActiveTaskForm from './CreateActiveTaskForm';
 import {v4 as uuid} from 'uuid';
 import Button from '@mui/material/Button';
-import {Api, getDetail, getList} from '@/api/api';
-import {useSession} from 'next-auth/react';
-import {User} from '@/api/models';
-import RoutListComponent from './RouteListComponent';
 import RouteListComponent from './RouteListComponent';
 import DayHeader from '@/components/elements/schedulerElements/NewCalendar/DayHeader';
-import RouteSelector from '@/components/elements/schedulerElements/NewCalendar/RouteSelector';
 
 type schedulerProps = {
     users: any[],
@@ -23,10 +15,9 @@ type schedulerProps = {
 }
 
 export default function WeekComponent({users, routes, setRoutes, start, interval}: schedulerProps) {
-
     const [schedulerData, setSchedulerData] = useState(null);
-    const [showScheduleDefinitions, setShowScheduleDefinitions] = useState([]);
-    const [scheduleDefenitionsSelector, setScheduleDefenitionsSelector] = useState(false);
+    // const [showScheduleDefinitions, setShowScheduleDefinitions] = useState([]);
+    const [, setScheduleDefenitionsSelector] = useState(false);
 
 
     // load scheduler data
@@ -71,7 +62,6 @@ export default function WeekComponent({users, routes, setRoutes, start, interval
 
         setRoutes(newSchedule);
         setSchedulerData(weekData);
-
     }, [routes]);
 
 
@@ -105,12 +95,32 @@ export default function WeekComponent({users, routes, setRoutes, start, interval
                             <div ref={droppableProvided.innerRef}
                                 {...droppableProvided.droppableProps}
                                 className={styles.row_container}>
-                                {schedulerData != null && schedulerData.routeOrder.map((routeId, index) => {
-                                    const route = routes[routeId];
-                                    return (
-                                        <RouteListComponent start={start} interval={interval} index={index} key={route.id} route={route} details={schedulerData}/>
-                                    );
-                                })}
+                                {/* {schedulerData != null && schedulerData.routeOrder.map((routeId, index) => {*/}
+                                {/*    const route = routes[routeId];*/}
+                                {/*    return (*/}
+                                {/*        <RouteListComponent start={start} interval={interval} index={index} key={route.id} route={route} details={schedulerData}/>*/}
+                                {/*    );*/}
+                                {/* })}*/}
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
+                                <RouteListComponent start={'2023-04-09'} interval={interval} index={0} route={null} details={schedulerData}/>
                                 {droppableProvided.placeholder}
                             </div>
                         )}

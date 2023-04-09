@@ -17,7 +17,7 @@ export default function LoginPageElement() {
 
     async function handleLogin() {
         signIn('credentials', {'redirect': false, 'password': password, 'username': email});
-        await router.push('/');
+        await router.push('/live_routes');
     }
 
     return (

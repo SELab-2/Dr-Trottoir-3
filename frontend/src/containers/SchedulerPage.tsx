@@ -8,8 +8,9 @@ export default function SchedulerPage() {
     const currentDay: Date = new Date();
     const [first, setFirst] = useState<number>(currentDay.getDate() - currentDay.getDay());
     const interval = 7;
+
     const [routes, setRoutes] = useState([]);
-    const [users, setUsers] = useState(usersData);
+    const [users] = useState(usersData);
 
     useEffect(() => {
         // load routes
@@ -18,6 +19,7 @@ export default function SchedulerPage() {
         });
         setRoutes(scheduleDefinitions);
     }, [routes]);
+
 
     const nextWeek = () => {
         setFirst(first + interval);
