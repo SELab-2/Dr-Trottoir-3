@@ -1,11 +1,11 @@
-import {Box, IconButton, TextareaAutosize, Typography} from '@mui/material';
+import {Box, IconButton, TextareaAutosize, TextField, Typography} from '@mui/material';
 import Carousel from 'react-material-ui-carousel';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import {Add, CameraAltRounded, ChevronLeft, ChevronRight} from '@mui/icons-material';
 import {defaultBuildingImage} from '@/constants/images';
 import styles from './activeroute.module.css';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PublishIcon from '@mui/icons-material/Publish';
 import {useSession} from 'next-auth/react';
@@ -138,7 +138,7 @@ function activeRouteItemIssues(props: IActiveRouteData): JSX.Element {
             style={{background: 'var(--secondary-light)', color: 'var(--secondary-dark)', display: 'inline-block'}}
         >
             {/* Input text */}
-            <TextareaAutosize
+            <TextField
                 aria-label="minimum height"
                 minRows={3}
                 placeholder={'Issue'}
@@ -217,7 +217,19 @@ function ActiveRouteItem(props: IActiveRouteData): JSX.Element {
 export default function ActiveRouteComponent(props: { id: number; }): JSX.Element {
     const {id: scheduleAssignmentId} = props;
     console.log(`Loading page for id ${scheduleAssignmentId}`);
-    useActiveRoute(scheduleAssignmentId);
+
+    const [activeRoutes, setActiveRoutes] = useState<IActiveRouteData[] | null | undefined>(null);
+    const activeRouteData = useActiveRoute(scheduleAssignmentId);
+
+    useEffect(() => {
+        setActiveRoutes(activeRouteData.data);
+    }, [scheduleAssignmentId, activeRouteData]);
+
+    if (!activeRoutes) {
+        return <p>Loading...</p>;
+    }
+    return <p>{activeRoutes[0].name}</p>;
+
     // TODO use API instead of dummy items
     const dummyItems: IActiveRouteData[] = [
         {
@@ -302,6 +314,8 @@ async function fetchDetail<T>(url: string, token: string) {
 }
 
 
+TODO issue https://stackoverflow.com/questions/74567152/swr-keep-getting-the-same-data-through-the-loop
+
 async function scheduleAssignmentFetch(args: any[]) {
     const [scheduleAssignmentId, token] = args;
     const scheduleAssignment = await fetchDetail<ScheduleAssignment>(
@@ -310,6 +324,7 @@ async function scheduleAssignmentFetch(args: any[]) {
         `/schedule_definitions/${scheduleAssignment.schedule_definition}/`, token);
     const results: IActiveRouteData[] = [];
     for (const building of scheduleDefinition.buildings) {
+        console.log(`${building} / ${scheduleDefinition.buildings}`);
         const buildingData = await fetchDetail<Building>(`/buildings/${building}/`, token);
         let garbageSchedules = await fetchDetail<GarbageCollectionSchedule[]>(
             `/buildings/${building}/garbage_collection_schedules/`, token);
@@ -347,7 +362,7 @@ async function scheduleAssignmentFetch(args: any[]) {
     return results;
 }
 
-async function useActiveRoute(scheduleAssignmentId: number) {
+function useActiveRoute(scheduleAssignmentId: number) {
     const token = sessionToken();
     return useSWR<IActiveRouteData[]>([scheduleAssignmentId, token], scheduleAssignmentFetch);
 }
