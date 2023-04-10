@@ -1,8 +1,9 @@
-import NextAuth from 'next-auth';
+import NextAuth, {AuthOptions} from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
+import {NextApiRequest, NextApiResponse} from 'next';
 
-const refreshAccessToken = async (refreshToken) => {
+const refreshAccessToken = async (refreshToken: string) => {
     try {
         // eslint-disable-next-line no-undef
         const response = await axios.post(`${process.env.NEXT_API_URL}auth/token/refresh/`, {refresh: refreshToken});
@@ -62,13 +63,15 @@ const providers = [
                     return null;
                 }
             } catch (e) {
-                throw new Error(e);
+                console.error(e);
             }
         },
     }),
 ];
 
+
 const callbacks = {
+    // @ts-ignore
     jwt: async ({token, user}) => {
         if (user) {
             // Only at login
@@ -89,6 +92,7 @@ const callbacks = {
         return Promise.resolve(newToken);
     },
 
+    // @ts-ignore
     session: async ({session, token}) => {
         session.accessToken = token.accessToken;
         session.accessTokenExpires = token.accessTokenExpires;
@@ -100,6 +104,7 @@ const callbacks = {
         return Promise.resolve(session);
     },
 
+    // @ts-ignore
     redirect: async ({url, baseUrl}) => {
         return url;
     },
@@ -115,6 +120,7 @@ const configuration = {
     },
 };
 
+// @ts-ignore
 // eslint-disable-next-line new-cap
-const Auth = (req, res) => NextAuth(req, res, configuration);
+const Auth = (req: AuthOptions | NextApiRequest, res: NextApiResponse<any>) => NextAuth(req, res, configuration);
 export default Auth;
