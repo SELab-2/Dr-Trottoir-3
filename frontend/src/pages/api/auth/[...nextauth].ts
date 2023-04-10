@@ -2,16 +2,15 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
 
-const refreshAccessToken = async (refreshToken: any) => {
+const refreshAccessToken = async (refreshToken) => {
     try {
-        const response = await axios.post('/api/refresh_token', {refreshToken});
-        const {access, refresh} = response.data;
-        // eslint-disable-next-line no-undef
+        const response = await axios.post(`${process.env.NEXT_API_URL}auth/token/refresh/`, {refresh: refreshToken});
+        const {access} = response.data;
         const decodedJwt = JSON.parse(Buffer.from(access.split('.')[1], 'base64').toString());
 
         return {
             accessToken: access,
-            refreshToken: refresh,
+            refreshToken: refreshToken,
             userid: decodedJwt['user_id'],
             accessTokenExpires: parseInt(decodedJwt['exp']) * 1000,
         };
@@ -20,6 +19,7 @@ const refreshAccessToken = async (refreshToken: any) => {
         return null;
     }
 };
+
 
 const cookie = {
     // eslint-disable-next-line no-undef
@@ -42,7 +42,6 @@ const providers = [
             try {
                 if (credentials) {
                     const user = await axios.post(
-                        // eslint-disable-next-line no-undef
                         `${process.env.NEXT_API_URL}auth/token/`,
                         {
                             username: credentials.username,
@@ -66,18 +65,19 @@ const providers = [
     }),
 ];
 
+const jwt = require('jsonwebtoken');
+
 const callbacks = {
     jwt: async ({token, user}) => {
         if (user) {
-            const decodedJwt = JSON.parse(
-                // eslint-disable-next-line no-undef
-                Buffer.from(user.access.split('.')[1], 'base64').toString()
-            );
+            // Only at login
+            // eslint-disable-next-line no-undef
+            const decodedJwt = JSON.parse(Buffer.from(user.access.split('.')[1], 'base64').toString());
 
-            token.accessToken = user.access;
-            token.refreshToken = user.refresh;
-            token.userid = decodedJwt.user_id;
-            token.accessTokenExpires = parseInt(decodedJwt.exp) * 1000;
+            token.accessToken = user['access'];
+            token.refreshToken = user['refresh'];
+            token.userid = decodedJwt['user_id'];
+            token.accessTokenExpires = parseInt(decodedJwt['exp']) * 100000;
         }
 
         if (Date.now() < token.accessTokenExpires) {
@@ -85,16 +85,7 @@ const callbacks = {
         }
 
         const newToken = await refreshAccessToken(token.refreshToken);
-        if (newToken) {
-            token.accessToken = newToken.accessToken;
-            token.refreshToken = newToken.refreshToken;
-            token.accessTokenExpires = newToken.accessTokenExpires;
-            token.userid = newToken.userid;
-        } else {
-            token.error = 'RefreshTokenError';
-        }
-
-        return Promise.resolve(token);
+        return Promise.resolve(newToken);
     },
 
     session: async ({session, token}) => {
@@ -103,6 +94,7 @@ const callbacks = {
         session.error = token.error;
         session.userid = token.userid;
         session.refreshToken = token.refreshToken;
+        session.jwt = token.jwt;
 
         return Promise.resolve(session);
     },
