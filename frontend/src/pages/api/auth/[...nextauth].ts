@@ -1,16 +1,19 @@
-import NextAuth from 'next-auth';
+import NextAuth, {AuthOptions} from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
+import {NextApiRequest, NextApiResponse} from 'next';
 
-const refreshAccessToken = async (refreshToken) => {
+const refreshAccessToken = async (refreshToken: string) => {
     try {
-        const response = await axios.post('/api/refresh_token', {refreshToken});
-        const {access, refresh} = response.data;
+        // eslint-disable-next-line no-undef
+        const response = await axios.post(`${process.env.NEXT_API_URL}auth/token/refresh/`, {refresh: refreshToken});
+        const {access} = response.data;
+        // eslint-disable-next-line no-undef
         const decodedJwt = JSON.parse(Buffer.from(access.split('.')[1], 'base64').toString());
 
         return {
             accessToken: access,
-            refreshToken: refresh,
+            refreshToken: refreshToken,
             userid: decodedJwt['user_id'],
             accessTokenExpires: parseInt(decodedJwt['exp']) * 1000,
         };
@@ -20,7 +23,9 @@ const refreshAccessToken = async (refreshToken) => {
     }
 };
 
+
 const cookie = {
+    // eslint-disable-next-line no-undef
     secure: process.env.NODE_ENV && process.env.NODE_ENV === 'production',
 };
 const session = {
@@ -40,6 +45,7 @@ const providers = [
             try {
                 if (credentials) {
                     const user = await axios.post(
+                        // eslint-disable-next-line no-undef
                         `${process.env.NEXT_API_URL}auth/token/`,
                         {
                             username: credentials.username,
@@ -57,23 +63,25 @@ const providers = [
                     return null;
                 }
             } catch (e) {
-                throw new Error(e);
+                console.error(e);
             }
         },
     }),
 ];
 
+
 const callbacks = {
+    // @ts-ignore
     jwt: async ({token, user}) => {
         if (user) {
-            const decodedJwt = JSON.parse(
-                Buffer.from(user.access.split('.')[1], 'base64').toString()
-            );
+            // Only at login
+            // eslint-disable-next-line no-undef
+            const decodedJwt = JSON.parse(Buffer.from(user.access.split('.')[1], 'base64').toString());
 
-            token.accessToken = user.access;
-            token.refreshToken = user.refresh;
-            token.userid = decodedJwt.user_id;
-            token.accessTokenExpires = parseInt(decodedJwt.exp) * 1000;
+            token.accessToken = user['access'];
+            token.refreshToken = user['refresh'];
+            token.userid = decodedJwt['user_id'];
+            token.accessTokenExpires = parseInt(decodedJwt['exp']) * 100000;
         }
 
         if (Date.now() < token.accessTokenExpires) {
@@ -81,28 +89,22 @@ const callbacks = {
         }
 
         const newToken = await refreshAccessToken(token.refreshToken);
-        if (newToken) {
-            token.accessToken = newToken.accessToken;
-            token.refreshToken = newToken.refreshToken;
-            token.accessTokenExpires = newToken.accessTokenExpires;
-            token.userid = newToken.userid;
-        } else {
-            token.error = 'RefreshTokenError';
-        }
-
-        return Promise.resolve(token);
+        return Promise.resolve(newToken);
     },
 
+    // @ts-ignore
     session: async ({session, token}) => {
         session.accessToken = token.accessToken;
         session.accessTokenExpires = token.accessTokenExpires;
         session.error = token.error;
         session.userid = token.userid;
         session.refreshToken = token.refreshToken;
+        session.jwt = token.jwt;
 
         return Promise.resolve(session);
     },
 
+    // @ts-ignore
     redirect: async ({url, baseUrl}) => {
         return url;
     },
@@ -118,6 +120,7 @@ const configuration = {
     },
 };
 
+// @ts-ignore
 // eslint-disable-next-line new-cap
-const Auth = (req, res) => NextAuth(req, res, configuration);
+const Auth = (req: AuthOptions | NextApiRequest, res: NextApiResponse<any>) => NextAuth(req, res, configuration);
 export default Auth;

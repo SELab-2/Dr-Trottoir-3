@@ -10,11 +10,6 @@ export default function LoginPageElement() {
 
     const router = useRouter();
 
-    // const {data: session} = useSession();
-    // if (session && session.user) {
-    //     router.push("/");
-    // }
-
     async function handleLogin() {
         signIn('credentials', {'redirect': false, 'password': password, 'username': email});
         await router.push('/live_routes');

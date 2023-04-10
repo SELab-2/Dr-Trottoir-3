@@ -4,6 +4,7 @@ import CalendarEntry from '@/components/elements/schedulerElements/NewCalendar/e
 import React, {useEffect, useState} from 'react';
 import EmptyEntry from '@/components/elements/schedulerElements/NewCalendar/entries/EmptyEntry';
 import {random} from 'nanoid';
+import {Api, getList} from "@/api/api";
 
 type routeListComponentProps = {
     index: number,
@@ -23,6 +24,13 @@ const mockdata = [
 
 
 export default function RouteListComponent({index, start, interval, route, details}: routeListComponentProps) {
+
+
+
+    // const scheduleAssignments = getList(Api.ScheduleAssignments, {}, {'schedule_definition': 1}).data;
+    // console.log(scheduleAssignments)
+
+
     const [assignments, setAssignments] = useState(mockdata);
     const [tasks, setTasks] = useState([]);
 
