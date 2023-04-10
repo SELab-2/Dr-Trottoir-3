@@ -88,3 +88,12 @@ export type User = {
     admin: undefined | Admin,
     syndicus: undefined | Syndicus,
 }
+
+export type Issue = {
+    id: number
+    resolved: boolean,
+    message: string,
+    building: number,
+    from_user: number,
+    approval_user: number | null | undefined
+}

@@ -1,11 +1,14 @@
 import styles from './buildingdetail.module.css';
-import {Box, Link, List, Typography} from '@mui/material';
-import {Building, GarbageCollectionSchedule, GarbageType, LocationGroup} from '@/api/models';
+import {Box, Link, List, Modal, Typography} from '@mui/material';
+import {Building, GarbageCollectionSchedule, GarbageType, Issue, LocationGroup} from '@/api/models';
 import {PictureAsPdf} from '@mui/icons-material';
 import {Api, getDetail, getList, PaginatedResponse} from '@/api/api';
 import {defaultBuildingImage} from '@/constants/images';
 import {useSession} from 'next-auth/react';
 import ScheduleGarbageListItem from './scheduleGarbageListItem';
+import Button from '@mui/material/Button';
+import React from 'react';
+import BuildingIssueListItem from '@/components/elements/buildingdetailElement/buildingIssueListItem';
 
 interface IBuildingDetail {
   id: number,
@@ -16,7 +19,8 @@ interface IBuildingDetail {
   description: string | null
   image: string | null,
   syndicus: string,
-  schedules: IScheduleGarbageListItem[]
+  schedules: IScheduleGarbageListItem[],
+  issues: Issue[],
 }
 
 interface IScheduleGarbageListItem {
@@ -27,19 +31,18 @@ interface IScheduleGarbageListItem {
 }
 
 /* TODO list
- * - Remove building description, in detail view replace this with a list of issues
+ * - Remove building description, in detail view replace this with a map of the coordinates
  * - Add way of finding syndicus by building id
  * - Add building name to model
- * - Clean up scheduleGarbageListItem's sendRequest (move it to API)
  */
 
 // eslint-disable-next-line require-jsdoc
-function createBuildingManualElement(path: string | null):JSX.Element {
-    if (!path || path.length == 0) {
+function BuildingDetailManualLink(props:{path: string | null }):JSX.Element {
+    if (!props.path || props.path.length == 0) {
         return (<></>);
     }
     return (
-        <Link href={path} className={styles.building_data_manual}>
+        <Link href={props.path} className={styles.building_data_manual}>
           Manual
             <PictureAsPdf fontSize="small"/>
         </Link>
@@ -51,6 +54,9 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
     const {id} = props;
 
     let buildingDetail: IBuildingDetail | undefined = undefined;
+    const [issuesModalOpen, setIssuesModalOpen] = React.useState(false);
+    const handleIssueModalOpen = ()=> setIssuesModalOpen(true);
+    const handleIssueModalClose = ()=> setIssuesModalOpen(false);
 
     const {data: session} = useSession();
 
@@ -59,9 +65,14 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
     const {data: schedules} = getDetail<PaginatedResponse<GarbageCollectionSchedule>>(
         Api.BuildingDetailGarbageCollectionSchedules, id);
     const {data: garbageTypes} = getList<GarbageType>(Api.GarbageTypes, {}, {});
+    const {data: issues} = getList<Issue>(Api.Issues, {}, {resolved: false, building: id});
 
     // @ts-ignore
     if (!building?.id && building?.detail) {
+        /* During debugging the server starts and restarts a lot, meaning
+        that tokens can get invalidated in-between restarts while still staying inside
+        the browser cache. This is a catch for that in order to prevent errors.
+         */
         return (
             <>
                 <p>There was an error:</p>
@@ -72,7 +83,7 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
             </>);
     }
 
-    if (session && building && location && schedules && garbageTypes) {
+    if (session && building && location && schedules && garbageTypes && issues) {
         const garbageNames: {[id: number]: string} = {};
         for (const garbageType of garbageTypes.results) {
             garbageNames[garbageType.id] = garbageType.name;
@@ -92,16 +103,27 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
             name: 'TODO add name',
             address: building.address,
             pdf_guide: building.pdf_guide,
-            description: 'TODO remove description',
+            description: 'TODO remove description and replace with map',
             image: building.image,
             syndicus: 'TODO add syndicus',
             schedules: scheduleItems,
+            issues: issues.results,
         };
     }
 
 
     if (!buildingDetail) {
         return <p>Loading...</p>;
+    }
+
+    const issueCount = issues!.results.length;
+    let issuesModalButtonText: string = '0 issues remaining';
+    if (issues!.results.length > 0) {
+        if (issues!.next) {
+            issuesModalButtonText = `${issueCount}+ issues remaining`;
+        } else {
+            issuesModalButtonText = `${issueCount} issues remaining`;
+        }
     }
 
     return (
@@ -126,9 +148,11 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
                         <Typography className={styles.building_data_data}>
                             {buildingDetail.syndicus}
                         </Typography>
+                        <br/>
+                        <BuildingDetailManualLink path={buildingDetail.pdf_guide}/>
+                        {/* Button to open the issue modal*/}
+                        <Button onClick={handleIssueModalOpen}>{issuesModalButtonText}</Button>
                     </Box>
-                    <br/>
-                    {createBuildingManualElement(buildingDetail.pdf_guide)}
                 </Box>
 
                 {/* Building description container */}
@@ -177,6 +201,27 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
           Calendar here
                 </Box>
             </Box>
+
+            {/* Modal for the issues */}
+            <Modal
+                open={issuesModalOpen}
+                onClose={handleIssueModalClose}
+            >
+                <Box className={styles.issue_modal_box}
+                    sx={{
+                        background: 'var(--primary-light)',
+                        maxHeight: '400px',
+                        overflow: 'scroll',
+                    }}>
+                    <List>
+                        {
+                            buildingDetail.issues.map((issue: Issue) =>
+                                <BuildingIssueListItem issue={issue}/>
+                            )
+                        }
+                    </List>
+                </Box>
+            </Modal>
         </Box>
     );
 }

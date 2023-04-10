@@ -1,24 +1,14 @@
 import {AddRounded, CreateRounded, ErrorOutline} from '@mui/icons-material';
-import {Box, Button, Card, Dialog, DialogActions, DialogTitle, IconButton, ListItem, TextField, Tooltip} from '@mui/material';
+import {Box, Button, Card, Dialog, DialogActions, DialogTitle, IconButton, ListItem, TextField, Tooltip}
+    from '@mui/material';
 import * as React from 'react';
 import {useSession} from 'next-auth/react';
-
-async function sendRequest(url: string, {arg}: { arg: { note: string | null, token: string }}) {
-    console.log(`token ${arg.token}`);
-    return fetch(url, {
-        method: 'PATCH',
-        body: JSON.stringify({note: arg.note}),
-        headers: {
-            'Authorization': `Bearer ${arg.token}`,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-    }).then((res) => res.json());
-}
+import {Api, patchDetail} from '@/api/api';
 
 
 // eslint-disable-next-line require-jsdoc
-function createScheduleWarningSymbol(id: number, text: string | null, date: string, garbage: string, token: string): JSX.Element {
+function ScheduleWarningSymbols(props: { id: number, text: string | null, date: string, garbage: string}): JSX.Element {
+    const {id, text, date, garbage} = props;
     const noteExists = text && text.length > 0;
     const [open, setOpen] = React.useState(false);
 
@@ -31,6 +21,10 @@ function createScheduleWarningSymbol(id: number, text: string | null, date: stri
     };
 
     //                         <IconButton onClick={() => createScheduleEntryNote(id, text)}>
+    const {data: session} = useSession();
+    // @ts-ignore
+    const token = session ? session.accessToken : '';
+    const textFieldId = `schedule-${id}-note-form-text-field`;
 
     return (
         <>
@@ -52,21 +46,22 @@ function createScheduleWarningSymbol(id: number, text: string | null, date: stri
                 <DialogTitle>Update note for {garbage} on {date}</DialogTitle>
                 <form action={'?'} method={'PATCH'} onSubmit={async (event) => {
                     // @ts-ignore
-                    const textField = event.target[`schedule-${id}-note-form-text-field`];
+                    const textField = event.target[textFieldId];
                     if (textField) {
                         const formText = textField.value;
                         if (text !== formText) {
-                            const url = `${process.env.NEXT_API_URL}garbage_collection_schedules/${id}/`;
                             // @ts-ignore
-                            const result = await sendRequest(url, {arg: {note: formText ? formText : null, token: token}});
-                            console.log(result);
+                            await patchDetail(
+                                Api.GarbageCollectionScheduleDetail, id,
+                                {note: formText ? formText : null}, token
+                            );
                         }
                     }
                 }}>
                     <TextField
                         autoFocus
                         margin="dense"
-                        id={`schedule-${id}-note-form-text-field`}
+                        id={textFieldId}
                         fullWidth
                         variant="standard"
                         defaultValue={text}
@@ -81,11 +76,9 @@ function createScheduleWarningSymbol(id: number, text: string | null, date: stri
     );
 }
 
-export default function ScheduleGarbageListItem(props: {id: number, type: string, date: string, note: string}): JSX.Element {
+export default function ScheduleGarbageListItem(
+    props: {id: number, type: string, date: string, note: string}): JSX.Element {
     const {id, type, date, note} =props;
-    const {data: session} = useSession();
-
-    const token = session ? session.accessToken : '';
 
     // @ts-ignore
     return (
@@ -132,7 +125,12 @@ export default function ScheduleGarbageListItem(props: {id: number, type: string
                         flexGrow: 1, justifyContent: 'flex-end',
                         alignItems: 'center',
                     }}>
-                        {createScheduleWarningSymbol(id, note, date, type, token)}
+                        <ScheduleWarningSymbols
+                            id={id}
+                            text={note}
+                            date={date}
+                            garbage={type}
+                        />
                     </Box>
                 </Box>
             </Card>

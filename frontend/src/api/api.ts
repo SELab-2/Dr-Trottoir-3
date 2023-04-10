@@ -9,7 +9,7 @@ export enum Api {
   GarbageCollectionScheduleTemplateEntryDetail = '/garbage_collection_schedule_template_entries/:id/',
   GarbageTypes = '/garbage_types/',
   GarbageTypeDetail = '/garbage_types/:id/',
-  GarbageCollectionScheduleDetail = '/garbage_collection_schedules/:id',
+  GarbageCollectionScheduleDetail = '/garbage_collection_schedules/:id/',
   LocationGroups = '/location_groups/',
   LocationGroupDetail = '/location_groups/:id/',
   LocationGroupDetailBuildings = '/location_groups/:id/buildings/',
@@ -31,6 +31,8 @@ export enum Api {
   ScheduleDefinitionDetailScheduleWorkEntries = '/schedule_definitions/:id/schedule_work_entries/',
   Users = '/users/',
   UserDetail = '/users/:id/',
+  Issues = '/issues/',
+  IssueDetail = '/issues/:id/'
 }
 
 export type PaginatedResponse<T> = {
@@ -56,6 +58,36 @@ async function fetcher<T>(args: Array<string>): Promise<T> {
     });
 }
 
+async function patcher<T>(
+    args: {path: string, token: string, body: object}): Promise<T> {
+    // eslint-disable-next-line no-undef
+    const url = process.env.NEXT_API_URL + args.path;
+    return fetch(url,
+        {
+            method: 'PATCH',
+            body: JSON.stringify(args.body),
+            headers: {
+                'Authorization': `Bearer  ${args.token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        }
+    ).then((res) => res.json() as T);
+}
+
+async function deleter<T>(args: {path: string, token: string}): Promise<Response> {
+    // eslint-disable-next-line no-undef
+    const url = process.env.NEXT_API_URL + args.path;
+    return fetch(url,
+        {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer  ${args.token}`,
+            },
+        }
+    );
+}
+
 /**
  * @param {Api} route API route to request
  * @param {any} params :param parameters to replace in request URL (e.g. :id)
@@ -69,13 +101,15 @@ export function getList<T>(route: Api, params: any, query: any): SWRResponse<Pag
     }
 
     const queryParams = new URLSearchParams(query);
-    routeStr += queryParams.toString();
+    routeStr += '?' + queryParams.toString();
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const {data: session} = useSession();
 
     // @ts-ignore
     const token = session ? session.accessToken : '';
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     return useSWR<PaginatedResponse<T>>([token, routeStr], fetcher);
 }
 
@@ -90,10 +124,25 @@ export function getDetail<T>(route: Api, id: number | undefined): SWRResponse<T,
     if (!id) id = 0;
     const routeStr = route.replace(':id', id.toString());
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const {data: session} = useSession();
 
     // @ts-ignore
     const token = session ? session.accessToken : '';
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     return useSWR<T>([token, routeStr], fetcher);
+}
+
+export function patchDetail<T>(route: Api, id: number, body: object, token: string): Promise<T> {
+    // Note: I don't believe a token can be added here, because patch requests usually happen at
+    // the press of a button, and are thus conditional. If you find a way to use useSession here,
+    // please change accordingly.
+    const routeStr = route.replace(':id', id.toString());
+    return patcher<T>({token: token, path: routeStr, body: body});
+}
+
+export function deleteDetail<T>(route: Api, id: number, token: string): Promise<Response> {
+    const routeStr = route.replace(':id', id.toString());
+    return deleter({path: routeStr, token: token});
 }
