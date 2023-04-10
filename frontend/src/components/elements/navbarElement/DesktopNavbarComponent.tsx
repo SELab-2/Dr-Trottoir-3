@@ -6,6 +6,7 @@ import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import Button from '@mui/material/Button';
 import {navbarProps, buttonProps} from './NavbarComponentInterface';
+import {signOut} from 'next-auth/react';
 
 export default function DesktopNavbar({loading, nextPath, setNextPath, router, children, topButtons}: navbarProps) {
     return (
@@ -28,9 +29,7 @@ export default function DesktopNavbar({loading, nextPath, setNextPath, router, c
                             <DesktopNavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
                                 href={'/settings'} text={'Instellingen'}
                                 Icon={TuneRoundedIcon}/>
-                            <DesktopNavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
-                                href={'/login'} text={'Logout'}
-                                Icon={LogoutRoundedIcon}/>
+                            <DesktopLogoutButton/>
                         </div>
                     </div>
                 </div>
@@ -46,7 +45,7 @@ export default function DesktopNavbar({loading, nextPath, setNextPath, router, c
 }
 
 
-const DesktopNavButton = ({href, text, router, Icon, nextPath, setNextPath}: buttonProps) => {
+const DesktopNavButton = ({href, text, router, Icon, nextPath, setNextPath, buttonAction}: buttonProps) => {
     const isActive: boolean = router.asPath === href;
     const isLoading: boolean = href === nextPath;
 
@@ -62,6 +61,21 @@ const DesktopNavButton = ({href, text, router, Icon, nextPath, setNextPath}: but
             <>
                 <Icon className={styles.icon}/>
                 <p className={styles.text}>{text}</p>
+            </>
+        </Button>
+    );
+};
+
+
+const DesktopLogoutButton = () => {
+    return (
+        <Button id={styles.button}
+            onClick={() => signOut({callbackUrl: '/login'})}
+            className={styles.button_default}
+        >
+            <>
+                <LogoutRoundedIcon className={styles.icon}/>
+                <p className={styles.text}>Logout</p>
             </>
         </Button>
     );
