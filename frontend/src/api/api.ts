@@ -49,7 +49,7 @@ async function fetcher<T>(args: Array<string>): Promise<T> {
     // eslint-disable-next-line no-undef
     return fetch(process.env.NEXT_API_URL + args[1].slice(1), {
         headers: {
-            'Authorization': `Bearer ${args[0]}`,
+            'Authorization': `Bearer  ${args[0]}`,
         },
     }).then((res) => {
         return res.json() as Promise<T>;
@@ -61,19 +61,14 @@ async function fetcher<T>(args: Array<string>): Promise<T> {
  * @param {Array<string>} args
  * @return {Promise<T[]>}
  * **/
-async function fetcherArray<T>(args: {paths: string[], token: string}): Promise<T[]> {
-    // @ts-ignore
-    // eslint-disable-next-line no-undef
-    const fetchSingle = (path) => {
-        // eslint-disable-next-line no-undef
-        const url = process.env.NEXT_API_URL + path.slice(1);
-        return fetch(url, {
-            headers: {
-                'Authorization': `Bearer  ${args.token}`,
-            },
-        }).then((res)=> res.json() as T);
-    };
-    return Promise.all(args.paths.map(fetchSingle));
+async function fetcherArray<T>(args: Array<any>): Promise<T[]> {
+    const token: string = args[0];
+    const paths: string[] = args[1];
+    return await Promise.all(
+        paths.map((path) => fetcher<T>([token, path])))
+        .catch((error) => {
+            throw error;
+        });
 }
 
 /**
@@ -109,7 +104,6 @@ export function getDetail<T>(route: Api, id: number|undefined): SWRResponse<T, a
     // we fetch the item with id 0, which always results in a 404.
     if (!id) id = 0;
     const routeStr = route.replace(':id', id.toString());
-    console.log(`getting ${routeStr}`);
 
     const {data: session} = useSession();
 
@@ -123,9 +117,10 @@ export function getDetailArray<T>(route: Api | string, ids: number[] | undefined
     if (!ids) ids = [0];
     const routeStrs = ids.map((id)=>route.replace(':id', id.toString()));
     const {data: session} = useSession();
-    console.log(`getting array ${routeStrs}`);
 
     // @ts-ignore
     const token = session ? session.accessToken : '';
     return useSWR<T[]>([token, routeStrs], fetcherArray);
 }
+
+export function postDetail(route: Api, )
