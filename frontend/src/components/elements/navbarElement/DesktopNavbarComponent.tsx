@@ -6,7 +6,6 @@ import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import Button from '@mui/material/Button';
 import {navbarProps, buttonProps} from './NavbarComponentInterface';
-import {signout} from 'next-auth/core/routes';
 import {signOut} from 'next-auth/react';
 
 export default function DesktopNavbar({loading, nextPath, setNextPath, router, children, topButtons}: navbarProps) {

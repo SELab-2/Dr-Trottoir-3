@@ -4,22 +4,18 @@ import {Api, getDetail} from '@/api/api';
 import {useSession} from 'next-auth/react';
 import CloseIcon from '@mui/icons-material/Close';
 import {User} from '@/api/models';
-import {useEffect} from "react";
 
 export default function UserElement() {
     let user: User | undefined = undefined;
 
     const {data: session} = useSession();
 
+    // @ts-ignore
+    // eslint-disable-next-line no-unused-vars
+    const {data, error, isLoading} = getDetail(Api.UserDetail, session? session.userid : 0);
 
-    // useEffect(() => {
-        // @ts-ignore
-        // eslint-disable-next-line no-unused-vars
-        const {data, error, isLoading} = getDetail(Api.UserDetail, session? session.userid : 0);
-
-        // @ts-ignore
-        user = data;
-    // });
+    // @ts-ignore
+    user = data;
 
     if (!user) {
         return (<div>Loading...</div>);

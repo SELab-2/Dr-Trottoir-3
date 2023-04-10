@@ -4,8 +4,10 @@ import axios from 'axios';
 
 const refreshAccessToken = async (refreshToken) => {
     try {
+        // eslint-disable-next-line no-undef
         const response = await axios.post(`${process.env.NEXT_API_URL}auth/token/refresh/`, {refresh: refreshToken});
         const {access} = response.data;
+        // eslint-disable-next-line no-undef
         const decodedJwt = JSON.parse(Buffer.from(access.split('.')[1], 'base64').toString());
 
         return {
@@ -42,6 +44,7 @@ const providers = [
             try {
                 if (credentials) {
                     const user = await axios.post(
+                        // eslint-disable-next-line no-undef
                         `${process.env.NEXT_API_URL}auth/token/`,
                         {
                             username: credentials.username,
@@ -64,8 +67,6 @@ const providers = [
         },
     }),
 ];
-
-const jwt = require('jsonwebtoken');
 
 const callbacks = {
     jwt: async ({token, user}) => {
