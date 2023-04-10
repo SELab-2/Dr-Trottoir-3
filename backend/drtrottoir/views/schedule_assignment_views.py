@@ -59,7 +59,7 @@ class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet)
 
     serializer_class = ScheduleAssignmentSerializer
 
-    filterset_fields = ["assigned_date", "user"]
+    filterset_fields = ["assigned_date", "user", "schedule_definition"]
     search_fields: List[str] = []
 
     permission_classes = [IsAuthenticated, IsSuperstudentOrAdmin]
