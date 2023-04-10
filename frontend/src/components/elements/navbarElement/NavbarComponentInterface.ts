@@ -17,5 +17,6 @@ export interface buttonProps {
     router: NextRouter,
     Icon: typeof SvgIcon,
     nextPath: string | null,
-    setNextPath: React.Dispatch<React.SetStateAction<string | null>>
+    setNextPath: React.Dispatch<React.SetStateAction<string | null>>,
+    buttonAction?: () => (void)
 }

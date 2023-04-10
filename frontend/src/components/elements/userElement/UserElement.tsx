@@ -10,14 +10,12 @@ export default function UserElement() {
 
     const {data: session} = useSession();
 
-    if (session) {
-        // @ts-ignore
-        // eslint-disable-next-line no-unused-vars
-        const {data, error, isLoading} = getDetail(Api.UserDetail, session.userid);
+    // @ts-ignore
+    // eslint-disable-next-line no-unused-vars
+    const {data, error, isLoading} = getDetail(Api.UserDetail, session? session.userid : 0);
 
-        // @ts-ignore
-        user = data;
-    }
+    // @ts-ignore
+    user = data;
 
     if (!user) {
         return (<div>Loading...</div>);
