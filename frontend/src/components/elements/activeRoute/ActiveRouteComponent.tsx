@@ -1,17 +1,18 @@
-import {Box, IconButton, TextareaAutosize, TextField, Typography} from '@mui/material';
+import {Box, IconButton, TextField, Typography} from '@mui/material';
 import Carousel from 'react-material-ui-carousel';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import {Add, CameraAltRounded, ChevronLeft, ChevronRight} from '@mui/icons-material';
 import {defaultBuildingImage} from '@/constants/images';
 import styles from './activeroute.module.css';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PublishIcon from '@mui/icons-material/Publish';
 import {useSession} from 'next-auth/react';
 import useSWR from 'swr';
 import {Building, GarbageCollectionSchedule, GarbageType, ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry} from '@/api/models';
-import {PaginatedResponse} from '@/api/api';
+import {Api, getDetail, getDetailArray, getList, PaginatedResponse} from '@/api/api';
+
 /**
  * TODO
  * - Add API
@@ -24,8 +25,8 @@ interface IActiveRouteData {
   name: string,
   address: string,
   garbage: string,
-  manual: (string | null | undefined),
-  image: (string | null | undefined),
+  pdf_guide: string | null | undefined,
+  image: string | null | undefined,
   work_entries_done: { AR: boolean, WO: boolean, DE: boolean }
 }
 
@@ -40,8 +41,8 @@ function activeRouteItemData(props: IActiveRouteData): JSX.Element {
             <p>{props.garbage}</p>
             <br/>
             {
-                props.manual ?
-                    <a href={props.manual} style={{textDecoration: 'underline'}}>Handleiding</a> :
+                props.pdf_guide ?
+                    <a href={props.pdf_guide} style={{textDecoration: 'underline'}}>Handleiding</a> :
                     <p></p>
             }
         </Box>
@@ -215,20 +216,74 @@ function ActiveRouteItem(props: IActiveRouteData): JSX.Element {
 }
 
 export default function ActiveRouteComponent(props: { id: number; }): JSX.Element {
-    const {id: scheduleAssignmentId} = props;
-    console.log(`Loading page for id ${scheduleAssignmentId}`);
+    const {id: id} = props;
+    console.log(`Loading page for id ${id}`);
 
-    const [activeRoutes, setActiveRoutes] = useState<IActiveRouteData[] | null | undefined>(null);
-    const activeRouteData = useActiveRoute(scheduleAssignmentId);
+    let activeRoutes: IActiveRouteData[] | undefined = undefined;
+    const {data: session} = useSession();
+    const {data: scheduleAssignment} = getDetail<ScheduleAssignment>(Api.ScheduleAssignmentDetail, id);
+    // eslint-disable-next-line max-len
+    const {data: scheduleDefinition} = getDetail<ScheduleDefinition>(Api.ScheduleDefinitionDetail, scheduleAssignment?.schedule_definition);
 
-    useEffect(() => {
-        setActiveRoutes(activeRouteData.data);
-    }, [scheduleAssignmentId, activeRouteData]);
+    const {data: buildings} = getDetailArray<Building>(Api.BuildingDetail, scheduleDefinition?.buildings);
+    const buildingIds = (buildings !== undefined) ? buildings.map((building) => building.id) : undefined;
+    // eslint-disable-next-line max-len
+    const buildingGarbageSchedulesUrl = `${Api.BuildingDetail}/for_day/${scheduleAssignment?.assigned_date}/garbage_collection_schedules/`;
+    // eslint-disable-next-line max-len
+    const {data: garbageSchedules} = getDetailArray<PaginatedResponse<GarbageCollectionSchedule>>(buildingGarbageSchedulesUrl, buildingIds);
+    const {data: garbageTypes} = getList<GarbageType>(Api.GarbageTypes, {}, {});
+    const {data: workEntries} = getList<ScheduleWorkEntry>(Api.ScheduleWorkEntries, {}, {schedule_assignment: id});
 
-    if (!activeRoutes) {
+    // eslint-disable-next-line max-len
+    console.log(`schedule assignment ${JSON.stringify(scheduleAssignment)}`);
+    console.log(`schedule definition ${JSON.stringify(garbageSchedules)}`);
+    // scheduleDefinition && (buildings !== undefined) && (garbageSchedules !== undefined) && garbageTypes && workEntries )
+    if (session && scheduleAssignment && scheduleDefinition && (buildings !== undefined) && (garbageSchedules !== undefined) && garbageTypes && workEntries) {
+        activeRoutes = [];
+        const garbageNames: {[id: number]: string} = {};
+        for (const garbageType of garbageTypes.results) {
+            garbageNames[garbageType.id] = garbageType.name;
+        }
+
+        const buildingGarbageNames:{[id: number]: string} = {};
+        for (const paginatedGarbageSchedule of garbageSchedules) {
+            const names: Set<string> = new Set();
+            let building = -1;
+            for (const garbageSchedule of paginatedGarbageSchedule.results) {
+                building = garbageSchedule.building;
+                const garbageId = garbageSchedule.garbage_type;
+                names.add(garbageNames[garbageId]);
+            }
+            buildingGarbageNames[building] = Array.from(names).sort().join(', ');
+        }
+
+        for (const building of buildings) {
+            const activeRoute: IActiveRouteData = {
+                building_id: building.id,
+                schedule_assignment_id: id,
+                name: 'TODO add building name',
+                address: building.address,
+                garbage: buildingGarbageNames[building.id],
+                pdf_guide: building.pdf_guide,
+                image: building.image,
+                work_entries_done: {AR: false, WO: false, DE: false},
+            };
+
+            for (const workEntry of workEntries.results) {
+                if (workEntry.building === building.id) {
+                    if (workEntry.entry_type === 'AR') activeRoute.work_entries_done.AR = true;
+                    if (workEntry.entry_type === 'WO') activeRoute.work_entries_done.WO = true;
+                    if (workEntry.entry_type === 'DE') activeRoute.work_entries_done.DE = true;
+                }
+            }
+            activeRoutes.push(activeRoute);
+            console.log(activeRoutes);
+        }
+    }
+
+    if (activeRoutes === undefined) {
         return <p>Loading...</p>;
     }
-    return <p>{activeRoutes[0].name}</p>;
 
     // TODO use API instead of dummy items
     const dummyItems: IActiveRouteData[] = [
@@ -238,7 +293,7 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
             name: 'Building Sterre',
             address: 'Adres 10',
             garbage: 'PMD',
-            manual: null,
+            pdf_guide: null,
             image: null,
             work_entries_done: {AR: true, WO: true, DE: false},
         },
@@ -248,7 +303,7 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
             name: 'Building Zwijnaarde',
             address: 'Adres 20',
             garbage: 'Plastiek',
-            manual: 'https://www.example.com',
+            pdf_guide: 'https://www.example.com',
             // eslint-disable-next-line max-len
             image: 'https://media.architecturaldigest.com/photos/5d3f6c8084a5790008e99f37/master/w_3000,h_2123,c_limit/GettyImages-1143278588.jpg',
             work_entries_done: {AR: false, WO: false, DE: false},
@@ -276,7 +331,7 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
                         },
                     }}>
                     {
-                        dummyItems.map((item, i) =>
+                        activeRoutes.map((item, i) =>
                             <ActiveRouteItem
                                 key={i}
                                 building_id={item.building_id}
@@ -284,7 +339,7 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
                                 name={item.name}
                                 address={item.address}
                                 garbage={item.garbage}
-                                manual={item.manual}
+                                pdf_guide={item.pdf_guide}
                                 image={item.image}
                                 work_entries_done={item.work_entries_done}
                             />
@@ -314,7 +369,7 @@ async function fetchDetail<T>(url: string, token: string) {
 }
 
 
-TODO issue https://stackoverflow.com/questions/74567152/swr-keep-getting-the-same-data-through-the-loop
+// TODO issue https://stackoverflow.com/questions/74567152/swr-keep-getting-the-same-data-through-the-loop
 
 async function scheduleAssignmentFetch(args: any[]) {
     const [scheduleAssignmentId, token] = args;
@@ -343,7 +398,7 @@ async function scheduleAssignmentFetch(args: any[]) {
             schedule_assignment_id: scheduleAssignmentId,
             name: 'BUILDING NAME TODO', // buildingData.name
             address: buildingData.address,
-            manual: buildingData.pdf_guide,
+            pdf_guide: buildingData.pdf_guide,
             image: buildingData.image,
             work_entries_done: {AR: false, WO: false, DE: false},
             garbage: garbageTypeStr,
@@ -358,7 +413,7 @@ async function scheduleAssignmentFetch(args: any[]) {
         }
         results.push(routeData);
     }
-    console.log(results)
+    console.log(results);
     return results;
 }
 

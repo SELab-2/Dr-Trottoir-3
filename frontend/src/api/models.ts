@@ -52,7 +52,7 @@ export type ScheduleWorkEntry = {
     creator: number;
     building: number;
     schedule_assignment: number;
-    entry_type: string;
+    entry_type: 'AR' | 'WO' | 'DE';
 };
 
 export type ScheduleDefinition = {

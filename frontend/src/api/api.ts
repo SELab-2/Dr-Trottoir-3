@@ -56,6 +56,26 @@ async function fetcher<T>(args: Array<string>): Promise<T> {
     });
 }
 
+
+/**
+ * @param {Array<string>} args
+ * @return {Promise<T[]>}
+ * **/
+async function fetcherArray<T>(args: {paths: string[], token: string}): Promise<T[]> {
+    // @ts-ignore
+    // eslint-disable-next-line no-undef
+    const fetchSingle = (path) => {
+        // eslint-disable-next-line no-undef
+        const url = process.env.NEXT_API_URL + path.slice(1);
+        return fetch(url, {
+            headers: {
+                'Authorization': `Bearer  ${args.token}`,
+            },
+        }).then((res)=> res.json() as T);
+    };
+    return Promise.all(args.paths.map(fetchSingle));
+}
+
 /**
  * @param {Api} route API route to request
  * @param {any} params :param parameters to replace in request URL (e.g. :id)
@@ -69,7 +89,7 @@ export function getList<T>(route: Api, params: any, query: any): SWRResponse<Pag
     }
 
     const queryParams = new URLSearchParams(query);
-    routeStr += queryParams.toString();
+    routeStr +='?'+ queryParams.toString();
 
     const {data: session} = useSession();
 
@@ -84,8 +104,12 @@ export function getList<T>(route: Api, params: any, query: any): SWRResponse<Pag
  * @param {any} id ID of detail route to use
  * @return {SWRResponse}
  * **/
-export function getDetail<T>(route: Api, id: number): SWRResponse<T, any> {
+export function getDetail<T>(route: Api, id: number|undefined): SWRResponse<T, any> {
+    // In case no id is given (for example, because a dependency hasn't been loaded yet),
+    // we fetch the item with id 0, which always results in a 404.
+    if (!id) id = 0;
     const routeStr = route.replace(':id', id.toString());
+    console.log(`getting ${routeStr}`);
 
     const {data: session} = useSession();
 
@@ -93,4 +117,15 @@ export function getDetail<T>(route: Api, id: number): SWRResponse<T, any> {
     const token = session ? session.accessToken : '';
 
     return useSWR<T>([token, routeStr], fetcher);
+}
+
+export function getDetailArray<T>(route: Api | string, ids: number[] | undefined): SWRResponse<T[]> {
+    if (!ids) ids = [0];
+    const routeStrs = ids.map((id)=>route.replace(':id', id.toString()));
+    const {data: session} = useSession();
+    console.log(`getting array ${routeStrs}`);
+
+    // @ts-ignore
+    const token = session ? session.accessToken : '';
+    return useSWR<T[]>([token, routeStrs], fetcherArray);
 }
