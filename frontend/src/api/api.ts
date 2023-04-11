@@ -1,7 +1,8 @@
-import axios from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import {Session} from 'next-auth';
 import useSWR, {SWRResponse} from 'swr';
 import {useSession} from 'next-auth/react';
+import {useState} from 'react';
 
 export enum Api {
     /* eslint-disable no-unused-vars */
@@ -36,6 +37,32 @@ export enum Api {
 }
 
 
+type ApiData<T> = {data: T, status: number, success: boolean}
+
+function useAuthenticatedApi<T>(): [ApiData<T> | undefined, (e: ApiData<T>) => void] {
+    const {data: session} = useSession();
+
+    const [data, setData] = useState<ApiData<T> | undefined>(undefined);
+
+    const setDataWrapper = (newData: ApiData<T>) => {
+        if (session) {
+            setData(newData);
+        }
+    };
+
+    return [data, setDataWrapper];
+}
+
+class ApiError<T> extends Error {
+    public apiData: AxiosResponse<any>;
+
+    constructor(apiData: AxiosResponse<any>) {
+        super('');
+        this.apiData = apiData;
+    }
+}
+
+
 type PaginatedResponse<T> = {
     count: number;
     next: string | null;
@@ -67,7 +94,7 @@ async function fetcher<T>(args: Array<string>): Promise<T> {
  * @param {any} query query parameters to include in request
  * @return {SWRResponse}
  * **/
-export function getList<T>(route: Api, params: any, query: any): SWRResponse<PaginatedResponse<T>, any> {
+function getList<T>(route: Api, params: any, query: any): SWRResponse<PaginatedResponse<T>, any> {
     let routeStr = route.toString();
     for (const property in params) {
         routeStr = routeStr.replace(':' + property, params[property]);
@@ -90,7 +117,7 @@ export function getList<T>(route: Api, params: any, query: any): SWRResponse<Pag
  * @param {any} id ID of detail route to use
  * @return {SWRResponse}
  * **/
-export function getDetail<T>(route: Api, id: number): SWRResponse<T, any> {
+function getDetail<T>(route: Api, id: number): SWRResponse<T, any> {
     const routeStr = route.replace(':id', id.toString());
 
     const {data: session} = useSession();
@@ -115,7 +142,7 @@ async function getListFromApi(route: Api, session: any, params: any, query: any)
     const data = await axios.get(process.env.NEXT_API_URL + routeStr, {headers: getAuthHeader(session)});
 
     if (!('data' in data) || !('results' in data.data)) {
-        throw new Error('could not fetch data from api');
+        throw new ApiError(data);
     }
 
     return data;
@@ -127,7 +154,7 @@ async function getDetailsFromAPI(route: Api, session: any, id: number) {
     const data = await axios.get(process.env.NEXT_API_URL + routeStr, {headers: getAuthHeader(session)});
 
     if (!('data' in data)) {
-        throw new Error('failed fetching data from api');
+        throw new ApiError(data);
     }
 
     return data;
@@ -139,7 +166,7 @@ async function patchDetailsOnAPI(route: Api, session: any, id: number, patchData
     const data = await axios.patch(process.env.NEXT_API_URL + routeStr, patchData, {headers: getAuthHeader(session)});
 
     if (!('data' in data)) {
-        throw new Error('failed patching data on api');
+        throw new ApiError(data);
     }
 
     return data;
@@ -151,7 +178,7 @@ async function postDetailsToAPI(route: Api, session: any, postData: any) {
     const data = await axios.post(process.env.NEXT_API_URL + routeStr, postData, {headers: getAuthHeader(session)});
 
     if (!('data' in data)) {
-        throw new Error('failed posting data to api');
+        throw new ApiError(data);
     }
 
     return data;
@@ -171,766 +198,552 @@ async function deleteDetailsOnAPI(route: Api, session: any, id: number) {
 
 
 const getLocationGroupsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
-    if (session) {
-        getListFromApi(Api.LocationGroups, session, params ? params : {}, query ? query : {})
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: []});
-            });
-    } else {
-        setter({success: false, status: 403, data: []});
-    }
+    getListFromApi(Api.LocationGroups, session, params ? params : {}, query ? query : {})
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data.results});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: []});
+        });
 };
 
 
 const getUsersList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
-    if (session) {
-        return getListFromApi(Api.Users, session, params ? params : {}, query ? query : {})
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: []});
-            });
-    } else {
-        setter({success: false, status: 403, data: []});
-    }
+    return getListFromApi(Api.Users, session, params ? params : {}, query ? query : {})
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data.results});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: []});
+        });
 };
 
 const getBuildingsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
-    if (session) {
-        getListFromApi(Api.Buildings, session, params ? params : {}, query ? query : {})
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: []});
-            });
-    } else {
-        setter({success: false, status: 403, data: []});
-    }
+    getListFromApi(Api.Buildings, session, params ? params : {}, query ? query : {})
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data.results});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: []});
+        });
 };
 
 const getScheduleDefinitionsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
-    if (session) {
-        getListFromApi(Api.ScheduleDefinitions, session, params ? params : {}, query ? query : {})
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: []});
-            });
-    } else {
-        setter({success: false, status: 403, data: []});
-    }
+    getListFromApi(Api.ScheduleDefinitions, session, params ? params : {}, query ? query : {})
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data.results});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: []});
+        });
 };
 
 const getScheduleAssignmentsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
-    if (session) {
-        getListFromApi(Api.ScheduleAssignments, session, params ? params : {}, query ? query : {})
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: []});
-            });
-    } else {
-        setter({success: false, status: 403, data: []});
-    }
+    getListFromApi(Api.ScheduleAssignments, session, params ? params : {}, query ? query : {})
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data.results});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: []});
+        });
 };
 
 const getScheduleWorkEntriesList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
-    if (session) {
-        getListFromApi(Api.ScheduleWorkEntries, session, params ? params : {}, query ? query : {})
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: []});
-            });
-    } else {
-        setter({success: false, status: 403, data: []});
-    }
+    getListFromApi(Api.ScheduleWorkEntries, session, params ? params : {}, query ? query : {})
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data.results});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: []});
+        });
 };
 
 const getGarbageTypesList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
-    if (session) {
-        getListFromApi(Api.GarbageTypes, session, params ? params : {}, query ? query : {})
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: []});
-            });
-    } else {
-        setter({success: false, status: 403, data: []});
-    }
+    getListFromApi(Api.GarbageTypes, session, params ? params : {}, query ? query : {})
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data.results});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: []});
+        });
 };
 
 
 const getGarbageCollectionScheduleTemplateDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.GarbageCollectionScheduleTemplateDetail, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.GarbageCollectionScheduleTemplateDetail, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getGarbageCollectionScheduleTemplateDetailEntries = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.GarbageCollectionScheduleTemplateDetailEntries, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.GarbageCollectionScheduleTemplateDetailEntries, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getGarbageCollectionScheduleTemplateEntryDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.GarbageCollectionScheduleTemplateEntryDetail, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.GarbageCollectionScheduleTemplateEntryDetail, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getGarbageTypeDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.GarbageTypeDetail, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.GarbageTypeDetail, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getGarbageCollectionScheduleDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.GarbageCollectionScheduleDetail, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.GarbageCollectionScheduleDetail, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getLocationGroupDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.LocationGroupDetail, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.LocationGroupDetail, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getLocationGroupDetailBuildings = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        return getDetailsFromAPI(Api.LocationGroupDetailBuildings, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    return getDetailsFromAPI(Api.LocationGroupDetailBuildings, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getLocationGroupDetailScheduleDefinitions = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.LocationGroupDetailScheduleDefinitions, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.LocationGroupDetailScheduleDefinitions, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getBuildingDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.BuildingDetail, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.BuildingDetail, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getBuildingDetailGarbageCollectionSchedules = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.BuildingDetailGarbageCollectionSchedules, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.BuildingDetailGarbageCollectionSchedules, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getBuildingDetailGarbageCollectionScheduleTemplates = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.BuildingDetailGarbageCollectionScheduleTemplates, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.BuildingDetailGarbageCollectionScheduleTemplates, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getScheduleWorkEntryDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.ScheduleWorkEntryDetail, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.ScheduleWorkEntryDetail, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 
 const getBuildingDetailScheduleDefinitions = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.BuildingDetailScheduleDefinitions, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.BuildingDetailScheduleDefinitions, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getScheduleAssignmentDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.ScheduleAssignmentDetail, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.ScheduleAssignmentDetail, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getScheduleDefinitionDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.ScheduleDefinitionDetail, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.ScheduleDefinitionDetail, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getScheduleDefinitionDetailBuildings = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.ScheduleDefinitionDetailBuildings, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.ScheduleDefinitionDetailBuildings, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getScheduleDefinitionDetailScheduleAssignments = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.ScheduleDefinitionDetailScheduleAssignments, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.ScheduleDefinitionDetailScheduleAssignments, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getBuildingDetailIssues = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.BuildingDetailIssues, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.BuildingDetailIssues, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getScheduleDefinitionDetailScheduleWorkEntries = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.ScheduleDefinitionDetailScheduleWorkEntries, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e.status, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.ScheduleDefinitionDetailScheduleWorkEntries, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const getUserDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    if (session) {
-        getDetailsFromAPI(Api.UserDetail, session, id)
-            .then((e) => {
-                setter({success: true, status: e.status, data: e.data});
-            })
-            .catch((e) => {
-                setter({success: false, status: e, data: null});
-            });
-    } else {
-        setter({success: false, status: 403, data: null});
-    }
+    getDetailsFromAPI(Api.UserDetail, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
 };
 
 const postGarbageType = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        postDetailsToAPI(Api.GarbageTypes, session, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    postDetailsToAPI(Api.GarbageTypes, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const postLocationGroup = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        postDetailsToAPI(Api.LocationGroups, session, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    postDetailsToAPI(Api.LocationGroups, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const postBuilding = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        postDetailsToAPI(Api.Buildings, session, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    postDetailsToAPI(Api.Buildings, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const postScheduleAssignment = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        postDetailsToAPI(Api.ScheduleAssignments, session, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    postDetailsToAPI(Api.ScheduleAssignments, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const postScheduleWorkEntrie = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        postDetailsToAPI(Api.ScheduleWorkEntries, session, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    postDetailsToAPI(Api.ScheduleWorkEntries, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const postScheduleDefinition = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        postDetailsToAPI(Api.ScheduleDefinitions, session, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    postDetailsToAPI(Api.ScheduleDefinitions, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const postUser = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        postDetailsToAPI(Api.Users, session, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    postDetailsToAPI(Api.Users, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const deleteGarbageCollectionScheduleTemplate = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
-    if (session) {
-        deleteDetailsOnAPI(Api.GarbageCollectionScheduleTemplateDetail, session, id)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    deleteDetailsOnAPI(Api.GarbageCollectionScheduleTemplateDetail, session, id)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const deleteGarbageCollectionScheduleTemplateEntry = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
-    if (session) {
-        deleteDetailsOnAPI(Api.GarbageCollectionScheduleTemplateEntryDetail, session, id)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    deleteDetailsOnAPI(Api.GarbageCollectionScheduleTemplateEntryDetail, session, id)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const deleteGarbageType = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
-    if (session) {
-        deleteDetailsOnAPI(Api.GarbageTypeDetail, session, id)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    deleteDetailsOnAPI(Api.GarbageTypeDetail, session, id)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const deleteGarbageCollectionSchedule = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
-    if (session) {
-        deleteDetailsOnAPI(Api.GarbageCollectionScheduleDetail, session, id)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    deleteDetailsOnAPI(Api.GarbageCollectionScheduleDetail, session, id)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const deleteLocationGroup = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
-    if (session) {
-        deleteDetailsOnAPI(Api.LocationGroupDetail, session, id)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    deleteDetailsOnAPI(Api.LocationGroupDetail, session, id)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const deleteBuilding = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
-    if (session) {
-        deleteDetailsOnAPI(Api.BuildingDetail, session, id)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    deleteDetailsOnAPI(Api.BuildingDetail, session, id)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const deleteScheduleAssignment = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
-    if (session) {
-        deleteDetailsOnAPI(Api.ScheduleAssignmentDetail, session, id)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    deleteDetailsOnAPI(Api.ScheduleAssignmentDetail, session, id)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const deleteScheduleWorkEntry = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
-    if (session) {
-        deleteDetailsOnAPI(Api.ScheduleWorkEntryDetail, session, id)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    deleteDetailsOnAPI(Api.ScheduleWorkEntryDetail, session, id)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const deleteScheduleDefinition = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
-    if (session) {
-        deleteDetailsOnAPI(Api.ScheduleDefinitionDetail, session, id)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    deleteDetailsOnAPI(Api.ScheduleDefinitionDetail, session, id)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const deleteUser = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
-    if (session) {
-        deleteDetailsOnAPI(Api.UserDetail, session, id)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    deleteDetailsOnAPI(Api.UserDetail, session, id)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const patchGarbageCollectionScheduleTemplateDetail = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        patchDetailsOnAPI(Api.GarbageCollectionScheduleTemplateDetail, session, id, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    patchDetailsOnAPI(Api.GarbageCollectionScheduleTemplateDetail, session, id, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const patchGarbageCollectionScheduleTemplateEntryDetail = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        patchDetailsOnAPI(Api.GarbageCollectionScheduleTemplateEntryDetail, session, id, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    patchDetailsOnAPI(Api.GarbageCollectionScheduleTemplateEntryDetail, session, id, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const patchGarbageTypeDetail = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        patchDetailsOnAPI(Api.GarbageTypeDetail, session, id, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    patchDetailsOnAPI(Api.GarbageTypeDetail, session, id, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const patchGarbageCollectionScheduleDetail = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        patchDetailsOnAPI(Api.GarbageCollectionScheduleDetail, session, id, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    patchDetailsOnAPI(Api.GarbageCollectionScheduleDetail, session, id, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const patchLocationGroupDetail = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        patchDetailsOnAPI(Api.LocationGroupDetail, session, id, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    patchDetailsOnAPI(Api.LocationGroupDetail, session, id, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const patchBuildingDetail = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        patchDetailsOnAPI(Api.BuildingDetail, session, id, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    patchDetailsOnAPI(Api.BuildingDetail, session, id, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const patchScheduleAssignmentDetail = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        patchDetailsOnAPI(Api.ScheduleAssignmentDetail, session, id, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    patchDetailsOnAPI(Api.ScheduleAssignmentDetail, session, id, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const patchScheduleWorkEntryDetail = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        patchDetailsOnAPI(Api.ScheduleWorkEntryDetail, session, id, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    patchDetailsOnAPI(Api.ScheduleWorkEntryDetail, session, id, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const patchScheduleDefinitionDetail = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        patchDetailsOnAPI(Api.ScheduleDefinitionDetail, session, id, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    patchDetailsOnAPI(Api.ScheduleDefinitionDetail, session, id, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 const patchUserDetail = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
-    if (session) {
-        patchDetailsOnAPI(Api.UserDetail, session, id, data)
-            .then((e) => {
-                setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
-            })
-            .catch((e) => {
-                setter ? setter({success: false, status: e.status, data: null}) : undefined;
-            });
-    } else {
-        setter ? setter({success: false, status: 403, data: null}) : undefined;
-    }
+    patchDetailsOnAPI(Api.UserDetail, session, id, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
 };
 
 
 export {
+    useAuthenticatedApi,
+
     getGarbageCollectionScheduleTemplateDetail,
     getGarbageCollectionScheduleTemplateDetailEntries,
     getGarbageCollectionScheduleTemplateEntryDetail,

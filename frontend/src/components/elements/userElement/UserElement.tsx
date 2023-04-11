@@ -1,35 +1,35 @@
 import {Avatar} from '@mui/material';
 import styles from './UserElement.module.css';
-import {getUserDetail} from '@/api/api';
+import {getUserDetail, useAuthenticatedApi} from '@/api/api';
 import {useSession} from 'next-auth/react';
 import CloseIcon from '@mui/icons-material/Close';
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
+import {User} from '@/api/models';
 
 export default function UserElement() {
     const {data: session} = useSession();
-    const [userData, setUserData] = useState({data: null, status: 403, success: false});
+    // const [userData, setUserData] = useState({data: null, status: 403, success: false});
+    const [userData, setUserData] = useAuthenticatedApi<User>();
 
     useEffect(() => {
         getUserDetail(session, setUserData, 1);
     }, [session]);
 
-    if (!userData.success) {
+    if (!userData) {
         return (<div>Loading...</div>);
     } else {
-        const user: any = userData.data;
-
         return (
             <div className={styles.userElement}>
                 <div className={styles.userHeader}>
                     <div className={styles.firstColumn}>
                         <div className={styles.firstColumnRow}>
-                            <h1>{user.first_name}</h1>
-                            <h1>{user.last_name}</h1>
+                            <h1>{userData.data.first_name}</h1>
+                            <h1>{userData.data.last_name}</h1>
                             <p>
                                 {
-                                    user.admin ? 'Admin' :
-                                        user.syndicus ? 'Syndicus' :
-                                            user.student && user.student.is_super_student ?
+                                    userData.data.admin ? 'Admin' :
+                                        userData.data.syndicus ? 'Syndicus' :
+                                            userData.data.student && userData.data.student.is_super_student ?
                                                 'SuperStudent' : 'Student'
                                 }
                             </p>
