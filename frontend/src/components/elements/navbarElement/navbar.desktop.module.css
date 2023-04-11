@@ -1,7 +1,7 @@
 .full {
     display: flex;
-    width: 100%;
-    height: 100%;
+    width: min(100%, 100wh);
+    height: min(100%, 100vh);
 }
 
 .row_flex_container {
