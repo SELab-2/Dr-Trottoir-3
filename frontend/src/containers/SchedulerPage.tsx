@@ -1,34 +1,53 @@
 import SchedulerSelect from '../components/elements/schedulerElements/SchedulerSelect';
 import SchedulerDetails from '../components/elements/schedulerElements/SchedulerDetails';
 import styles from './SchedulerPage.module.css';
-import React, {useEffect, useState} from 'react';
-import {Api, getDetail, getList} from "@/api/api";
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {useSession} from "next-auth/react";
+import {
+    ApiData,
+    getLocationGroupsList,
+    getScheduleAssignmentsList,
+    getScheduleDefinitionsList,
+    useAuthenticatedApi
+} from "@/api/api";
+import {LocationGroup, ScheduleAssignment, ScheduleDefinition} from "@/api/models";
 
 
 export default function SchedulerPage() {
 
     const {data: session} = useSession();
-    console.log(session);
 
-    // const {data: session} = useSession();
-    // const locationGroupID= 1;
-    // const scheduleDefinitionsResult = getList(Api.ScheduleDefinitions, {}, {});
-    // console.log(scheduleDefinitionsResult)
-    //
-    // console.log(scheduleDefinitionsResult.data ? scheduleDefinitionsResult.data.results.length : 0);
+    const locationGroupName= 'Gent';
 
-    // if (scheduleDefinitions?.data) {
-        // @ts-ignore
-    // for (let i = 0; i < (scheduleDefinitionsResult.data ? scheduleDefinitionsResult.data.results.length : 0); i++) {
-    //     console.log(i);
-    //     const scheduleAssignments = getList(Api.ScheduleAssignments, {}, {'schedule_definition': 1}).data;
-    //     console.log(scheduleAssignments);
-    // }
-    // }
+    const [locationGroups, setLocationGroups] = useAuthenticatedApi<LocationGroup[]>();
+    const [scheduleDefinitions, setScheduleDefinitions] = useAuthenticatedApi<ScheduleDefinition[]>();
+
+    const [scheduleAssignments, setScheduleAssignemnts] = useAuthenticatedApi<ScheduleAssignment[]>();
 
 
+    useEffect(() => {
+        getLocationGroupsList(session, setLocationGroups, {name: locationGroupName});
+    }, [session]);
 
+    useEffect(() => {
+        if (locationGroups) {
+            getScheduleDefinitionsList(session, setScheduleDefinitions, {name: locationGroups.data.at(0)?.id});
+        }
+    }, [locationGroups, session]);
+
+    useEffect(() => {
+        if (scheduleDefinitions) {
+            setScheduleAssignemnts(undefined);
+            scheduleDefinitions.data.forEach((schedule) =>
+                // @ts-ignore
+                getScheduleAssignmentsList(session, (e) => setScheduleAssignemnts({...(scheduleAssignments ? scheduleAssignments : []), e}), {name: schedule.id})
+            );
+        }
+    }, [scheduleDefinitions, session]);
+
+    useEffect(() => {
+        console.log(scheduleAssignments);
+    }, [scheduleAssignments]);
 
     const currentDay: Date = new Date();
     const [first, setFirst] = useState<number>(currentDay.getDate() - currentDay.getDay());
