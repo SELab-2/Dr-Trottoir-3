@@ -44,7 +44,7 @@ function useAuthenticatedApi<T>(): [ApiData<T> | undefined, (e: ApiData<T> | und
 
     const [data, setData] = useState<ApiData<T> | undefined>(undefined);
 
-    const setDataWrapper = (newData: ApiData<T>) => {
+    const setDataWrapper = (newData: ApiData<T> | undefined) => {
         if (session) {
             setData(newData);
         }

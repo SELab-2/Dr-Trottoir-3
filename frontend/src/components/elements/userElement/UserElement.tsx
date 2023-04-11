@@ -93,7 +93,9 @@ export default function UserElement() {
                                 </div>
 
                                 <div className={styles.routesItems}>
-                                    <h3 className={styles.routesSubtitle + ' ' + styles.extraTitlePadding}>Geschiedenis</h3>
+                                    <h3 className={styles.routesSubtitle + ' ' + styles.extraTitlePadding}>
+                                        Geschiedenis
+                                    </h3>
 
                                     <div className={styles.routesItem}>
                                         <h4>Route A</h4>
