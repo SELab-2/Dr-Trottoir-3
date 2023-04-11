@@ -70,7 +70,6 @@ const DesktopNavButton = ({href, text, router, Icon, nextPath, setNextPath, butt
 const DesktopLogoutButton = () => {
     return (
         <Button id={styles.button}
-            sx={{color: 'var(--primary-light)'}}
             onClick={() => signOut({callbackUrl: '/login'})}
             className={styles.button_default}
         >
