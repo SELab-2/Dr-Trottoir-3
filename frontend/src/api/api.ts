@@ -37,14 +37,14 @@ export enum Api {
 }
 
 
-export type ApiData<T> = {data: T, status: number, success: boolean}
+type ApiData<T> = {data: T, status: number, success: boolean}
 
 function useAuthenticatedApi<T>(): [ApiData<T> | undefined, (e: ApiData<T> | undefined) => void] {
     const {data: session} = useSession();
 
     const [data, setData] = useState<ApiData<T> | undefined>(undefined);
 
-    const setDataWrapper = (newData: ApiData<T>) => {
+    const setDataWrapper = (newData: ApiData<T> | undefined) => {
         if (session) {
             setData(newData);
         }
@@ -196,21 +196,6 @@ async function deleteDetailsOnAPI(route: Api, session: any, id: number) {
     return data;
 }
 
-
-const chainApiList = (session: Session | null,
-    getList: ((session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => void),
-    setter: ((e:any) => void),
-    state?: any,
-    query?: any,
-    params?: any) => {
-    getListFromApi(Api.LocationGroups, session, params ? params : {}, query ? query : {})
-        .then((e) => {
-            setter({success: true, status: e.status, data: e.data.results});
-        })
-        .catch((e) => {
-            setter({success: false, status: e.status, data: []});
-        });
-};
 
 const getLocationGroupsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.LocationGroups, session, params ? params : {}, query ? query : {})

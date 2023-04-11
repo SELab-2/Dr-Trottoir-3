@@ -1,20 +1,18 @@
 import SchedulerSelect from '../components/elements/schedulerElements/SchedulerSelect';
 import SchedulerDetails from '../components/elements/schedulerElements/SchedulerDetails';
 import styles from './SchedulerPage.module.css';
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {useSession} from "next-auth/react";
+import React, {useEffect, useState} from 'react';
+import {useSession} from 'next-auth/react';
 import {
-    ApiData,
     getLocationGroupsList,
     getScheduleAssignmentsList,
     getScheduleDefinitionsList,
-    useAuthenticatedApi
-} from "@/api/api";
-import {LocationGroup, ScheduleAssignment, ScheduleDefinition} from "@/api/models";
+    useAuthenticatedApi,
+} from '@/api/api';
+import {LocationGroup, ScheduleAssignment, ScheduleDefinition} from '@/api/models';
 
 
 export default function SchedulerPage() {
-
     const {data: session} = useSession();
 
     const locationGroupName= 'Gent';
