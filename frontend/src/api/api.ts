@@ -31,6 +31,8 @@ export enum Api {
     ScheduleDefinitionDetailScheduleWorkEntries = '/schedule_definitions/:id/schedule_work_entries/',
     Users = '/users/',
     UserDetail = '/users/:id/',
+    Issues = '/issues/',
+    IssueImages = '/issue_images/'
 }
 
 export type PaginatedResponse<T> = {
@@ -39,6 +41,11 @@ export type PaginatedResponse<T> = {
     previous: string | null;
     results: T[];
 };
+
+export function apiUrl(route: Api) {
+    // eslint-disable-next-line no-undef
+    return process.env.NEXT_API_URL + route.slice(1);
+}
 
 /**
  * @param {Array<string>} args
@@ -122,5 +129,3 @@ export function getDetailArray<T>(route: Api | string, ids: number[] | undefined
     const token = session ? session.accessToken : '';
     return useSWR<T[]>([token, routeStrs], fetcherArray);
 }
-
-export function postDetail(route: Api, )

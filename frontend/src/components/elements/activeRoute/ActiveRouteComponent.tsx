@@ -11,7 +11,7 @@ import PublishIcon from '@mui/icons-material/Publish';
 import {useSession} from 'next-auth/react';
 // eslint-disable-next-line max-len
 import {Building, GarbageCollectionSchedule, GarbageType, ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry} from '@/api/models';
-import {Api, getDetail, getDetailArray, getList, PaginatedResponse} from '@/api/api';
+import {Api, apiUrl, getDetail, getDetailArray, getList, PaginatedResponse} from '@/api/api';
 
 interface IActiveRouteData {
   building_id: number,
@@ -24,26 +24,27 @@ interface IActiveRouteData {
   work_entries_done: { AR: boolean, WO: boolean, DE: boolean }
 }
 
-function activeRouteItemData(props: IActiveRouteData): JSX.Element {
+function ActiveRouteItemData(props: { route: IActiveRouteData }): JSX.Element {
+    const {route} = props;
     return (
         <Box
             className={styles.active_route_data}
         >
-            <h1>{props.name}</h1>
+            <h1>{route.name}</h1>
             <br/>
-            <p>{props.address}</p>
-            <p>{props.garbage}</p>
+            <p>{route.address}</p>
+            <p>{route.garbage}</p>
             <br/>
             {
-                props.pdf_guide ?
-                    <a href={props.pdf_guide} style={{textDecoration: 'underline'}}>Handleiding</a> :
+                route.pdf_guide ?
+                    <a href={route.pdf_guide} style={{textDecoration: 'underline'}}>Handleiding</a> :
                     <p></p>
             }
         </Box>
     );
 }
 
-function activeRouteItemImage(props: IActiveRouteData): JSX.Element {
+function ActiveRouteItemImage(props: {image: string | null | undefined}): JSX.Element {
     return (
         <Box className={styles.active_route_image_container}>
             {
@@ -64,64 +65,55 @@ function ActiveRouteItemEntriesUpload(props: {route: IActiveRouteData, type: ('A
     // @ts-ignore
     const user = session!.userid;
 
+    async function uploadScheduleWorkEntry(image: File) {
+        const timestamp = new Date(image.lastModified);
+        const formData = new FormData();
+        formData.append('image', image, image.name);
+        formData.append('creator', user);
+        formData.append('building', route.building_id.toString());
+        formData.append('entry_type', type);
+        formData.append('schedule_assignment', route.schedule_assignment_id.toString());
+        formData.append('creation_timestamp', timestamp.toISOString());
+        const options ={
+            method: 'POST',
+            body: formData,
+            headers: {'Authorization': `Bearer ${token}`},
+        };
+        // Not required, but the form won't work if a Content-Type header is specified
+        // @ts-ignore
+        delete options.headers['Content-Type'];
+        await fetch(apiUrl(Api.ScheduleWorkEntries), options);
+    }
+
     return (
-        <IconButton component="label">
-            <Add></Add>
-            <input
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={async (e) => {
-                    e.preventDefault();
-                    const promise = new Promise(() => {
-                        console.log(e);
+        <form encType="multipart/form-data">
+            <IconButton component="label">
+                <Add></Add>
+                <input
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onChange={async (e) =>{
                         // @ts-ignore
-                        const file = e.target.files[0];
-                        const fileReader = new FileReader();
-                        fileReader.readAsDataURL(file);
-                        fileReader.onload = async (e) => {
-                            if (e.target) {
-                                const image = e.target.result;
-                                // const fileContents =
-                                const entry = {
-                                    creator: user,
-                                    building: route.building_id,
-                                    schedule_assignment: route.schedule_assignment_id,
-                                    image: image,
-                                    type: type,
-                                };
-                                console.log(JSON.stringify(entry));
-                                const result = await fetch(`${process.env.NEXT_API_URL}schedule_work_entries/`, {
-                                    method: 'POST',
-                                    body: JSON.stringify(entry),
-                                    headers: {
-                                        'Authorization': `Bearer  ${token}`,
-                                        'Content-Type': 'application/json',
-                                        'Accept': 'application/json',
-                                    },
-                                });
-                                console.log(result);
-                            }
-                        };
-                    });
-                    await promise;
-                    // alert(JSON.stringify(entry))
-                    // uploadScheduleWorkEntry(props, e.target.value, type);
-                } }
-            />
-        </IconButton>
+                        const image = e.target.files[0];
+                        await uploadScheduleWorkEntry(image);
+                    } }
+                />
+            </IconButton>
+        </form>
     );
 }
 
-function activeRouteItemEntriesIcon(checked: boolean): JSX.Element {
-    if (checked) {
+function ActiveRouteItemEntriesIcon(props: { checked: boolean }): JSX.Element {
+    if (props.checked) {
         return (<CheckIcon sx={{color: 'green'}}/>);
     } else {
         return (<CloseIcon sx={{color: 'red'}}/>);
     }
 }
 
-function activeRouteItemEntries(props: IActiveRouteData): JSX.Element {
+function ActiveRouteItemEntries(props: { route: IActiveRouteData }): JSX.Element {
+    const {route} = props;
     return (
         <Box
             className={styles.active_route_entries}
@@ -134,14 +126,14 @@ function activeRouteItemEntries(props: IActiveRouteData): JSX.Element {
                         <td>Vertrek</td>
                     </tr>
                     <tr>
-                        <td><ActiveRouteItemEntriesUpload route={props} type={'AR'}/></td>
-                        <td><ActiveRouteItemEntriesUpload route={props} type={'WO'}/></td>
-                        <td><ActiveRouteItemEntriesUpload route={props} type={'DE'}/></td>
+                        <td><ActiveRouteItemEntriesUpload route={route} type={'AR'}/></td>
+                        <td><ActiveRouteItemEntriesUpload route={route} type={'WO'}/></td>
+                        <td><ActiveRouteItemEntriesUpload route={route} type={'DE'}/></td>
                     </tr>
                     <tr>
-                        <td>{activeRouteItemEntriesIcon(props.work_entries_done.AR)}</td>
-                        <td>{activeRouteItemEntriesIcon(props.work_entries_done.WO)}</td>
-                        <td>{activeRouteItemEntriesIcon(props.work_entries_done.DE)}</td>
+                        <td><ActiveRouteItemEntriesIcon checked={route.work_entries_done.AR}/></td>
+                        <td><ActiveRouteItemEntriesIcon checked={route.work_entries_done.WO}/></td>
+                        <td><ActiveRouteItemEntriesIcon checked={route.work_entries_done.DE}/></td>
                     </tr>
                 </tbody>
             </table>
@@ -149,14 +141,53 @@ function activeRouteItemEntries(props: IActiveRouteData): JSX.Element {
     );
 }
 
-function uploadIssue(props: IActiveRouteData, issue: string, images: Set<string>): void {
-    /* TODO */
-    alert(`Added issue for ${props.name}: "${issue}" with ${images.size} images`);
-}
-
-function activeRouteItemIssues(props: IActiveRouteData): JSX.Element {
+function ActiveRouteItemIssues(props: { route: IActiveRouteData }): JSX.Element {
     const [issueText, setIssueText] = React.useState('');
-    const [images, setImages] = React.useState(new Set<string>());
+    const [images, setImages] = React.useState(new Set<File>());
+    const {data: session} = useSession();
+    // @ts-ignore
+    const token = session ? session.accessToken : '';
+
+    function clearIssue() {
+        setIssueText('');
+        setImages(new Set());
+    }
+
+    async function uploadIssue(props: IActiveRouteData, message: string, images: Set<File>): Promise<void> {
+        const issue = {
+            resolved: false,
+            message: message,
+            building: props.building_id,
+            // @ts-ignore
+            from_user: session!.userid,
+            approval_user: null,
+        };
+        // Post the issue
+        const issueResult = await fetch(apiUrl(Api.Issues), {
+            method: 'POST',
+            body: JSON.stringify(issue),
+            headers: {
+                'Authorization': `Bearer  ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }}).then((response)=>response.json());
+
+        // Upload the issue images
+        for (const image of Array.from(images)) {
+            const formData = new FormData();
+            formData.append('image', image, image.name);
+            formData.append('issue', issueResult.id);
+            const options ={
+                method: 'POST',
+                body: formData,
+                headers: {'Authorization': `Bearer ${token}`},
+            };
+            // Not required, but the form won't work if a Content-Type header is specified
+            // @ts-ignore
+            delete options.headers['Content-Type'];
+            await fetch(apiUrl(Api.IssueImages), options);
+        }
+    }
 
     return (
         <Box
@@ -185,9 +216,7 @@ function activeRouteItemIssues(props: IActiveRouteData): JSX.Element {
             }}>
                 {/* Clear button */}
                 <IconButton onClick={(_) => {
-                    // Clear issue data
-                    setIssueText('');
-                    setImages(new Set());
+                    clearIssue();
                 }}>
                     <CancelIcon></CancelIcon>
                 </IconButton>
@@ -202,20 +231,21 @@ function activeRouteItemIssues(props: IActiveRouteData): JSX.Element {
                         accept="image/*"
                         hidden
                         onChange={(e) => {
+                            // @ts-ignore
+                            const image = e.target.files[0];
                             // Add image to images
-                            setImages((prev) => new Set(prev.add(e.target.value)));
+                            setImages((prev) => new Set(prev.add(image)));
                         }}
                     />
                     <Typography>{images.size}</Typography>
                 </IconButton>
                 {/* Upload button */}
-                <IconButton onClick={(_) => {
+                <IconButton onClick={async (_) => {
                     if (issueText.length > 0) {
                         // Upload issue
-                        uploadIssue(props, issueText, images);
+                        await uploadIssue(props.route, issueText, images);
                         // Clear issue data
-                        setIssueText('');
-                        setImages(new Set());
+                        clearIssue();
                     } else {
                         alert('Error: issue message is empty.');
                     }
@@ -231,13 +261,13 @@ function ActiveRouteItem(props: IActiveRouteData): JSX.Element {
     return (
         <div className={styles.grid_test}>
             {/* Building data */}
-            {activeRouteItemData(props)}
+            <ActiveRouteItemData route={props}/>
             {/* Building image */}
-            {activeRouteItemImage(props)}
+            <ActiveRouteItemImage image={props.image}/>
             {/* Work entries */}
-            {activeRouteItemEntries(props)}
+            <ActiveRouteItemEntries route={props}/>
             {/* Issues */}
-            {activeRouteItemIssues(props)}
+            <ActiveRouteItemIssues route={props}/>
         </div>
     );
 }
