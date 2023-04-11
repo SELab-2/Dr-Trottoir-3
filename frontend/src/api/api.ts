@@ -126,7 +126,7 @@ async function getDetailsFromAPI(route: Api, session: any, id: number) {
 
     const data = await axios.get(process.env.NEXT_API_URL + routeStr, {headers: getAuthHeader(session)});
 
-    if (!('data' in data) || !('results' in data.data)) {
+    if (!('data' in data)) {
         throw new Error('failed fetching data from api');
     }
 
@@ -138,7 +138,7 @@ async function patchDetailsOnAPI(route: Api, session: any, id: number, patchData
 
     const data = await axios.patch(process.env.NEXT_API_URL + routeStr, patchData, {headers: getAuthHeader(session)});
 
-    if (!('data' in data) || !('results' in data.data)) {
+    if (!('data' in data)) {
         throw new Error('failed patching data on api');
     }
 
@@ -150,7 +150,7 @@ async function postDetailsToAPI(route: Api, session: any, postData: any) {
 
     const data = await axios.post(process.env.NEXT_API_URL + routeStr, postData, {headers: getAuthHeader(session)});
 
-    if (!('data' in data) || data.status != 201) {
+    if (!('data' in data)) {
         throw new Error('failed posting data to api');
     }
 
@@ -162,7 +162,7 @@ async function deleteDetailsOnAPI(route: Api, session: any, id: number) {
 
     const data = await axios.delete(process.env.NEXT_API_URL + routeStr, {headers: getAuthHeader(session)});
 
-    if (!('data' in data) || data.status != 201) {
+    if (!('data' in data)) {
         throw new Error('failed deleting data on api');
     }
 
@@ -174,16 +174,13 @@ const getLocationGroupsList = (session: Session | null, setter: ((e:any) => void
     if (session) {
         getListFromApi(Api.LocationGroups, session, params ? params : {}, query ? query : {})
             .then((e) => {
-                setter(e);
-                return true;
+                setter({success: true, status: e.status, data: e.data.results});
             })
-            .catch(() => {
-                setter([]);
-                return false;
+            .catch((e) => {
+                setter({success: false, status: e.status, data: []});
             });
     } else {
-        setter([]);
-        return false;
+        setter({success: false, status: 403, data: []});
     }
 };
 
@@ -192,16 +189,13 @@ const getUsersList = (session: Session | null, setter: ((e:any) => void), query?
     if (session) {
         return getListFromApi(Api.Users, session, params ? params : {}, query ? query : {})
             .then((e) => {
-                setter(e);
-                return true;
+                setter({success: true, status: e.status, data: e.data.results});
             })
-            .catch(() => {
-                setter([]);
-                return false;
+            .catch((e) => {
+                setter({success: false, status: e.status, data: []});
             });
     } else {
-        setter([]);
-        return false;
+        setter({success: false, status: 403, data: []});
     }
 };
 
@@ -280,7 +274,7 @@ const getGarbageCollectionScheduleTemplateDetail = (session: Session | null, set
     if (session) {
         getDetailsFromAPI(Api.GarbageCollectionScheduleTemplateDetail, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -294,7 +288,7 @@ const getGarbageCollectionScheduleTemplateDetailEntries = (session: Session | nu
     if (session) {
         getDetailsFromAPI(Api.GarbageCollectionScheduleTemplateDetailEntries, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -308,7 +302,7 @@ const getGarbageCollectionScheduleTemplateEntryDetail = (session: Session | null
     if (session) {
         getDetailsFromAPI(Api.GarbageCollectionScheduleTemplateEntryDetail, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -322,7 +316,7 @@ const getGarbageTypeDetail = (session: Session | null, setter: ((e:any) => void)
     if (session) {
         getDetailsFromAPI(Api.GarbageTypeDetail, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -336,7 +330,7 @@ const getGarbageCollectionScheduleDetail = (session: Session | null, setter: ((e
     if (session) {
         getDetailsFromAPI(Api.GarbageCollectionScheduleDetail, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -350,7 +344,7 @@ const getLocationGroupDetail = (session: Session | null, setter: ((e:any) => voi
     if (session) {
         getDetailsFromAPI(Api.LocationGroupDetail, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -364,7 +358,7 @@ const getLocationGroupDetailBuildings = (session: Session | null, setter: ((e:an
     if (session) {
         return getDetailsFromAPI(Api.LocationGroupDetailBuildings, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -378,7 +372,7 @@ const getLocationGroupDetailScheduleDefinitions = (session: Session | null, sett
     if (session) {
         getDetailsFromAPI(Api.LocationGroupDetailScheduleDefinitions, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -392,7 +386,7 @@ const getBuildingDetail = (session: Session | null, setter: ((e:any) => void), i
     if (session) {
         getDetailsFromAPI(Api.BuildingDetail, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -406,7 +400,7 @@ const getBuildingDetailGarbageCollectionSchedules = (session: Session | null, se
     if (session) {
         getDetailsFromAPI(Api.BuildingDetailGarbageCollectionSchedules, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -420,7 +414,7 @@ const getBuildingDetailGarbageCollectionScheduleTemplates = (session: Session | 
     if (session) {
         getDetailsFromAPI(Api.BuildingDetailGarbageCollectionScheduleTemplates, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -434,7 +428,7 @@ const getScheduleWorkEntryDetail = (session: Session | null, setter: ((e:any) =>
     if (session) {
         getDetailsFromAPI(Api.ScheduleWorkEntryDetail, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -449,7 +443,7 @@ const getBuildingDetailScheduleDefinitions = (session: Session | null, setter: (
     if (session) {
         getDetailsFromAPI(Api.BuildingDetailScheduleDefinitions, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -463,7 +457,7 @@ const getScheduleAssignmentDetail = (session: Session | null, setter: ((e:any) =
     if (session) {
         getDetailsFromAPI(Api.ScheduleAssignmentDetail, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -477,7 +471,7 @@ const getScheduleDefinitionDetail = (session: Session | null, setter: ((e:any) =
     if (session) {
         getDetailsFromAPI(Api.ScheduleDefinitionDetail, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -491,7 +485,7 @@ const getScheduleDefinitionDetailBuildings = (session: Session | null, setter: (
     if (session) {
         getDetailsFromAPI(Api.ScheduleDefinitionDetailBuildings, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -505,7 +499,7 @@ const getScheduleDefinitionDetailScheduleAssignments = (session: Session | null,
     if (session) {
         getDetailsFromAPI(Api.ScheduleDefinitionDetailScheduleAssignments, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -519,7 +513,7 @@ const getBuildingDetailIssues = (session: Session | null, setter: ((e:any) => vo
     if (session) {
         getDetailsFromAPI(Api.BuildingDetailIssues, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -533,7 +527,7 @@ const getScheduleDefinitionDetailScheduleWorkEntries = (session: Session | null,
     if (session) {
         getDetailsFromAPI(Api.ScheduleDefinitionDetailScheduleWorkEntries, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
                 setter({success: false, status: e.status, data: null});
@@ -547,10 +541,10 @@ const getUserDetail = (session: Session | null, setter: ((e:any) => void), id: n
     if (session) {
         getDetailsFromAPI(Api.UserDetail, session, id)
             .then((e) => {
-                setter({success: true, status: e.status, data: e.data.results});
+                setter({success: true, status: e.status, data: e.data});
             })
             .catch((e) => {
-                setter({success: false, status: e.status, data: null});
+                setter({success: false, status: e, data: null});
             });
     } else {
         setter({success: false, status: 403, data: null});
