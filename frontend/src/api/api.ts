@@ -39,7 +39,7 @@ export enum Api {
 
 type ApiData<T> = {data: T, status: number, success: boolean}
 
-function useAuthenticatedApi<T>(): [ApiData<T> | undefined, (e: ApiData<T>) => void] {
+function useAuthenticatedApi<T>(): [ApiData<T> | undefined, (e: ApiData<T> | undefined) => void] {
     const {data: session} = useSession();
 
     const [data, setData] = useState<ApiData<T> | undefined>(undefined);
