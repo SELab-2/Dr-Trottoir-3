@@ -34,6 +34,8 @@ export enum Api {
     ScheduleDefinitionDetailScheduleWorkEntries = 'schedule_definitions/:id/schedule_work_entries/',
     Users = 'users/',
     UserDetail = 'users/:id/',
+    Issues = 'issues/',
+    IssueImages = 'issue_images/',
 }
 
 
@@ -72,7 +74,7 @@ export type PaginatedResponse<T> = {
 
 export function apiUrl(route: Api) {
     // eslint-disable-next-line no-undef
-    return process.env.NEXT_API_URL + route.slice(1);
+    return process.env.NEXT_API_URL + route;
 }
 
 /**
@@ -83,7 +85,7 @@ export function apiUrl(route: Api) {
 async function fetcher<T>(args: Array<string>): Promise<T> {
     // @ts-ignore
     // eslint-disable-next-line no-undef
-    return fetch(process.env.NEXT_API_URL + args[1].slice(1), {
+    return fetch(process.env.NEXT_API_URL + args[1], {
         headers: {
             'Authorization': `Bearer  ${args[0]}`,
         },
