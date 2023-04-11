@@ -1,4 +1,6 @@
 import dynamic from 'next/dynamic';
+import {useSession} from 'next-auth/react';
+import ErrorPage from '@/containers/ErrorPage';
 
 const DynamicRoutesComponent = dynamic(() =>
     import('../containers/RoutesPage'), {ssr: false}
@@ -6,7 +8,15 @@ const DynamicRoutesComponent = dynamic(() =>
 
 // eslint-disable-next-line require-jsdoc
 export default function RoutesPage() {
-    return (
-        <DynamicRoutesComponent/>
-    );
+    const {data: session} = useSession();
+
+    if (session) {
+        return (
+            <DynamicRoutesComponent/>
+        );
+    } else {
+        return (
+            <ErrorPage status={403}/>
+        );
+    }
 }
