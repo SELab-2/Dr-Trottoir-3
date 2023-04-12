@@ -1,6 +1,5 @@
 import styles from './EmptyEntry.module.css';
 import {Draggable} from 'react-beautiful-dnd';
-import {memo} from 'react';
 
 type calendarEntryProps = {
     index: number,

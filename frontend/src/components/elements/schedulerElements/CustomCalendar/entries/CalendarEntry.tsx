@@ -3,7 +3,7 @@ import {Draggable} from 'react-beautiful-dnd';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import {IconButton} from '@mui/material';
-import {memo, useState} from 'react';
+import {useState} from 'react';
 
 type calendarEntryProps = {
     index: number,

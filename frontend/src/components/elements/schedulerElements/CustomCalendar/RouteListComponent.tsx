@@ -1,8 +1,8 @@
 import styles from './RouteListComponent.module.css';
 import {Droppable} from 'react-beautiful-dnd';
-import CalendarEntry from '@/components/elements/schedulerElements/NewCalendar/entries/CalendarEntry';
-import React, {memo} from 'react';
-import EmptyEntry from '@/components/elements/schedulerElements/NewCalendar/entries/EmptyEntry';
+import CalendarEntry from '@/components/elements/schedulerElements/CustomCalendar/entries/CalendarEntry';
+import React from 'react';
+import EmptyEntry from '@/components/elements/schedulerElements/CustomCalendar/entries/EmptyEntry';
 import {ScheduleAssignment, ScheduleDefinition} from '@/api/models';
 import {
     ApiData,
@@ -21,7 +21,6 @@ type routeListComponentProps = {
 
 
 export default function RouteListComponent(props: routeListComponentProps) {
-
     return (
         <div className={styles.full}>
             <div className={styles.route_scheduler_header}>

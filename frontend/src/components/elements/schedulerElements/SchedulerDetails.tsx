@@ -1,7 +1,7 @@
-import WeekComponent from './NewCalendar/WeekComponent';
+import WeekComponent from '@/components/elements/schedulerElements/CustomCalendar/WeekComponent';
 
 import styles from './SchedulerDetails.module.css';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {ApiData, getScheduleAssignmentsList, useAuthenticatedApi} from '@/api/api';
 import {useSession} from 'next-auth/react';
 import {ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';

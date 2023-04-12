@@ -1,8 +1,8 @@
-import React, {memo, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {DragDropContext, DropResult} from 'react-beautiful-dnd';
 import styles from './WeekComponent.module.css';
 import RouteListComponent from './RouteListComponent';
-import DayHeader from '@/components/elements/schedulerElements/NewCalendar/DayHeader';
+import DayHeader from '@/components/elements/schedulerElements/CustomCalendar/DayHeader';
 import {ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
 import {
     ApiData,
@@ -12,7 +12,6 @@ import {
     postScheduleAssignment,
 } from '@/api/api';
 import {useSession} from 'next-auth/react';
-import {random} from "nanoid";
 
 type schedulerProps = {
     users: ApiData<User[]>,
@@ -23,7 +22,7 @@ type schedulerProps = {
     interval: number,
 }
 
-function WeekComponent(props: schedulerProps) {
+export default function WeekComponent(props: schedulerProps) {
     const {data: session} = useSession();
     const [requestChecker, setRequestChecker] = useState<any>();
 
@@ -286,6 +285,3 @@ function WeekComponent(props: schedulerProps) {
         </div>
     );
 }
-
-
-export default memo(WeekComponent);
