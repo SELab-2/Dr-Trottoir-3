@@ -49,6 +49,7 @@ class UserViewSet(ModelViewSet):
     filterset_fields = {
         "student__is_super_student": ("exact",),
         "student__location_group": ("exact", "in"),
+        "syndicus__buildings": ("exact",)
     }
     search_fields = ["first_name", "last_name", "username"]
 

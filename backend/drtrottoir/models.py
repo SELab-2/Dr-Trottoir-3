@@ -41,6 +41,7 @@ class Building(models.Model):
         is_active (bool): Whether a building is active. Defaults to True
     """
 
+    name = models.CharField(max_length=255, default='')
     address = models.CharField(max_length=255)
     pdf_guide = models.FileField(upload_to=get_file_path_building_pdf_guide, null=True)
     location_group = models.ForeignKey(
