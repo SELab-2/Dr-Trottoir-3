@@ -95,7 +95,7 @@ export default function LiveRoutesElement() {
 
     console.log(workEntriesData)
 
-    if (!scheduleDefinitionData || !locationGroupData || !buildingsData || !workEntriesData || !scheduleAssignmentData) {
+    if (!scheduleDefinitionData || !locationGroupData || !buildingsData || !workEntriesData || !scheduleAssignmentData || !session) {
         return (<div>Loading...</div>);
     } else {
         if (scheduleDefinitionData.success && locationGroupData.success && buildingsData.success && workEntriesData.success && scheduleAssignmentData.success) {
@@ -112,7 +112,8 @@ export default function LiveRoutesElement() {
                                         workEntry => workEntry.building === building.id &&
                                             workEntry.schedule_assignment === scheduleAssignmentData?.data.id
                                     ).map(workEntry => workEntry.entry_type).includes("DE") ? 1 : 0
-                                }).reduce(function(a, b) {return a + b})}
+                                // @ts-ignore
+                                }).reduce((a, b) => (a + b))}
                                 /
                                 {buildingsData.data.length} voltooid</p>
                         </div>
@@ -123,7 +124,8 @@ export default function LiveRoutesElement() {
                                         workEntry => workEntry.building === building.id &&
                                             workEntry.schedule_assignment === scheduleAssignmentData?.data.id
                                     ).map(workEntry => workEntry.entry_type).includes("DE") ? 1 : 0
-                                }).reduce(function(a, b) {return a + b}) / buildingsData.data.length * 100
+                                    // @ts-ignore
+                                }).reduce((a, b) => (a+b)) / buildingsData.data.length * 100
                             } />
                         </div>
                     </div>
