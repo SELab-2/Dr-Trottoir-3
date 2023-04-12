@@ -132,7 +132,7 @@ class BuildingViewSet(
         ],
     }
 
-    filterset_fields = {"is_active": ("exact"), "location_group": ("exact", "in")}
+    filterset_fields = {"is_active": ("exact",), "location_group": ("exact", "in")}
     search_fields = ["address", "description"]
 
     queryset = Building.objects.all()
