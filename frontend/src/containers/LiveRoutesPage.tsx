@@ -1,4 +1,4 @@
-import LiveRoutesElement from "@/components/elements/liveRoutesElement/LiveRoutesElement";
+import LiveRoutesElement from '@/components/elements/liveRoutesElement/LiveRoutesElement';
 
 export default function LiveRoutesPage() {
     return (

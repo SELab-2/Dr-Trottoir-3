@@ -1,23 +1,21 @@
-import {Avatar} from '@mui/material';
 import styles from './LiveRoutesElement.module.css';
 import {
     ApiData,
     getBuildingsList,
     getLocationGroupDetail, getScheduleAssignmentsList,
     getScheduleDefinitionDetail, getScheduleWorkEntriesList,
-    getUserDetail,
-    useAuthenticatedApi
+    useAuthenticatedApi,
 } from '@/api/api';
 import {useSession} from 'next-auth/react';
 import CloseIcon from '@mui/icons-material/Close';
 import React, {useEffect} from 'react';
-import {Building, LocationGroup, ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry, User} from '@/api/models';
-import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
-import {styled} from "@mui/system";
+import {Building, LocationGroup, ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry} from '@/api/models';
+import LinearProgress, {linearProgressClasses} from '@mui/material/LinearProgress';
+import {styled} from '@mui/system';
 import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
 import DoneIcon from '@mui/icons-material/Done';
 
-const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
     height: 30,
     width: '100%',
     borderRadius: 15,
@@ -45,13 +43,13 @@ export default function LiveRoutesElement() {
     }, [session]);
 
     useEffect(() => {
-        if(scheduleDefinitionData) {
+        if (scheduleDefinitionData) {
             getLocationGroupDetail(session, setLocationGroupData, scheduleDefinitionData.data.location_group);
         }
     }, [session, scheduleDefinitionData]);
 
     useEffect(() => {
-        if(scheduleDefinitionData) {
+        if (scheduleDefinitionData) {
             getBuildingsList(
                 session,
                 (response: ApiData<Array<Building>>) =>
@@ -59,14 +57,16 @@ export default function LiveRoutesElement() {
                         {
                             status: response.status,
                             success: response.success,
-                            data: response.data.filter(item => scheduleDefinitionData.data.buildings.includes(item.id))
+                            data: response.data.filter(
+                                (item) => scheduleDefinitionData.data.buildings.includes(item.id)
+                            ),
                         }
                     ));
         }
     }, [session, scheduleDefinitionData]);
 
     useEffect(() => {
-        if(scheduleDefinitionData) {
+        if (scheduleDefinitionData) {
             getScheduleAssignmentsList(
                 session,
                 (response: ApiData<Array<ScheduleAssignment>>) =>
@@ -74,13 +74,15 @@ export default function LiveRoutesElement() {
                         {
                             status: response.status,
                             success: response.success,
-                            data: response.data.filter(item => item.schedule_definition == scheduleDefinitionId)[0] // TODO assuming present, might not be
+                            data: response.data.filter(
+                                (item) => item.schedule_definition == scheduleDefinitionId
+                            )[0], // TODO assuming present, might not be
                         }));
         }
     }, [session, scheduleDefinitionData]);
 
     useEffect(() => {
-        if(scheduleAssignmentData) {
+        if (scheduleAssignmentData) {
             getScheduleWorkEntriesList(
                 session,
                 (response: ApiData<Array<ScheduleWorkEntry>>) =>
@@ -88,17 +90,32 @@ export default function LiveRoutesElement() {
                         {
                             status: response.status,
                             success: response.success,
-                            data: response.data.filter(item => item.schedule_assignment == scheduleAssignmentData.data.id)
+                            data: response.data.filter(
+                                (item) => item.schedule_assignment == scheduleAssignmentData.data.id
+                            ),
                         }));
         }
     }, [session, scheduleAssignmentData]);
 
-    console.log(workEntriesData)
+    console.log(workEntriesData);
 
-    if (!scheduleDefinitionData || !locationGroupData || !buildingsData || !workEntriesData || !scheduleAssignmentData || !session) {
+    if (
+        !scheduleDefinitionData ||
+        !locationGroupData ||
+        !buildingsData ||
+        !workEntriesData ||
+        !scheduleAssignmentData ||
+        !session
+    ) {
         return (<div>Loading...</div>);
     } else {
-        if (scheduleDefinitionData.success && locationGroupData.success && buildingsData.success && workEntriesData.success && scheduleAssignmentData.success) {
+        if (
+            scheduleDefinitionData.success &&
+            locationGroupData.success &&
+            buildingsData.success &&
+            workEntriesData.success &&
+            scheduleAssignmentData.success
+        ) {
             return (
                 <div className={styles.userElement}>
                     <div className={styles.userHeader}>
@@ -107,23 +124,23 @@ export default function LiveRoutesElement() {
                             <p>{locationGroupData.data.name}</p>
                         </div>
                         <div className={styles.stats}>
-                            <p>{buildingsData.data.map(building => {
-                                    return workEntriesData?.data.filter(
-                                        workEntry => workEntry.building === building.id &&
+                            <p>{buildingsData.data.map((building) => {
+                                return workEntriesData?.data.filter(
+                                    (workEntry) => workEntry.building === building.id &&
                                             workEntry.schedule_assignment === scheduleAssignmentData?.data.id
-                                    ).map(workEntry => workEntry.entry_type).includes("DE") ? 1 : 0
+                                ).map((workEntry) => workEntry.entry_type).includes('DE') ? 1 : 0;
                                 // @ts-ignore
-                                }).reduce((a, b) => (a + b))}
+                            }).reduce((a, b) => (a + b))}
                                 /
-                                {buildingsData.data.length} voltooid</p>
+                            {buildingsData.data.length} voltooid</p>
                         </div>
                         <div className={styles.loadingBar}>
                             <BorderLinearProgress variant="determinate" value={
-                                buildingsData.data.map(building => {
+                                buildingsData.data.map((building) => {
                                     return workEntriesData?.data.filter(
-                                        workEntry => workEntry.building === building.id &&
+                                        (workEntry) => workEntry.building === building.id &&
                                             workEntry.schedule_assignment === scheduleAssignmentData?.data.id
-                                    ).map(workEntry => workEntry.entry_type).includes("DE") ? 1 : 0
+                                    ).map((workEntry) => workEntry.entry_type).includes('DE') ? 1 : 0;
                                     // @ts-ignore
                                 }).reduce((a, b) => (a+b)) / buildingsData.data.length * 100
                             } />
@@ -134,30 +151,29 @@ export default function LiveRoutesElement() {
                             <h2 className={styles.routesTitle + ' ' + styles.extraTitlePadding}>Gebouwen</h2>
                             <div className={styles.scrollList}>
                                 <div className={styles.routesItems}>
-                                    {
-                                        buildingsData.data.map(building => {
-                                            return (
-                                                <div className={styles.routesItem}>
-                                                    <h4>{building.address}</h4>
-                                                    {
-                                                        workEntriesData?.data.filter(
-                                                            workEntry => workEntry.building === building.id &&
-                                                                workEntry.schedule_assignment === scheduleAssignmentData?.data.id
-                                                        ).map(workEntry => workEntry.entry_type).includes("DE") ? <DoneIcon /> :
-                                                            workEntriesData?.data.filter(
-                                                                workEntry => workEntry.building === building.id &&
-                                                                    workEntry.schedule_assignment === scheduleAssignmentData?.data.id
-                                                            ).map(workEntry => workEntry.entry_type).includes("WO") ? <PersonPinCircleIcon /> :
-                                                                workEntriesData?.data.filter(
-                                                                    workEntry => workEntry.building === building.id &&
-                                                                        workEntry.schedule_assignment === scheduleAssignmentData?.data.id
-                                                                ).map(workEntry => workEntry.entry_type).includes("AR") ? <PersonPinCircleIcon /> :
-                                                                    <CloseIcon />
-                                                    }
-                                                </div>
-                                            );
-                                        })
-                                    }
+                                    {buildingsData.data.map((building) =>
+                                        <div className={styles.routesItem}>
+                                            <h4>{building.address}</h4>
+
+                                            {workEntriesData?.data.filter(
+                                                (workEntry) => workEntry.building === building.id &&
+                                                    workEntry.schedule_assignment === scheduleAssignmentData?.data.id
+                                            ).map(
+                                                (workEntry) => workEntry.entry_type).includes('DE') ? <DoneIcon /> :
+                                                workEntriesData?.data.filter(
+                                                    (workEntry) => workEntry.building === building.id &&
+                                                    workEntry.schedule_assignment === scheduleAssignmentData?.data.id
+                                                ).map(
+                                                    (workEntry) => workEntry.entry_type).includes('WO') ?
+                                                    <PersonPinCircleIcon /> :
+                                                    workEntriesData?.data.filter(
+                                                        (workEntry) => workEntry.building === building.id &&
+                                                    workEntry.schedule_assignment === scheduleAssignmentData?.data.id
+                                                    ).map((workEntry) => workEntry.entry_type).includes('AR') ?
+                                                        <PersonPinCircleIcon /> : <CloseIcon />
+                                            }
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
