@@ -144,42 +144,38 @@ class BuildingViewSet(
             building=building_id
         )
         schedules = [query.schedule_definition.id for query in schedule_buildings]
-        schedule_definitions = self.paginate_queryset(
-            ScheduleDefinition.objects.filter(pk__in=schedules)
-        )
+        schedule_definitions = ScheduleDefinition.objects.filter(pk__in=schedules)
         serializer = ScheduleDefinitionSerializer(schedule_definitions, many=True)
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
     # get all buildings of syndicus with user id
     @action(detail=False, url_path=r"users/(?P<user_id>\w+)")
     def syndicus_buildings(self, request, user_id=None):
         syndicus = Syndicus.objects.get(user=user_id)
-        buildings = self.paginate_queryset(syndicus.buildings.all())
+        buildings = syndicus.buildings.all()
         serializer = BuildingSerializer(buildings, many=True)
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
     @action(detail=True)
     def issues(self, request, pk=None) -> Response:
         building: Building = self.get_object()
-        issues = self.paginate_queryset(building.issues.all())
+        issues = building.issues.all()
         serializer = IssueSerializer(issues, many=True)
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
     @action(detail=True)
     def garbage_collection_schedule_templates(self, request, pk=None) -> Response:
         building: Building = self.get_object()
-        templates = self.paginate_queryset(
-            building.garbage_collection_schedule_templates.all()
-        )
+        templates = building.garbage_collection_schedule_templates.all()
         serializer = GarbageCollectionScheduleTemplateSerializer(templates, many=True)
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
     @action(detail=True)
     def garbage_collection_schedules(self, request, pk=None) -> Response:
         building: Building = self.get_object()
-        schedules = self.paginate_queryset(building.garbage_collection_schedules.all())
+        schedules = building.garbage_collection_schedules.all()
         serializer = GarbageCollectionScheduleSerializer(schedules, many=True)
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
     @action(
         detail=True, url_path=r"for_day/(?P<date>[^/.]+)/garbage_collection_schedules"
@@ -188,9 +184,7 @@ class BuildingViewSet(
         self, request, pk=None, date=None
     ) -> Response:
         building: Building = self.get_object()
-        schedules = self.paginate_queryset(
-            building.garbage_collection_schedules.filter(for_day=date)
-        )
+        schedules = building.garbage_collection_schedules.filter(for_day=date)
 
         serializer = GarbageCollectionScheduleSerializer(schedules, many=True)
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
