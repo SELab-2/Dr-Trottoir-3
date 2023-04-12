@@ -1,18 +1,14 @@
 import {Avatar} from '@mui/material';
 import styles from './UserElement.module.css';
 import {
-    ApiData,
-    getBuildingsList,
     getLocationGroupDetail, getScheduleAssignmentsList,
-    getScheduleDefinitionDetail, getScheduleDefinitionsList, getScheduleWorkEntriesList,
+    getScheduleDefinitionsList,
     getUserDetail,
-    useAuthenticatedApi
+    useAuthenticatedApi,
 } from '@/api/api';
 import {useSession} from 'next-auth/react';
-import CloseIcon from '@mui/icons-material/Close';
 import React, {useEffect} from 'react';
-import {Building, LocationGroup, ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry, User} from '@/api/models';
-import DoneIcon from "@mui/icons-material/Done";
+import {LocationGroup, ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
 
 
 export default function UserElement() {
@@ -21,7 +17,7 @@ export default function UserElement() {
     const userId = 2;
 
     const [userData, setUserData] = useAuthenticatedApi<User>();
-    const [scheduleDefinitions, setScheduleDefinitions] = useAuthenticatedApi<Array<ScheduleDefinition>>()
+    const [scheduleDefinitions, setScheduleDefinitions] = useAuthenticatedApi<Array<ScheduleDefinition>>();
     const [scheduleAssignmentsData, setScheduleAssignmentsData] = useAuthenticatedApi<Array<ScheduleAssignment>>();
     const [locationGroupData, setLocationGroupData] = useAuthenticatedApi<LocationGroup>();
 
@@ -38,8 +34,8 @@ export default function UserElement() {
     }, [session]);
 
     useEffect(() => {
-        if(userData && userData.data.student?.location_group) {
-            getLocationGroupDetail(session, setLocationGroupData, userData.data.student.location_group)
+        if (userData && userData.data.student?.location_group) {
+            getLocationGroupDetail(session, setLocationGroupData, userData.data.student.location_group);
         }
     }, [session, userData]);
 
@@ -64,7 +60,7 @@ export default function UserElement() {
                                 </p>
                             </div>
                             <div className={styles.firstColumnRow}>
-                                <p>{userData.data.student ? locationGroupData?.data.name : ""}</p>
+                                <p>{userData.data.student ? locationGroupData?.data.name : ''}</p>
                                 <p>Some random address</p>
                                 <p>+32 000 00 00 00</p>
                             </div>
@@ -111,7 +107,7 @@ export default function UserElement() {
                                     {
                                         scheduleAssignmentsData?.data
                                             .filter((e) => {
-                                                const dateParts = e.assigned_date.split("-");
+                                                const dateParts = e.assigned_date.split('-');
                                                 const dateObject = new Date(
                                                     +dateParts[2],
                                                     dateParts[1] - 1,
@@ -126,6 +122,7 @@ export default function UserElement() {
                                                             {
                                                                 // @ts-ignore
                                                                 scheduleDefinitions?.data.filter(
+                                                                    // eslint-disable-next-line max-len
                                                                     (scheduleDefinition) => scheduleDefinition.id == e.schedule_definition
                                                                 ).at(0).name
                                                             }
@@ -144,7 +141,8 @@ export default function UserElement() {
                                     {
                                         scheduleAssignmentsData?.data
                                             .filter((e) => {
-                                                const dateParts = e.assigned_date.split("-");
+                                                const dateParts = e.assigned_date.split('-');
+                                                // eslint-disable-next-line max-len
                                                 const dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
                                                 return dateObject > new Date(Date.now());
                                             })
@@ -153,9 +151,8 @@ export default function UserElement() {
                                                     <div className={styles.routesItem}>
                                                         <h4>
                                                             {
-                                                                scheduleDefinitions?.data.filter(
-                                                                    (scheduleDefinition) => scheduleDefinition.id == e.schedule_definition
-                                                                ).at(0).name
+                                                                // eslint-disable-next-line max-len
+                                                                scheduleDefinitions?.data.filter((scheduleDefinition) => scheduleDefinition.id == e.schedule_definition).at(0).name
                                                             }
                                                         </h4>
                                                         <p>{e.assigned_date}</p>
