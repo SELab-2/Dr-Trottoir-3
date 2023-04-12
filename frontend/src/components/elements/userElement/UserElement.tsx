@@ -110,7 +110,8 @@ export default function UserElement() {
                                                 const dateParts = e.assigned_date.split('-');
                                                 const dateObject = new Date(
                                                     +dateParts[2],
-                                                    dateParts[1] - 1,
+                                                    // @ts-ignore
+                                                dateParts[1] - 1,
                                                     +dateParts[0]
                                                 );
                                                 return dateObject <= new Date(Date.now());
@@ -142,9 +143,13 @@ export default function UserElement() {
                                         scheduleAssignmentsData?.data
                                             .filter((e) => {
                                                 const dateParts = e.assigned_date.split('-');
-                                                // eslint-disable-next-line max-len
                                                 // @ts-ignore
-                                                const dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+                                                const dateObject = new Date(
+                                                    +dateParts[2],
+                                                    // @ts-ignore
+                                                dateParts[1] - 1,
+                                                    +dateParts[0]
+                                                );
                                                 return dateObject > new Date(Date.now());
                                             })
                                             .map((e) => {
