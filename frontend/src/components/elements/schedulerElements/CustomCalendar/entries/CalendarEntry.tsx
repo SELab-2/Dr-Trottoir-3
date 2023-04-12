@@ -69,7 +69,7 @@ export default function CalendarEntry(props: calendarEntryProps) {
                                     onClick={()=>(props.onCreateClick(
                                         props.scheduleDefinitionId,
                                         props.index+1,
-                                        props.scheduleAssignment))}
+                                        props.scheduleAssignment.user.id))}
                                 >
                                     <AddRoundedIcon className={styles.icon}/>
                                 </IconButton> : undefined

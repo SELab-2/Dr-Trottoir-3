@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {DragDropContext, DropResult} from 'react-beautiful-dnd';
 import styles from './WeekComponent.module.css';
 import RouteListComponent from './RouteListComponent';
-import DayHeader from '@/components/elements/schedulerElements/CustomCalendar/DayHeader';
+import DayHeader from './DayHeader';
 import {ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
 import {
     ApiData,
@@ -12,6 +12,8 @@ import {
     postScheduleAssignment,
 } from '@/api/api';
 import {useSession} from 'next-auth/react';
+import {Backdrop} from '@mui/material';
+import CreateAssignmentForm from './CreateAssignmentForm';
 
 type schedulerProps = {
     users: ApiData<User[]>,
@@ -24,8 +26,9 @@ type schedulerProps = {
 
 export default function WeekComponent(props: schedulerProps) {
     const {data: session} = useSession();
-    const [requestChecker, setRequestChecker] = useState<any>();
 
+    const [requestChecker, setRequestChecker] = useState<any>();
+    const [createUserInfo, setCreateUserInfo] = useState<any>();
     const [tasks, setTasks] = useState<{[e: string]: any[]}>({});
 
     const firstDay = new Date();
@@ -85,37 +88,47 @@ export default function WeekComponent(props: schedulerProps) {
     };
 
 
-    const createTask = (scheduleDefinitionIndex: number, scheduleAssignmentIndex: number, scheduleAssignment: any) => {
-        const date = new Date();
-        date.setDate(props.start + scheduleAssignmentIndex);
-
-        let newTask: ScheduleAssignment;
-        if (scheduleAssignment == undefined) {
-            newTask = {
-                id: 0, // will be ignored by django, but required to fit type
-                user: Math.floor(Math.random() * 6) + 1,
-                assigned_date: date.toISOString().split('T')[0],
-                schedule_definition: scheduleDefinitionIndex,
-            };
-        } else {
-            newTask = {
-                id: -1, // will be ignored by django, but required to fit type
-                user: scheduleAssignment.user.id,
-                assigned_date: date.toISOString().split('T')[0],
-                schedule_definition: scheduleDefinitionIndex,
-            };
-        }
-
-        postScheduleAssignment(session, newTask, setRequestChecker);
-
+    const createTask = (scheduleDefinitionIndex: number,
+        scheduleAssignmentIndex: number|string,
+        userId: number|undefined) => {
         if (props.scheduleAssignments) {
-            props.setScheduleAssignments(
-                {
-                    success: props.scheduleAssignments.success,
-                    status: props.scheduleAssignments.status,
-                    data: [...props.scheduleAssignments.data, newTask],
+            if (!userId) {
+                setCreateUserInfo({
+                    schedulerDefinitionIndex: scheduleDefinitionIndex,
+                    schedulerAssignmentIndex: scheduleAssignmentIndex,
+                });
+            } else {
+                let newTask: ScheduleAssignment;
+                if (typeof scheduleAssignmentIndex == 'number') {
+                    const date = new Date();
+                    date.setDate(props.start + scheduleAssignmentIndex);
+                    newTask = {
+                        id: -1, // will be ignored by django, but required to fit type
+                        user: userId,
+                        assigned_date: date.toISOString().split('T')[0],
+                        schedule_definition: scheduleDefinitionIndex,
+                    };
+                } else {
+                    newTask = {
+                        id: -1, // will be ignored by django, but required to fit type
+                        user: userId,
+                        assigned_date: scheduleAssignmentIndex,
+                        schedule_definition: scheduleDefinitionIndex,
+                    };
                 }
-            );
+
+                postScheduleAssignment(session, newTask, setRequestChecker);
+
+                if (props.scheduleAssignments) {
+                    props.setScheduleAssignments(
+                        {
+                            success: props.scheduleAssignments.success,
+                            status: props.scheduleAssignments.status,
+                            data: [...props.scheduleAssignments.data, newTask],
+                        }
+                    );
+                }
+            }
         }
     };
 
@@ -282,6 +295,19 @@ export default function WeekComponent(props: schedulerProps) {
                     </div>
                 </div>
             </DragDropContext>
+            <Backdrop
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                open={!!createUserInfo}
+                invisible={false}
+            >
+                <CreateAssignmentForm
+                    onCreateClick={createTask}
+                    setOpen={setCreateUserInfo}
+                    start={props.start}
+                    allUsers={props.users}
+                    allRoutes={props.scheduleDefinitions}
+                    initialInfo={createUserInfo}/>
+            </Backdrop>
         </div>
     );
 }

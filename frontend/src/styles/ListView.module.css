@@ -1,0 +1,249 @@
+.topBar {
+    width: 100%;
+    min-height: 10%;
+    padding: 1vw;
+    border: none;
+    font-size: 20px;
+    background-color: white;
+    color: black;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+
+}
+
+
+.generic_wrapper {
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border: none;
+    padding-bottom: 1vh;
+    padding-top: 1vh;
+    justify-content: space-around;
+}
+
+.filter_wrapper {
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border: none;
+}
+
+
+.title {
+    padding-right: 5vh;
+}
+
+.title p {
+    padding: 10px;
+    font-size: 15px;
+}
+
+.search{
+    background-color: #F3F5F9;
+    border-radius: 20px;
+    min-width: 40vh;
+}
+
+.filters{
+}
+
+.button{
+    height: 5vh;
+    background-color: #F3F5F9;
+    color: var(--primary-dark);
+    bottom: 0;
+}
+
+.button:hover{
+    background-color: #bbbec4;
+}
+
+.list_wrapper {
+    padding: 0px 8px 16px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    background-color: white;
+    min-width: 200px;
+    width: 25%;
+}
+
+.list_bar {
+    display: flex;
+    gap: 16px;
+    background-color: white;
+    flex-wrap: wrap;
+    max-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+#scroll_style::-webkit-scrollbar
+{
+    width: 8px;
+    background-color: white;
+}
+
+#scroll_style::-webkit-scrollbar-thumb
+{
+    background-clip: padding-box;
+    border-radius: 8px;
+    background-color: #E6E600;
+}
+.full_outer {
+    padding: 40px 16px 16px 16px;
+    height: 100vh;
+}
+
+.under_columns {
+    display: flex;
+    flex-wrap: wrap;
+    height: 40%;
+    flex-grow: 1;
+}
+
+#item_button {
+    display: flex;
+    flex-flow: column;
+    flex-wrap: wrap;
+    text-align: left;
+    align-items: flex-start;
+    color: #1C1C1C;
+    background-color: #E9EDF4;
+}
+
+#item_button_select {
+    display: flex;
+    flex-flow: column;
+    flex-wrap: wrap;
+    text-align: left;
+    align-items: flex-start;
+    color: white;
+    background-color: #1C1C1C;
+}
+
+.button_wrapper {
+    flex-wrap: wrap;
+    background-color: white;
+    width: 100%;
+    padding: 0px 8px 0px 0px;
+}
+
+
+.listItemTextWrapper{
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    width: 100%;
+}
+
+.listItemRightSide{
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.listItemLeftSide{
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    justify-content: center;
+}
+
+.button_default {
+    word-break: break-word;
+    font-family: 'Inter', sans-serif;
+    color: #1C1C1C;
+    text-transform: none;
+    background-color: #1C1C1C;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.button_default:hover{
+    color: #E6E600;
+}
+
+.big_item_text {
+    font-size: 100%;
+    font-weight: bolder;
+}
+
+
+@media screen and (min-width:800px) {
+
+    .very_big_item_text {
+        font-size: 125%;
+        font-weight: bolder;
+        word-break: keep-all;
+    }
+}
+
+@media screen and (max-width:800px) {
+
+    .very_big_item_text {
+        font-size: 75%;
+        font-weight: bolder;
+    }
+}
+
+.small_item_text {
+    color: #808080;
+    font-size: 75%;
+}
+
+.form{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px;
+}
+
+.formCenter{
+    background-color: white;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.formFields{
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+    padding: 1vh;
+}
+
+.field {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    color: black;
+}
+
+.formButtons{
+    position: relative;
+    bottom: 0;
+    width:100%;
+    padding: 1vh;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    color: black;
+}
+
+.formButtonsEnd{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
