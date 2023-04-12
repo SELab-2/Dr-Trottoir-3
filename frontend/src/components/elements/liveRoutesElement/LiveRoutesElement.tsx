@@ -77,7 +77,6 @@ export default function LiveRoutesElement() {
         }
     }, [session, scheduleDefinitionData]);
 
-
     useEffect(() => {
         if(scheduleAssignmentData) {
             getScheduleWorkEntriesList(
@@ -92,10 +91,12 @@ export default function LiveRoutesElement() {
         }
     }, [session, scheduleAssignmentData]);
 
-    if (!scheduleDefinitionData || !locationGroupData || !buildingsData) {
+    // console.log(workEntriesData)
+
+    if (!scheduleDefinitionData || !locationGroupData || !buildingsData || !workEntriesData) {
         return (<div>Loading...</div>);
     } else {
-        if (scheduleDefinitionData.success && locationGroupData.success && buildingsData.success) {
+        if (scheduleDefinitionData.success && locationGroupData.success && buildingsData.success && workEntriesData.success) {
             return (
                 <div className={styles.userElement}>
                     <div className={styles.userHeader}>

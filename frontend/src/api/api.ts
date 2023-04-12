@@ -141,7 +141,7 @@ async function getListFromApi(route: Api, session: any, params: any, query: any)
 
     const data = await axios.get(process.env.NEXT_API_URL + routeStr, {headers: getAuthHeader(session)});
 
-    if (!('data' in data) || !('results' in data.data)) {
+    if (!('data' in data)) {
         throw new ApiError(data);
     }
 
@@ -200,7 +200,7 @@ async function deleteDetailsOnAPI(route: Api, session: any, id: number) {
 const getLocationGroupsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.LocationGroups, session, params ? params : {}, query ? query : {})
         .then((e) => {
-            setter({success: true, status: e.status, data: e.data.results});
+            setter({success: true, status: e.status, data: e.data});
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: []});
@@ -211,7 +211,7 @@ const getLocationGroupsList = (session: Session | null, setter: ((e:any) => void
 const getUsersList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     return getListFromApi(Api.Users, session, params ? params : {}, query ? query : {})
         .then((e) => {
-            setter({success: true, status: e.status, data: e.data.results});
+            setter({success: true, status: e.status, data: e.data});
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: []});
@@ -221,9 +221,11 @@ const getUsersList = (session: Session | null, setter: ((e:any) => void), query?
 const getBuildingsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.Buildings, session, params ? params : {}, query ? query : {})
         .then((e) => {
-            setter({success: true, status: e.status, data: e.data.results});
+            console.log(e)
+            setter({success: true, status: e.status, data: e.data});
         })
         .catch((e) => {
+            console.log(e)
             setter({success: false, status: e.status, data: []});
         });
 };
@@ -231,7 +233,7 @@ const getBuildingsList = (session: Session | null, setter: ((e:any) => void), qu
 const getScheduleDefinitionsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.ScheduleDefinitions, session, params ? params : {}, query ? query : {})
         .then((e) => {
-            setter({success: true, status: e.status, data: e.data.results});
+            setter({success: true, status: e.status, data: e.data});
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: []});
@@ -241,7 +243,7 @@ const getScheduleDefinitionsList = (session: Session | null, setter: ((e:any) =>
 const getScheduleAssignmentsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.ScheduleAssignments, session, params ? params : {}, query ? query : {})
         .then((e) => {
-            setter({success: true, status: e.status, data: e.data.results});
+            setter({success: true, status: e.status, data: e.data});
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: []});
@@ -251,7 +253,7 @@ const getScheduleAssignmentsList = (session: Session | null, setter: ((e:any) =>
 const getScheduleWorkEntriesList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.ScheduleWorkEntries, session, params ? params : {}, query ? query : {})
         .then((e) => {
-            setter({success: true, status: e.status, data: e.data.results});
+            setter({success: true, status: e.status, data: e.data});
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: []});
@@ -261,7 +263,7 @@ const getScheduleWorkEntriesList = (session: Session | null, setter: ((e:any) =>
 const getGarbageTypesList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.GarbageTypes, session, params ? params : {}, query ? query : {})
         .then((e) => {
-            setter({success: true, status: e.status, data: e.data.results});
+            setter({success: true, status: e.status, data: e.data});
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: []});
