@@ -17,7 +17,7 @@ def test_issues_all_not_approved():
 
     response = client.get("/issues/not_approved/")
 
-    response_data_ids = [e["id"] for e in response.data["results"]]
+    response_data_ids = [e["id"] for e in response.data]
 
     assert dummy_issue_id_1 in response_data_ids
     assert dummy_issue_id_2 in response_data_ids
@@ -41,7 +41,7 @@ def test_issues_all_approved():
 
     response = client.get("/issues/not_approved/")
 
-    response_data_ids = [e["id"] for e in response.data["results"]]
+    response_data_ids = [e["id"] for e in response.data]
 
     assert len(response_data_ids) == 0
     assert response.status_code == 200
@@ -62,7 +62,7 @@ def test_issues_some_approved():
 
     response = client.get("/issues/not_approved/")
 
-    response_data_ids = [e["id"] for e in response.data["results"]]
+    response_data_ids = [e["id"] for e in response.data]
 
     assert len(response_data_ids) == 1
     assert dummy_issue_1.id not in response_data_ids

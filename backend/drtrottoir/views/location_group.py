@@ -83,15 +83,13 @@ class LocationGroupViewSet(
     @action(detail=True)
     def buildings(self, request, pk=None) -> Response:
         location_group: LocationGroup = self.get_object()
-        buildings = self.paginate_queryset(location_group.buildings.all())
+        buildings = location_group.buildings.all()
         serializer = BuildingSerializer(buildings, many=True)
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
     @action(detail=True)
     def schedule_definitions(self, request, pk=None) -> Response:
         location_group: LocationGroup = self.get_object()
-        schedule_definitions = self.paginate_queryset(
-            location_group.schedule_definitions.all()
-        )
+        schedule_definitions = location_group.schedule_definitions.all()
         serializer = ScheduleDefinitionSerializer(schedule_definitions, many=True)
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
