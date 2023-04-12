@@ -14,6 +14,8 @@ import React, {useEffect} from 'react';
 import {Building, LocationGroup, ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry, User} from '@/api/models';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 import {styled} from "@mui/system";
+import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
+import DoneIcon from '@mui/icons-material/Done';
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height: 30,
@@ -91,12 +93,12 @@ export default function LiveRoutesElement() {
         }
     }, [session, scheduleAssignmentData]);
 
-    // console.log(workEntriesData)
+    console.log(workEntriesData)
 
-    if (!scheduleDefinitionData || !locationGroupData || !buildingsData || !workEntriesData) {
+    if (!scheduleDefinitionData || !locationGroupData || !buildingsData || !workEntriesData || !scheduleAssignmentData) {
         return (<div>Loading...</div>);
     } else {
-        if (scheduleDefinitionData.success && locationGroupData.success && buildingsData.success && workEntriesData.success) {
+        if (scheduleDefinitionData.success && locationGroupData.success && buildingsData.success && workEntriesData.success && scheduleAssignmentData.success) {
             return (
                 <div className={styles.userElement}>
                     <div className={styles.userHeader}>
@@ -105,10 +107,24 @@ export default function LiveRoutesElement() {
                             <p>{locationGroupData.data.name}</p>
                         </div>
                         <div className={styles.stats}>
-                            <p>2/5 voltooid</p>
+                            <p>{buildingsData.data.map(building => {
+                                    return workEntriesData?.data.filter(
+                                        workEntry => workEntry.building === building.id &&
+                                            workEntry.schedule_assignment === scheduleAssignmentData?.data.id
+                                    ).map(workEntry => workEntry.entry_type).includes("DE") ? 1 : 0
+                                }).reduce(function(a, b) {return a + b})}
+                                /
+                                {buildingsData.data.length} voltooid</p>
                         </div>
                         <div className={styles.loadingBar}>
-                            <BorderLinearProgress variant="determinate" value={50} />
+                            <BorderLinearProgress variant="determinate" value={
+                                buildingsData.data.map(building => {
+                                    return workEntriesData?.data.filter(
+                                        workEntry => workEntry.building === building.id &&
+                                            workEntry.schedule_assignment === scheduleAssignmentData?.data.id
+                                    ).map(workEntry => workEntry.entry_type).includes("DE") ? 1 : 0
+                                }).reduce(function(a, b) {return a + b}) / buildingsData.data.length * 100
+                            } />
                         </div>
                     </div>
                     <div className={styles.userContent}>
@@ -121,7 +137,21 @@ export default function LiveRoutesElement() {
                                             return (
                                                 <div className={styles.routesItem}>
                                                     <h4>{building.address}</h4>
-                                                    <CloseIcon/>
+                                                    {
+                                                        workEntriesData?.data.filter(
+                                                            workEntry => workEntry.building === building.id &&
+                                                                workEntry.schedule_assignment === scheduleAssignmentData?.data.id
+                                                        ).map(workEntry => workEntry.entry_type).includes("DE") ? <DoneIcon /> :
+                                                            workEntriesData?.data.filter(
+                                                                workEntry => workEntry.building === building.id &&
+                                                                    workEntry.schedule_assignment === scheduleAssignmentData?.data.id
+                                                            ).map(workEntry => workEntry.entry_type).includes("WO") ? <PersonPinCircleIcon /> :
+                                                                workEntriesData?.data.filter(
+                                                                    workEntry => workEntry.building === building.id &&
+                                                                        workEntry.schedule_assignment === scheduleAssignmentData?.data.id
+                                                                ).map(workEntry => workEntry.entry_type).includes("AR") ? <PersonPinCircleIcon /> :
+                                                                    <CloseIcon />
+                                                    }
                                                 </div>
                                             );
                                         })
