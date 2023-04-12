@@ -72,7 +72,12 @@ class IssueViewSet(PermissionsByActionMixin, viewsets.ModelViewSet):
         ],
     }
 
-    filterset_fields = ["building", "resolved", "from_user", "approval_user"]
+    filterset_fields = {
+        "building": ("exact", "in"),
+        "resolved": ("exact",),
+        "from_user": ("exact", "in"),
+        "approval_user": ("exact", "in"),
+    }
     search_fields = ["message"]
 
     def get_queryset(self):

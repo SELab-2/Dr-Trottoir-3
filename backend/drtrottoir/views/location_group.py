@@ -1,3 +1,5 @@
+from typing import Dict, Tuple
+
 from rest_framework import mixins, permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -69,13 +71,14 @@ class LocationGroupViewSet(
                 All the schedule definitions that are in this location group.
     """
 
-    filterset_fields = ["name"]
-    search_fields = ["name"]
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
     permission_classes_by_action = {
         "retrieve": [permissions.IsAuthenticated],
         "list": [permissions.IsAuthenticated],
     }
+
+    filterset_fields: Dict[str, Tuple[str]] = {}
+    search_fields = ["name"]
 
     queryset = LocationGroup.objects.all()
     serializer_class = LocationGroupSerializer
