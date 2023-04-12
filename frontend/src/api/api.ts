@@ -37,7 +37,7 @@ export enum Api {
 }
 
 
-type ApiData<T> = {data: T, status: number, success: boolean}
+export type ApiData<T> = {data: T, status: number, success: boolean}
 
 function useAuthenticatedApi<T>(): [ApiData<T> | undefined, (e: ApiData<T> | undefined) => void] {
     const {data: session} = useSession();
@@ -209,7 +209,7 @@ const getLocationGroupsList = (session: Session | null, setter: ((e:any) => void
 
 
 const getUsersList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
-    return getListFromApi(Api.Users, session, params ? params : {}, query ? query : {})
+    getListFromApi(Api.Users, session, params ? params : {}, query ? query : {})
         .then((e) => {
             setter({success: true, status: e.status, data: e.data.results});
         })
@@ -240,10 +240,10 @@ const getScheduleDefinitionsList = (session: Session | null, setter: ((e:any) =>
 
 const getScheduleAssignmentsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.ScheduleAssignments, session, params ? params : {}, query ? query : {})
-        .then((e) => {
+        .then( (e) => {
             setter({success: true, status: e.status, data: e.data.results});
         })
-        .catch((e) => {
+        .catch( (e) => {
             setter({success: false, status: e.status, data: []});
         });
 };

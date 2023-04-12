@@ -5,11 +5,10 @@ import React, {useEffect, useState} from 'react';
 import {useSession} from 'next-auth/react';
 import {
     getLocationGroupsList,
-    getScheduleAssignmentsList,
-    getScheduleDefinitionsList,
+    getScheduleDefinitionsList, getUsersList,
     useAuthenticatedApi,
 } from '@/api/api';
-import {LocationGroup, ScheduleAssignment, ScheduleDefinition} from '@/api/models';
+import {LocationGroup, ScheduleDefinition, User} from '@/api/models';
 
 
 export default function SchedulerPage() {
@@ -19,9 +18,11 @@ export default function SchedulerPage() {
 
     const [locationGroups, setLocationGroups] = useAuthenticatedApi<LocationGroup[]>();
     const [scheduleDefinitions, setScheduleDefinitions] = useAuthenticatedApi<ScheduleDefinition[]>();
+    const [users, setUsers] = useAuthenticatedApi<User[]>();
 
-    const [scheduleAssignments, setScheduleAssignemnts] = useAuthenticatedApi<ScheduleAssignment[]>();
-
+    const currentDay: Date = new Date();
+    const [first, setFirst] = useState<number>(currentDay.getDate() - currentDay.getDay());
+    const interval: number = 7;
 
     useEffect(() => {
         getLocationGroupsList(session, setLocationGroups, {name: locationGroupName});
@@ -34,33 +35,10 @@ export default function SchedulerPage() {
     }, [locationGroups, session]);
 
     useEffect(() => {
-        if (scheduleDefinitions) {
-            setScheduleAssignemnts(undefined);
-            scheduleDefinitions.data.forEach((schedule) =>
-                // @ts-ignore
-                getScheduleAssignmentsList(session, (e) => setScheduleAssignemnts({...(scheduleAssignments ? scheduleAssignments : []), e}), {name: schedule.id})
-            );
+        if (locationGroups) {
+            getUsersList(session, setUsers, {name: locationGroups.data.at(0)?.id});
         }
-    }, [scheduleDefinitions, session]);
-
-    useEffect(() => {
-        console.log(scheduleAssignments);
-    }, [scheduleAssignments]);
-
-    const currentDay: Date = new Date();
-    const [first, setFirst] = useState<number>(currentDay.getDate() - currentDay.getDay());
-    const interval = 7;
-    //
-    // const [routes, setRoutes] = useState([]);
-    // const [users] = useState([]);
-    //
-    // useEffect(() => {
-    //     // load routes
-    //     scheduleDefinitions.forEach((route) => {
-    //         scheduleDefinitions['active'] = false;
-    //     });
-    //     setRoutes(scheduleDefinitions);
-    // }, [routes]);
+    }, [locationGroups, session]);
 
 
     const nextWeek = () => {
@@ -74,7 +52,11 @@ export default function SchedulerPage() {
     return (
         <div className={styles.full_calendar_flex_container}>
             <SchedulerSelect nextWeek={nextWeek} prevWeek={prevWeek}/>
-            <SchedulerDetails start={first} routes={[]} setRoutes={() => {}} users={[]} interval={interval}/>
+            <SchedulerDetails
+                start={first}
+                scheduleDefinitions={scheduleDefinitions}
+                users={users}
+                interval={interval}/>
         </div>
     );
 }

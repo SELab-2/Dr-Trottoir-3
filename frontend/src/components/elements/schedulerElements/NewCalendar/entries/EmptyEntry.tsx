@@ -1,24 +1,27 @@
 import styles from './EmptyEntry.module.css';
 import {Draggable} from 'react-beautiful-dnd';
+import {memo} from 'react';
 
 type calendarEntryProps = {
     index: number,
-    col: string,
+    scheduleDefinitionId: number,
     onCreateClick: any,
 }
 
-export default function EmptyEntry({index, col, onCreateClick}: calendarEntryProps) {
+function EmptyEntry(props: calendarEntryProps) {
     return (
-        <Draggable draggableId={col+index.toString()} index={index}>
+        <Draggable draggableId={props.scheduleDefinitionId.toString() + props.index.toString()} index={props.index}>
             {(draggableProvided) => (
                 <div
                     {...draggableProvided.dragHandleProps}
                     ref={draggableProvided.innerRef}
                     className={styles.test}
-                    onClick={() => (onCreateClick(index, undefined))}
-                >
-                </div>
+                    onClick={() => (props.onCreateClick(props.index, undefined))}
+                />
             )}
         </Draggable>
     );
 }
+
+
+export default memo(EmptyEntry);

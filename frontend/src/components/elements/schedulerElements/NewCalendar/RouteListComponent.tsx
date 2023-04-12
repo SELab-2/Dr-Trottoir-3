@@ -1,180 +1,167 @@
-import styles from './ReouteListComponent.module.css';
-import {DragDropContext, Draggable, Droppable, DropResult} from 'react-beautiful-dnd';
+import styles from './RouteListComponent.module.css';
+import {Droppable} from 'react-beautiful-dnd';
 import CalendarEntry from '@/components/elements/schedulerElements/NewCalendar/entries/CalendarEntry';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, memo, useState} from 'react';
 import EmptyEntry from '@/components/elements/schedulerElements/NewCalendar/entries/EmptyEntry';
-import {random} from 'nanoid';
-import {Api, getList} from "@/api/api";
+import {ScheduleAssignment, ScheduleDefinition} from '@/api/models';
+import {useSession} from 'next-auth/react';
+import {
+    ApiData,
+    deleteScheduleAssignment,
+    getScheduleAssignmentsList,
+    postScheduleAssignment,
+} from '@/api/api';
 
 type routeListComponentProps = {
     index: number,
     start: string,
-    route: any,
-    details: any,
-    interval: number
+    interval: number,
+    scheduleDefinition: ScheduleDefinition,
+    scheduleAssignments: ApiData<ScheduleAssignment[]> | undefined,
+    setScheduleAssignments: (e: (ApiData<ScheduleAssignment[]> | undefined)) => void,
 }
 
 
-const mockdata = [
-    {id: '0', user: 'user1', date: '2023-04-10'},
-    {id: '1', user: 'user1', date: '2023-04-11'},
-    {id: '2', user: 'user2', date: '2023-04-12'},
-    {id: '3', user: 'user3', date: '2023-04-14'},
-];
+function RouteListComponent(props: routeListComponentProps) {
+    const {data: session} = useSession();
 
-
-export default function RouteListComponent({index, start, interval, route, details}: routeListComponentProps) {
-
-
-
-    // const scheduleAssignments = getList(Api.ScheduleAssignments, {}, {'schedule_definition': 1}).data;
-    // console.log(scheduleAssignments)
-
-
-    const [assignments, setAssignments] = useState(mockdata);
-    const [tasks, setTasks] = useState([]);
+    const [tasks, setTasks] = useState<any[]>([]);
+    const [requestChecker, setRequestChecker] = useState<any>();
 
     useEffect(() => {
-        const taskList = new Array(interval).fill({type: 0});
+        const taskList: any[] = new Array(props.interval).fill({type: 0});
 
-        assignments.forEach((assignment) => {
-            const index = new Date(assignment.date).getDay();
+        if (props.scheduleAssignments && props.scheduleAssignments.data) {
+            props.scheduleAssignments.data
+                .filter((scheduleAssignment) => {
+                    return scheduleAssignment.schedule_definition == props.scheduleDefinition.id;
+                })
+                .forEach((assignment) => {
+                    const index = new Date(assignment.assigned_date).getDay();
 
-            taskList[index] = {
-                type: 1,
-                user: assignment.user,
-                id: assignment.id,
-                date: assignment.date,
-                linkLeft: false,
-                linkRight: false,
-            };
+                    taskList[index] = {
+                        type: 1,
+                        user: assignment.user,
+                        id: assignment.id,
+                        date: assignment.assigned_date,
+                        linkLeft: false,
+                        linkRight: false,
+                    };
 
-            if (index > 0 && taskList[index-1].type == 1 && taskList[index-1].user == assignment.user) {
-                taskList[index-1].linkRight = true;
-                taskList[index].linkLeft = true;
-            }
-            if (index < interval-1 && taskList[index+1].type == 1 && taskList[index+1].user == assignment.user) {
-                taskList[index+1].linkLeft = true;
-                taskList[index].linkRight = true;
-            }
-        });
-        setTasks(taskList);
-    }, [assignments]);
-
-
-    const onRemoveClick = (id: string) => {
-        setAssignments(assignments.filter((e) => e.id != id));
-    };
-
-
-    const createTask = (index, taskData) => {
-        const date = new Date();
-        date.setDate(new Date(start).getDate() + index);
-
-        let newTask;
-        if (taskData == undefined) {
-            newTask = {id: random(1).toString(), user: 'newUser', date: date.toISOString().split('T')[0]};
-        } else {
-            newTask = {id: random(1).toString(), user: taskData.user, date: date.toISOString().split('T')[0]};
-        }
-        console.log([...assignments, newTask]);
-        setAssignments([...assignments, newTask]);
-    };
-
-
-    const onDragEnd = (result: DropResult) => {
-        document.body.style.color = 'inherit';
-
-        const {destination, source, draggableId} = result;
-
-        // drop at illegal location
-        if (!destination) {
-            return;
-        }
-
-        // drop at start position
-        if (destination.droppableId === source.droppableId && destination.index === source.index) {
-            return;
-        }
-
-        let insertedDate = '';
-        let id = '';
-        const newAssignment = assignments.map((assignment) => {
-            if (assignment.date == draggableId) {
-                const newDate = new Date();
-                newDate.setDate(new Date(assignment.date).getDate() + destination.index - source.index);
-                assignment.date = newDate.toISOString().split('T')[0];
-                insertedDate = newDate.toISOString().split('T')[0];
-                id = assignment.id;
-            }
-            return assignment;
-        });
-
-        // increment dates if required
-        const updateDates = newAssignment.map((assignment) => {
-            if (assignment.id != id) {
-                if (draggableId < assignment.date) {
-                    if (insertedDate >= assignment.date) {
-                        const newDate = new Date();
-                        newDate.setDate(new Date(assignment.date).getDate() - 1);
-                        assignment.date = newDate.toISOString().split('T')[0];
+                    if (index > 0 && taskList[index - 1].type == 1 && taskList[index - 1].user == assignment.user) {
+                        taskList[index - 1].linkRight = true;
+                        taskList[index].linkLeft = true;
                     }
-                } else {
-                    if (insertedDate <= assignment.date) {
-                        const newDate = new Date();
-                        newDate.setDate(new Date(assignment.date).getDate() + 1);
-                        assignment.date = newDate.toISOString().split('T')[0];
+                    if (index < props.interval - 1 && taskList[index + 1].type == 1 &&
+                    taskList[index + 1].user == assignment.user) {
+                        taskList[index + 1].linkLeft = true;
+                        taskList[index].linkRight = true;
                     }
+                });
+            setTasks(taskList);
+        }
+    }, [props.scheduleAssignments]);
+
+
+    const onRemoveClick = (id: number) => {
+        deleteScheduleAssignment(session, id, setRequestChecker);
+
+        if (props.scheduleAssignments) {
+            props.setScheduleAssignments(
+                {
+                    success: props.scheduleAssignments.success,
+                    status: props.scheduleAssignments.status,
+                    data: props.scheduleAssignments.data.filter((e) => e.id != id),
                 }
-            }
-            return assignment;
-        });
-
-        console.log(updateDates);
-        setAssignments(updateDates);
+            );
+        }
     };
+
+
+    const createTask = (index: number, scheduleAssignment: any) => {
+        const date = new Date();
+        date.setDate(new Date(props.start).getDate() + index);
+
+        let newTask: ScheduleAssignment;
+        if (scheduleAssignment == undefined) {
+            newTask = {
+                id: 0, // will be ignored by django, but required to fit type
+                user: 1,
+                assigned_date: date.toISOString().split('T')[0],
+                schedule_definition: props.scheduleDefinition.id,
+            };
+        } else {
+            newTask = {
+                id: -1, // will be ignored by django, but required to fit type
+                user: scheduleAssignment.user,
+                assigned_date: date.toISOString().split('T')[0],
+                schedule_definition: props.scheduleDefinition.id,
+            };
+        }
+
+        postScheduleAssignment(session, newTask, setRequestChecker);
+
+        if (props.scheduleAssignments) {
+            props.setScheduleAssignments(
+                {
+                    success: props.scheduleAssignments.success,
+                    status: props.scheduleAssignments.status,
+                    data: [...props.scheduleAssignments.data, newTask],
+                }
+            );
+        }
+    };
+
+
+    useEffect(() => {
+        getScheduleAssignmentsList(session, props.setScheduleAssignments);
+    }, [requestChecker]);
 
 
     return (
-        <Draggable draggableId={'test'} index={0}>
-            {(draggableProvided) => (
-                <div
-                    {...draggableProvided.draggableProps}
-                    ref={draggableProvided.innerRef}
-                    className={styles.full}
-                >
-                    <div {...draggableProvided.dragHandleProps}
-                        className={styles.route_scheduler_header}
-                    >
-                        route name
-                    </div>
-                    <DragDropContext onDragEnd={onDragEnd}>
-                        <div className={styles.route_scheduler_container}>
-                            <Droppable droppableId="test" type="task" direction='horizontal'>
-                                {(droppableProvided) => (
-                                    <div ref={droppableProvided.innerRef}
-                                        {...droppableProvided.droppableProps}
-                                        className={styles.drop_list}>
-                                        {tasks.map((task, taskIndex) => {
-                                            if (task.type == 0) {
-                                                return (
-                                                    <EmptyEntry key={taskIndex} onCreateClick={createTask} index={taskIndex} col={'name'}/>
-                                                );
-                                            } else {
-                                                const nextOpen = taskIndex < interval-1 && tasks[taskIndex+1].type == 0;
-                                                return (
-                                                    <CalendarEntry key={taskIndex} onCreateClick={createTask} nextOpen={nextOpen} onRemoveClick={onRemoveClick} index={taskIndex} col={'name'} taskData={task}/>
-                                                );
-                                            }
-                                        })}
-                                        {droppableProvided.placeholder}
-                                    </div>
-                                )}
-                            </Droppable>
+        <div className={styles.full}>
+            <div className={styles.route_scheduler_header}>
+                <p>{props.scheduleDefinition.name}</p>
+            </div>
+            <div className={styles.route_scheduler_container}>
+                <Droppable droppableId={props.scheduleDefinition.id.toString()} type="task" direction='horizontal'>
+                    {(droppableProvided) => (
+                        <div ref={droppableProvided.innerRef}
+                            {...droppableProvided.droppableProps}
+                            className={styles.drop_list}>
+                            {tasks.map((task, index) => {
+                                if (task.type == 0) {
+                                    return (
+                                        <EmptyEntry
+                                            key={index}
+                                            index={index}
+                                            scheduleDefinitionId={props.scheduleDefinition.id}
+                                            onCreateClick={createTask}
+                                        />
+                                    );
+                                } else {
+                                    const nextOpen = index < props.interval-1 && tasks[index+1].type == 0;
+                                    return (
+                                        <CalendarEntry
+                                            key={index}
+                                            scheduleDefinitionId={props.scheduleDefinition.id}
+                                            index={index}
+                                            scheduleAssignment={task}
+                                            onCreateClick={createTask}
+                                            nextOpen={nextOpen}
+                                            onRemoveClick={onRemoveClick}
+                                        />
+                                    );
+                                }
+                            })}
+                            {droppableProvided.placeholder}
                         </div>
-                    </DragDropContext>
-                </div>
-            )}
-        </Draggable>
+                    )}
+                </Droppable>
+            </div>
+        </div>
     );
 }
+
+
+export default memo(RouteListComponent);

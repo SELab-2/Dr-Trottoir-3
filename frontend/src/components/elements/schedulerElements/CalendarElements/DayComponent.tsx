@@ -25,8 +25,8 @@ const DayComponent = ({date, tasks, onAddClick, onRemoveClick, onEditClick}: Pro
     return (
         <div className={styles.full_day}>
             <div className={styles.header}>
-                <p>{date}</p>
-                <p>{weekday[new Date(date).getDay()]}</p>
+                <p style={{color: 'white'}}>{date}</p>
+                <p style={{color: 'white'}}>{weekday[new Date(date).getDay()]}</p>
                 <Button onClick={() => onAddClick(date)}>Add New</Button>
             </div>
             <Droppable droppableId={date} type="task" direction='horizontal'>

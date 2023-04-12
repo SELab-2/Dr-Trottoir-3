@@ -3,22 +3,22 @@ import {Draggable} from 'react-beautiful-dnd';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import {IconButton} from '@mui/material';
-import {useState} from 'react';
+import {memo, useState} from 'react';
 
 type calendarEntryProps = {
     index: number,
-    col: string,
-    taskData: any,
+    scheduleDefinitionId: number,
+    scheduleAssignment: any,
     onRemoveClick: any,
     nextOpen: boolean,
     onCreateClick: any,
 }
 
-export default function CalendarEntry({index, col, taskData, onRemoveClick, onCreateClick, nextOpen}: calendarEntryProps) {
+function CalendarEntry(props: calendarEntryProps) {
     const [hover, setHover] = useState(false);
 
     return (
-        <Draggable draggableId={taskData.date} index={index}>
+        <Draggable draggableId={props.scheduleAssignment.id.toString()} index={props.index}>
             {(draggableProvided, snapshot) => (
                 <div
                     onMouseOver={() => setHover(true)}
@@ -26,30 +26,43 @@ export default function CalendarEntry({index, col, taskData, onRemoveClick, onCr
                     {...draggableProvided.draggableProps}
                     {...draggableProvided.dragHandleProps}
                     ref={draggableProvided.innerRef}
-                    id={((!taskData.linkLeft && !taskData.linkRight) || snapshot.isDragging ? styles.padding_full : undefined) ||
-                        (!taskData.linkLeft ? styles.padding_left : undefined) ||
-                        (!taskData.linkRight ? styles.padding_right : undefined)}
+                    id={((!props.scheduleAssignment.linkLeft && !props.scheduleAssignment.linkRight) ||
+                        snapshot.isDragging ? styles.padding_full : undefined) ||
+                        (!props.scheduleAssignment.linkLeft ? styles.padding_left : undefined) ||
+                        (!props.scheduleAssignment.linkRight ? styles.padding_right : undefined)}
                     className={styles.full}
                 >
                     <div
-                        id={((!taskData.linkLeft && !taskData.linkRight) || snapshot.isDragging ? styles.link_none : undefined) ||
-                            (!taskData.linkLeft ? styles.link_left : undefined) ||
-                            (!taskData.linkRight ? styles.link_right : undefined)}
+                        id={((!props.scheduleAssignment.linkLeft && !props.scheduleAssignment.linkRight) ||
+                            snapshot.isDragging ? styles.link_none : undefined) ||
+                            (!props.scheduleAssignment.linkLeft ? styles.link_left : undefined) ||
+                            (!props.scheduleAssignment.linkRight ? styles.link_right : undefined)}
                         className={styles.inner}
                     >
                         <div className={styles.content}>
-                            <p>{!taskData.linkLeft || snapshot.isDragging ? taskData.user : ''}</p>
+                            <p>
+                                {
+                                    !props.scheduleAssignment.linkLeft || snapshot.isDragging ?
+                                        props.scheduleAssignment.user : ''
+                                }
+                            </p>
                         </div>
                         <div>
-                            {!taskData.linkRight || snapshot.isDragging || hover ?
-                                <IconButton size='small' className={styles.icon} onClick={()=>(onRemoveClick(taskData.id))}>
+                            {!props.scheduleAssignment.linkRight || snapshot.isDragging || hover ?
+                                <IconButton
+                                    size='small'
+                                    className={styles.icon}
+                                    onClick={()=>(props.onRemoveClick(props.scheduleAssignment.id))}>
                                     <CloseRoundedIcon />
                                 </IconButton> : undefined
                             }
                         </div>
                         <div>
-                            {!taskData.linkRight && nextOpen ?
-                                <IconButton size='small' className={styles.icon} onClick={()=>(onCreateClick(index+1, taskData))}>
+                            {!props.scheduleAssignment.linkRight && props.nextOpen ?
+                                <IconButton
+                                    size='small'
+                                    className={styles.icon}
+                                    onClick={()=>(props.onCreateClick(props.index+1, props.scheduleAssignment))}>
                                     <AddRoundedIcon />
                                 </IconButton> : undefined
                             }
@@ -60,3 +73,6 @@ export default function CalendarEntry({index, col, taskData, onRemoveClick, onCr
         </Draggable>
     );
 }
+
+
+export default memo(CalendarEntry);
