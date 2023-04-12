@@ -1,7 +1,6 @@
 """
 Django command to populate the database with some predefined mock data.
 """
-import datetime
 import random
 
 from django.core.management.base import BaseCommand
@@ -178,7 +177,8 @@ class Command(BaseCommand):
                 schedule_definition=schedule_definition,
                 user=random.choice(students).user,
             )
-            for i in range(10, 25) for schedule_definition in schedule_definitions
+            for i in range(10, 25)
+            for schedule_definition in schedule_definitions
         ]
 
         for s in schedule_assignments:
@@ -188,8 +188,11 @@ class Command(BaseCommand):
 
         for schedule_assignment in schedule_assignments:
             schedule_definition_of_0 = schedule_assignment.schedule_definition
+            date = schedule_assignment.assigned_date
 
-            buildings_in_schedule_definition_of_0 = schedule_definition_of_0.buildings.all()
+            buildings_in_schedule_definition_of_0 = (
+                schedule_definition_of_0.buildings.all()
+            )
 
             work_entries = []
 
@@ -197,83 +200,87 @@ class Command(BaseCommand):
                 building = buildings_in_schedule_definition_of_0[index]
                 work_entries.append(
                     ScheduleWorkEntry(
-                        creation_timestamp=f"{schedule_assignment.assigned_date} 12:{index}0:00",
+                        creation_timestamp=f"{date} 12:{index}0:00",
                         image="/some/path",
                         creator=schedule_assignment.user,
                         building=building,
                         schedule_assignment=schedule_assignment,
-                        entry_type="AR"
+                        entry_type="AR",
                     )
                 )
                 work_entries.append(
                     ScheduleWorkEntry(
-                        creation_timestamp=f"{schedule_assignment.assigned_date} 12:{index}1:00",
+                        creation_timestamp=f"{date} 12:{index}1:00",
                         image="/some/path",
                         creator=schedule_assignment.user,
                         building=building,
                         schedule_assignment=schedule_assignment,
-                        entry_type="AR"
+                        entry_type="AR",
                     )
                 )
                 work_entries.append(
                     ScheduleWorkEntry(
-                        creation_timestamp=f"{schedule_assignment.assigned_date} 12:{index}2:00",
+                        creation_timestamp=f"{date} 12:{index}2:00",
                         image="/some/path",
                         creator=schedule_assignment.user,
                         building=building,
                         schedule_assignment=schedule_assignment,
-                        entry_type="WO"
+                        entry_type="WO",
                     )
                 )
                 work_entries.append(
                     ScheduleWorkEntry(
-                        creation_timestamp=f"{schedule_assignment.assigned_date} 12:{index}3:00",
+                        creation_timestamp=f"{date} 12:{index}3:00",
                         image="/some/path",
                         creator=schedule_assignment.user,
                         building=building,
                         schedule_assignment=schedule_assignment,
-                        entry_type="WO"
+                        entry_type="WO",
                     )
                 )
                 work_entries.append(
                     ScheduleWorkEntry(
-                        creation_timestamp=f"{schedule_assignment.assigned_date} 12:{index}4:00",
+                        creation_timestamp=f"{date} 12:{index}4:00",
                         image="/some/path",
                         creator=schedule_assignment.user,
                         building=building,
                         schedule_assignment=schedule_assignment,
-                        entry_type="WO"
+                        entry_type="WO",
                     )
                 )
                 work_entries.append(
                     ScheduleWorkEntry(
-                        creation_timestamp=f"{schedule_assignment.assigned_date} 12:{index}5:00",
+                        creation_timestamp=f"{date} 12:{index}5:00",
                         image="/some/path",
                         creator=schedule_assignment.user,
                         building=building,
                         schedule_assignment=schedule_assignment,
-                        entry_type="DE"
+                        entry_type="DE",
                     )
                 )
 
             work_entries.append(
                 ScheduleWorkEntry(
-                    creation_timestamp=f"{schedule_assignment.assigned_date} 13:00:00",
+                    creation_timestamp=f"{date} 13:00:00",
                     image="/some/path",
                     creator=schedule_assignment.user,
-                    building=buildings_in_schedule_definition_of_0[len(buildings_in_schedule_definition_of_0) - 2],
+                    building=buildings_in_schedule_definition_of_0[
+                        len(buildings_in_schedule_definition_of_0) - 2
+                    ],
                     schedule_assignment=schedule_assignment,
-                    entry_type="AR"
+                    entry_type="AR",
                 )
             )
             work_entries.append(
                 ScheduleWorkEntry(
-                    creation_timestamp=f"{schedule_assignment.assigned_date} 13:07:00",
+                    creation_timestamp=f"{date} 13:07:00",
                     image="/some/path",
                     creator=schedule_assignment.user,
-                    building=buildings_in_schedule_definition_of_0[len(buildings_in_schedule_definition_of_0) - 2],
+                    building=buildings_in_schedule_definition_of_0[
+                        len(buildings_in_schedule_definition_of_0) - 2
+                    ],
                     schedule_assignment=schedule_assignment,
-                    entry_type="WO"
+                    entry_type="WO",
                 )
             )
 
