@@ -61,7 +61,8 @@ export default function LiveRoutesElement() {
                                 (item) => scheduleDefinitionData.data.buildings.includes(item.id)
                             ),
                         }
-                    ));
+                    )
+            );
         }
     }, [session, scheduleDefinitionData]);
 
@@ -96,8 +97,6 @@ export default function LiveRoutesElement() {
                         }));
         }
     }, [session, scheduleAssignmentData]);
-
-    console.log(workEntriesData);
 
     if (
         !scheduleDefinitionData ||
@@ -187,6 +186,14 @@ export default function LiveRoutesElement() {
             return (
                 <div>
                     {scheduleDefinitionData.status}
+                    <br/>
+                    {locationGroupData.status}
+                    <br/>
+                    {buildingsData.status}
+                    <br/>
+                    {workEntriesData.status}
+                    <br/>
+                    {scheduleAssignmentData.status}
                 </div>
             );
         }

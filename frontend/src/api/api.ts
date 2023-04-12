@@ -221,7 +221,7 @@ const getUsersList = (session: Session | null, setter: ((e:any) => void), query?
 const getBuildingsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.Buildings, session, params ? params : {}, query ? query : {})
         .then((e) => {
-            setter({success: true, status: e.status, data: e.data.results});
+            setter({success: true, status: e.status, data: e.data});
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: []});
