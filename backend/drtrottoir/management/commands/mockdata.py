@@ -1,6 +1,7 @@
 """
 Django command to populate the database with some predefined mock data.
 """
+import datetime
 import random
 
 from django.core.management.base import BaseCommand
@@ -137,6 +138,7 @@ class Command(BaseCommand):
         schedule_definitions = []
 
         for i in range(10):
+            random.shuffle(buildings)
             lg = lgs[i % len(lgs)]
             sched = ScheduleDefinition(
                 name=f"schedule definition {i}", version=1, location_group=lg
@@ -146,7 +148,7 @@ class Command(BaseCommand):
                 ScheduleDefinitionBuilding(
                     building=b, schedule_definition=sched, position=j
                 )
-                for j, b in enumerate(random.choices(buildings, k=5))
+                for j, b in enumerate(buildings[:5])
             ]
 
             for sched_building in sched_buildings:
@@ -172,11 +174,11 @@ class Command(BaseCommand):
 
         schedule_assignments = [
             ScheduleAssignment(
-                assigned_date="2023-03-16",
-                schedule_definition=random.choice(schedule_definitions),
+                assigned_date=f"2023-04-{i}",
+                schedule_definition=schedule_definition,
                 user=random.choice(students).user,
             )
-            for _ in range(25)
+            for i in range(10, 25) for schedule_definition in schedule_definitions
         ]
 
         for s in schedule_assignments:
@@ -184,18 +186,99 @@ class Command(BaseCommand):
 
         self.stdout.write("Adding schedule work entries...")
 
-        work_entries = [
-            ScheduleWorkEntry(
-                creation_timestamp="2023-03-16 12:00:00",
-                image="/some/path",
-                creator=random.choice(students).user,
-                building=random.choice(buildings),
-                schedule_assignment=random.choice(schedule_assignments),
-            )
-        ]
+        for schedule_assignment in schedule_assignments:
+            schedule_definition_of_0 = schedule_assignment.schedule_definition
 
-        for x in work_entries:
-            x.save()
+            buildings_in_schedule_definition_of_0 = schedule_definition_of_0.buildings.all()
+
+            work_entries = []
+
+            for index in range(len(buildings_in_schedule_definition_of_0) - 2):
+                building = buildings_in_schedule_definition_of_0[index]
+                work_entries.append(
+                    ScheduleWorkEntry(
+                        creation_timestamp=f"{schedule_assignment.assigned_date} 12:{index}0:00",
+                        image="/some/path",
+                        creator=schedule_assignment.user,
+                        building=building,
+                        schedule_assignment=schedule_assignment,
+                        entry_type="AR"
+                    )
+                )
+                work_entries.append(
+                    ScheduleWorkEntry(
+                        creation_timestamp=f"{schedule_assignment.assigned_date} 12:{index}1:00",
+                        image="/some/path",
+                        creator=schedule_assignment.user,
+                        building=building,
+                        schedule_assignment=schedule_assignment,
+                        entry_type="AR"
+                    )
+                )
+                work_entries.append(
+                    ScheduleWorkEntry(
+                        creation_timestamp=f"{schedule_assignment.assigned_date} 12:{index}2:00",
+                        image="/some/path",
+                        creator=schedule_assignment.user,
+                        building=building,
+                        schedule_assignment=schedule_assignment,
+                        entry_type="WO"
+                    )
+                )
+                work_entries.append(
+                    ScheduleWorkEntry(
+                        creation_timestamp=f"{schedule_assignment.assigned_date} 12:{index}3:00",
+                        image="/some/path",
+                        creator=schedule_assignment.user,
+                        building=building,
+                        schedule_assignment=schedule_assignment,
+                        entry_type="WO"
+                    )
+                )
+                work_entries.append(
+                    ScheduleWorkEntry(
+                        creation_timestamp=f"{schedule_assignment.assigned_date} 12:{index}4:00",
+                        image="/some/path",
+                        creator=schedule_assignment.user,
+                        building=building,
+                        schedule_assignment=schedule_assignment,
+                        entry_type="WO"
+                    )
+                )
+                work_entries.append(
+                    ScheduleWorkEntry(
+                        creation_timestamp=f"{schedule_assignment.assigned_date} 12:{index}5:00",
+                        image="/some/path",
+                        creator=schedule_assignment.user,
+                        building=building,
+                        schedule_assignment=schedule_assignment,
+                        entry_type="DE"
+                    )
+                )
+
+            work_entries.append(
+                ScheduleWorkEntry(
+                    creation_timestamp=f"{schedule_assignment.assigned_date} 13:00:00",
+                    image="/some/path",
+                    creator=schedule_assignment.user,
+                    building=buildings_in_schedule_definition_of_0[len(buildings_in_schedule_definition_of_0) - 2],
+                    schedule_assignment=schedule_assignment,
+                    entry_type="AR"
+                )
+            )
+            work_entries.append(
+                ScheduleWorkEntry(
+                    creation_timestamp=f"{schedule_assignment.assigned_date} 13:07:00",
+                    image="/some/path",
+                    creator=schedule_assignment.user,
+                    building=buildings_in_schedule_definition_of_0[len(buildings_in_schedule_definition_of_0) - 2],
+                    schedule_assignment=schedule_assignment,
+                    entry_type="WO"
+                )
+            )
+
+            for x in work_entries:
+                x.save()
 
         self.stdout.write("Adding garbage types...")
         types = [
