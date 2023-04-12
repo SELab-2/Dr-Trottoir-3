@@ -4,6 +4,8 @@ import {Button} from '@mui/material';
 import React from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import { signOut } from "next-auth/react"
+
 
 
 export default function LogoutPageElement() {
@@ -14,9 +16,9 @@ export default function LogoutPageElement() {
                 <div className={styles.button_holder}>
 
                     <Button id={styles.button}
-                        onClick={() => {
-                            Router.push('/login', undefined, {shallow: true}).then();
-                        }}
+                        onClick={() =>
+                            signOut({ callbackUrl: '/login' })
+                        }
                         className={styles.button_default}
                     >
                         <CheckIcon className={styles.icon}/>
