@@ -1,5 +1,4 @@
 import {useState} from 'react';
-import {useRouter} from 'next/router';
 import {signIn} from 'next-auth/react';
 import styles from './LoginPageElement.module.css';
 import {Box, Button, TextField} from '@mui/material';
