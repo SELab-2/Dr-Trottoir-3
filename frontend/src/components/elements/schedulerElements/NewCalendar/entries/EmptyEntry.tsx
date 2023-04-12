@@ -8,7 +8,7 @@ type calendarEntryProps = {
     onCreateClick: any,
 }
 
-function EmptyEntry(props: calendarEntryProps) {
+export default function EmptyEntry(props: calendarEntryProps) {
     return (
         <Draggable draggableId={props.scheduleDefinitionId.toString() + props.index.toString()} index={props.index}>
             {(draggableProvided) => (
@@ -16,12 +16,11 @@ function EmptyEntry(props: calendarEntryProps) {
                     {...draggableProvided.dragHandleProps}
                     ref={draggableProvided.innerRef}
                     className={styles.test}
-                    onClick={() => (props.onCreateClick(props.index, undefined))}
-                />
+                    onClick={() => (props.onCreateClick(props.scheduleDefinitionId, props.index, undefined))}
+                >
+                    <div className={styles.inner}/>
+                </div>
             )}
         </Draggable>
     );
 }
-
-
-export default memo(EmptyEntry);

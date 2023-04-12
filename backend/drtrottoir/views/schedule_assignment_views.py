@@ -62,6 +62,7 @@ class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet)
     filterset_fields = ["assigned_date", "user", "schedule_definition"]
     search_fields: List[str] = []
 
+
     permission_classes = [IsAuthenticated, IsSuperstudentOrAdmin]
     permission_classes_by_action = {
         "retrieve": [IsAuthenticated, IsStudent | IsSuperstudentOrAdmin],
@@ -93,7 +94,7 @@ class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet)
             Response: An appropriate HTTP response based on the given request.
 
         """
-        read_only_fields = ["assigned_date", "schedule_definition"]
+        read_only_fields = []
         for field in read_only_fields:
             request.data.pop(field, False)
         return super().update(request, *args, **kwargs)

@@ -4,8 +4,15 @@ import styles from './WeekComponent.module.css';
 import RouteListComponent from './RouteListComponent';
 import DayHeader from '@/components/elements/schedulerElements/NewCalendar/DayHeader';
 import {ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
-import {ApiData, getScheduleAssignmentsList, patchScheduleAssignmentDetail} from '@/api/api';
+import {
+    ApiData,
+    deleteScheduleAssignment,
+    getScheduleAssignmentsList,
+    patchScheduleAssignmentDetail,
+    postScheduleAssignment,
+} from '@/api/api';
 import {useSession} from 'next-auth/react';
+import {random} from "nanoid";
 
 type schedulerProps = {
     users: ApiData<User[]>,
@@ -20,14 +27,105 @@ function WeekComponent(props: schedulerProps) {
     const {data: session} = useSession();
     const [requestChecker, setRequestChecker] = useState<any>();
 
+    const [tasks, setTasks] = useState<{[e: string]: any[]}>({});
+
     const firstDay = new Date();
     firstDay.setDate(props.start);
+
+
+    const updateTaskLists = (scheduleAssignments: ApiData<ScheduleAssignment[]>) => {
+        const generatedTasks = Object.fromEntries(props.scheduleDefinitions.data.map((scheduleDefinition) => {
+            const taskList: any[] = new Array(props.interval).fill({type: 0});
+            scheduleAssignments.data
+                .filter((scheduleAssignment) => {
+                    return scheduleAssignment.schedule_definition == scheduleDefinition.id;
+                })
+                .forEach((assignment) => {
+                    const index = new Date(assignment.assigned_date).getDay();
+
+                    taskList[index] = {
+                        type: 1,
+                        user: props.users.data.filter((e) => e.id == assignment.user).at(0),
+                        id: assignment.id,
+                        date: assignment.assigned_date,
+                        linkLeft: false,
+                        linkRight: false,
+                    };
+
+                    if (index > 0 &&
+                            taskList[index - 1].type == 1 &&
+                            taskList[index - 1].user.id == assignment.user) {
+                        taskList[index - 1].linkRight = true;
+                        taskList[index].linkLeft = true;
+                    }
+                    if (index < props.interval - 1 && taskList[index + 1].type == 1 &&
+                            taskList[index + 1].user.id == assignment.user) {
+                        taskList[index + 1].linkLeft = true;
+                        taskList[index].linkRight = true;
+                    }
+                });
+            return [scheduleDefinition.id, taskList];
+        }));
+
+        setTasks(generatedTasks);
+    };
+
+
+    const removeTask = (id: number) => {
+        deleteScheduleAssignment(session, id, setRequestChecker);
+
+        if (props.scheduleAssignments) {
+            props.setScheduleAssignments(
+                {
+                    success: props.scheduleAssignments.success,
+                    status: props.scheduleAssignments.status,
+                    data: props.scheduleAssignments.data.filter((e) => e.id != id),
+                }
+            );
+        }
+    };
+
+
+    const createTask = (scheduleDefinitionIndex: number, scheduleAssignmentIndex: number, scheduleAssignment: any) => {
+        const date = new Date();
+        date.setDate(props.start + scheduleAssignmentIndex);
+
+        let newTask: ScheduleAssignment;
+        if (scheduleAssignment == undefined) {
+            newTask = {
+                id: 0, // will be ignored by django, but required to fit type
+                user: Math.floor(Math.random() * 6) + 1,
+                assigned_date: date.toISOString().split('T')[0],
+                schedule_definition: scheduleDefinitionIndex,
+            };
+        } else {
+            newTask = {
+                id: -1, // will be ignored by django, but required to fit type
+                user: scheduleAssignment.user.id,
+                assigned_date: date.toISOString().split('T')[0],
+                schedule_definition: scheduleDefinitionIndex,
+            };
+        }
+
+        postScheduleAssignment(session, newTask, setRequestChecker);
+
+        if (props.scheduleAssignments) {
+            props.setScheduleAssignments(
+                {
+                    success: props.scheduleAssignments.success,
+                    status: props.scheduleAssignments.status,
+                    data: [...props.scheduleAssignments.data, newTask],
+                }
+            );
+        }
+    };
+
 
     const onDragEnd = (result: DropResult) => {
         document.body.style.color = 'inherit';
 
         if (props.scheduleAssignments) {
-            const {destination, source, draggableId} = result;
+            const {destination, source} = result;
 
             // drop at start position
             if (source.droppableId == destination?.droppableId && source.index == destination.index) {
@@ -43,7 +141,7 @@ function WeekComponent(props: schedulerProps) {
             const newDate = new Date();
 
             // patch moved
-            props.setScheduleAssignments({
+            const newScheduleAssignments = {
                 status: props.scheduleAssignments.status,
                 success: props.scheduleAssignments.success,
                 data: props.scheduleAssignments.data.map((e) => {
@@ -63,13 +161,17 @@ function WeekComponent(props: schedulerProps) {
                             }
                         } else if (source.index > index) {
                             if (destination.index <= index) {
-                                newDate.setDate(props.start + index+1);
-                                e.assigned_date = newDate.toISOString().split('T')[0];
-                                patchScheduleAssignmentDetail(
-                                    session,
-                                    e.id,
-                                    {assigned_date: e.assigned_date},
-                                    setRequestChecker);
+                                if (index >= props.interval-1) {
+                                    deleteScheduleAssignment(session, e.id, setRequestChecker);
+                                } else {
+                                    newDate.setDate(props.start + index + 1);
+                                    e.assigned_date = newDate.toISOString().split('T')[0];
+                                    patchScheduleAssignmentDetail(
+                                        session,
+                                        e.id,
+                                        {assigned_date: e.assigned_date},
+                                        setRequestChecker);
+                                }
                             }
                         }
                     } else {
@@ -85,13 +187,17 @@ function WeekComponent(props: schedulerProps) {
                             }
                         } else if (e.schedule_definition == Number(destination.droppableId)) {
                             if (destination.index <= index) {
-                                newDate.setDate(props.start + index + 1);
-                                e.assigned_date = newDate.toISOString().split('T')[0];
-                                patchScheduleAssignmentDetail(
-                                    session,
-                                    e.id,
-                                    {assigned_date: e.assigned_date},
-                                    setRequestChecker);
+                                if (index >= props.interval-1) {
+                                    deleteScheduleAssignment(session, e.id, setRequestChecker);
+                                } else {
+                                    newDate.setDate(props.start + index + 1);
+                                    e.assigned_date = newDate.toISOString().split('T')[0];
+                                    patchScheduleAssignmentDetail(
+                                        session,
+                                        e.id,
+                                        {assigned_date: e.assigned_date},
+                                        setRequestChecker);
+                                }
                             }
                         }
                     }
@@ -113,15 +219,27 @@ function WeekComponent(props: schedulerProps) {
 
                     return e;
                 }),
-            });
+            };
+
+            updateTaskLists(newScheduleAssignments);
+            props.setScheduleAssignments(newScheduleAssignments);
         }
     };
 
     useEffect(() => {
         if (requestChecker) {
             getScheduleAssignmentsList(session, props.setScheduleAssignments);
+            if (props.scheduleAssignments) {
+                updateTaskLists(props.scheduleAssignments);
+            }
         }
     }, [requestChecker]);
+
+    useEffect(() => {
+        if (props.scheduleAssignments) {
+            updateTaskLists(props.scheduleAssignments);
+        }
+    }, [props.scheduleAssignments]);
 
 
     return (
@@ -146,6 +264,8 @@ function WeekComponent(props: schedulerProps) {
                 <div className={styles.scrollable}>
                     <div className={styles.row_container}>
                         {props.scheduleDefinitions.data.map((scheduleDefinitionData, index) => {
+                            const taskData = tasks[scheduleDefinitionData.id] ? tasks[scheduleDefinitionData.id] : [];
+
                             return (
                                 <RouteListComponent
                                     key={index}
@@ -153,8 +273,10 @@ function WeekComponent(props: schedulerProps) {
                                     start={firstDay.toISOString().split('T')[0]}
                                     interval={props.interval}
                                     scheduleDefinition={scheduleDefinitionData}
-                                    scheduleAssignments={props.scheduleAssignments}
+                                    taskData={taskData}
                                     setScheduleAssignments={props.setScheduleAssignments}
+                                    onCreateClick={createTask}
+                                    onRemoveClick={removeTask}
                                 />
                             );
                         })}

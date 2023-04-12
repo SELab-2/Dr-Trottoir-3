@@ -14,7 +14,7 @@ type calendarEntryProps = {
     onCreateClick: any,
 }
 
-function CalendarEntry(props: calendarEntryProps) {
+export default function CalendarEntry(props: calendarEntryProps) {
     const [hover, setHover] = useState(false);
 
     return (
@@ -40,10 +40,13 @@ function CalendarEntry(props: calendarEntryProps) {
                         className={styles.inner}
                     >
                         <div className={styles.content}>
-                            <p>
+                            <p className={styles.text}>
                                 {
-                                    !props.scheduleAssignment.linkLeft || snapshot.isDragging ?
-                                        props.scheduleAssignment.user : ''
+                                    (!props.scheduleAssignment.linkLeft || snapshot.isDragging) &&
+                                    props.scheduleAssignment.user ?
+                                        (props.scheduleAssignment.user.first_name +
+                                            ' ' +
+                                            props.scheduleAssignment.user.last_name) : ''
                                 }
                             </p>
                         </div>
@@ -52,8 +55,9 @@ function CalendarEntry(props: calendarEntryProps) {
                                 <IconButton
                                     size='small'
                                     className={styles.icon}
-                                    onClick={()=>(props.onRemoveClick(props.scheduleAssignment.id))}>
-                                    <CloseRoundedIcon />
+                                    onClick={()=>(props.onRemoveClick(props.scheduleAssignment.id))}
+                                >
+                                    <CloseRoundedIcon className={styles.icon}/>
                                 </IconButton> : undefined
                             }
                         </div>
@@ -62,8 +66,12 @@ function CalendarEntry(props: calendarEntryProps) {
                                 <IconButton
                                     size='small'
                                     className={styles.icon}
-                                    onClick={()=>(props.onCreateClick(props.index+1, props.scheduleAssignment))}>
-                                    <AddRoundedIcon />
+                                    onClick={()=>(props.onCreateClick(
+                                        props.scheduleDefinitionId,
+                                        props.index+1,
+                                        props.scheduleAssignment))}
+                                >
+                                    <AddRoundedIcon className={styles.icon}/>
                                 </IconButton> : undefined
                             }
                         </div>
@@ -73,6 +81,3 @@ function CalendarEntry(props: calendarEntryProps) {
         </Draggable>
     );
 }
-
-
-export default memo(CalendarEntry);

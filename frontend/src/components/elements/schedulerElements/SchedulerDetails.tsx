@@ -1,7 +1,7 @@
 import WeekComponent from './NewCalendar/WeekComponent';
 
 import styles from './SchedulerDetails.module.css';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ApiData, getScheduleAssignmentsList, useAuthenticatedApi} from '@/api/api';
 import {useSession} from 'next-auth/react';
 import {ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
@@ -24,7 +24,15 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
                 session,
                 setScheduleAssignments);
         }
-    }, [props.scheduleDefinitions, props.start, session] || 1);
+    }, [props.scheduleDefinitions, props.start, session]);
+
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            getScheduleAssignmentsList(session, setScheduleAssignments);
+        }, 1000);
+        return () => clearInterval(intervalId);
+    }, []);
 
     if (props.users?.data && props.scheduleDefinitions?.data) {
         const allScheduleDefinitionIds = props.scheduleDefinitions.data.map((scheduleDefinition) => {
