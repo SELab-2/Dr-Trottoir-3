@@ -10,5 +10,9 @@ services:
       - ./:/frontend
       - /frontend/node_modules
     environment:
-      - NEXT_API_URL="http://localhost"
-      - NEXT_INTERNAL_API_URL="http://localhost/api/"
+      - NEXT_API_URL=$NEXT_API_URL
+      - NEXT_INTERNAL_API_URL=$NEXT_INTERNAL_API_URL
+      - NEXT_INTERNAL_API_AUTH_URL=$NEXT_INTERNAL_API_AUTH_URL
+      - NEXTAUTH_URL=$NEXTAUTH_URL
+      - NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+

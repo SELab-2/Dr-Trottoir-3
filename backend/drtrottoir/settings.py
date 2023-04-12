@@ -117,7 +117,7 @@ sqlite_config = {
 
 DATABASES = {
     "default": (
-        postgres_config if os.environ.get("DATABASE") == "postgres" else sqlite_config
+        postgres_config if os.environ.get("DB_HOST") else sqlite_config
     )
 }
 
@@ -171,5 +171,5 @@ MEDIA_ROOT = STATIC_ROOT_BASE + "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOWED_ORIGINS = os.environ.get(
-    "CORS_ALLOWED_ORIGINS", "http://localhost:3000"
+    "CORS_ALLOWED_ORIGINS", ""
 ).split(",")

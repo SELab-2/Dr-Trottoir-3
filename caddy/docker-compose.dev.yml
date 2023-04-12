@@ -14,8 +14,6 @@ services:
       file: ../backend/docker-compose.dev.yml
       service: backend
     build: ../backend
-    environment:
-      - BASE_PATH=api/
     networks:
       - selab
 
@@ -27,13 +25,6 @@ services:
       selab:
         aliases:
           - db
-  docs:
-    extends:
-      file: ../backend/docs/docker-compose.yml
-      service: docs
-    build: ../backend
-    networks:
-      - selab
 
   frontend:
     extends:
