@@ -157,6 +157,7 @@ export default function UserElement() {
                                                     <div className={styles.routesItem}>
                                                         <h4>
                                                             {
+                                                                // @ts-ignore
                                                                 // eslint-disable-next-line max-len
                                                                 scheduleDefinitions?.data.filter((scheduleDefinition) => scheduleDefinition.id == e.schedule_definition).at(0).name
                                                             }
