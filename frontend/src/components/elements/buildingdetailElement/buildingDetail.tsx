@@ -9,7 +9,7 @@ import {defaultBuildingImage} from '@/constants/images';
 import {useSession} from 'next-auth/react';
 import ScheduleGarbageListItem from './scheduleGarbageListItem';
 import Button from '@mui/material/Button';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import BuildingIssueListItem from '@/components/elements/buildingdetailElement/buildingIssueListItem';
 
 interface IBuildingDetail {
@@ -45,8 +45,9 @@ function BuildingDetailManualLink(props:{path: string | null }):JSX.Element {
 export default function BuildingDetail(props: { id: number }): JSX.Element {
     const {id} = props;
 
-    const [buildingDetail, setBuildingDetail] = React.useState<IBuildingDetail | undefined>(undefined);
-    const [issuesModalOpen, setIssuesModalOpen] = React.useState(false);
+    const [buildingDetail, setBuildingDetail] =
+        useState<IBuildingDetail | undefined>(undefined);
+    const [issuesModalOpen, setIssuesModalOpen] = useState(false);
     const handleIssueModalOpen = ()=> setIssuesModalOpen(true);
     const handleIssueModalClose = ()=> setIssuesModalOpen(false);
 
@@ -162,7 +163,7 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
                 {/* Building description container */}
                 <Box className={styles.building_desc_container}>
                     <Typography>
-                      TODO add street map using longitude {buildingDetail.longitude} and latitude {buildingDetail.latitude}
+                      TODO add street map longitude {buildingDetail.longitude} and latitude {buildingDetail.latitude}
                     </Typography>
                 </Box>
 

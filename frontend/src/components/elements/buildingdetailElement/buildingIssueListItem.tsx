@@ -4,15 +4,15 @@ import {useSession} from 'next-auth/react';
 import CloseIcon from '@mui/icons-material/Close';
 import {ErrorOutline} from '@mui/icons-material';
 import {deleteIssue, getIssueDetail, patchIssueDetail, useAuthenticatedApi} from '@/api/api';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 
 export default function BuildingIssueListItem(props: { issue: number }): JSX.Element {
     const {issue: id} = props;
     const {data: session} = useSession();
 
     const [issue, setIssue] = useAuthenticatedApi<Issue>();
-    const [approved, setApproved]= React.useState(false);
-    const [resolved, setResolved]= React.useState(false);
+    const [approved, setApproved]= useState(false);
+    const [resolved, setResolved]= useState(false);
     useEffect(() => {
         getIssueDetail(session, setIssue, id);
     });

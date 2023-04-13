@@ -6,7 +6,7 @@ import {useSession} from 'next-auth/react';
 import {getGarbageCollectionScheduleDetail, getGarbageTypeDetail,
     patchGarbageCollectionScheduleDetail, useAuthenticatedApi} from '@/api/api';
 import {GarbageCollectionSchedule, GarbageType} from '@/api/models';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 
 
 export default function ScheduleGarbageListItem(props: {id: number}): JSX.Element {
@@ -16,9 +16,9 @@ export default function ScheduleGarbageListItem(props: {id: number}): JSX.Elemen
     const [schedule, setSchedule] = useAuthenticatedApi<GarbageCollectionSchedule>();
     const [garbage, setGarbage] = useAuthenticatedApi<GarbageType>();
 
-    const [open, setOpen] = React.useState(false);
-    const [note, setNote] = React.useState<string | null>(null);
-    const [textContent, setTextContent] = React.useState('');
+    const [open, setOpen] = useState(false);
+    const [note, setNote] = useState<string | null>(null);
+    const [textContent, setTextContent] = useState('');
 
     useEffect(()=> {
         getGarbageCollectionScheduleDetail(session, setSchedule, id);

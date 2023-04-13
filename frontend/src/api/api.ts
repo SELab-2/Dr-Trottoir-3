@@ -105,13 +105,11 @@ function getList<T>(route: Api, params: any, query: any): SWRResponse<PaginatedR
     const queryParams = new URLSearchParams(query);
     routeStr += '?' + queryParams.toString();
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const {data: session} = useSession();
 
     // @ts-ignore
     const token = session ? session.accessToken : '';
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     return useSWR<PaginatedResponse<T>>([token, routeStr], fetcher);
 }
 
@@ -124,13 +122,11 @@ function getList<T>(route: Api, params: any, query: any): SWRResponse<PaginatedR
 function getDetail<T>(route: Api, id: number): SWRResponse<T, any> {
     const routeStr = route.replace(':id', id.toString());
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const {data: session} = useSession();
 
     // @ts-ignore
     const token = session ? session.accessToken : '';
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     return useSWR<T>([token, routeStr], fetcher);
 }
 
