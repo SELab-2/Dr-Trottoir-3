@@ -20,7 +20,7 @@ interface IBuildingDetail {
   pdf_guide: string | null,
   description: string | null
   image: string | null,
-  syndicus: string,
+  syndici: string,
   schedules: IScheduleGarbageListItem[],
   issues: Issue[],
 }
@@ -72,35 +72,33 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
     // Get building data
     useEffect(()=>{
         getBuildingDetail(session, setBuilding, id);
-    }, []);
+    }, [id, session, setBuilding]);
 
     // Get location group
     useEffect(()=> {
         if (building) {
             getLocationGroupDetail(session, setLocation, building.data.location_group);
         }
-    }, [building]);
+    }, [building, session, setLocation]);
 
     // Get schedules
     useEffect(() => {
         getBuildingDetailGarbageCollectionSchedules(session, setSchedules, id);
-    }, []);
+    }, [id, session, setSchedules]);
 
     // Get garbage types
     useEffect(()=> {
         getGarbageTypesList(session, setGarbageTypes);
-    }, []);
+    }, [session, setGarbageTypes]);
 
     // Get issues
     useEffect(()=> {
         getBuildingDetailIssues(session, setIssues, id);
-    }, []);
+    }, [id, session, setIssues]);
 
     useEffect(()=> {
         getUsersList(session, setSyndici, {'syndicus__buildings': id}, {});
-    }, []);
-
-    let issuesModalButtonText: string = '0 issues remaining';
+    }, [id, session, setSyndici]);
 
     useEffect(() => {
         if (session && building && location && schedules && garbageTypes && issues && syndici) {
@@ -120,7 +118,7 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
             const syndiciNames=syndici.data.map(
                 (syndicus) => `${syndicus.last_name} ${syndicus.first_name}`).
                 sort().join(', ');
-            const detail = {
+            const detail: IBuildingDetail = {
                 id: id,
                 location_group: location.data.name,
                 name: building.data.name ? building.data.name : building.data.address,
@@ -128,26 +126,29 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
                 pdf_guide: building.data.pdf_guide,
                 description: `TODO insert map with coordinates ${building.data.longitude} ${building.data.latitude}`,
                 image: building.data.image,
-                syndicus: syndiciNames,
+                syndici: syndiciNames,
                 schedules: scheduleItems,
-                issues: issues.data,
+                issues: issues.data.filter((issue)=> !issue.resolved ),
             };
             setBuildingDetail(detail);
-            const issueCount = issues.data.length;
-            if (issues.data.length > 0) {
-                issuesModalButtonText = `${issueCount}+ issues remaining`;
-            }
         }
     },
-    [building, location, schedules, garbageTypes, issues, syndici]);
+    [id, session, building, location, schedules, garbageTypes, issues, syndici]);
 
 
     if (!buildingDetail) {
         return <p>Loading...</p>;
     }
 
-    return (
+    let issuesModalButtonText = `${buildingDetail.issues.length} issues remaining`;
+    if (buildingDetail.issues.length === 0) {
+        issuesModalButtonText = `No issues`;
+    } else if (buildingDetail.issues.length === 1) {
+        issuesModalButtonText = `${buildingDetail.issues.length} issue remaining`;
+    }
 
+
+    return (
         <Box className={styles.full}>
             {/* Top row */}
             <Box className={styles.top_row_container}
@@ -166,7 +167,7 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
                             {buildingDetail.address}
                         </Typography>
                         <Typography className={styles.building_data_data}>
-                            {buildingDetail.syndicus}
+                            {buildingDetail.syndici}
                         </Typography>
                         <br/>
                         <BuildingDetailManualLink path={buildingDetail.pdf_guide}/>
@@ -208,9 +209,6 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
                             <ScheduleGarbageListItem
                                 key={schedule.id}
                                 id={schedule.id}
-                                type={schedule.type}
-                                date={schedule.date}
-                                note={schedule.note}
                             />
                         )}
                     </List>
@@ -236,7 +234,7 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
                     <List>
                         {
                             buildingDetail.issues.map((issue: Issue) =>
-                                <BuildingIssueListItem issue={issue} key={issue.id}/>
+                                <BuildingIssueListItem issue={issue.id} key={issue.id}/>
                             )
                         }
                     </List>

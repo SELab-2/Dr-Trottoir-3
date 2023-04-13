@@ -1,59 +1,52 @@
 import {Box, Card, IconButton, ListItem, Tooltip} from '@mui/material';
-import * as React from 'react';
 import {Issue} from '@/api/models';
 import {useSession} from 'next-auth/react';
 import CloseIcon from '@mui/icons-material/Close';
 import {ErrorOutline} from '@mui/icons-material';
-import {Api, deleteDetail, patchDetail} from '@/api/api';
+import {deleteIssue, getIssueDetail, patchIssueDetail, useAuthenticatedApi} from '@/api/api';
+import React, {useEffect} from 'react';
 
-function approveIssue(issue: number, user: number, token: string) {
-    return patchDetail<Issue>(Api.IssueDetail, issue, {approval_user: user}, token);
-}
-
-function resolveIssue(issue: number, token: string) {
-    return deleteDetail<Issue>(Api.IssueDetail, issue, token);
-}
-
-function BuildingIssueListItemSymbols(props: { issue: Issue }): JSX.Element {
-    const {issue} = props;
-    const approved = !!issue.approval_user;
+export default function BuildingIssueListItem(props: { issue: number }): JSX.Element {
+    const {issue: id} = props;
     const {data: session} = useSession();
-    // @ts-ignore
-    const token = session ? session.accessToken : '';
-    // @ts-ignore
-    const user = session!.userid;
-    if (!approved) {
-        return (
-            <form action={'?'} method={'PATCH'} onSubmit={async () => {
-                await approveIssue(issue.id, user, token);
-            }}>
-                <IconButton type={'submit'}>
-                    <Tooltip title={'Issue has not yet been approved. Press to approve issue.'}>
-                        <CloseIcon sx={{color: 'red'}}/>
-                    </Tooltip>
-                </IconButton>
-            </form>
-        );
-    } else {
-        return (
-            <form action={'?'} method={'DELETE'} onSubmit={async () => {
-                await resolveIssue(issue.id, token);
-            }}>
-                <IconButton type={'submit'}>
-                    <Tooltip title={'Issue has been approved but not resolved. Press to resolve issue.'}>
-                        <ErrorOutline sx={{color: '#ffaa00'}}/>
-                    </Tooltip>
-                </IconButton>
-            </form>
-        );
-    }
-}
 
-export default function BuildingIssueListItem(props: { issue: Issue }): JSX.Element {
-    const {issue} = props;
+    const [issue, setIssue] = useAuthenticatedApi<Issue>();
+    const [approved, setApproved]= React.useState(false);
+    const [resolved, setResolved]= React.useState(false);
+    useEffect(() => {
+        getIssueDetail(session, setIssue, id);
+    });
+
+    useEffect(() => {
+        if (issue) {
+            setApproved(issue.data.approval_user !== null);
+            setResolved(issue.data.resolved);
+        }
+    }, [issue]);
+
+    if (!issue) {
+        return <></>;
+    }
+    // If issue already resolved, don't render it
+    if (resolved) {
+        return <></>;
+    }
+
+    // @ts-ignore
+    const user = session.userid;
+
+    const handleApproval = () => {
+        patchIssueDetail(session, id, {approval_user: user});
+        setApproved(true);
+    };
+
+    const handleResolve = () => {
+        deleteIssue(session, id);
+        setResolved(true);
+    };
 
     return (
-        <ListItem key={issue.id}>
+        <ListItem key={issue.data.id}>
             <Card
                 sx={{
                     width: '100%', height: '40px',
@@ -69,7 +62,7 @@ export default function BuildingIssueListItem(props: { issue: Issue }): JSX.Elem
                     flexGrow: 1,
                     justifyContent: 'flex-start',
                 }}>
-                    {issue.message}
+                    {issue.data.message}
                 </Box>
                 <Box sx={{
                     display: 'flex',
@@ -77,7 +70,18 @@ export default function BuildingIssueListItem(props: { issue: Issue }): JSX.Elem
                     flexGrow: 1,
                     justifyContent: 'flex-end',
                 }}>
-                    <BuildingIssueListItemSymbols issue={issue}/>
+                    { approved ?
+                        <IconButton onClick={handleApproval}>
+                            <Tooltip title={'Issue has not yet been approved. Press to approve issue.'}>
+                                <CloseIcon sx={{color: 'red'}}/>
+                            </Tooltip>
+                        </IconButton> :
+                        <IconButton onClick={handleResolve}>
+                            <Tooltip title={'Issue has been approved but not resolved. Press to resolve issue.'}>
+                                <ErrorOutline sx={{color: '#ffaa00'}}/>
+                            </Tooltip>
+                        </IconButton>
+                    }
                 </Box>
             </Card>
         </ListItem>

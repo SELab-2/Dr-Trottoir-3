@@ -3,79 +3,56 @@ import {Box, Button, Card, Dialog, DialogActions, DialogTitle, IconButton, ListI
     from '@mui/material';
 import * as React from 'react';
 import {useSession} from 'next-auth/react';
-import {patchGarbageCollectionScheduleDetail} from '@/api/api';
+import {getGarbageCollectionScheduleDetail, getGarbageTypeDetail,
+    patchGarbageCollectionScheduleDetail, useAuthenticatedApi} from '@/api/api';
+import {GarbageCollectionSchedule, GarbageType} from '@/api/models';
+import {useEffect} from 'react';
 
 
-// eslint-disable-next-line require-jsdoc
-function ScheduleWarningSymbols(props: { id: number, text: string | null, date: string, garbage: string}): JSX.Element {
-    const {id, text, date, garbage} = props;
-    const noteExists = text && text.length > 0;
-    const [open, setOpen] = React.useState(false);
+export default function ScheduleGarbageListItem(props: {id: number}): JSX.Element {
+    const {id} =props;
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    //                         <IconButton onClick={() => createScheduleEntryNote(id, text)}>
     const {data: session} = useSession();
-    const textFieldId = `schedule-${id}-note-form-text-field`;
+    const [schedule, setSchedule] = useAuthenticatedApi<GarbageCollectionSchedule>();
+    const [garbage, setGarbage] = useAuthenticatedApi<GarbageType>();
 
-    return (
-        <>
-            {
-                noteExists ?
-                    <>
-                        <Tooltip title={text} arrow>
-                            <ErrorOutline fontSize="small"/>
-                        </Tooltip>
-                        <IconButton onClick={handleClickOpen}>
-                            <CreateRounded fontSize="small"/>
-                        </IconButton>
-                    </> :
-                    <IconButton onClick={handleClickOpen}>
-                        <AddRounded fontSize="small"/>
-                    </IconButton>
-            }
-            <Dialog open={open} onClose={handleClose} fullWidth={true}>
-                <DialogTitle>Update note for {garbage} on {date}</DialogTitle>
-                <form method={'PATCH'} onSubmit={(event) => {
-                    // @ts-ignore
-                    const textField = event.target[textFieldId];
-                    if (textField) {
-                        const formText = textField.value;
-                        if (text !== formText) {
-                            patchGarbageCollectionScheduleDetail(
-                                session, id,
-                                {note: formText ? formText : null}
-                            );
-                        }
-                    }
-                }}>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id={textFieldId}
-                        fullWidth
-                        variant="standard"
-                        defaultValue={text}
-                    />
-                    <DialogActions>
-                        <Button key={`schedule-${id}-note-form-cancel-button`} onClick={handleClose}>Cancel</Button>
-                        <Button key={`schedule-${id}-note-form-submit-button`} type={'submit'}>Submit</Button>
-                    </DialogActions>
-                </form>
-            </Dialog>
-        </>
-    );
-}
+    const [open, setOpen] = React.useState(false);
+    const [note, setNote] = React.useState<string | null>(null);
+    const [textContent, setTextContent] = React.useState('');
 
-export default function ScheduleGarbageListItem(
-    props: {id: number, type: string, date: string, note: string}): JSX.Element {
-    const {id, type, date, note} =props;
+    useEffect(()=> {
+        getGarbageCollectionScheduleDetail(session, setSchedule, id);
+    }, [id, session, setSchedule]);
+
+    useEffect(() => {
+        if (schedule) {
+            getGarbageTypeDetail(session, setGarbage, schedule.data.garbage_type);
+        }
+    }, [schedule, session, setGarbage]);
+
+    useEffect(() => {
+        if (schedule) {
+            setNote(schedule.data.note);
+            setTextContent(schedule.data.note);
+        }
+    }, [schedule, session, setNote, setTextContent]);
+
+    if (!schedule || !garbage) {
+        return <></>;
+    }
+
+    const handleSubmit = () => {
+        const text = textContent ? textContent : null;
+        patchGarbageCollectionScheduleDetail(
+            session, id,
+            {note: text}
+        );
+        setNote(text);
+        handleClose();
+    };
+
+    const handleClickOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     // @ts-ignore
     return (
@@ -106,7 +83,7 @@ export default function ScheduleGarbageListItem(
                         flexGrow: 1, fontWeight: 'bold',
                         paddingLeft: '10px', alignItems: 'center',
                     }}>
-                        {type}
+                        {garbage.data.name}
                     </Box>
                     {/* Schedule date */}
                     <Box sx={{
@@ -114,7 +91,7 @@ export default function ScheduleGarbageListItem(
                         flexGrow: 1, justifyContent: 'center',
                         alignItems: 'center', fontSize: '14px',
                     }}>
-                        {date}
+                        {schedule.data.for_day}
                     </Box>
                     {/* Schedule note icons */}
                     <Box sx={{
@@ -122,12 +99,47 @@ export default function ScheduleGarbageListItem(
                         flexGrow: 1, justifyContent: 'flex-end',
                         alignItems: 'center',
                     }}>
-                        <ScheduleWarningSymbols
-                            id={id}
-                            text={note}
-                            date={date}
-                            garbage={type}
-                        />
+                        {
+                            note ?
+                                <>
+                                    <Tooltip title={note} arrow>
+                                        <ErrorOutline fontSize="small"/>
+                                    </Tooltip>
+                                    <IconButton onClick={handleClickOpen}>
+                                        <CreateRounded fontSize="small"/>
+                                    </IconButton>
+                                </> :
+                                <IconButton onClick={handleClickOpen}>
+                                    <AddRounded fontSize="small"/>
+                                </IconButton>
+                        }
+                        <Dialog open={open} onClose={handleClose} fullWidth={true}>
+                            <DialogTitle>Update note for {garbage.data.name} on {schedule.data.for_day}</DialogTitle>
+                            {/* Although the field is method={'POST'}, this will be seen as a PATCH request.
+                    method={'PATCH'} is not a valid option, and POST maintains the current URL,
+                    otherwise a question mark will be added at the end (which breaks the navbar)*/}
+                            <TextField
+                                autoFocus
+                                id={`schedule-${id}-note-form-text-field`}
+                                fullWidth
+                                variant="standard"
+                                defaultValue={textContent}
+                                onChange={(e)=>setTextContent(e.target.value)}
+                                onSubmit={handleSubmit}
+                            />
+                            <DialogActions>
+                                <Button
+                                    key={`schedule-${id}-note-form-cancel-button`}
+                                    onClick={handleClose}>
+                                    Cancel
+                                </Button>
+                                <Button
+                                    key={`schedule-${id}-note-form-submit-button`}
+                                    onClick={handleSubmit}>
+                                    Submit
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
                     </Box>
                 </Box>
             </Card>

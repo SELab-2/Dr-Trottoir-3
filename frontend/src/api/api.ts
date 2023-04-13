@@ -34,6 +34,8 @@ export enum Api {
     ScheduleDefinitionDetailScheduleWorkEntries = 'schedule_definitions/:id/schedule_work_entries/',
     Users = 'users/',
     UserDetail = 'users/:id/',
+    Issues = 'issues/',
+    IssueDetail = 'issues/:id/'
 }
 
 
@@ -103,11 +105,13 @@ function getList<T>(route: Api, params: any, query: any): SWRResponse<PaginatedR
     const queryParams = new URLSearchParams(query);
     routeStr += '?' + queryParams.toString();
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const {data: session} = useSession();
 
     // @ts-ignore
     const token = session ? session.accessToken : '';
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     return useSWR<PaginatedResponse<T>>([token, routeStr], fetcher);
 }
 
@@ -120,11 +124,13 @@ function getList<T>(route: Api, params: any, query: any): SWRResponse<PaginatedR
 function getDetail<T>(route: Api, id: number): SWRResponse<T, any> {
     const routeStr = route.replace(':id', id.toString());
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const {data: session} = useSession();
 
     // @ts-ignore
     const token = session ? session.accessToken : '';
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     return useSWR<T>([token, routeStr], fetcher);
 }
 
@@ -138,7 +144,7 @@ async function getListFromApi(route: Api, session: any, params: any, query: any)
     }
     const queryParams = new URLSearchParams(query);
     routeStr += '?' + queryParams.toString();
-    console.log(routeStr);
+
     const data = await axios.get(process.env.NEXT_API_URL + routeStr, {headers: getAuthHeader(session)});
 
     if (!('data' in data)) {
@@ -209,7 +215,7 @@ const getLocationGroupsList = (session: Session | null, setter: ((e:any) => void
 
 
 const getUsersList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
-    return getListFromApi(Api.Users, session, params ? params : {}, query ? query : {})
+    getListFromApi(Api.Users, session, params ? params : {}, query ? query : {})
         .then((e) => {
             setter({success: true, status: e.status, data: e.data});
         })
@@ -332,7 +338,7 @@ const getLocationGroupDetail = (session: Session | null, setter: ((e:any) => voi
 };
 
 const getLocationGroupDetailBuildings = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    return getDetailsFromAPI(Api.LocationGroupDetailBuildings, session, id)
+    getDetailsFromAPI(Api.LocationGroupDetailBuildings, session, id)
         .then((e) => {
             setter({success: true, status: e.status, data: e.data});
         })
@@ -472,6 +478,17 @@ const getUserDetail = (session: Session | null, setter: ((e:any) => void), id: n
         });
 };
 
+
+const getIssueDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
+    getDetailsFromAPI(Api.IssueDetail, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
+};
+
 const postGarbageType = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
     postDetailsToAPI(Api.GarbageTypes, session, data)
         .then((e) => {
@@ -541,6 +558,18 @@ const postUser = (session: Session | null, data: any, setter?: ((e:any) => void)
             setter ? setter({success: false, status: e.status, data: e}) : undefined;
         });
 };
+
+
+const postIssue = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
+    postDetailsToAPI(Api.Issues, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
 
 const deleteGarbageCollectionScheduleTemplate = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
     deleteDetailsOnAPI(Api.GarbageCollectionScheduleTemplateDetail, session, id)
@@ -642,6 +671,17 @@ const deleteUser = (session: Session | null, id: number, setter?: ((e:any) => vo
         });
 };
 
+const deleteIssue = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
+    deleteDetailsOnAPI(Api.IssueDetail, session, id)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
+
 const patchGarbageCollectionScheduleTemplateDetail = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
     patchDetailsOnAPI(Api.GarbageCollectionScheduleTemplateDetail, session, id, data)
         .then((e) => {
@@ -742,6 +782,16 @@ const patchUserDetail = (session: Session | null, id: number, data: any, setter?
         });
 };
 
+const patchIssueDetail = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
+    patchDetailsOnAPI(Api.IssueDetail, session, id, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
 
 export {
     useAuthenticatedApi,
@@ -773,6 +823,7 @@ export {
     getScheduleDefinitionDetailScheduleWorkEntries,
     getUsersList,
     getUserDetail,
+    getIssueDetail,
 
     postGarbageType,
     postLocationGroup,
@@ -781,6 +832,7 @@ export {
     postScheduleWorkEntrie,
     postScheduleDefinition,
     postUser,
+    postIssue,
 
     deleteGarbageCollectionScheduleTemplate,
     deleteGarbageCollectionScheduleTemplateEntry,
@@ -792,6 +844,7 @@ export {
     deleteScheduleWorkEntry,
     deleteScheduleDefinition,
     deleteUser,
+    deleteIssue,
 
     patchGarbageCollectionScheduleTemplateDetail,
     patchGarbageCollectionScheduleTemplateEntryDetail,
@@ -803,4 +856,5 @@ export {
     patchScheduleWorkEntryDetail,
     patchScheduleDefinitionDetail,
     patchUserDetail,
+    patchIssueDetail,
 };

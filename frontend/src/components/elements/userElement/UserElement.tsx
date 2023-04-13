@@ -12,7 +12,7 @@ export default function UserElement() {
 
     useEffect(() => {
         getUserDetail(session, setUserData, 1);
-    }, [session]);
+    }, [session, setUserData]);
 
     if (!userData) {
         return (<div>Loading...</div>);
