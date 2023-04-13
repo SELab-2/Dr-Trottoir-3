@@ -47,7 +47,11 @@ class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet)
 
     serializer_class = ScheduleAssignmentSerializer
 
-    filterset_fields = ["assigned_date", "user"]
+    filterset_fields = {
+        "assigned_date": ('exact', 'in'),
+        "schedule_definition": ('exact', 'in'),
+        "user": {'exact'}
+    }
     search_fields: List[str] = []
 
     permission_classes = [IsAuthenticated, IsSuperstudentOrAdmin]
@@ -78,7 +82,7 @@ class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet)
         Returns:
             Response: An appropriate HTTP response based on the given request.
         """
-        read_only_fields = ["assigned_date", "schedule_definition"]
+        read_only_fields = []
         for field in read_only_fields:
             request.data.pop(field, False)
         return super().update(request, *args, **kwargs)
