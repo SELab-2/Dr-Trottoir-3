@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic';
+import BuildingDetail from "@/components/elements/buildingdetailElement/buildingDetail";
 
 const DynamicBuildingsComponent = dynamic(() =>
     import('../containers/BuildingsPage'), {ssr: false}
@@ -6,6 +7,6 @@ const DynamicBuildingsComponent = dynamic(() =>
 
 export default function BuildingsPage() {
     return (
-        <DynamicBuildingsComponent/>
+        <BuildingDetail id={1}/>
     );
 }

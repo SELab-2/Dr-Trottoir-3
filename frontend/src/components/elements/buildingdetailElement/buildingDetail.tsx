@@ -216,7 +216,7 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
                     <List>
                         {
                             buildingDetail.issues.map((issue: Issue) =>
-                                <BuildingIssueListItem issue={issue}/>
+                                <BuildingIssueListItem issue={issue} key={issue.id}/>
                             )
                         }
                     </List>
