@@ -12,7 +12,7 @@ export enum Api {
     GarbageCollectionScheduleTemplateEntryDetail = 'garbage_collection_schedule_template_entries/:id/',
     GarbageTypes = 'garbage_types/',
     GarbageTypeDetail = 'garbage_types/:id/',
-    GarbageCollectionScheduleDetail = 'garbage_collection_schedules/:id',
+    GarbageCollectionScheduleDetail = 'garbage_collection_schedules/:id/',
     LocationGroups = 'location_groups/',
     LocationGroupDetail = 'location_groups/:id/',
     LocationGroupDetailBuildings = 'location_groups/:id/buildings/',
@@ -138,7 +138,7 @@ async function getListFromApi(route: Api, session: any, params: any, query: any)
     }
     const queryParams = new URLSearchParams(query);
     routeStr += '?' + queryParams.toString();
-
+    console.log(routeStr);
     const data = await axios.get(process.env.NEXT_API_URL + routeStr, {headers: getAuthHeader(session)});
 
     if (!('data' in data)) {

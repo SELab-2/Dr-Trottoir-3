@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import {useSession} from 'next-auth/react';
 import ErrorPage from '@/containers/ErrorPage';
-import BuildingDetail from "@/components/elements/buildingdetailElement/buildingDetail";
+import BuildingDetail from '@/components/elements/buildingdetailElement/buildingDetail';
 
 const DynamicBuildingsComponent = dynamic(() =>
     import('../containers/BuildingsPage'), {ssr: false}
@@ -12,7 +12,7 @@ export default function BuildingsPage() {
 
     if (session) {
         return (
-          <BuildingDetail id={1}/>
+            <BuildingDetail id={10}/>
         );
     } else {
         return (

@@ -1,13 +1,15 @@
 import styles from './buildingdetail.module.css';
 import {Box, Link, List, Modal, Typography} from '@mui/material';
-import {Building, GarbageCollectionSchedule, GarbageType, Issue, LocationGroup} from '@/api/models';
+import {Building, GarbageCollectionSchedule, GarbageType, Issue, LocationGroup, User} from '@/api/models';
 import {PictureAsPdf} from '@mui/icons-material';
-import {Api, getDetail, getList, PaginatedResponse} from '@/api/api';
+import {
+    getBuildingDetail, getBuildingDetailGarbageCollectionSchedules, getBuildingDetailIssues,
+    getGarbageTypesList, getLocationGroupDetail, getUsersList, useAuthenticatedApi} from '@/api/api';
 import {defaultBuildingImage} from '@/constants/images';
 import {useSession} from 'next-auth/react';
 import ScheduleGarbageListItem from './scheduleGarbageListItem';
 import Button from '@mui/material/Button';
-import React from 'react';
+import React, {useEffect} from 'react';
 import BuildingIssueListItem from '@/components/elements/buildingdetailElement/buildingIssueListItem';
 
 interface IBuildingDetail {
@@ -53,77 +55,95 @@ function BuildingDetailManualLink(props:{path: string | null }):JSX.Element {
 export default function BuildingDetail(props: { id: number }): JSX.Element {
     const {id} = props;
 
-    let buildingDetail: IBuildingDetail | undefined = undefined;
+    const [buildingDetail, setBuildingDetail] = React.useState<IBuildingDetail | undefined>(undefined);
     const [issuesModalOpen, setIssuesModalOpen] = React.useState(false);
     const handleIssueModalOpen = ()=> setIssuesModalOpen(true);
     const handleIssueModalClose = ()=> setIssuesModalOpen(false);
 
     const {data: session} = useSession();
 
-    const {data: building} = getDetail<Building>(Api.BuildingDetail, id);
-    const {data: location} = getDetail<LocationGroup>(Api.LocationGroupDetail, building?.id);
-    const {data: schedules} = getDetail<PaginatedResponse<GarbageCollectionSchedule>>(
-        Api.BuildingDetailGarbageCollectionSchedules, id);
-    const {data: garbageTypes} = getList<GarbageType>(Api.GarbageTypes, {}, {});
-    const {data: issues} = getList<Issue>(Api.Issues, {}, {resolved: false, building: id});
+    const [building, setBuilding] = useAuthenticatedApi<Building>();
+    const [location, setLocation] = useAuthenticatedApi<LocationGroup>();
+    const [schedules, setSchedules] = useAuthenticatedApi<GarbageCollectionSchedule[]>();
+    const [garbageTypes, setGarbageTypes] = useAuthenticatedApi<GarbageType[]>();
+    const [issues, setIssues] = useAuthenticatedApi<Issue[]>();
+    const [syndici, setSyndici] = useAuthenticatedApi<User[]>();
 
-    // @ts-ignore
-    if (!building?.id && building?.detail) {
-        /* During debugging the server starts and restarts a lot, meaning
-        that tokens can get invalidated in-between restarts while still staying inside
-        the browser cache. This is a catch for that in order to prevent errors.
-         */
-        return (
-            <>
-                <p>There was an error:</p>
-                <em>{
-                    // @ts-ignore
-                    building.detail
-                }</em>
-            </>);
-    }
+    // Get building data
+    useEffect(()=>{
+        getBuildingDetail(session, setBuilding, id);
+    }, []);
 
-    if (session && building && location && schedules && garbageTypes && issues) {
-        const garbageNames: {[id: number]: string} = {};
-        for (const garbageType of garbageTypes.results) {
-            garbageNames[garbageType.id] = garbageType.name;
+    // Get location group
+    useEffect(()=> {
+        if (building) {
+            getLocationGroupDetail(session, setLocation, building.data.location_group);
         }
-        const scheduleItems: IScheduleGarbageListItem[] = schedules.results.map((schedule) => {
-            const item: IScheduleGarbageListItem = {
-                id: schedule.id,
-                type: garbageNames[schedule.garbage_type],
-                date: schedule.for_day,
-                note: schedule.note,
+    }, [building]);
+
+    // Get schedules
+    useEffect(() => {
+        getBuildingDetailGarbageCollectionSchedules(session, setSchedules, id);
+    }, []);
+
+    // Get garbage types
+    useEffect(()=> {
+        getGarbageTypesList(session, setGarbageTypes);
+    }, []);
+
+    // Get issues
+    useEffect(()=> {
+        getBuildingDetailIssues(session, setIssues, id);
+    }, []);
+
+    useEffect(()=> {
+        getUsersList(session, setSyndici, {'syndicus__buildings': id}, {});
+    }, []);
+
+    let issuesModalButtonText: string = '0 issues remaining';
+
+    useEffect(() => {
+        if (session && building && location && schedules && garbageTypes && issues && syndici) {
+            const garbageNames: {[id: number]: string} = {};
+            for (const garbageType of garbageTypes.data) {
+                garbageNames[garbageType.id] = garbageType.name;
+            }
+            const scheduleItems: IScheduleGarbageListItem[] = schedules.data.map((schedule) => {
+                const item: IScheduleGarbageListItem = {
+                    id: schedule.id,
+                    type: garbageNames[schedule.garbage_type],
+                    date: schedule.for_day,
+                    note: schedule.note,
+                };
+                return item;
+            });
+            const syndiciNames=syndici.data.map(
+                (syndicus) => `${syndicus.last_name} ${syndicus.first_name}`).
+                sort().join(', ');
+            const detail = {
+                id: id,
+                location_group: location.data.name,
+                name: building.data.name ? building.data.name : building.data.address,
+                address: building.data.address,
+                pdf_guide: building.data.pdf_guide,
+                description: `TODO insert map with coordinates ${building.data.longitude} ${building.data.latitude}`,
+                image: building.data.image,
+                syndicus: syndiciNames,
+                schedules: scheduleItems,
+                issues: issues.data,
             };
-            return item;
-        });
-        buildingDetail = {
-            id: id,
-            location_group: location.name,
-            name: 'TODO add name',
-            address: building.address,
-            pdf_guide: building.pdf_guide,
-            description: 'TODO remove description and replace with map',
-            image: building.image,
-            syndicus: 'TODO add syndicus',
-            schedules: scheduleItems,
-            issues: issues.results,
-        };
-    }
+            setBuildingDetail(detail);
+            const issueCount = issues.data.length;
+            if (issues.data.length > 0) {
+                issuesModalButtonText = `${issueCount}+ issues remaining`;
+            }
+        }
+    },
+    [building, location, schedules, garbageTypes, issues, syndici]);
 
 
     if (!buildingDetail) {
         return <p>Loading...</p>;
-    }
-
-    const issueCount = issues!.results.length;
-    let issuesModalButtonText: string = '0 issues remaining';
-    if (issues!.results.length > 0) {
-        if (issues!.next) {
-            issuesModalButtonText = `${issueCount}+ issues remaining`;
-        } else {
-            issuesModalButtonText = `${issueCount} issues remaining`;
-        }
     }
 
     return (

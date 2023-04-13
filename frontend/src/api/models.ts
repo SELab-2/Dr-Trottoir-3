@@ -31,12 +31,15 @@ export type GarbageCollectionSchedule = {
 
 export type Building = {
     id: number;
+    name: string,
     address: string;
     pdf_guide: string;
     is_active: boolean;
     location_group: number;
     image: string;
     description: string;
+    longitude: number | null,
+    latitude: number | null,
 };
 
 export type ScheduleAssignment = {

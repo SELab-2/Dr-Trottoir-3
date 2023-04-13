@@ -3,7 +3,7 @@ import {Box, Button, Card, Dialog, DialogActions, DialogTitle, IconButton, ListI
     from '@mui/material';
 import * as React from 'react';
 import {useSession} from 'next-auth/react';
-import {Api, patchDetail} from '@/api/api';
+import {patchGarbageCollectionScheduleDetail} from '@/api/api';
 
 
 // eslint-disable-next-line require-jsdoc
@@ -22,8 +22,6 @@ function ScheduleWarningSymbols(props: { id: number, text: string | null, date: 
 
     //                         <IconButton onClick={() => createScheduleEntryNote(id, text)}>
     const {data: session} = useSession();
-    // @ts-ignore
-    const token = session ? session.accessToken : '';
     const textFieldId = `schedule-${id}-note-form-text-field`;
 
     return (
@@ -44,16 +42,15 @@ function ScheduleWarningSymbols(props: { id: number, text: string | null, date: 
             }
             <Dialog open={open} onClose={handleClose} fullWidth={true}>
                 <DialogTitle>Update note for {garbage} on {date}</DialogTitle>
-                <form action={'?'} method={'PATCH'} onSubmit={async (event) => {
+                <form method={'PATCH'} onSubmit={(event) => {
                     // @ts-ignore
                     const textField = event.target[textFieldId];
                     if (textField) {
                         const formText = textField.value;
                         if (text !== formText) {
-                            // @ts-ignore
-                            await patchDetail(
-                                Api.GarbageCollectionScheduleDetail, id,
-                                {note: formText ? formText : null}, token
+                            patchGarbageCollectionScheduleDetail(
+                                session, id,
+                                {note: formText ? formText : null}
                             );
                         }
                     }
