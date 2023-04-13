@@ -5,7 +5,9 @@
   },
   "extends": ["eslint:recommended", "google", "plugin:react-hooks/recommended"],
   "env": {
-    "browser": true
+    "browser": true,
+    "node": true,
+    "es6": true
   },
   "rules": {
     "guard-for-in": "off",

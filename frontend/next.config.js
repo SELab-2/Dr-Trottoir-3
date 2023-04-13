@@ -11,6 +11,15 @@ const nextConfig = {
         NEXTAUTH_URL: process.env.NEXTAUTH_URL,
         NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     },
+    async redirects() {
+        return [
+            {
+                source: '/',
+                destination: '/login',
+                permanent: true,
+            },
+        ];
+    },
     // This is required to allow images to be shown,
     // once images are available in /building_images/, hostname should
     // be changed
@@ -23,5 +32,6 @@ const nextConfig = {
         ],
     },
 };
+
 
 module.exports = nextConfig;

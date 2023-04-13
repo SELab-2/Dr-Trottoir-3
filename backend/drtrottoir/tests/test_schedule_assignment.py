@@ -339,7 +339,7 @@ def test_schedule_assignment_get_by_date_and_user_get_existing_returns_200() -> 
         f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
     )
 
-    response_ids = [data["id"] for data in response.data["results"]]
+    response_ids = [data["id"] for data in response.data]
 
     assert response.status_code == 200
     assert assignment.id in response_ids
@@ -358,7 +358,7 @@ def test_schedule_assignment_by_get_date_and_user_get_nonexistent_date_returns_e
     response = client.get(
         f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
     )
-    response_ids = [data["id"] for data in response.data["results"]]
+    response_ids = [data["id"] for data in response.data]
 
     assert response.status_code == 200
     assert len(response_ids) == 0
@@ -767,9 +767,7 @@ def test_schedule_assignment_by_user_and_date_get_matching_user_allowed_non_matc
     response_other = client.get(
         f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
     )
-    assert (
-        response_other.status_code == 200 and len(response_other.data["results"]) == 0
-    )
+    assert response_other.status_code == 200 and len(response_other.data) == 0
 
 
 # endregion GET by date and user

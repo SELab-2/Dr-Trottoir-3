@@ -1,4 +1,6 @@
 import dynamic from 'next/dynamic';
+import {useSession} from 'next-auth/react';
+import ErrorPage from '@/containers/ErrorPage';
 import BuildingDetail from "@/components/elements/buildingdetailElement/buildingDetail";
 
 const DynamicBuildingsComponent = dynamic(() =>
@@ -6,7 +8,15 @@ const DynamicBuildingsComponent = dynamic(() =>
 );
 
 export default function BuildingsPage() {
-    return (
-        <BuildingDetail id={1}/>
-    );
+    const {data: session} = useSession();
+
+    if (session) {
+        return (
+          <BuildingDetail id={1}/>
+        );
+    } else {
+        return (
+            <ErrorPage status={403}/>
+        );
+    }
 }
