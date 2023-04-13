@@ -17,7 +17,6 @@ from typing import List
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -31,7 +30,6 @@ ALLOWED_HOSTS: List[str] = []
 ALLOWED_HOSTS.extend(filter(None, os.environ.get("ALLOWED_HOSTS", "").split(",")))
 
 AUTH_USER_MODEL = "drtrottoir.User"
-
 
 # Application definition
 
@@ -97,7 +95,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "drtrottoir.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -114,11 +111,8 @@ sqlite_config = {
 }
 
 DATABASES = {
-    "default": (
-        postgres_config if os.environ.get("DATABASE") == "postgres" else sqlite_config
-    )
+    "default": (postgres_config if os.environ.get("DB_HOST") else sqlite_config)
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -138,7 +132,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -149,7 +142,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = False
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -168,6 +160,6 @@ MEDIA_ROOT = STATIC_ROOT_BASE + "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CORS_ALLOWED_ORIGINS = os.environ.get(
-    "CORS_ALLOWED_ORIGINS", "http://localhost:3000"
-).split(",")
+CORS_ALLOWED_ORIGINS = list(
+    filter(None, os.environ.get("CORS_ALLOWED_ORIGINS", "").split(","))
+)
