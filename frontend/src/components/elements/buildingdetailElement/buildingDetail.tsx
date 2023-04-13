@@ -4,13 +4,15 @@ import {Building, GarbageCollectionSchedule, GarbageType, Issue, LocationGroup, 
 import {PictureAsPdf} from '@mui/icons-material';
 import {
     getBuildingDetail, getBuildingDetailGarbageCollectionSchedules, getBuildingDetailIssues,
-    getGarbageTypesList, getLocationGroupDetail, getUsersList, useAuthenticatedApi} from '@/api/api';
+    getGarbageTypesList, getLocationGroupDetail, getUsersList, useAuthenticatedApi,
+} from '@/api/api';
 import {defaultBuildingImage} from '@/constants/images';
 import {useSession} from 'next-auth/react';
 import ScheduleGarbageListItem from './scheduleGarbageListItem';
 import Button from '@mui/material/Button';
 import React, {useEffect, useState} from 'react';
 import BuildingIssueListItem from '@/components/elements/buildingdetailElement/buildingIssueListItem';
+import ErrorPage from '@/containers/ErrorPage';
 
 interface IBuildingDetail {
   id: number,
@@ -27,6 +29,7 @@ interface IBuildingDetail {
 }
 
 // TODO Add street map using latitude and longitude
+// TODO in case there is an error, detail.status is undefined, and not a proper status code. This needs to be fixed.
 
 // eslint-disable-next-line require-jsdoc
 function BuildingDetailManualLink(props:{path: string | null }):JSX.Element {
@@ -59,6 +62,7 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
     const [garbageTypes, setGarbageTypes] = useAuthenticatedApi<GarbageType[]>();
     const [issues, setIssues] = useAuthenticatedApi<Issue[]>();
     const [syndici, setSyndici] = useAuthenticatedApi<User[]>();
+    const [sessionError, setSessionError] = React.useState(0);
 
     // Get building data
     useEffect(()=>{
@@ -93,32 +97,51 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
 
     useEffect(() => {
         if (session && building && location && schedules && garbageTypes && issues && syndici) {
-            const garbageNames: {[id: number]: string} = {};
-            for (const garbageType of garbageTypes.data) {
-                garbageNames[garbageType.id] = garbageType.name;
-            }
+            // Check if every request managed to go through
+            if (!building.success) {
+                setSessionError(building.status);
+            } else if (!location.success) {
+                setSessionError(location.status);
+            } else if (!schedules.success) {
+                setSessionError(schedules.status);
+            } else if (!garbageTypes.success) {
+                setSessionError(garbageTypes.status);
+            } else if ( !issues.success) {
+                setSessionError(issues.status);
+            } else if (!syndici.success) {
+                setSessionError(syndici.status);
+            } else {
+                // If all checks have passed, continue with building page
+                const garbageNames: {[id: number]: string} = {};
+                for (const garbageType of garbageTypes.data) {
+                    garbageNames[garbageType.id] = garbageType.name;
+                }
 
-            const syndiciNames=syndici.data.map(
-                (syndicus) => `${syndicus.last_name} ${syndicus.first_name}`).
-                sort().join(', ');
-            const detail: IBuildingDetail = {
-                id: id,
-                location_group: location.data.name,
-                name: building.data.name ? building.data.name : building.data.address,
-                address: building.data.address,
-                pdf_guide: building.data.pdf_guide,
-                image: building.data.image,
-                syndici: syndiciNames,
-                schedules: schedules.data,
-                issues: issues.data.filter((issue)=> !issue.resolved ),
-                longitude: building.data.longitude,
-                latitude: building.data.latitude,
-            };
-            setBuildingDetail(detail);
+                const syndiciNames=syndici.data.map(
+                    (syndicus) => `${syndicus.last_name} ${syndicus.first_name}`).
+                    sort().join(', ');
+                const detail: IBuildingDetail = {
+                    id: id,
+                    location_group: location.data.name,
+                    name: building.data.name ? building.data.name : building.data.address,
+                    address: building.data.address,
+                    pdf_guide: building.data.pdf_guide,
+                    image: building.data.image,
+                    syndici: syndiciNames,
+                    schedules: schedules.data,
+                    issues: issues.data.filter((issue)=> !issue.resolved ),
+                    longitude: building.data.longitude,
+                    latitude: building.data.latitude,
+                };
+                setBuildingDetail(detail);
+            }
         }
     },
     [id, session, building, location, schedules, garbageTypes, issues, syndici]);
 
+    if (sessionError !== 0) {
+        return <ErrorPage status={sessionError}/>;
+    }
 
     if (!buildingDetail) {
         return <p>Loading...</p>;
