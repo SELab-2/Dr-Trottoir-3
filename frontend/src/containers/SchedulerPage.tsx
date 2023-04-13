@@ -4,11 +4,12 @@ import styles from './SchedulerPage.module.css';
 import React, {useEffect, useState} from 'react';
 import {useSession} from 'next-auth/react';
 import {
+    getBuildingsList,
     getLocationGroupsList,
     getScheduleDefinitionsList, getUsersList,
     useAuthenticatedApi,
 } from '@/api/api';
-import {LocationGroup, ScheduleDefinition, User} from '@/api/models';
+import {Building, LocationGroup, ScheduleDefinition, User} from '@/api/models';
 
 
 export default function SchedulerPage() {
@@ -18,6 +19,7 @@ export default function SchedulerPage() {
 
     const [locationGroups, setLocationGroups] = useAuthenticatedApi<LocationGroup[]>();
     const [scheduleDefinitions, setScheduleDefinitions] = useAuthenticatedApi<ScheduleDefinition[]>();
+    const [buildings, setBuildings] = useAuthenticatedApi<Building[]>();
     const [users, setUsers] = useAuthenticatedApi<User[]>();
 
     const currentDay: Date = new Date();
@@ -31,6 +33,12 @@ export default function SchedulerPage() {
     useEffect(() => {
         if (locationGroups) {
             getScheduleDefinitionsList(session, setScheduleDefinitions, {name: locationGroups.data.at(0)?.id});
+        }
+    }, [locationGroups, session]);
+
+    useEffect(() => {
+        if (locationGroups) {
+            getBuildingsList(session, setBuildings, {name: locationGroups.data.at(0)?.id});
         }
     }, [locationGroups, session]);
 
@@ -56,6 +64,7 @@ export default function SchedulerPage() {
                 start={first}
                 scheduleDefinitions={scheduleDefinitions}
                 users={users}
+                buildings={buildings}
                 interval={interval}/>
         </div>
     );

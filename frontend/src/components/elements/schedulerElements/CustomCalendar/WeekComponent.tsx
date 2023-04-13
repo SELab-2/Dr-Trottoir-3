@@ -3,7 +3,7 @@ import {DragDropContext, DropResult} from 'react-beautiful-dnd';
 import styles from './WeekComponent.module.css';
 import RouteListComponent from './RouteListComponent';
 import DayHeader from './DayHeader';
-import {ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
+import {Building, ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
 import {
     ApiData,
     deleteScheduleAssignment,
@@ -19,6 +19,7 @@ type schedulerProps = {
     users: ApiData<User[]>,
     scheduleDefinitions: ApiData<ScheduleDefinition[]>,
     scheduleAssignments: ApiData<ScheduleAssignment[]> | undefined,
+    buildings: ApiData<Building[]>,
     setScheduleAssignments: (e: (ApiData<ScheduleAssignment[]> | undefined)) => void,
     start: number,
     interval: number,
@@ -277,7 +278,8 @@ export default function WeekComponent(props: schedulerProps) {
                     <div className={styles.row_container}>
                         {props.scheduleDefinitions.data.map((scheduleDefinitionData, index) => {
                             const taskData = tasks[scheduleDefinitionData.id] ? tasks[scheduleDefinitionData.id] : [];
-
+                            const filterBuildings = props.buildings.data
+                                .filter((e) => scheduleDefinitionData.buildings.includes(e.id));
                             return (
                                 <RouteListComponent
                                     key={index}
@@ -285,6 +287,7 @@ export default function WeekComponent(props: schedulerProps) {
                                     start={firstDay.toISOString().split('T')[0]}
                                     interval={props.interval}
                                     scheduleDefinition={scheduleDefinitionData}
+                                    buildings={filterBuildings}
                                     taskData={taskData}
                                     setScheduleAssignments={props.setScheduleAssignments}
                                     onCreateClick={createTask}

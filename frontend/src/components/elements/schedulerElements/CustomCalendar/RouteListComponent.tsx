@@ -3,10 +3,11 @@ import {Droppable} from 'react-beautiful-dnd';
 import CalendarEntry from '@/components/elements/schedulerElements/CustomCalendar/entries/CalendarEntry';
 import React from 'react';
 import EmptyEntry from '@/components/elements/schedulerElements/CustomCalendar/entries/EmptyEntry';
-import {ScheduleAssignment, ScheduleDefinition} from '@/api/models';
+import {Building, ScheduleAssignment, ScheduleDefinition} from '@/api/models';
 import {
     ApiData,
 } from '@/api/api';
+import {Tooltip} from "@mui/material";
 
 type routeListComponentProps = {
     index: number,
@@ -14,6 +15,7 @@ type routeListComponentProps = {
     interval: number,
     scheduleDefinition: ScheduleDefinition,
     taskData: any[],
+    buildings: Building[],
     setScheduleAssignments: (e: (ApiData<ScheduleAssignment[]> | undefined)) => void,
     onCreateClick: (e: number, f: number, g: any) => void,
     onRemoveClick: (scheduleAssignmentId: number) => void,
@@ -23,9 +25,11 @@ type routeListComponentProps = {
 export default function RouteListComponent(props: routeListComponentProps) {
     return (
         <div className={styles.full}>
-            <div className={styles.route_scheduler_header}>
-                <p>{props.scheduleDefinition.name}</p>
-            </div>
+            <Tooltip title={props.buildings.map((e) => e.address).join(', ')} placement="right">
+                <div className={styles.route_scheduler_header}>
+                    <p>{props.scheduleDefinition.name}</p>
+                </div>
+            </Tooltip>
             <div className={styles.route_scheduler_container}>
                 <Droppable droppableId={props.scheduleDefinition.id.toString()} type="task" direction='horizontal'>
                     {(droppableProvided) => (
