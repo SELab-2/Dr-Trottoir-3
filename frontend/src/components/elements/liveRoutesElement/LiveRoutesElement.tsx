@@ -32,6 +32,7 @@ export default function LiveRoutesElement() {
 
     const scheduleDefinitionId = 5;
 
+    // TODO - all frontend filtering should be replaced with filter queries
     const [scheduleDefinitionData, setScheduleDefinitionData] = useAuthenticatedApi<ScheduleDefinition>();
     const [locationGroupData, setLocationGroupData] = useAuthenticatedApi<LocationGroup>();
     const [buildingsData, setBuildingsData] = useAuthenticatedApi<Array<Building>>();
