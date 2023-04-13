@@ -56,7 +56,11 @@ class GarbageCollectionScheduleTemplateEntryViewSet(
     queryset = GarbageCollectionScheduleTemplateEntry.objects.all()
     serializer_class = GarbageCollectionScheduleTemplateEntrySerializer
 
-    filterset_fields = ["day", "garbage_type"]
+    filterset_fields = {
+        "day": ("exact", "in", "lt", "gt"),
+        "garbage_type": ("exact", "in"),
+        "garbage_collection_schedule_template": ("exact", "in"),
+    }
     search_fields: List[str] = []
 
 
@@ -114,7 +118,7 @@ class GarbageCollectionScheduleTemplateViewSet(
     queryset = GarbageCollectionScheduleTemplate.objects.all()
     serializer_class = GarbageCollectionScheduleTemplateSerializer
 
-    filterset_fields = ["building"]
+    filterset_fields = {"building": ("exact", "in")}
     search_fields = ["name"]
 
     @action(detail=True)
