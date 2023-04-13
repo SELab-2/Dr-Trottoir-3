@@ -1,3 +1,4 @@
+from django.http import QueryDict
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -96,6 +97,10 @@ class IssueViewSet(PermissionsByActionMixin, viewsets.ModelViewSet):
             return Issue.objects.filter(from_user=self.request.user)
 
     def create(self, request, *args, **kwargs):
+        if isinstance(request.data, QueryDict):
+            # If request.data is a QueryDict, allow it to be mutable,
+            # i.e. allow from_user to be added
+            request.data._mutable = True
         request.data["from_user"] = request.user.id
 
         return super().create(request, *args, **kwargs)
