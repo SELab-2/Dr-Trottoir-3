@@ -62,33 +62,33 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
     // Get building data
     useEffect(()=>{
         getBuildingDetail(session, setBuilding, id);
-    }, [id, session, setBuilding]);
+    }, [id, session]);
 
     // Get location group
     useEffect(()=> {
         if (building) {
             getLocationGroupDetail(session, setLocation, building.data.location_group);
         }
-    }, [building, session, setLocation]);
+    }, [building, session]);
 
     // Get schedules
     useEffect(() => {
         getBuildingDetailGarbageCollectionSchedules(session, setSchedules, id);
-    }, [id, session, setSchedules]);
+    }, [id, session]);
 
     // Get garbage types
     useEffect(()=> {
         getGarbageTypesList(session, setGarbageTypes);
-    }, [session, setGarbageTypes]);
+    }, [session]);
 
     // Get issues
     useEffect(()=> {
         getBuildingDetailIssues(session, setIssues, id);
-    }, [id, session, setIssues]);
+    }, [id, session]);
 
     useEffect(()=> {
         getUsersList(session, setSyndici, {'syndicus__buildings': id}, {});
-    }, [id, session, setSyndici]);
+    }, [id, session]);
 
     useEffect(() => {
         if (session && building && location && schedules && garbageTypes && issues && syndici) {

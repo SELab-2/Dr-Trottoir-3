@@ -3,7 +3,7 @@
   "parserOptions": {
     "requireConfigFile": false
   },
-  "extends": ["eslint:recommended", "google", "plugin:react-hooks/recommended"],
+  "extends": ["eslint:recommended", "google"],
   "env": {
     "browser": true,
     "node": true,
