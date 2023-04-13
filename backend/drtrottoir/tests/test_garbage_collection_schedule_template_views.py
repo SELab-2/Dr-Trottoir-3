@@ -202,9 +202,9 @@ def test_garbage_collection_schedule_template_days_success():
 
     entries, res = _test_garbage_collection_schedule_template_days(student.user)
 
-    assert res.status_code == 200 and sorted(
-        x["id"] for x in res.data["results"]
-    ) == sorted(x.id for x in entries)
+    assert res.status_code == 200 and sorted(x["id"] for x in res.data) == sorted(
+        x.id for x in entries
+    )
 
 
 @pytest.mark.django_db
@@ -245,9 +245,9 @@ def test_garbage_collection_schedule_template_entries_success():
 
     entries, res = _test_garbage_collection_schedule_template_entries(student.user)
 
-    assert res.status_code == 200 and sorted(
-        x["id"] for x in res.data["results"]
-    ) == sorted(x.id for x in entries)
+    assert res.status_code == 200 and sorted(x["id"] for x in res.data) == sorted(
+        x.id for x in entries
+    )
 
 
 @pytest.mark.django_db

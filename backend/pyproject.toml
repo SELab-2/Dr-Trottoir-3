@@ -19,5 +19,9 @@ plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
 module = "rest_framework_simplejwt.*"
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = "drf_yasg.*"
+ignore_missing_imports = true
+
 [tool.django-stubs]
 django_settings_module = "drtrottoir.settings"

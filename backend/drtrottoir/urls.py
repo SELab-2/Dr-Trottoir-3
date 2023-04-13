@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -26,16 +29,23 @@ from drtrottoir.views import (
     GarbageCollectionScheduleTemplateViewSet,
     GarbageCollectionScheduleViewSet,
     GarbageTypeViewSet,
-    IssueDetailApiView,
-    IssueImageDetailView,
-    IssueImageView,
-    IssueNotApprovedApiView,
-    IssuesListApiView,
+    IssueImageViewSet,
+    IssueViewSet,
     LocationGroupViewSet,
     ScheduleAssignmentViewSet,
     ScheduleDefinitionViewSet,
     ScheduleWorkEntryViewSet,
     UserViewSet,
+)
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Dr. Trottoir Group 3",
+        default_version="v1",
+        description="",
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],
 )
 
 router = DefaultRouter()
@@ -73,25 +83,13 @@ router.register(
 )
 router.register(r"schedule_definitions", ScheduleDefinitionViewSet)
 router.register(r"users", UserViewSet)
+router.register(r"issues", IssueViewSet, basename="issues")
+router.register(r"issue_images", IssueImageViewSet, basename="issue-images")
 
 
 urlpatterns = [
     path(settings.BASE_PATH, include(router.urls)),
     path(settings.BASE_PATH + "admin/", admin.site.urls),
-    path(settings.BASE_PATH + "issues/", IssuesListApiView.as_view()),
-    path(settings.BASE_PATH + "issues/<int:issue_id>/", IssueDetailApiView.as_view()),
-    path(
-        settings.BASE_PATH + "issues/not_approved/", IssueNotApprovedApiView.as_view()
-    ),
-    path(
-        settings.BASE_PATH + "api-auth/",
-        include("rest_framework.urls", namespace="rest_framework"),
-    ),
-    path(settings.BASE_PATH + "issue_images/", IssueImageView.as_view()),
-    path(
-        settings.BASE_PATH + "issue_images/<int:issue_image_id>/",
-        IssueImageDetailView.as_view(),
-    ),
     path(
         settings.BASE_PATH + "api-auth/",
         include("rest_framework.urls", namespace="rest_framework"),
@@ -105,6 +103,19 @@ urlpatterns = [
         settings.BASE_PATH + "auth/token/refresh/",
         TokenRefreshView.as_view(),
         name="token_refresh",
+    ),
+    re_path(
+        r"^swagger(?P<format>\.json|\.yaml)$",
+        schema_view.without_ui(cache_timeout=0),
+        name="schema-json",
+    ),
+    re_path(
+        r"^swagger/$",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    re_path(
+        r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
     ),
 ]
 

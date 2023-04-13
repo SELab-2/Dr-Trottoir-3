@@ -7,7 +7,6 @@ type Data = {
 
 
 /**
- * Add two numbers.
  * @param {NextApiRequest} req Request.
  * @param {NextApiResponse} res Response.
  */

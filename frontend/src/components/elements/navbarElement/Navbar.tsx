@@ -8,6 +8,7 @@ import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
 import DesktopNavbarComponent from './DesktopNavbarComponent';
 import MobileNavbarComponent from './MobileNavbarComponent';
+import {useSession} from 'next-auth/react';
 
 const topButtons = [
     {id: '0', text: 'Planner', href: '/scheduler', icon: DateRangeIcon},
@@ -17,8 +18,12 @@ const topButtons = [
     {id: '4', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon},
 ];
 
-const ignoreRoute = [
-    '/auth/signin',
+const includeRoutes = [
+    '/scheduler',
+    '/live_routes',
+    '/users',
+    '/buildings',
+    '/routes',
 ];
 
 export default function Navbar(props: any) {
@@ -26,6 +31,7 @@ export default function Navbar(props: any) {
     const [loading, setLoading] = useState(true);
     const [nextPath, setNextPath] = useState<string | null>(null);
     const mobileView = useMediaQuery('(max-width:450px)');
+    const {data: session} = useSession();
 
     useEffect(() => {
         router.events.on('routeChangeError', (e) => setLoading(false));
@@ -40,11 +46,9 @@ export default function Navbar(props: any) {
     }, [router.events]);
 
 
-    const hideNavBar = ignoreRoute.includes(router.asPath);
+    const showNavBar = includeRoutes.includes(router.asPath);
 
-    if (hideNavBar) {
-        return props.children;
-    } else {
+    if (showNavBar && session) {
         if (mobileView) {
             return (
                 <MobileNavbarComponent loading={loading} nextPath={nextPath} setNextPath={setNextPath}
@@ -56,5 +60,7 @@ export default function Navbar(props: any) {
                     router={router} children={props.children} topButtons={topButtons}/>
             );
         }
+    } else {
+        return props.children;
     }
 }

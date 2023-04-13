@@ -1,10 +1,12 @@
-import UserList from "@/components/elements/userListElement/UserList";
 
-// eslint-disable-next-line require-jsdoc
+import UserList from "@/components/elements/userListElement/UserList";
+import UserElement from '@/components/elements/userElement/UserElement';
+
 export default function UsersPage() {
     return (
         <>
-                <UserList></UserList>
+            <UserList></UserList>
+                {/*<UserElement />*/}
         </>
     );
 }

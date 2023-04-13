@@ -1,8 +1,7 @@
-
 .full {
     display: flex;
-    width: 100%;
-    height: 100%;
+    width: min(100%, 100wh);
+    height: min(100%, 100vh);
 }
 
 .row_flex_container {
@@ -24,21 +23,17 @@
 
 .scrollable {
     display: flex;
-    overflow-y: sc;
+    overflow-y: auto;
     overflow-x: hidden;
     flex-direction: column;
     margin: 40px 0 8px;
     flex: 999;
 }
 
-
-
-
-
 .side_bar_mid {
     display: flex;
     flex-flow: column;
-    gap: 16px;
+    gap: 8px;
     padding: 0 16px 0 16px;
     flex: 999;
     background-color: var(--primary-dark);
@@ -57,20 +52,20 @@
     display: flex;
     flex-flow: column;
     flex: 1;
-    gap: 16px;
+    gap: 8px;
     padding: 50px 16px 40px 16px;
     background-color: var(--primary-dark);
 }
 
 
 
-@media screen and (min-width:900px) {
+@media screen and (min-width:950px) {
 
     #button {
-        font-size: 16px;
+        font-size: 14px;
         text-align: left;
         height: 40px;
-        min-width: 200px;
+        min-width: 190px;
     }
 
     .left_flex_container {
@@ -83,7 +78,7 @@
     }
 }
 
-@media screen and (max-width:900px) {
+@media screen and (max-width:950px) {
 
     #button {
         /* Hide the text. */
@@ -136,19 +131,31 @@
 
 .button_default {
     font-family: 'Inter', sans-serif;
+<<<<<<< HEAD
     font-weight: 500;
     color: var(--primary-light);
     text-transform: none;
     background-color: var(--primary-dark);
+=======
+    font-weight: 400;
+    color: var(--primary-light) !important;
+    text-transform: none;
+    background-color: var(--primary-dark) !important;
+>>>>>>> development
     border-radius: 8px;
 }
 
 .button_selected {
     font-family: 'Inter', sans-serif;
+<<<<<<< HEAD
     font-weight: 500;
     color: var(--primary-yellow);
+=======
+    font-weight: 400;
+    color: var(--primary-yellow) !important;
+>>>>>>> development
     text-transform: none;
-    background-color: #2D2F33;
+    background-color: var(--secondary-dark) !important;
     border-radius: 8px;
 }
 

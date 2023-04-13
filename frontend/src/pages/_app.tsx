@@ -11,7 +11,8 @@ export default function App(
     const getLayout = (props: any) => <Navbar>{props}</Navbar>;
 
     return (
-        <SessionProvider session={session} basePath={'http://localhost:3002/api/auth'}>
+        // eslint-disable-next-line no-undef
+        <SessionProvider session={session} basePath={process.env.NEXT_INTERNAL_API_AUTH_URL}>
             {getLayout(<Component {...pageProps} />)}
         </SessionProvider>
     );
