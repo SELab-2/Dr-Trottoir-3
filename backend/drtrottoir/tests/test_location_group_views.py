@@ -35,7 +35,7 @@ def test_location_groups_get_list():
     client.force_login(student.user)
     response = client.get("/location_groups/")
 
-    response_ids = [e["id"] for e in response.data["results"]]
+    response_ids = [e["id"] for e in response.data]
     assert dummy_location_group_1.id in response_ids
     assert dummy_location_group_2.id in response_ids
     assert non_existing_location_group_id not in response_ids
@@ -169,7 +169,7 @@ def test_location_group_get_buildings_list():
     client.force_login(student.user)
     response = client.get(f"/location_groups/{location_group_1.id}/buildings/")
 
-    response_ids = [e["id"] for e in response.data["results"]]
+    response_ids = [e["id"] for e in response.data]
 
     assert building_1.id in response_ids
     assert building_2.id in response_ids
@@ -207,7 +207,7 @@ def test_location_group_get_schedule_definitions_list():
         f"/location_groups/{location_group_1.id}/schedule_definitions/"
     )
 
-    response_ids = [e["id"] for e in response.data["results"]]
+    response_ids = [e["id"] for e in response.data]
 
     assert sched_definition_1.id in response_ids
     assert sched_definition_2.id in response_ids

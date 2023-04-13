@@ -12,7 +12,7 @@ export enum Api {
     GarbageCollectionScheduleTemplateEntryDetail = 'garbage_collection_schedule_template_entries/:id/',
     GarbageTypes = 'garbage_types/',
     GarbageTypeDetail = 'garbage_types/:id/',
-    GarbageCollectionScheduleDetail = 'garbage_collection_schedules/:id',
+    GarbageCollectionScheduleDetail = 'garbage_collection_schedules/:id/',
     LocationGroups = 'location_groups/',
     LocationGroupDetail = 'location_groups/:id/',
     LocationGroupDetailBuildings = 'location_groups/:id/buildings/',
@@ -35,11 +35,11 @@ export enum Api {
     Users = 'users/',
     UserDetail = 'users/:id/',
     Issues = 'issues/',
-    IssueImages = 'issue_images/',
+    IssueDetail = 'issues/:id/'
 }
 
 
-type ApiData<T> = {data: T, status: number, success: boolean}
+export type ApiData<T> = {data: T, status: number, success: boolean}
 
 function useAuthenticatedApi<T>(): [ApiData<T> | undefined, (e: ApiData<T> | undefined) => void] {
     const {data: session} = useSession();
@@ -65,17 +65,12 @@ class ApiError<T> extends Error {
 }
 
 
-export type PaginatedResponse<T> = {
+type PaginatedResponse<T> = {
     count: number;
     next: string | null;
     previous: string | null;
     results: T[];
 };
-
-export function apiUrl(route: Api) {
-    // eslint-disable-next-line no-undef
-    return process.env.NEXT_API_URL + route;
-}
 
 /**
  * @deprecated The method should not be used
@@ -85,28 +80,13 @@ export function apiUrl(route: Api) {
 async function fetcher<T>(args: Array<string>): Promise<T> {
     // @ts-ignore
     // eslint-disable-next-line no-undef
-    return fetch(process.env.NEXT_API_URL + args[1], {
+    return fetch(process.env.NEXT_API_URL + args[1].slice(1), {
         headers: {
-            'Authorization': `Bearer  ${args[0]}`,
+            'Authorization': `Bearer ${args[0]}`,
         },
     }).then((res) => {
         return res.json() as Promise<T>;
     });
-}
-
-
-/**
- * @param {Array<string>} args
- * @return {Promise<T[]>}
- * **/
-async function fetcherArray<T>(args: Array<any>): Promise<T[]> {
-    const token: string = args[0];
-    const paths: string[] = args[1];
-    return await Promise.all(
-        paths.map((path) => fetcher<T>([token, path])))
-        .catch((error) => {
-            throw error;
-        });
 }
 
 /**
@@ -116,7 +96,7 @@ async function fetcherArray<T>(args: Array<any>): Promise<T[]> {
  * @param {any} query query parameters to include in request
  * @return {SWRResponse}
  * **/
-export function getList<T>(route: Api, params: any, query: any): SWRResponse<PaginatedResponse<T>, any> {
+function getList<T>(route: Api, params: any, query: any): SWRResponse<PaginatedResponse<T>, any> {
     let routeStr = route.toString();
     for (const property in params) {
         routeStr = routeStr.replace(':' + property, params[property]);
@@ -139,10 +119,7 @@ export function getList<T>(route: Api, params: any, query: any): SWRResponse<Pag
  * @param {any} id ID of detail route to use
  * @return {SWRResponse}
  * **/
-export function getDetail<T>(route: Api, id: number|undefined): SWRResponse<T, any> {
-    // In case no id is given (for example, because a dependency hasn't been loaded yet),
-    // we fetch the item with id 0, which always results in a 404.
-    if (!id) id = 0;
+function getDetail<T>(route: Api, id: number): SWRResponse<T, any> {
     const routeStr = route.replace(':id', id.toString());
 
     const {data: session} = useSession();
@@ -166,7 +143,7 @@ async function getListFromApi(route: Api, session: any, params: any, query: any)
 
     const data = await axios.get(process.env.NEXT_API_URL + routeStr, {headers: getAuthHeader(session)});
 
-    if (!('data' in data) || !('results' in data.data)) {
+    if (!('data' in data)) {
         throw new ApiError(data);
     }
 
@@ -225,7 +202,7 @@ async function deleteDetailsOnAPI(route: Api, session: any, id: number) {
 const getLocationGroupsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.LocationGroups, session, params ? params : {}, query ? query : {})
         .then((e) => {
-            setter({success: true, status: e.status, data: e.data.results});
+            setter({success: true, status: e.status, data: e.data});
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: []});
@@ -234,9 +211,9 @@ const getLocationGroupsList = (session: Session | null, setter: ((e:any) => void
 
 
 const getUsersList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
-    return getListFromApi(Api.Users, session, params ? params : {}, query ? query : {})
+    getListFromApi(Api.Users, session, params ? params : {}, query ? query : {})
         .then((e) => {
-            setter({success: true, status: e.status, data: e.data.results});
+            setter({success: true, status: e.status, data: e.data});
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: []});
@@ -246,9 +223,11 @@ const getUsersList = (session: Session | null, setter: ((e:any) => void), query?
 const getBuildingsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.Buildings, session, params ? params : {}, query ? query : {})
         .then((e) => {
-            setter({success: true, status: e.status, data: e.data.results});
+            console.log(e);
+            setter({success: true, status: e.status, data: e.data});
         })
         .catch((e) => {
+            console.log(e);
             setter({success: false, status: e.status, data: []});
         });
 };
@@ -256,7 +235,7 @@ const getBuildingsList = (session: Session | null, setter: ((e:any) => void), qu
 const getScheduleDefinitionsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.ScheduleDefinitions, session, params ? params : {}, query ? query : {})
         .then((e) => {
-            setter({success: true, status: e.status, data: e.data.results});
+            setter({success: true, status: e.status, data: e.data});
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: []});
@@ -266,7 +245,7 @@ const getScheduleDefinitionsList = (session: Session | null, setter: ((e:any) =>
 const getScheduleAssignmentsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.ScheduleAssignments, session, params ? params : {}, query ? query : {})
         .then((e) => {
-            setter({success: true, status: e.status, data: e.data.results});
+            setter({success: true, status: e.status, data: e.data});
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: []});
@@ -276,7 +255,7 @@ const getScheduleAssignmentsList = (session: Session | null, setter: ((e:any) =>
 const getScheduleWorkEntriesList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.ScheduleWorkEntries, session, params ? params : {}, query ? query : {})
         .then((e) => {
-            setter({success: true, status: e.status, data: e.data.results});
+            setter({success: true, status: e.status, data: e.data});
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: []});
@@ -286,7 +265,7 @@ const getScheduleWorkEntriesList = (session: Session | null, setter: ((e:any) =>
 const getGarbageTypesList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.GarbageTypes, session, params ? params : {}, query ? query : {})
         .then((e) => {
-            setter({success: true, status: e.status, data: e.data.results});
+            setter({success: true, status: e.status, data: e.data});
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: []});
@@ -355,7 +334,7 @@ const getLocationGroupDetail = (session: Session | null, setter: ((e:any) => voi
 };
 
 const getLocationGroupDetailBuildings = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    return getDetailsFromAPI(Api.LocationGroupDetailBuildings, session, id)
+    getDetailsFromAPI(Api.LocationGroupDetailBuildings, session, id)
         .then((e) => {
             setter({success: true, status: e.status, data: e.data});
         })
@@ -495,6 +474,17 @@ const getUserDetail = (session: Session | null, setter: ((e:any) => void), id: n
         });
 };
 
+
+const getIssueDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
+    getDetailsFromAPI(Api.IssueDetail, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
+};
+
 const postGarbageType = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
     postDetailsToAPI(Api.GarbageTypes, session, data)
         .then((e) => {
@@ -564,6 +554,18 @@ const postUser = (session: Session | null, data: any, setter?: ((e:any) => void)
             setter ? setter({success: false, status: e.status, data: e}) : undefined;
         });
 };
+
+
+const postIssue = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
+    postDetailsToAPI(Api.Issues, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
 
 const deleteGarbageCollectionScheduleTemplate = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
     deleteDetailsOnAPI(Api.GarbageCollectionScheduleTemplateDetail, session, id)
@@ -665,6 +667,17 @@ const deleteUser = (session: Session | null, id: number, setter?: ((e:any) => vo
         });
 };
 
+const deleteIssue = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
+    deleteDetailsOnAPI(Api.IssueDetail, session, id)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
+
 const patchGarbageCollectionScheduleTemplateDetail = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
     patchDetailsOnAPI(Api.GarbageCollectionScheduleTemplateDetail, session, id, data)
         .then((e) => {
@@ -765,6 +778,16 @@ const patchUserDetail = (session: Session | null, id: number, data: any, setter?
         });
 };
 
+const patchIssueDetail = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
+    patchDetailsOnAPI(Api.IssueDetail, session, id, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
 
 export {
     useAuthenticatedApi,
@@ -796,6 +819,7 @@ export {
     getScheduleDefinitionDetailScheduleWorkEntries,
     getUsersList,
     getUserDetail,
+    getIssueDetail,
 
     postGarbageType,
     postLocationGroup,
@@ -804,6 +828,7 @@ export {
     postScheduleWorkEntrie,
     postScheduleDefinition,
     postUser,
+    postIssue,
 
     deleteGarbageCollectionScheduleTemplate,
     deleteGarbageCollectionScheduleTemplateEntry,
@@ -815,6 +840,7 @@ export {
     deleteScheduleWorkEntry,
     deleteScheduleDefinition,
     deleteUser,
+    deleteIssue,
 
     patchGarbageCollectionScheduleTemplateDetail,
     patchGarbageCollectionScheduleTemplateEntryDetail,
@@ -826,14 +852,5 @@ export {
     patchScheduleWorkEntryDetail,
     patchScheduleDefinitionDetail,
     patchUserDetail,
+    patchIssueDetail,
 };
-
-export function getDetailArray<T>(route: Api | string, ids: number[] | undefined): SWRResponse<T[]> {
-    if (!ids) ids = [0];
-    const routeStrs = ids.map((id)=>route.replace(':id', id.toString()));
-    const {data: session} = useSession();
-
-    // @ts-ignore
-    const token = session ? session.accessToken : '';
-    return useSWR<T[]>([token, routeStrs], fetcherArray);
-}

@@ -1,5 +1,4 @@
 import {useState} from 'react';
-import {useRouter} from 'next/router';
 import {signIn} from 'next-auth/react';
 import styles from './LoginPageElement.module.css';
 import {Box, Button, TextField} from '@mui/material';
@@ -8,11 +7,8 @@ export default function LoginPageElement() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const router = useRouter();
-
     async function handleLogin() {
-        signIn('credentials', {'redirect': false, 'password': password, 'username': email});
-        await router.push('/live_routes');
+        signIn('credentials', {callbackUrl: '/live_routes', password: password, username: email});
     }
 
     return (
