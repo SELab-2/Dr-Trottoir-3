@@ -110,7 +110,5 @@ class IssueViewSet(PermissionsByActionMixin, viewsets.ModelViewSet):
     @action(detail=False)
     def not_approved(self, request):
         issues = self.filter_queryset(self.get_queryset().filter(approval_user=None))
-        serializer = self.get_serializer_class()(
-            self.paginate_queryset(issues), many=True
-        )
-        return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer_class()(issues, many=True)
+        return Response(serializer.data)

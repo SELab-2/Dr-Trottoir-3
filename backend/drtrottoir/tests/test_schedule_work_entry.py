@@ -36,7 +36,7 @@ def test_schedule_work_entry_get_list_empty_returns_empty_list_200() -> None:
     response = client.get("/schedule_work_entries/")
 
     assert response.status_code == 200
-    assert len(response.data["results"]) == 0
+    assert len(response.data) == 0
 
 
 @pytest.mark.django_db
@@ -53,7 +53,7 @@ def test_schedule_work_entry_get_list_multiple_entries_return_200() -> None:
 
     client.force_login(super_student.user)
     response = client.get("/schedule_work_entries/")
-    response_ids = [data["id"] for data in response.data["results"]]
+    response_ids = [data["id"] for data in response.data]
 
     assert response.status_code == 200
     assert sorted(work_entry_ids) == sorted(response_ids)
@@ -122,7 +122,7 @@ def test_schedule_work_entry_get_by_user_existing_returns_200() -> None:
     client.force_login(super_student.user)
 
     response = client.get(f"/schedule_work_entries/?creator={student.user.id}")
-    response_ids = [data["id"] for data in response.data["results"]]
+    response_ids = [data["id"] for data in response.data]
 
     assert response.status_code == 200
     assert sorted(response_ids) == sorted(work_entry_ids)
@@ -142,7 +142,7 @@ def test_schedule_work_entry_get_by_user_empty_returns_empty_list_and_200() -> N
     client.force_login(super_student.user)
 
     response = client.get(f"/schedule_work_entries/?creator={student.user.id}")
-    response_ids = [data["id"] for data in response.data["results"]]
+    response_ids = [data["id"] for data in response.data]
 
     assert response.status_code == 200
     assert len(response_ids) == 0
@@ -345,9 +345,7 @@ def test_schedule_work_entry_get_by_user_matching_user_allowed_non_matching_user
     response_other = client.get(f"/schedule_work_entries/?creator={student.user.id}")
 
     assert response_matching_user.status_code == 200
-    assert (
-        response_other.status_code == 200 and len(response_other.data["results"]) == 0
-    )
+    assert response_other.status_code == 200 and len(response_other.data) == 0
 
 
 # endregion GET by user

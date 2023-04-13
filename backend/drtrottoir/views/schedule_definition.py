@@ -1,5 +1,6 @@
 from rest_framework import mixins, permissions, viewsets
 from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from drtrottoir.models import ScheduleDefinition, ScheduleWorkEntry
 from drtrottoir.permissions import (
@@ -87,27 +88,25 @@ class ScheduleDefinitionViewSet(
     @action(detail=True)
     def buildings(self, request, pk=None):
         schedule_definition = self.get_object()
-        buildings = self.paginate_queryset(schedule_definition.buildings.all())
+        buildings = schedule_definition.buildings.all()
         serializer = BuildingSerializer(buildings, many=True)
 
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
     @action(detail=True)
     def schedule_assignments(self, request, pk=None):
         schedule_definition = self.get_object()
-        assignments = self.paginate_queryset(schedule_definition.assignments.all())
+        assignments = schedule_definition.assignments.all()
         serializer = ScheduleAssignmentSerializer(assignments, many=True)
 
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
     @action(detail=True)
     def schedule_work_entries(self, request, pk=None):
         schedule_definition = self.get_object()
-        schedule_work_entries = self.paginate_queryset(
-            ScheduleWorkEntry.objects.filter(
-                schedule_assignment__schedule_definition=schedule_definition
-            )
+        schedule_work_entries = ScheduleWorkEntry.objects.filter(
+            schedule_assignment__schedule_definition=schedule_definition
         )
         serializer = ScheduleWorkEntrySerializer(schedule_work_entries, many=True)
 
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
