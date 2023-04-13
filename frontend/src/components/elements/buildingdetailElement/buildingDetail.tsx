@@ -18,25 +18,15 @@ interface IBuildingDetail {
   name: string,
   address: string,
   pdf_guide: string | null,
-  description: string | null
   image: string | null,
   syndici: string,
-  schedules: IScheduleGarbageListItem[],
+  schedules: GarbageCollectionSchedule[],
   issues: Issue[],
+  longitude: number | null,
+  latitude: number | null
 }
 
-interface IScheduleGarbageListItem {
-  id: number,
-  type: string,
-  date: string,
-  note: string,
-}
-
-/* TODO list
- * - Remove building description, in detail view replace this with a map of the coordinates
- * - Add way of finding syndicus by building id
- * - Add building name to model
- */
+// TODO Add street map using latitude and longitude
 
 // eslint-disable-next-line require-jsdoc
 function BuildingDetailManualLink(props:{path: string | null }):JSX.Element {
@@ -106,15 +96,7 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
             for (const garbageType of garbageTypes.data) {
                 garbageNames[garbageType.id] = garbageType.name;
             }
-            const scheduleItems: IScheduleGarbageListItem[] = schedules.data.map((schedule) => {
-                const item: IScheduleGarbageListItem = {
-                    id: schedule.id,
-                    type: garbageNames[schedule.garbage_type],
-                    date: schedule.for_day,
-                    note: schedule.note,
-                };
-                return item;
-            });
+
             const syndiciNames=syndici.data.map(
                 (syndicus) => `${syndicus.last_name} ${syndicus.first_name}`).
                 sort().join(', ');
@@ -124,11 +106,12 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
                 name: building.data.name ? building.data.name : building.data.address,
                 address: building.data.address,
                 pdf_guide: building.data.pdf_guide,
-                description: `TODO insert map with coordinates ${building.data.longitude} ${building.data.latitude}`,
                 image: building.data.image,
                 syndici: syndiciNames,
-                schedules: scheduleItems,
+                schedules: schedules.data,
                 issues: issues.data.filter((issue)=> !issue.resolved ),
+                longitude: building.data.longitude,
+                latitude: building.data.latitude,
             };
             setBuildingDetail(detail);
         }
@@ -178,7 +161,9 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
 
                 {/* Building description container */}
                 <Box className={styles.building_desc_container}>
-                    <Typography>{buildingDetail.description}</Typography>
+                    <Typography>
+                      TODO add street map using longitude {buildingDetail.longitude} and latitude {buildingDetail.latitude}
+                    </Typography>
                 </Box>
 
                 {/* Building image container */}
