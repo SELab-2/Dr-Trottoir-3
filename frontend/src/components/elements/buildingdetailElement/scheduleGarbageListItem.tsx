@@ -22,20 +22,20 @@ export default function ScheduleGarbageListItem(props: {id: number}): JSX.Elemen
 
     useEffect(()=> {
         getGarbageCollectionScheduleDetail(session, setSchedule, id);
-    }, [id, session, setSchedule]);
+    }, [id, session]);
 
     useEffect(() => {
         if (schedule) {
             getGarbageTypeDetail(session, setGarbage, schedule.data.garbage_type);
         }
-    }, [schedule, session, setGarbage]);
+    }, [schedule, session]);
 
     useEffect(() => {
         if (schedule) {
             setNote(schedule.data.note);
             setTextContent(schedule.data.note);
         }
-    }, [schedule, session, setNote, setTextContent]);
+    }, [schedule, session]);
 
     if (!schedule || !garbage) {
         return <></>;
@@ -115,9 +115,6 @@ export default function ScheduleGarbageListItem(props: {id: number}): JSX.Elemen
                         }
                         <Dialog open={open} onClose={handleClose} fullWidth={true}>
                             <DialogTitle>Update note for {garbage.data.name} on {schedule.data.for_day}</DialogTitle>
-                            {/* Although the field is method={'POST'}, this will be seen as a PATCH request.
-                    method={'PATCH'} is not a valid option, and POST maintains the current URL,
-                    otherwise a question mark will be added at the end (which breaks the navbar)*/}
                             <TextField
                                 autoFocus
                                 id={`schedule-${id}-note-form-text-field`}
