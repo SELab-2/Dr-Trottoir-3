@@ -160,6 +160,6 @@ MEDIA_ROOT = STATIC_ROOT_BASE + "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CORS_ALLOWED_ORIGINS = filter(
-    None, os.environ.get("CORS_ALLOWED_ORIGINS", "http://localhost").split(",")
+CORS_ALLOWED_ORIGINS = list(
+    filter(None, os.environ.get("CORS_ALLOWED_ORIGINS", "").split(","))
 )
