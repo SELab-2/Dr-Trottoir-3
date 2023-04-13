@@ -131,29 +131,17 @@
 
 .button_default {
     font-family: 'Inter', sans-serif;
-<<<<<<< HEAD
-    font-weight: 500;
-    color: var(--primary-light);
-    text-transform: none;
-    background-color: var(--primary-dark);
-=======
     font-weight: 400;
     color: var(--primary-light) !important;
     text-transform: none;
     background-color: var(--primary-dark) !important;
->>>>>>> development
     border-radius: 8px;
 }
 
 .button_selected {
     font-family: 'Inter', sans-serif;
-<<<<<<< HEAD
-    font-weight: 500;
-    color: var(--primary-yellow);
-=======
     font-weight: 400;
     color: var(--primary-yellow) !important;
->>>>>>> development
     text-transform: none;
     background-color: var(--secondary-dark) !important;
     border-radius: 8px;
