@@ -59,7 +59,9 @@ function RouteDetail(props: routeDetailProps) {
                         onHovering={setHovering} hovering={hovering}/>
                 </Box>
                 <Box flexGrow={5}>
-                    {list ? undefined : <div>No list data</div>}
+                    {list ? <RouteMap buildings={list.data} onHovering={setHovering} hovering={hovering}/> :
+                        <div>No list data</div>
+                    }
                 </Box>
             </Box>
         </Box>

@@ -2,7 +2,7 @@ import {MapContainer, Marker, TileLayer, Tooltip} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import {latLngBounds} from 'leaflet';
 import {useRouter} from 'next/router';
-import {Building} from "@/api/models";
+import {Building} from '@/api/models';
 
 interface Props {
     buildings: Building[];
@@ -14,17 +14,17 @@ function RouteMap({buildings, onHovering, hovering}: Props) {
     const router = useRouter();
 
     const markers = buildings.map(({name, id, latitude, longitude}, index) => {
-        if(latitude != null && longitude != null) {
+        if (latitude != null && longitude != null) {
             return (
-            <Marker key={index} position={[latitude, longitude]}
+                <Marker key={index} position={[latitude, longitude]}
                     eventHandlers={{
                         mouseover: () => onHovering(index),
                         mouseout: () => onHovering(-1),
                         click: () => router.push(`/buildings/${id}`),
                     }}>
-                {hovering == index && <Tooltip direction={'right'} permanent={true}>{name}</Tooltip>}
-            </Marker>
-            )
+                    {hovering == index && <Tooltip direction={'right'} permanent={true}>{name}</Tooltip>}
+                </Marker>
+            );
         } else {
             return (<></>);
         }
@@ -33,13 +33,13 @@ function RouteMap({buildings, onHovering, hovering}: Props) {
     const bounds = latLngBounds(buildings
         .filter(({latitude, longitude}) => latitude != null && longitude != null)
         .map(({latitude, longitude}) => {
-        if(latitude != null && longitude != null) {
-            return [latitude, longitude];
-        } else {
+            if (latitude != null && longitude != null) {
+                return [latitude, longitude];
+            } else {
             // will never be reached
-            return [1,1];
-        }
-    }));
+                return [1, 1];
+            }
+        }));
 
 
     console.log(bounds);
