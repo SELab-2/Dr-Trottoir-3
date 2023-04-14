@@ -1,24 +1,27 @@
 import React from 'react';
-import styles from '@/components/elements/ListViewElement/ListButtonElements/ButtonComponent.module.css';
+import styles from './ButtonComponent.module.css';
 import {Button} from '@mui/material';
 import {ListItemProps} from './ListButtonComponentInterface';
 
 
-const RouteListButtonComponent = ({current, onClick, props}: ListItemProps) => {
-    const isCurrent = props.id == current;
+const RouteListButtonComponent = (props: ListItemProps) => {
+    const isCurrent = props.data.id == props.current;
+
+    console.log(props);
+
     return (
-        <div className={styles.button_wrapper}>
-            <Button id={(isCurrent)?styles.item_button_select : styles.item_button}
+        <div>
+            <Button id={(isCurrent)?styles['item_button_select'] : styles['item_button']}
                 className={styles.button_default}
-                onClick={()=>onClick(props.id)}>
+                onClick={()=>props.onClick(props.data.id)}>
                 <div className={styles.big_item_text}>
-                    {props.naam}
+                    {props.data.name}
                 </div>
                 <div className={styles.small_item_text}>
-                    {props.regio}
+                    {props.location}
                 </div>
                 <div className={styles.small_item_text}>
-                    {(Math.round(props.afstand/10))/100}km
+                    {props.data.buildings.length} gebouwen
                 </div>
             </Button>
         </div>

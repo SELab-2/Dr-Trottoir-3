@@ -7,7 +7,6 @@ import {useSession} from 'next-auth/react';
 import {getBuildingsList, getLocationGroupsList, useAuthenticatedApi} from '@/api/api';
 import {Building, LocationGroup} from '@/api/models';
 
-
 export default function BuildingsPage() {
     const {data: session} = useSession();
     const [buildings, setBuildings] = useAuthenticatedApi<Building[]>();
@@ -38,6 +37,8 @@ export default function BuildingsPage() {
         setSearchEntry={setSearchEntry}
     />;
 
+    console.log(current);
+
     return (
         <>
             <ListViewComponent
@@ -51,7 +52,7 @@ export default function BuildingsPage() {
                 ListItem={BuildingListButtonComponent}
                 TopBar={topBar}
             >
-                <BuildingDetail id={current ? current : 0}/>
+                <BuildingDetail id={current}/>
             </ListViewComponent>
         </>
     );

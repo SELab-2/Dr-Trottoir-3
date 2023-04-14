@@ -35,7 +35,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
             is_active: false,
             description: formDescription,
             image: null,
-            location_group: formRegion
+            location_group: formRegion,
         });
         handleClose();
     };

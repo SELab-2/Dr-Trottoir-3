@@ -1,168 +1,172 @@
-import * as React from 'react';
-import {useEffect} from 'react';
 import styles from './buildingdetail.module.css';
-import {AddRounded, CreateRounded, ErrorOutline, PictureAsPdf} from '@mui/icons-material';
-import {Box, Card, IconButton, Link, List, ListItem, Tooltip, Typography} from '@mui/material';
+import {Box, Link, List, Modal, Typography} from '@mui/material';
+import {Building, GarbageCollectionSchedule, GarbageType, Issue, LocationGroup, User} from '@/api/models';
+import {PictureAsPdf} from '@mui/icons-material';
+import {
+    getBuildingDetail, getBuildingDetailGarbageCollectionSchedules, getBuildingDetailIssues,
+    getGarbageTypesList, getLocationGroupDetail, getUsersList, useAuthenticatedApi,
+} from '@/api/api';
+import {defaultBuildingImage} from '@/constants/images';
+import {useSession} from 'next-auth/react';
+import ScheduleGarbageListItem from './scheduleGarbageListItem';
+import Button from '@mui/material/Button';
+import React, {useEffect, useState} from 'react';
+import BuildingIssueListItem from '@/components/elements/buildingdetailElement/buildingIssueListItem';
+import ErrorPage from '@/containers/ErrorPage';
 
-// TODO add a proper default image
-const defaultBuildingImage = 'https://images.pexels.com/photos/162539/architecture-building-amsterdam-blue-sky-162539.jpeg';
-
-// Create fake building data
-const dummyBuilding = {
-    id: 1,
-    name: 'Home Sterre',
-    address: 'Krijgslaan 281',
-    pdf_guide: 'https://example.com',
-    image: null,
-    // eslint-disable-next-line max-len
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus a risus lectus. Praesent vel sodales est. Nullam viverra est nisl, vel vehicula ante ornare et. Nulla vel vulputate tortor. Aenean sed consectetur justo. Phasellus aliquam tincidunt gravida.',
-    location_group: 1,
-    is_active: true,
-};
-
-// Create fake syndicus
-const dummySyndicus = {id: 3, name: 'Syndicus A'};
-
-// Create fake location group
-const dummyLocationGroup = {id: 1, name: 'Gent'};
-
-// Create face garbage collection schedules
-// eslint-disable-next-line max-len
-const dummyGarbageCollectionSchedules: { id: number; for_day: string; building: number; type: string; issue: string; }[] = [];
-for (let i = 0; i <= 200; i++) {
-    let issue = '';
-    // randomly give the garbage collection schedule an issue
-    if (Math.random() < 0.1) {
-        issue = 'Test issue';
-    }
-    const schedule = {
-        id: i,
-        for_day: `2022-01-${i}`,
-        building: 1,
-        type: 'PMD',
-        issue: issue,
-    };
-    dummyGarbageCollectionSchedules.push(schedule);
+interface IBuildingDetail {
+  id: number,
+  location_group: string,
+  name: string,
+  address: string,
+  pdf_guide: string | null,
+  image: string | null,
+  syndici: string,
+  schedules: GarbageCollectionSchedule[],
+  issues: Issue[],
+  longitude: number | null,
+  latitude: number | null
 }
 
-interface IScheduleGarbageListItem {
-  id: number,
-  type: string,
-  date: string,
-  issue: string,
+// TODO Add street map using latitude and longitude
+// TODO in case there is an error, detail.status is undefined, and not a proper status code. This needs to be fixed.
+
+// eslint-disable-next-line require-jsdoc
+function BuildingDetailManualLink(props:{path: string | null }):JSX.Element {
+    if (!props.path || props.path.length == 0) {
+        return (<></>);
+    }
+    return (
+        <Link href={props.path} className={styles.building_data_manual}>
+          Manual
+            <PictureAsPdf fontSize="small"/>
+        </Link>
+    );
 }
 
 // eslint-disable-next-line require-jsdoc
-export default function BuildingDetail(props: { id: number }) {
-    // eslint-disable-next-line no-unused-vars
+
+export default function BuildingDetail(props: { id: number|null }): JSX.Element {
     const {id} = props;
 
-    // eslint-disable-next-line require-jsdoc
-    function createScheduleEntryNote(id: number) {
-    // TODO make this a proper function once API is available,
-    //  see https://mui.com/material-ui/react-dialog#form-dialogs
-    // eslint-disable-next-line no-undef
-        alert(`Changing note for entry ${id}`);
-    }
+    const [buildingDetail, setBuildingDetail] =
+        useState<IBuildingDetail | undefined>(undefined);
+    const [issuesModalOpen, setIssuesModalOpen] = useState(false);
+    const handleIssueModalOpen = ()=> setIssuesModalOpen(true);
+    const handleIssueModalClose = ()=> setIssuesModalOpen(false);
 
+    const {data: session} = useSession();
 
-    // eslint-disable-next-line require-jsdoc
-    function createScheduleWarningSymbol(id: number, text: string) {
-        const [issueExists, setIssueExists] = React.useState(false);
-        useEffect(() => setIssueExists(text.length > 0), []);
+    const [building, setBuilding] = useAuthenticatedApi<Building>();
+    const [location, setLocation] = useAuthenticatedApi<LocationGroup>();
+    const [schedules, setSchedules] = useAuthenticatedApi<GarbageCollectionSchedule[]>();
+    const [garbageTypes, setGarbageTypes] = useAuthenticatedApi<GarbageType[]>();
+    const [issues, setIssues] = useAuthenticatedApi<Issue[]>();
+    const [syndici, setSyndici] = useAuthenticatedApi<User[]>();
+    const [sessionError, setSessionError] = React.useState(0);
 
-        return (
-            <>
-                {
-                    issueExists ?
-                        <>
-                            <Tooltip title={text} arrow>
-                                <ErrorOutline fontSize="small"/>
-                            </Tooltip>
-                            <IconButton onClick={() => createScheduleEntryNote(id)}>
-                                <CreateRounded fontSize="small"/>
-                            </IconButton>
-                        </> :
-                        <IconButton onClick={() => createScheduleEntryNote(id)}>
-                            <AddRounded fontSize="small"/>
-                        </IconButton>
-                }
-            </>
-        );
-    }
-
-
-    // eslint-disable-next-line require-jsdoc
-    function scheduleGarbageListItem(schedule: IScheduleGarbageListItem) {
-    // @ts-ignore
-        return (
-            <ListItem
-                key={schedule.id}
-                sx={
-                    {
-                        display: 'flex',
-                        flexGrow: 1,
-                        flexDirection: 'row',
-                        alignItems: 'stretch',
-                        justifyContent: 'space-between',
-                        verticalAlign: 'middle',
-                    }}>
-                <Card sx={{
-                    width: '100%', height: '40px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}>
-                    <Box sx={{
-                        display: 'flex', width: '100%', height: '100%',
-                        background: 'var(--secondary-light)', alignItems: 'center',
-                    }}>
-                        {/* Schedule type */}
-                        <Box sx={{
-                            display: 'flex', width: '33%', height: '100%',
-                            flexGrow: 1, fontWeight: 'bold',
-                            paddingLeft: '10px', alignItems: 'center',
-                        }}>
-                            {schedule.type}
-                        </Box>
-                        {/* Schedule date */}
-                        <Box sx={{
-                            display: 'flex', width: '33%', height: '100%',
-                            flexGrow: 1, justifyContent: 'center',
-                            alignItems: 'center', fontSize: '14px',
-                        }}>
-                            {schedule.date}
-                        </Box>
-                        {/* Schedule issue icons */}
-                        <Box sx={{
-                            display: 'flex', width: '33%', height: '100%',
-                            flexGrow: 1, justifyContent: 'flex-end',
-                            alignItems: 'center',
-                        }}>
-                            {createScheduleWarningSymbol(schedule.id, schedule.issue)}
-                        </Box>
-                    </Box>
-                </Card>
-            </ListItem>
-        );
-    }
-
-    // eslint-disable-next-line require-jsdoc
-    function createBuildingManualElement(path: string) {
-        if (!path || path.length == 0) {
-            return (<></>);
+    // Get building data
+    useEffect(()=>{
+        if (id != null) {
+            getBuildingDetail(session, setBuilding, id);
         }
-        return (
-            <Link href={path} className={styles.building_data_manual}>
-        Handleiding<PictureAsPdf fontSize="small"></PictureAsPdf>
-            </Link>
-        );
+    }, [id, session]);
+
+    // Get location group
+    useEffect(()=> {
+        if (building) {
+            getLocationGroupDetail(session, setLocation, building.data.location_group);
+        }
+    }, [building, session]);
+
+    // Get schedules
+    useEffect(() => {
+        if (id != null) {
+            getBuildingDetailGarbageCollectionSchedules(session, setSchedules, id);
+        }
+    }, [id, session]);
+
+    // Get garbage types
+    useEffect(()=> {
+        getGarbageTypesList(session, setGarbageTypes);
+    }, [session]);
+
+    // Get issues
+    useEffect(()=> {
+        if (id != null) {
+            getBuildingDetailIssues(session, setIssues, id);
+        }
+    }, [id, session]);
+
+    useEffect(()=> {
+        getUsersList(session, setSyndici, {'syndicus__buildings': id}, {});
+    }, [id, session]);
+
+    useEffect(() => {
+        if (session && building && location && schedules && garbageTypes && issues && syndici) {
+            // Check if every request managed to go through
+            if (!building.success) {
+                setSessionError(building.status);
+            } else if (!location.success) {
+                setSessionError(location.status);
+            } else if (!schedules.success) {
+                setSessionError(schedules.status);
+            } else if (!garbageTypes.success) {
+                setSessionError(garbageTypes.status);
+            } else if ( !issues.success) {
+                setSessionError(issues.status);
+            } else if (!syndici.success) {
+                setSessionError(syndici.status);
+            } else {
+                // If all checks have passed, continue with building page
+                const garbageNames: {[id: number]: string} = {};
+                for (const garbageType of garbageTypes.data) {
+                    garbageNames[garbageType.id] = garbageType.name;
+                }
+
+                const syndiciNames=syndici.data.map(
+                    (syndicus) => `${syndicus.last_name} ${syndicus.first_name}`).
+                    sort().join(', ');
+                const detail: IBuildingDetail = {
+                    id: id ? id : 1,
+                    location_group: location.data.name,
+                    name: building.data.name ? building.data.name : building.data.address,
+                    address: building.data.address,
+                    pdf_guide: building.data.pdf_guide,
+                    image: building.data.image,
+                    syndici: syndiciNames,
+                    schedules: schedules.data,
+                    issues: issues.data.filter((issue)=> !issue.resolved ),
+                    longitude: building.data.longitude,
+                    latitude: building.data.latitude,
+                };
+                setBuildingDetail(detail);
+            }
+        }
+    },
+    [id, session, building, location, schedules, garbageTypes, issues, syndici]);
+
+    if (sessionError !== 0) {
+        return <ErrorPage status={sessionError}/>;
     }
+
+    if (id == null) {
+        return <p>None selected</p>;
+    }
+
+    if (!buildingDetail) {
+        return <p>Loading...</p>;
+    }
+
+    let issuesModalButtonText = `${buildingDetail.issues.length} issues remaining`;
+    if (buildingDetail.issues.length === 0) {
+        issuesModalButtonText = `No issues`;
+    } else if (buildingDetail.issues.length === 1) {
+        issuesModalButtonText = `${buildingDetail.issues.length} issue remaining`;
+    }
+
 
     return (
-    // TODO: Temporarily add this to fix dimensions,
-    //  once combined the outer div should be removed
-
         <Box className={styles.full}>
             {/* Top row */}
             <Box className={styles.top_row_container}
@@ -170,32 +174,40 @@ export default function BuildingDetail(props: { id: number }) {
                 {/* Building data container */}
                 <Box className={styles.building_data_container}>
                     <Typography variant="h1" className={styles.building_data_header}>
-                        {dummyBuilding.name}
+                        {buildingDetail.name}
                     </Typography>
+                    <br/>
                     <Box className={styles.building_data_container_data}>
                         <Typography className={styles.building_data_data}>
-                            {dummyLocationGroup.name}
+                            {buildingDetail.location_group}
                         </Typography>
                         <Typography className={styles.building_data_data}>
-                            {dummyBuilding.address}
+                            {buildingDetail.address}
                         </Typography>
                         <Typography className={styles.building_data_data}>
-                            {dummySyndicus.name}
+                            {buildingDetail.syndici}
                         </Typography>
+                        <br/>
+                        <BuildingDetailManualLink path={buildingDetail.pdf_guide}/>
+                        {/* Button to open the issue modal*/}
+                        <Button onClick={handleIssueModalOpen}>{issuesModalButtonText}</Button>
                     </Box>
-                    {createBuildingManualElement(dummyBuilding.pdf_guide)}
                 </Box>
 
                 {/* Building description container */}
                 <Box className={styles.building_desc_container}>
-                    <Typography>{dummyBuilding.description}</Typography>
+                    <Typography>
+                      TODO add street map longitude {buildingDetail.longitude} and latitude {buildingDetail.latitude}
+                    </Typography>
                 </Box>
 
                 {/* Building image container */}
                 <Box className={styles.building_imag_container}>
-                    <img src={dummyBuilding.image ?
-                        dummyBuilding.image :
-                        defaultBuildingImage}
+                    <img src={
+                        buildingDetail.image ?
+                            buildingDetail.image :
+                            defaultBuildingImage
+                    }
                     alt={'Building'}/>
                 </Box>
             </Box>
@@ -210,24 +222,44 @@ export default function BuildingDetail(props: { id: number }) {
                     <Typography
                         variant="h1"
                         className={styles.garbage_schedule_list_header}>
-              Planning
+            Planning
                     </Typography>
                     <List>
-                        {dummyGarbageCollectionSchedules.map((schedule) =>
-                            scheduleGarbageListItem({
-                                id: schedule.id, date: schedule.for_day,
-                                type: schedule.type, issue: schedule.issue,
-                            })
+                        {buildingDetail.schedules.map((schedule) =>
+                            <ScheduleGarbageListItem
+                                key={schedule.id}
+                                id={schedule.id}
+                            />
                         )}
                     </List>
                 </Box>
 
                 {/* Garbage schedule calendar */}
                 <Box style={{background: 'limegreen', width: '100%'}}>
-            Calendar here
+          Calendar here
                 </Box>
             </Box>
 
+            {/* Modal for the issues */}
+            <Modal
+                open={issuesModalOpen}
+                onClose={handleIssueModalClose}
+            >
+                <Box className={styles.issue_modal_box}
+                    sx={{
+                        background: 'var(--primary-light)',
+                        maxHeight: '400px',
+                        overflow: 'scroll',
+                    }}>
+                    <List>
+                        {
+                            buildingDetail.issues.map((issue: Issue) =>
+                                <BuildingIssueListItem issue={issue.id} key={issue.id}/>
+                            )
+                        }
+                    </List>
+                </Box>
+            </Modal>
         </Box>
     );
 }
