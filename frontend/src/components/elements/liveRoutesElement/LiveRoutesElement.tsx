@@ -2,7 +2,7 @@ import styles from './LiveRoutesElement.module.css';
 import {
     ApiData,
     getBuildingsList,
-    getLocationGroupDetail, getScheduleAssignmentsList,
+    getLocationGroupDetail, getScheduleAssignmentDetail,
     getScheduleDefinitionDetail, getScheduleWorkEntriesList,
     useAuthenticatedApi,
 } from '@/api/api';
@@ -30,7 +30,7 @@ const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
 export default function LiveRoutesElement() {
     const {data: session} = useSession();
 
-    const scheduleDefinitionId = 5;
+    const scheduleAssignmentId = 1;
 
     // TODO - all frontend filtering should be replaced with filter queries
     const [scheduleDefinitionData, setScheduleDefinitionData] = useAuthenticatedApi<ScheduleDefinition>();
@@ -40,8 +40,18 @@ export default function LiveRoutesElement() {
     const [workEntriesData, setWorkEntriesData] = useAuthenticatedApi<Array<ScheduleWorkEntry>>();
 
     useEffect(() => {
-        getScheduleDefinitionDetail(session, setScheduleDefinitionData, scheduleDefinitionId);
-    }, [session]);
+        getScheduleAssignmentDetail(session, setScheduleAssignmentData, scheduleAssignmentId);
+    }, []);
+
+    useEffect(() => {
+        if (scheduleAssignmentData) {
+            getScheduleDefinitionDetail(
+                session,
+                setScheduleDefinitionData,
+                scheduleAssignmentData.data.schedule_definition
+            );
+        }
+    }, [scheduleAssignmentData]);
 
     useEffect(() => {
         if (scheduleDefinitionData) {
@@ -68,22 +78,6 @@ export default function LiveRoutesElement() {
     }, [session, scheduleDefinitionData]);
 
     useEffect(() => {
-        if (scheduleDefinitionData) {
-            getScheduleAssignmentsList(
-                session,
-                (response: ApiData<Array<ScheduleAssignment>>) =>
-                    setScheduleAssignmentData(
-                        {
-                            status: response.status,
-                            success: response.success,
-                            data: response.data.filter(
-                                (item) => item.schedule_definition == scheduleDefinitionId
-                            )[0], // TODO assuming present, might not be
-                        }));
-        }
-    }, [session, scheduleDefinitionData]);
-
-    useEffect(() => {
         if (scheduleAssignmentData) {
             getScheduleWorkEntriesList(
                 session,
@@ -93,7 +87,7 @@ export default function LiveRoutesElement() {
                             status: response.status,
                             success: response.success,
                             data: response.data.filter(
-                                (item) => item.schedule_assignment == scheduleAssignmentData.data.id
+                                (item) => item.schedule_assignment == scheduleAssignmentId
                             ),
                         }));
         }
