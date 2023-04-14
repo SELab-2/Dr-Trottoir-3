@@ -15,11 +15,11 @@ function RouteMap({buildings, onHovering, hovering}: Props) {
 
     const markers = buildings.map(({name, id, lat, lon}, index) => (
         <Marker key={index} position={[lat, lon]}
-                eventHandlers={{
-                    mouseover: () => onHovering(index),
-                    mouseout: () => onHovering(-1),
-                    click: () => router.push(`/buildings/${id}`),
-                }}>
+            eventHandlers={{
+                mouseover: () => onHovering(index),
+                mouseout: () => onHovering(-1),
+                click: () => router.push(`/buildings/${id}`),
+            }}>
             {hovering == index && <Tooltip direction={'right'} permanent={true}>{name}</Tooltip>}
         </Marker>
     ));

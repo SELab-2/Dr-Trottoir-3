@@ -30,7 +30,7 @@ function RouteDetail() {
     return (
         <Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'}>
             <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'} borderRadius={'var(--small_corner)'}
-                 display={'flex'}>
+                display={'flex'}>
                 <Box>
                     <Typography variant={'h4'}>Route</Typography>
                     <Typography variant={'subtitle1'}>Gent</Typography>
@@ -43,7 +43,7 @@ function RouteDetail() {
                 <Box flexGrow={2} flexBasis={0}>
                     <Typography variant={'h5'}>Gebouwen</Typography>
                     <BuildingList list={list} onReorder={setList} onRemove={onRemove} onAdd={onAdd}
-                                  onHovering={setHovering} hovering={hovering}/>
+                        onHovering={setHovering} hovering={hovering}/>
                 </Box>
                 <Box flexGrow={5}>
                     <RouteMap buildings={list} onHovering={setHovering} hovering={hovering}/>
