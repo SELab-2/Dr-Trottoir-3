@@ -10,13 +10,13 @@ export default function Home() {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <body>
+            <div>
                 <main className={styles.main}>
                     <div style={{backgroundColor: 'white', width: '100%', height: '100%'}}>
                         <p>Not logged in, TODO: redirect to login page.</p>
                     </div>
                 </main>
-            </body>
+            </div>
         </>
     );
 }

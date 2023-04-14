@@ -138,21 +138,22 @@ class Command(BaseCommand):
 
         for i in range(10):
             lg = lgs[i % len(lgs)]
-            sched = ScheduleDefinition(
-                name=f"schedule definition {i}", version=1, location_group=lg
-            )
-            sched.save()
-            sched_buildings = [
-                ScheduleDefinitionBuilding(
-                    building=b, schedule_definition=sched, position=j
+            for version in range(5):
+                sched = ScheduleDefinition(
+                    name=f"schedule definition {i}", version=version, location_group=lg
                 )
-                for j, b in enumerate(random.choices(buildings, k=5))
-            ]
+                sched.save()
+                sched_buildings = [
+                    ScheduleDefinitionBuilding(
+                        building=b, schedule_definition=sched, position=j
+                    )
+                    for j, b in enumerate(random.choices(buildings, k=5))
+                ]
 
-            for sched_building in sched_buildings:
-                sched_building.save()
+                for sched_building in sched_buildings:
+                    sched_building.save()
 
-            schedule_definitions.append(sched)
+                schedule_definitions.append(sched)
 
         self.stdout.write("Adding issues...")
 

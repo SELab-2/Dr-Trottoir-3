@@ -26,14 +26,20 @@ export type GarbageCollectionSchedule = {
     for_day: string;
     building: number;
     garbage_type: number;
+    note: string;
 };
 
 export type Building = {
     id: number;
+    name: string,
     address: string;
     pdf_guide: string;
     is_active: boolean;
     location_group: number;
+    image: string;
+    description: string;
+    longitude: number | null,
+    latitude: number | null,
 };
 
 export type ScheduleAssignment = {
@@ -84,4 +90,13 @@ export type User = {
     student: undefined | Student,
     admin: undefined | Admin,
     syndicus: undefined | Syndicus,
+}
+
+export type Issue = {
+    id: number
+    resolved: boolean,
+    message: string,
+    building: number,
+    from_user: number,
+    approval_user: number | null | undefined
 }

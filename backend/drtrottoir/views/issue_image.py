@@ -44,3 +44,7 @@ class IssueImageViewSet(
         "create": [permissions.IsAuthenticated, IsStudent | IsSuperstudentOrAdmin],
         "destroy": [permissions.IsAuthenticated, IsSuperstudentOrAdmin],
     }
+
+    filterset_fields = {
+        "issue": ("exact", "in"),
+    }

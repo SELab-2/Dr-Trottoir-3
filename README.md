@@ -55,11 +55,19 @@ Services can also be reached directly via the ports specified here:
 | Docs     | 8002 |
 | Postgres | 5432 |
 
+### Mock data
+
+To load mock data, run 
+
+```shell
+./dev/sh full mockdata
+```
+
 ## Individual services
 
 To just run frontend, backend, or docs, run
 ```shell
-./dev.sh {frontend|backend|docs}
+./dev.sh {frontend|backend|docs} [--build|down]
 ```
 
 ## Rebuilding image

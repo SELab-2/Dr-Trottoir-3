@@ -31,7 +31,7 @@ export default function UserElement() {
 
     useEffect(() => {
         getScheduleAssignmentsList(session, setScheduleAssignmentsData, {user: userId});
-    }, [session]);
+    }, [session, setUserData]);
 
     useEffect(() => {
         if (userData && userData.data.student?.location_group) {
