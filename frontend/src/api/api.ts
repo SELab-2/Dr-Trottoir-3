@@ -12,6 +12,7 @@ export enum Api {
     GarbageCollectionScheduleTemplateEntryDetail = 'garbage_collection_schedule_template_entries/:id/',
     GarbageTypes = 'garbage_types/',
     GarbageTypeDetail = 'garbage_types/:id/',
+    GarbageCollectionSchedules = 'garbage_collection_schedules/',
     GarbageCollectionScheduleDetail = 'garbage_collection_schedules/:id/',
     LocationGroups = 'location_groups/',
     LocationGroupDetail = 'location_groups/:id/',
@@ -140,6 +141,9 @@ async function getListFromApi(route: Api, session: any, params: any, query: any)
     }
     const queryParams = new URLSearchParams(query);
     routeStr += '?' + queryParams.toString();
+    console.log(route);
+    console.log(process.env.NEXT_API_URL);
+    console.log(process.env.NEXT_API_URL + route);
 
     const data = await axios.get(process.env.NEXT_API_URL + routeStr, {headers: getAuthHeader(session)});
 
@@ -251,6 +255,17 @@ const getScheduleAssignmentsList = (session: Session | null, setter: ((e:any) =>
             setter({success: false, status: e.status, data: []});
         });
 };
+
+const getGarbageCollectionsSchedulesList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
+    getListFromApi(Api.GarbageCollectionSchedules, session, params ? params : {}, query ? query : {})
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: []});
+        });
+};
+
 
 const getScheduleWorkEntriesList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.ScheduleWorkEntries, session, params ? params : {}, query ? query : {})
@@ -797,6 +812,7 @@ export {
     getGarbageCollectionScheduleTemplateEntryDetail,
     getGarbageTypesList,
     getGarbageTypeDetail,
+    getGarbageCollectionsSchedulesList,
     getGarbageCollectionScheduleDetail,
     getLocationGroupsList,
     getLocationGroupDetail,

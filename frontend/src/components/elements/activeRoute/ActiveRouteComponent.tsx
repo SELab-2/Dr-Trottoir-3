@@ -5,13 +5,16 @@ import CloseIcon from '@mui/icons-material/Close';
 import {Add, CameraAltRounded, ChevronLeft, ChevronRight} from '@mui/icons-material';
 import {defaultBuildingImage} from '@/constants/images';
 import styles from './activeroute.module.css';
-import React from 'react';
+import React, {useEffect} from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PublishIcon from '@mui/icons-material/Publish';
 import {useSession} from 'next-auth/react';
 // eslint-disable-next-line max-len
 import {Building, GarbageCollectionSchedule, GarbageType, ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry} from '@/api/models';
-import {Api, apiUrl, getDetail, getDetailArray, getList, PaginatedResponse} from '@/api/api';
+import {Api, getBuildingsList, getGarbageCollectionsSchedulesList, getGarbageTypesList, getScheduleAssignmentDetail, getScheduleDefinitionDetail, getScheduleWorkEntriesList, useAuthenticatedApi} from '@/api/api';
+import ErrorPage from '@/containers/ErrorPage';
+
+// TODO: environment errors en CORS issues
 
 interface IActiveRouteData {
   building_id: number,
@@ -44,7 +47,7 @@ function ActiveRouteItemData(props: { route: IActiveRouteData }): JSX.Element {
     );
 }
 
-function ActiveRouteItemImage(props: {image: string | null | undefined}): JSX.Element {
+function ActiveRouteItemImage(props: { image: string | null | undefined }): JSX.Element {
     return (
         <Box className={styles.active_route_image_container}>
             {
@@ -57,7 +60,7 @@ function ActiveRouteItemImage(props: {image: string | null | undefined}): JSX.El
 }
 
 
-function ActiveRouteItemEntriesUpload(props: {route: IActiveRouteData, type: ('AR' | 'WO' | 'DE')}): JSX.Element {
+function ActiveRouteItemEntriesUpload(props: { route: IActiveRouteData, type: ('AR' | 'WO' | 'DE') }): JSX.Element {
     const {route, type} = props;
     const {data: session} = useSession();
     // @ts-ignore
@@ -74,7 +77,7 @@ function ActiveRouteItemEntriesUpload(props: {route: IActiveRouteData, type: ('A
         formData.append('entry_type', type);
         formData.append('schedule_assignment', route.schedule_assignment_id.toString());
         formData.append('creation_timestamp', timestamp.toISOString());
-        const options ={
+        const options = {
             method: 'POST',
             body: formData,
             headers: {'Authorization': `Bearer ${token}`},
@@ -82,7 +85,8 @@ function ActiveRouteItemEntriesUpload(props: {route: IActiveRouteData, type: ('A
         // Not required, but the form won't work if a Content-Type header is specified
         // @ts-ignore
         delete options.headers['Content-Type'];
-        await fetch(apiUrl(Api.ScheduleWorkEntries), options);
+        alert('TODO UPLOAINDG SCHEDULE WORK ENTRIES');
+    // await fetch(apiUrl(Api.ScheduleWorkEntries), options);
     }
 
     return (
@@ -93,11 +97,11 @@ function ActiveRouteItemEntriesUpload(props: {route: IActiveRouteData, type: ('A
                     type="file"
                     accept="image/*"
                     hidden
-                    onChange={async (e) =>{
+                    onChange={async (e) => {
                         // @ts-ignore
                         const image = e.target.files[0];
                         await uploadScheduleWorkEntry(image);
-                    } }
+                    }}
                 />
             </IconButton>
         </form>
@@ -163,30 +167,35 @@ function ActiveRouteItemIssues(props: { route: IActiveRouteData }): JSX.Element 
             approval_user: null,
         };
         // Post the issue
-        const issueResult = await fetch(apiUrl(Api.Issues), {
-            method: 'POST',
-            body: JSON.stringify(issue),
-            headers: {
-                'Authorization': `Bearer  ${token}`,
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }}).then((response)=>response.json());
-
+        /*
+    const issueResult = await fetch(apiUrl(Api.Issues), {
+        method: 'POST',
+        body: JSON.stringify(issue),
+        headers: {
+            'Authorization': `Bearer  ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }}).then((response)=>response.json());
+    */
+        alert('TODO UPLOADING ISSUE');
         // Upload the issue images
-        for (const image of Array.from(images)) {
-            const formData = new FormData();
-            formData.append('image', image, image.name);
-            formData.append('issue', issueResult.id);
-            const options ={
-                method: 'POST',
-                body: formData,
-                headers: {'Authorization': `Bearer ${token}`},
-            };
-            // Not required, but the form won't work if a Content-Type header is specified
-            // @ts-ignore
-            delete options.headers['Content-Type'];
-            await fetch(apiUrl(Api.IssueImages), options);
-        }
+        /*
+    for (const image of Array.from(images)) {
+        const formData = new FormData();
+        formData.append('image', image, image.name);
+        formData.append('issue', issueResult.id);
+        const options ={
+            method: 'POST',
+            body: formData,
+            headers: {'Authorization': `Bearer ${token}`},
+        };
+        // Not required, but the form won't work if a Content-Type header is specified
+        // @ts-ignore
+        delete options.headers['Content-Type'];
+        alert('TODO UPLOADING IMAGES')
+        // await fetch(apiUrl(Api.IssueImages), options);
+    }*/
+        alert('TODO UPLOAINDG ISSUE IMAGES');
     }
 
     return (
@@ -274,85 +283,118 @@ function ActiveRouteItem(props: IActiveRouteData): JSX.Element {
 
 export default function ActiveRouteComponent(props: { id: number; }): JSX.Element {
     const {id: id} = props;
-    let activeRoutes: IActiveRouteData[] | undefined = [];
+    const {data: session} = useSession();
 
-    const {data: scheduleAssignment} = getDetail<ScheduleAssignment>(Api.ScheduleAssignmentDetail, id);
-    // eslint-disable-next-line max-len
-    const {data: scheduleDefinition} = getDetail<ScheduleDefinition>(Api.ScheduleDefinitionDetail, scheduleAssignment?.schedule_definition);
-    // eslint-disable-next-line max-len
-    const garbageScheduleUrl = `/buildings/:id/for_day/${scheduleAssignment?.assigned_date}/garbage_collection_schedules/`;
-    // eslint-disable-next-line max-len
-    const {data: garbageSchedules} = getDetailArray<PaginatedResponse<GarbageCollectionSchedule>>(garbageScheduleUrl, scheduleDefinition?.buildings);
-    const {data: buildings} = getDetailArray<Building>(Api.BuildingDetail, scheduleDefinition?.buildings);
-    const {data: garbageTypes} = getList<GarbageType>(Api.GarbageTypes, {}, {});
-    // eslint-disable-next-line max-len
-    const {data: scheduleWorkEntries} = getList<ScheduleWorkEntry>(Api.ScheduleWorkEntries, {}, {schedule_assignment: id});
+    const [activeRoutes, setActiveRoutes] = React.useState<IActiveRouteData[] | undefined>(undefined);
+    const [scheduleAssignment, setScheduleAssignment] = useAuthenticatedApi<ScheduleAssignment>();
+    const [scheduleDefinition, setScheduleDefinition] = useAuthenticatedApi<ScheduleDefinition>();
+    const [garbageSchedules, setGarbageSchedules] = useAuthenticatedApi<GarbageCollectionSchedule[]>();
+    const [buildings, setBuildings] = useAuthenticatedApi<Building[]>();
+    const [garbageTypes, setGarbageTypes] = useAuthenticatedApi<GarbageType[]>();
+    const [scheduleWorkEntries, setScheduleWorkEntries] = useAuthenticatedApi<ScheduleWorkEntry[]>();
+    const [sessionError, setSessionError] = React.useState(0);
 
-    // @ts-ignore
-    if (!scheduleAssignment?.id && scheduleAssignment?.detail) {
-        /* During debugging the server starts and restarts a lot, meaning
-        that tokens can get invalidated in-between restarts while still staying inside
-        the browser cache. This is a catch for that in order to prevent errors.
-         */
-        return (
-            <>
-                <p>There was an error: </p><br/>
-                <em>{
-                    // @ts-ignore
-                    scheduleAssignment.detail
-                }</em>
-            </>);
-    }
+    // Get schedule assignment
+    useEffect(() => {
+        getScheduleAssignmentDetail(session, setScheduleAssignment, id);
+    }, []);
 
-    // eslint-disable-next-line max-len
-    if (scheduleAssignment && scheduleDefinition && (garbageSchedules !== undefined) && (buildings!== undefined) && garbageTypes && scheduleWorkEntries) {
-        const garbageNames: {[id: number]: string} = {};
-        for (const garbageType of garbageTypes.results) {
-            garbageNames[garbageType.id] = garbageType.name;
+    // Get schedule definition
+    useEffect(()=> {
+        if (scheduleAssignment && scheduleAssignment.success) {
+            getScheduleDefinitionDetail(session, setScheduleDefinition, scheduleAssignment.data.schedule_definition);
         }
+    }, [scheduleAssignment]);
 
-        const buildingData: {[id: number] : Building} = {};
-        for (const building of buildings) {
-            buildingData[building.id] = building;
+    // Get garbage schedules
+    useEffect(() => {
+        if (scheduleAssignment && scheduleDefinition && scheduleAssignment.success && scheduleDefinition.success) {
+            const buildings = scheduleDefinition.data.buildings.map(toString).join(',');
+            getGarbageCollectionsSchedulesList(session, setGarbageSchedules, {for_day: scheduleAssignment.data.assigned_date, building__in: buildings});
         }
+    }, [scheduleAssignment, scheduleDefinition]);
 
-        const buildingGarbageTypes: {[id: number]: Set<string>} = {};
-        for (const building of buildings) {
-            buildingGarbageTypes[building.id] = new Set();
-        }
+    // Get buildings
+    useEffect(()=> {
+        getBuildingsList(session, setBuildings, {}, {});
+    });
 
-        for (const paginatedGarbageSchedule of garbageSchedules) {
-            for (const garbageSchedule of paginatedGarbageSchedule.results) {
+    // Get garbage types
+    useEffect(()=> {
+        getGarbageTypesList(session, setGarbageTypes, {}, {});
+    });
+
+    // Get already existing schedule work entries
+    useEffect(() => {
+        getScheduleWorkEntriesList(session, setScheduleWorkEntries, {schedule_assignment: id}, {});
+    });
+
+    // eslint-disable-next-line max-len
+    if (scheduleAssignment && scheduleDefinition && garbageSchedules && buildings && garbageTypes && scheduleWorkEntries) {
+        if (!scheduleAssignment.success) {
+            setSessionError(scheduleAssignment.status);
+        } else if (!scheduleDefinition.success) {
+            setSessionError(scheduleDefinition.status);
+        } else if (!garbageSchedules.success) {
+            setSessionError(garbageSchedules.status);
+        } else if (!buildings.success) {
+            setSessionError(buildings.status);
+        } else if (!garbageTypes.success) {
+            setSessionError(garbageTypes.status);
+        } else if (!scheduleWorkEntries.success) {
+            setSessionError(scheduleWorkEntries.status);
+        } else {
+            const garbageNames: { [id: number]: string } = {};
+            for (const garbageType of garbageTypes.data) {
+                garbageNames[garbageType.id] = garbageType.name;
+            }
+
+            const buildingData: { [id: number]: Building } = {};
+            for (const building of buildings.data) {
+                buildingData[building.id] = building;
+            }
+
+            const buildingGarbageTypes: { [id: number]: Set<string> } = {};
+            for (const building of buildings.data) {
+                buildingGarbageTypes[building.id] = new Set();
+            }
+
+            for (const garbageSchedule of garbageSchedules.data) {
                 const garbageName = garbageNames[garbageSchedule.garbage_type];
                 buildingGarbageTypes[garbageSchedule.building].add(garbageName);
             }
-        }
 
-        activeRoutes = [];
-        for (const building of scheduleDefinition.buildings) {
-            const SHOW_BUILDING_EVEN_IF_NO_GARBAGE_ASSIGNMENTS_GIVEN = false; // TODO ask about this
-            if (SHOW_BUILDING_EVEN_IF_NO_GARBAGE_ASSIGNMENTS_GIVEN || buildingGarbageTypes[building].size > 0) {
-                const route: IActiveRouteData = {
-                    building_id: building,
-                    schedule_assignment_id: id,
-                    name: `TODO building name ${building}`,
-                    address: buildingData[building].address,
-                    garbage: Array.from(buildingGarbageTypes[building]).sort().join(', '),
-                    pdf_guide: buildingData[building].pdf_guide,
-                    image: buildingData[building].image,
-                    work_entries_done: {AR: false, WO: false, DE: false},
-                };
+            const routes = [];
+            for (const building of scheduleDefinition.data.buildings) {
+                // Only add entries if they have one or more garbage to pick up that day
+                if (buildingGarbageTypes[building].size > 0) {
+                    const route: IActiveRouteData = {
+                        building_id: building,
+                        schedule_assignment_id: id,
+                        name: buildingData[building].name,
+                        address: buildingData[building].address,
+                        garbage: Array.from(buildingGarbageTypes[building]).sort().join(', '),
+                        pdf_guide: buildingData[building].pdf_guide,
+                        image: buildingData[building].image,
+                        work_entries_done: {AR: false, WO: false, DE: false},
+                    };
 
-                for (const workEntry of scheduleWorkEntries.results) {
-                    if (workEntry.building === building) {
-                        if (workEntry.entry_type === 'AR') route.work_entries_done.AR = true;
-                        if (workEntry.entry_type === 'WO') route.work_entries_done.WO = true;
-                        if (workEntry.entry_type === 'DE') route.work_entries_done.DE = true;
+                    for (const workEntry of scheduleWorkEntries.data) {
+                        if (workEntry.building === building) {
+                            if (workEntry.entry_type === 'AR') route.work_entries_done.AR = true;
+                            if (workEntry.entry_type === 'WO') route.work_entries_done.WO = true;
+                            if (workEntry.entry_type === 'DE') route.work_entries_done.DE = true;
+                        }
                     }
+                    routes.push(route);
                 }
-                activeRoutes.push(route);
             }
+            setActiveRoutes(routes);
         }
+    }
+
+    if (sessionError !== 0) {
+        return <ErrorPage status={sessionError}/>;
     }
 
     if (activeRoutes === undefined) {
