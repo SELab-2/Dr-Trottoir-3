@@ -32,12 +32,14 @@ function BuildingList({list, onReorder, onRemove, onAdd, onHovering, hovering}: 
         onReorder(templist);
     };
 
+
     return (
         <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId={'BuildingList'}>
                 {(provided, snapshot) => (
                     <Box {...provided.droppableProps} ref={provided.innerRef}>
                         {list.map(({id, name}, index) =>
+                            // @ts-ignore
                             <Draggable key={id} draggableId={id} index={index}>
                                 {((draggableProvided) => (
                                     <Box paddingBottom={1} {...draggableProvided.draggableProps}
