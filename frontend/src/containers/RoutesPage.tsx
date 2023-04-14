@@ -1,8 +1,9 @@
+import RouteDetail from "@/components/modules/routeDetail/RouteDetail";
 
 export default function RoutesPage() {
     return (
         <>
-            <h1 style={{color: 'black'}}>ROUTES</h1>
+            <RouteDetail routeId={1}/>
         </>
     );
 }

@@ -41,6 +41,7 @@ class Building(models.Model):
         is_active (bool): Whether a building is active. Defaults to True
     """
 
+    name = models.CharField(max_length=255, default="")
     address = models.CharField(max_length=255)
     pdf_guide = models.FileField(upload_to=get_file_path_building_pdf_guide, null=True)
     location_group = models.ForeignKey(
@@ -49,6 +50,8 @@ class Building(models.Model):
     is_active = models.BooleanField(default=True)
     description = models.TextField(null=True)
     image = models.ImageField(upload_to=get_file_path_building_image, null=True)
+    longitude = models.DecimalField(max_digits=22, decimal_places=16, null=True)
+    latitude = models.DecimalField(max_digits=22, decimal_places=16, null=True)
 
 
 class ScheduleDefinition(models.Model):

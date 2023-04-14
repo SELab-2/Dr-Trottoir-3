@@ -29,4 +29,5 @@ ENV PATH="/scripts:/py/bin:$PATH"
 
 USER app
 
+#TODO move to compose file
 CMD ["run.sh"]

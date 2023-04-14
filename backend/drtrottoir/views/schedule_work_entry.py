@@ -64,7 +64,13 @@ class ScheduleWorkEntryViewSet(
     serializer_class = ScheduleWorkEntrySerializer
     parser_classes = (MultiPartParser,)
 
-    filterset_fields = ["creator", "entry_type"]
+    filterset_fields = {
+        "creation_timestamp": ("exact", "in", "gt", "lt"),
+        "creator": ("exact", "in"),
+        "building": ("exact", "in"),
+        "schedule_assignment": ("exact", "in"),
+        "entry_type": ("exact", "in"),
+    }
     search_fields: List[str] = []
 
     def get_queryset(self):
