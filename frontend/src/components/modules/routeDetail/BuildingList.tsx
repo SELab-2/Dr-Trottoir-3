@@ -2,12 +2,12 @@ import {DragDropContext, Droppable, Draggable, DropResult} from 'react-beautiful
 import React from 'react';
 import {Box, IconButton, Link} from '@mui/material';
 import {DragHandle, Clear, Add} from '@mui/icons-material';
-import {Building} from './types';
+import {Building} from '@/api/models';
 
 interface Props {
     list: Building[];
-    onReorder: (list: Building[]) => void;
-    onRemove: (index: number) => void;
+    onReorder: (e: any) => void;
+    onRemove: (id: number) => void;
     onAdd: () => void;
     onHovering: (hovering: number) => void;
     hovering: number;

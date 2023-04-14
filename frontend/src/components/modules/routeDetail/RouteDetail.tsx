@@ -2,38 +2,42 @@ import {Box, Typography} from '@mui/material';
 import BuildingList from '@/components/modules/routeDetail/BuildingList';
 import {useEffect, useState} from 'react';
 import RouteMap from '@/components/modules/routeDetail/RouteMap';
+import {deleteBuilding, getBuildingsList, postBuilding, useAuthenticatedApi} from '@/api/api';
+import {useSession} from 'next-auth/react';
+import {Building} from '@/api/models';
 
 type routeDetailProps = {
     routeId: number | null,
 }
 
 function RouteDetail(props: routeDetailProps) {
+    const {data: session} = useSession();
 
     const [counter, setCounter] = useState(0);
     const [hovering, setHovering] = useState(-1);
-    // const [list, setList] = useState([
-    //     {id: 'A', name: 'Building A', lat: 51.025819, lon: 3.713635},
-    //     {id: 'B', name: 'Building B', lat: 51.046237, lon: 3.725420},
-    //     {id: 'C', name: 'Building C', lat: 51.036277, lon: 3.723558},
-    //     {id: 'D', name: 'Building D', lat: 50.998364, lon: 3.766141},
-    // ]);
+    const [list, setList] = useAuthenticatedApi<Building[]>();
 
     useEffect(() => {
-        getBuildingList()
-    })
+        getBuildingsList(session, setList);
+    }, [session]);
 
 
     function onAdd() {
-        const templist = Array.from(list);
-        templist.push({id: counter.toString(), name: `Building ${counter}`, lat: 51.025819, lon: 3.713635});
-        setList(templist);
+        postBuilding(session,
+            {
+                id: counter.toString(),
+                name: `Building ${counter}`,
+                latitude: 51.025819,
+                longitude: 3.713635,
+            }
+        );
+        getBuildingsList(session, setList);
         setCounter(counter + 1);
     }
 
-    function onRemove(index: number) {
-        const templist = Array.from(list);
-        templist.splice(index, 1);
-        setList(templist);
+    function onRemove(id: number) {
+        deleteBuilding(session, id);
+        getBuildingsList(session, setList);
     }
 
     return (
@@ -51,11 +55,11 @@ function RouteDetail(props: routeDetailProps) {
             <Box display={'flex'} gap={1} flexGrow={1}>
                 <Box flexGrow={2} flexBasis={0}>
                     <Typography variant={'h5'}>Gebouwen</Typography>
-                    <BuildingList list={list} onReorder={setList} onRemove={onRemove} onAdd={onAdd}
+                    <BuildingList list={list ? list.data : []} onReorder={setList} onRemove={onRemove} onAdd={onAdd}
                         onHovering={setHovering} hovering={hovering}/>
                 </Box>
                 <Box flexGrow={5}>
-                    <RouteMap buildings={list} onHovering={setHovering} hovering={hovering}/>
+                    <RouteMap buildings={list ? list.data : []} onHovering={setHovering} hovering={hovering}/>
                 </Box>
             </Box>
         </Box>
