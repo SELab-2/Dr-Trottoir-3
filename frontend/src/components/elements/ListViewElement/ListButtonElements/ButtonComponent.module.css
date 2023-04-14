@@ -4,8 +4,8 @@
     flex-wrap: wrap;
     text-align: left;
     align-items: flex-start;
-    color: var(--primary-dark);
-    background-color: var(--secondary-light);
+    color: #1C1C1C;
+    background-color: #E9EDF4;
 }
 
 #item_button_select {
@@ -14,53 +14,24 @@
     flex-wrap: wrap;
     text-align: left;
     align-items: flex-start;
-    color: var(--primary-light);
-    background-color: var(--primary-dark);
+    color: white;
+    background-color: #1C1C1C;
 }
-
-.button_wrapper {
-    flex-wrap: wrap;
-    background-color: var(--primary-light);
-    width: 100%;
-}
-
 
 .button_default {
     word-break: break-word;
     font-family: 'Inter', sans-serif;
-    color: var(--primary-dark);
+    color: #1C1C1C;
     text-transform: none;
-    background-color: var(--primary-dark);
+    background-color: #1C1C1C;
     border-radius: 8px;
     width: 100%;
 }
 
 .button_default:hover{
-    color: var(--primary-yellow);
+    color: #E6E600;
 }
 
-.big_item_text {
-    font-size: 100%;
-    font-weight: bolder;
-}
-
-
-@media screen and (min-width:800px) {
-
-    .very_big_item_text {
-        font-size: 125%;
-        font-weight: bolder;
-        word-break: keep-all;
-    }
-}
-
-@media screen and (max-width:800px) {
-
-    .very_big_item_text {
-        font-size: 75%;
-        font-weight: bolder;
-    }
-}
 
 .small_item_text {
     color: #808080;

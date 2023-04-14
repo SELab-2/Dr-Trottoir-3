@@ -1,12 +1,13 @@
 
-import UserList from "@/components/elements/userListElement/UserList";
+import ListViewComponent from '@/components/elements/ListViewElement/ListViewComponent';
 import UserElement from '@/components/elements/userElement/UserElement';
 
 export default function UsersPage() {
     return (
         <>
-            <UserList></UserList>
-                {/*<UserElement />*/}
+            {/*<ListViewComponent>*/}
+            {/*    <UserElement />*/}
+            {/*</ListViewComponent>*/}
         </>
     );
 }

@@ -29,6 +29,7 @@
     margin: 4px 0 20px;
     flex: 999;
     background-color: red;
+    width: 200px;
 }
 
 .side_bar_list {
@@ -115,12 +116,13 @@
     line-break: unset;
 }
 
+
 .button_default {
     font-family: 'Inter', sans-serif;
     font-weight: 500;
-    color: var(--primary-light);
+    color: #F3F5F9;
     text-transform: none;
-    background-color: var(--primary-dark);
+    background-color: #1C1C1C;
     border-radius: 8px;
     height: 100px;
 }
@@ -128,7 +130,7 @@
 .button_selected {
     font-family: 'Inter', sans-serif;
     font-weight: 500;
-    color: var(--primary-yellow);
+    color: #E6E600;
     text-transform: none;
     background-color: #2D2F33;
     border-radius: 8px;
@@ -136,4 +138,12 @@
 
 .button:hover {
     background-color: #2D2F33;
+}
+
+
+.button_wrapper {
+    flex-wrap: wrap;
+    width: 100%;
+    height: fit-content;
+    padding: 0 8px 0 0;
 }
