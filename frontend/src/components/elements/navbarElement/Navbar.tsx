@@ -16,6 +16,7 @@ const topButtons = [
     {id: '2', text: 'Gebruikers', href: '/users', icon: PeopleAltRoundedIcon},
     {id: '3', text: 'Routes', href: '/routes', icon: RouteIcon},
     {id: '4', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon},
+    {id: '5', text: 'Actieve route', href: '/active_route', icon: SensorsRoundedIcon},
 ];
 
 const includeRoutes = [

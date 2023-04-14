@@ -9,12 +9,12 @@ import React, {useEffect} from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PublishIcon from '@mui/icons-material/Publish';
 import {useSession} from 'next-auth/react';
-// eslint-disable-next-line max-len
-import {Building, GarbageCollectionSchedule, GarbageType, ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry} from '@/api/models';
-import {Api, getBuildingsList, getGarbageCollectionsSchedulesList, getGarbageTypesList, getScheduleAssignmentDetail, getScheduleDefinitionDetail, getScheduleWorkEntriesList, useAuthenticatedApi} from '@/api/api';
+import {Building, GarbageCollectionSchedule, GarbageType, Issue,
+    ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry} from '@/api/models';
+import {ApiData, getBuildingsList, getGarbageCollectionsSchedulesList, getGarbageTypesList,
+    getScheduleAssignmentDetail, getScheduleDefinitionDetail, getScheduleWorkEntriesList,
+    postIssue, postIssueImage, postScheduleWorkEntry, useAuthenticatedApi} from '@/api/api';
 import ErrorPage from '@/containers/ErrorPage';
-
-// TODO: environment errors en CORS issues
 
 interface IActiveRouteData {
   building_id: number,
@@ -25,260 +25,6 @@ interface IActiveRouteData {
   pdf_guide: string | null | undefined,
   image: string | null | undefined,
   work_entries_done: { AR: boolean, WO: boolean, DE: boolean }
-}
-
-function ActiveRouteItemData(props: { route: IActiveRouteData }): JSX.Element {
-    const {route} = props;
-    return (
-        <Box
-            className={styles.active_route_data}
-        >
-            <h1>{route.name}</h1>
-            <br/>
-            <p>{route.address}</p>
-            <p>{route.garbage}</p>
-            <br/>
-            {
-                route.pdf_guide ?
-                    <a href={route.pdf_guide} style={{textDecoration: 'underline'}}>Handleiding</a> :
-                    <p></p>
-            }
-        </Box>
-    );
-}
-
-function ActiveRouteItemImage(props: { image: string | null | undefined }): JSX.Element {
-    return (
-        <Box className={styles.active_route_image_container}>
-            {
-                props.image ?
-                    <img src={props.image} alt={'building'}/> :
-                    <img src={defaultBuildingImage} alt={'building'}/>
-            }
-        </Box>
-    );
-}
-
-
-function ActiveRouteItemEntriesUpload(props: { route: IActiveRouteData, type: ('AR' | 'WO' | 'DE') }): JSX.Element {
-    const {route, type} = props;
-    const {data: session} = useSession();
-    // @ts-ignore
-    const token = session!.accessToken;
-    // @ts-ignore
-    const user = session!.userid;
-
-    async function uploadScheduleWorkEntry(image: File) {
-        const timestamp = new Date(image.lastModified);
-        const formData = new FormData();
-        formData.append('image', image, image.name);
-        formData.append('creator', user);
-        formData.append('building', route.building_id.toString());
-        formData.append('entry_type', type);
-        formData.append('schedule_assignment', route.schedule_assignment_id.toString());
-        formData.append('creation_timestamp', timestamp.toISOString());
-        const options = {
-            method: 'POST',
-            body: formData,
-            headers: {'Authorization': `Bearer ${token}`},
-        };
-        // Not required, but the form won't work if a Content-Type header is specified
-        // @ts-ignore
-        delete options.headers['Content-Type'];
-        alert('TODO UPLOAINDG SCHEDULE WORK ENTRIES');
-    // await fetch(apiUrl(Api.ScheduleWorkEntries), options);
-    }
-
-    return (
-        <form encType="multipart/form-data">
-            <IconButton component="label">
-                <Add></Add>
-                <input
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    onChange={async (e) => {
-                        // @ts-ignore
-                        const image = e.target.files[0];
-                        await uploadScheduleWorkEntry(image);
-                    }}
-                />
-            </IconButton>
-        </form>
-    );
-}
-
-function ActiveRouteItemEntriesIcon(props: { checked: boolean }): JSX.Element {
-    if (props.checked) {
-        return (<CheckIcon sx={{color: 'green'}}/>);
-    } else {
-        return (<CloseIcon sx={{color: 'red'}}/>);
-    }
-}
-
-function ActiveRouteItemEntries(props: { route: IActiveRouteData }): JSX.Element {
-    const {route} = props;
-    return (
-        <Box
-            className={styles.active_route_entries}
-        >
-            <table>
-                <tbody>
-                    <tr>
-                        <td>Aankomst</td>
-                        <td>Afvalplaats</td>
-                        <td>Vertrek</td>
-                    </tr>
-                    <tr>
-                        <td><ActiveRouteItemEntriesUpload route={route} type={'AR'}/></td>
-                        <td><ActiveRouteItemEntriesUpload route={route} type={'WO'}/></td>
-                        <td><ActiveRouteItemEntriesUpload route={route} type={'DE'}/></td>
-                    </tr>
-                    <tr>
-                        <td><ActiveRouteItemEntriesIcon checked={route.work_entries_done.AR}/></td>
-                        <td><ActiveRouteItemEntriesIcon checked={route.work_entries_done.WO}/></td>
-                        <td><ActiveRouteItemEntriesIcon checked={route.work_entries_done.DE}/></td>
-                    </tr>
-                </tbody>
-            </table>
-        </Box>
-    );
-}
-
-function ActiveRouteItemIssues(props: { route: IActiveRouteData }): JSX.Element {
-    const [issueText, setIssueText] = React.useState('');
-    const [images, setImages] = React.useState(new Set<File>());
-    const {data: session} = useSession();
-    // @ts-ignore
-    const token = session ? session.accessToken : '';
-
-    function clearIssue() {
-        setIssueText('');
-        setImages(new Set());
-    }
-
-    async function uploadIssue(props: IActiveRouteData, message: string, images: Set<File>): Promise<void> {
-        const issue = {
-            resolved: false,
-            message: message,
-            building: props.building_id,
-            // @ts-ignore
-            from_user: session!.userid,
-            approval_user: null,
-        };
-        // Post the issue
-        /*
-    const issueResult = await fetch(apiUrl(Api.Issues), {
-        method: 'POST',
-        body: JSON.stringify(issue),
-        headers: {
-            'Authorization': `Bearer  ${token}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }}).then((response)=>response.json());
-    */
-        alert('TODO UPLOADING ISSUE');
-        // Upload the issue images
-        /*
-    for (const image of Array.from(images)) {
-        const formData = new FormData();
-        formData.append('image', image, image.name);
-        formData.append('issue', issueResult.id);
-        const options ={
-            method: 'POST',
-            body: formData,
-            headers: {'Authorization': `Bearer ${token}`},
-        };
-        // Not required, but the form won't work if a Content-Type header is specified
-        // @ts-ignore
-        delete options.headers['Content-Type'];
-        alert('TODO UPLOADING IMAGES')
-        // await fetch(apiUrl(Api.IssueImages), options);
-    }*/
-        alert('TODO UPLOAINDG ISSUE IMAGES');
-    }
-
-    return (
-        <Box
-            className={styles.active_route_issue}
-            style={{background: 'var(--secondary-light)', color: 'var(--secondary-dark)', display: 'inline-block'}}
-        >
-            {/* Input text */}
-            <TextField
-                aria-label="minimum height"
-                minRows={3}
-                maxRows={3}
-                placeholder={'Issue'}
-                value={issueText}
-                multiline={true}
-                style={{width: '100%', height: '75%', resize: 'none'}}
-                onChange={(e) => setIssueText(e.target.value)}
-            />
-            <br/>
-            {/* Buttons */}
-            <Box style={{
-                display: 'flex',
-                flexWrap: 'nowrap',
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-                alignItems: 'center',
-            }}>
-                {/* Clear button */}
-                <IconButton onClick={(_) => {
-                    clearIssue();
-                }}>
-                    <CancelIcon></CancelIcon>
-                </IconButton>
-
-                {/* Camera button */}
-                <IconButton
-                    component="label"
-                >
-                    <CameraAltRounded></CameraAltRounded>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        hidden
-                        onChange={(e) => {
-                            // @ts-ignore
-                            const image = e.target.files[0];
-                            // Add image to images
-                            setImages((prev) => new Set(prev.add(image)));
-                        }}
-                    />
-                    <Typography>{images.size}</Typography>
-                </IconButton>
-                {/* Upload button */}
-                <IconButton onClick={async (_) => {
-                    if (issueText.length > 0) {
-                        // Upload issue
-                        await uploadIssue(props.route, issueText, images);
-                        // Clear issue data
-                        clearIssue();
-                    } else {
-                        alert('Error: issue message is empty.');
-                    }
-                }}>
-                    <PublishIcon></PublishIcon>
-                </IconButton>
-            </Box>
-
-        </Box>);
-}
-
-function ActiveRouteItem(props: IActiveRouteData): JSX.Element {
-    return (
-        <div className={styles.grid_test}>
-            {/* Building data */}
-            <ActiveRouteItemData route={props}/>
-            {/* Building image */}
-            <ActiveRouteItemImage image={props.image}/>
-            {/* Work entries */}
-            <ActiveRouteItemEntries route={props}/>
-            {/* Issues */}
-            <ActiveRouteItemIssues route={props}/>
-        </div>
-    );
 }
 
 export default function ActiveRouteComponent(props: { id: number; }): JSX.Element {
@@ -297,53 +43,56 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
     // Get schedule assignment
     useEffect(() => {
         getScheduleAssignmentDetail(session, setScheduleAssignment, id);
-    }, []);
+    }, [session]);
 
     // Get schedule definition
     useEffect(()=> {
         if (scheduleAssignment && scheduleAssignment.success) {
             getScheduleDefinitionDetail(session, setScheduleDefinition, scheduleAssignment.data.schedule_definition);
         }
-    }, [scheduleAssignment]);
+    }, [session, scheduleAssignment]);
 
     // Get garbage schedules
     useEffect(() => {
         if (scheduleAssignment && scheduleDefinition && scheduleAssignment.success && scheduleDefinition.success) {
-            const buildings = scheduleDefinition.data.buildings.map(toString).join(',');
-            getGarbageCollectionsSchedulesList(session, setGarbageSchedules, {for_day: scheduleAssignment.data.assigned_date, building__in: buildings});
+            const buildings = scheduleDefinition.data.buildings.map((building) => building.toString()).join(',');
+            getGarbageCollectionsSchedulesList(session, setGarbageSchedules,
+                {for_day: scheduleAssignment.data.assigned_date, building__in: buildings});
         }
-    }, [scheduleAssignment, scheduleDefinition]);
+    }, [session, scheduleAssignment, scheduleDefinition]);
 
     // Get buildings
     useEffect(()=> {
         getBuildingsList(session, setBuildings, {}, {});
-    });
+    }, [session]);
 
     // Get garbage types
     useEffect(()=> {
         getGarbageTypesList(session, setGarbageTypes, {}, {});
-    });
+    }, [session]);
 
     // Get already existing schedule work entries
     useEffect(() => {
         getScheduleWorkEntriesList(session, setScheduleWorkEntries, {schedule_assignment: id}, {});
-    });
+    }, [session]);
 
-    // eslint-disable-next-line max-len
-    if (scheduleAssignment && scheduleDefinition && garbageSchedules && buildings && garbageTypes && scheduleWorkEntries) {
-        if (!scheduleAssignment.success) {
+    useEffect(() => {
+        if (!session) {
+            setSessionError(403);
+        } else if (scheduleAssignment && !scheduleAssignment.success) {
             setSessionError(scheduleAssignment.status);
-        } else if (!scheduleDefinition.success) {
+        } else if (scheduleDefinition && !scheduleDefinition.success) {
             setSessionError(scheduleDefinition.status);
-        } else if (!garbageSchedules.success) {
+        } else if (garbageSchedules && ! garbageSchedules.success) {
             setSessionError(garbageSchedules.status);
-        } else if (!buildings.success) {
+        } else if (buildings && !buildings.success) {
             setSessionError(buildings.status);
-        } else if (!garbageTypes.success) {
+        } else if (garbageTypes && !garbageTypes.success) {
             setSessionError(garbageTypes.status);
-        } else if (!scheduleWorkEntries.success) {
+        } else if (scheduleWorkEntries && !scheduleWorkEntries.success) {
             setSessionError(scheduleWorkEntries.status);
-        } else {
+            // eslint-disable-next-line max-len
+        } else if (scheduleAssignment && scheduleDefinition && garbageSchedules && buildings && garbageTypes && scheduleWorkEntries) {
             const garbageNames: { [id: number]: string } = {};
             for (const garbageType of garbageTypes.data) {
                 garbageNames[garbageType.id] = garbageType.name;
@@ -391,9 +140,9 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
             }
             setActiveRoutes(routes);
         }
-    }
+    }, [scheduleAssignment, scheduleDefinition, garbageSchedules, buildings, garbageTypes, scheduleWorkEntries]);
 
-    if (sessionError !== 0) {
+    if (!session || sessionError !== 0) {
         return <ErrorPage status={sessionError}/>;
     }
 
@@ -405,43 +154,250 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
         return <p>This schedule has no entries...</p>;
     }
 
+    // @ts-ignore
+    const user = session.userid;
+
+
+    async function uploadIssue(route: IActiveRouteData, message: string, images: Set<File>): Promise<void> {
+        const issue = {
+            resolved: false,
+            message: message,
+            building: route.building_id,
+            // @ts-ignore
+            from_user: user,
+            approval_user: null,
+        };
+        // Post the issue
+        postIssue(session, issue, (response: ApiData<Issue>) => {
+            if (response.success) {
+                for (const image of Array.from(images)) {
+                    const formData = new FormData();
+                    formData.append('image', image, image.name);
+                    formData.append('issue', response.data.id.toString());
+                    postIssueImage(session, formData);
+                }
+            }
+        });
+    }
+
+    async function uploadScheduleWorkEntry(route: IActiveRouteData, type: string, image: File) {
+        const timestamp = new Date(image.lastModified);
+        const formData = new FormData();
+        formData.append('image', image, image.name);
+        // @ts-ignore
+        formData.append('creator', user);
+        formData.append('building', route.building_id.toString());
+        formData.append('entry_type', type);
+        formData.append('schedule_assignment', route.schedule_assignment_id.toString());
+        formData.append('creation_timestamp', timestamp.toISOString());
+        postScheduleWorkEntry(session, formData, (response: ApiData<ScheduleWorkEntry>) => {
+            if (response.success) {
+                getScheduleWorkEntriesList(session, setScheduleWorkEntries, {schedule_assignment: id}, {});
+            }
+        });
+    }
+
+    // Button for a single entry type (AR, WO, DE)
+    function ActiveRouteItemEntriesUpload(props: { route: IActiveRouteData, type: ('AR' | 'WO' | 'DE') }): JSX.Element {
+        const {route, type} = props;
+        return (
+            <form encType="multipart/form-data">
+                <IconButton component="label">
+                    <Add></Add>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        hidden
+                        onChange={async (e) => {
+                        // @ts-ignore
+                            const image = e.target.files[0];
+                            await uploadScheduleWorkEntry(route, type, image);
+                        }}
+                    />
+                </IconButton>
+            </form>
+        );
+    }
+
+    // Checkmark for a single type
+    function ActiveRouteItemEntriesIcon(props: { checked: boolean }): JSX.Element {
+        if (props.checked) {
+            return (<CheckIcon sx={{color: 'green'}}/>);
+        } else {
+            return (<CloseIcon sx={{color: 'red'}}/>);
+        }
+    }
+
+    // Table containing the buttons for uploading schedule work entry images + checkmarks
+    function ActiveRouteItemEntries(props: { route: IActiveRouteData }): JSX.Element {
+        const {route} = props;
+        return (
+            <Box
+                className={styles.active_route_entries}
+            >
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Aankomst</td>
+                            <td>Afvalplaats</td>
+                            <td>Vertrek</td>
+                        </tr>
+                        <tr>
+                            <td><ActiveRouteItemEntriesUpload route={route} type={'AR'}/></td>
+                            <td><ActiveRouteItemEntriesUpload route={route} type={'WO'}/></td>
+                            <td><ActiveRouteItemEntriesUpload route={route} type={'DE'}/></td>
+                        </tr>
+                        <tr>
+                            <td><ActiveRouteItemEntriesIcon checked={route.work_entries_done['AR']}/></td>
+                            <td><ActiveRouteItemEntriesIcon checked={route.work_entries_done['WO']}/></td>
+                            <td><ActiveRouteItemEntriesIcon checked={route.work_entries_done['DE']}/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </Box>
+        );
+    }
+
+    // Issue box
+    function ActiveRouteItemIssues(props: { route: IActiveRouteData }): JSX.Element {
+        const [issueText, setIssueText] = React.useState('');
+        const [images, setImages] = React.useState(new Set<File>());
+
+        function clearIssue() {
+            setIssueText('');
+            setImages(new Set());
+        }
+
+        return (
+            <Box
+                className={styles.active_route_issue}
+                style={{background: 'var(--secondary-light)', color: 'var(--secondary-dark)', display: 'inline-block'}}
+            >
+                {/* Input text */}
+                <TextField
+                    aria-label="minimum height"
+                    minRows={3}
+                    maxRows={3}
+                    placeholder={'Issue'}
+                    value={issueText}
+                    multiline={true}
+                    style={{width: '100%', height: '75%', resize: 'none'}}
+                    onChange={(e) => setIssueText(e.target.value)}
+                />
+                <br/>
+                {/* Buttons */}
+                <Box style={{
+                    display: 'flex',
+                    flexWrap: 'nowrap',
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                    alignItems: 'center',
+                }}>
+                    {/* Clear button */}
+                    <IconButton onClick={clearIssue}>
+                        <CancelIcon></CancelIcon>
+                    </IconButton>
+
+                    {/* Camera button */}
+                    <IconButton
+                        component="label"
+                    >
+                        <CameraAltRounded></CameraAltRounded>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            hidden
+                            onChange={(e) => {
+                            // @ts-ignore
+                                const image = e.target.files[0];
+                                // Add image to images
+                                setImages((prev) => new Set(prev.add(image)));
+                            }}
+                        />
+                        <Typography>{images.size}</Typography>
+                    </IconButton>
+                    {/* Upload button */}
+                    <IconButton onClick={async (_) => {
+                        if (issueText.length > 0) {
+                            // Upload issue
+                            await uploadIssue(props.route, issueText, images);
+                            // Clear issue data
+                            clearIssue();
+                        } else {
+                            alert('Error: issue message is empty.');
+                        }
+                    }}>
+                        <PublishIcon></PublishIcon>
+                    </IconButton>
+                </Box>
+
+            </Box>);
+    }
+
+    // View of a single route item
+    function ActiveRouteItem(props: { route: IActiveRouteData }): JSX.Element {
+        const {route} = props;
+        return (
+            <div className={styles.grid_test}>
+                {/* Building data */}
+                <Box
+                    className={styles.active_route_data}
+                >
+                    <h1>{route.name}</h1>
+                    <br/>
+                    <p>{route.address}</p>
+                    <p>{route.garbage}</p>
+                    <br/>
+                    {
+                        route.pdf_guide ?
+                            <a href={route.pdf_guide} style={{textDecoration: 'underline'}}>Handleiding</a> :
+                            <p></p>
+                    }
+                </Box>
+                {/* Building image */}
+                <Box className={styles.active_route_image_container}>
+                    {
+                        route.image ?
+                            <img src={route.image} alt={'building'}/> :
+                            <img src={defaultBuildingImage} alt={'building'}/>
+                    }
+                </Box>
+                {/* Work entries */}
+                <ActiveRouteItemEntries route={route}/>
+                {/* Issues */}
+                <ActiveRouteItemIssues route={route}/>
+            </div>
+        );
+    }
+
     return (
         <>
-            {/* TODO when implementing, remove the outer div */}
-            <div style={{width: '360px', height: '640px', background: 'var(--primary-light)', border: 'solid 3px red'}}>
-                <Carousel
-                    NextIcon={<ChevronRight/>}
-                    PrevIcon={<ChevronLeft/>}
-                    autoPlay={false}
-                    animation={'slide'}
-                    indicators={false}
-                    navButtonsAlwaysVisible={true}
-                    fullHeightHover={false}
-                    swipe={false}
-                    navButtonsWrapperProps={{
-                        style: {
-                            // Move them to the middle of the top row
-                            bottom: 'unset',
-                            top: '5%',
-                        },
-                    }}>
-                    {
-                        activeRoutes.map((item, i) =>
-                            <ActiveRouteItem
-                                key={i}
-                                building_id={item.building_id}
-                                schedule_assignment_id={item.schedule_assignment_id}
-                                name={item.name}
-                                address={item.address}
-                                garbage={item.garbage}
-                                pdf_guide={item.pdf_guide}
-                                image={item.image}
-                                work_entries_done={item.work_entries_done}
-                            />
-                        )
-                    }
-                </Carousel>
-            </div>
+            <Carousel
+                NextIcon={<ChevronRight/>}
+                PrevIcon={<ChevronLeft/>}
+                autoPlay={false}
+                animation={'slide'}
+                indicators={false}
+                navButtonsAlwaysVisible={true}
+                fullHeightHover={false}
+                swipe={false}
+                navButtonsWrapperProps={{
+                    style: {
+                        // Move them to the middle of the top row
+                        bottom: 'unset',
+                        top: '5%',
+                    },
+                }}
+            >
+                {
+                    activeRoutes.map((route) =>
+                        <ActiveRouteItem
+                            key={route.building_id}
+                            route={route}
+                        />
+                    )
+                }
+            </Carousel>
         </>
     );
 }

@@ -115,7 +115,7 @@ export default function LiveRoutesElement() {
                     <div className={styles.userHeader}>
                         <div className={styles.firstColumn}>
                             <h1>{scheduleDefinitionData.data.name}</h1>
-                            <p>{locationGroupData.data.name}</p>
+                            <p>{locationGroupData.data.name} {scheduleAssignmentData.data.assigned_date}</p>
                         </div>
                         <div className={styles.stats}>
                             <p>{buildingsData.data.map((building) => {

@@ -36,7 +36,8 @@ export enum Api {
     Users = 'users/',
     UserDetail = 'users/:id/',
     Issues = 'issues/',
-    IssueDetail = 'issues/:id/'
+    IssueDetail = 'issues/:id/',
+    IssueImages = 'issue_images/',
 }
 
 
@@ -132,7 +133,7 @@ function getDetail<T>(route: Api, id: number): SWRResponse<T, any> {
 }
 
 
-const getAuthHeader = (session: any) => (session ? {Authorization: `Bearer ${session.accessToken}`} : {});
+export const getAuthHeader = (session: any) => (session ? {Authorization: `Bearer ${session.accessToken}`} : {});
 
 async function getListFromApi(route: Api, session: any, params: any, query: any) {
     let routeStr = route.toString();
@@ -141,9 +142,6 @@ async function getListFromApi(route: Api, session: any, params: any, query: any)
     }
     const queryParams = new URLSearchParams(query);
     routeStr += '?' + queryParams.toString();
-    console.log(route);
-    console.log(process.env.NEXT_API_URL);
-    console.log(process.env.NEXT_API_URL + route);
 
     const data = await axios.get(process.env.NEXT_API_URL + routeStr, {headers: getAuthHeader(session)});
 
@@ -538,7 +536,7 @@ const postScheduleAssignment = (session: Session | null, data: any, setter?: ((e
         });
 };
 
-const postScheduleWorkEntrie = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
+const postScheduleWorkEntry = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
     postDetailsToAPI(Api.ScheduleWorkEntries, session, data)
         .then((e) => {
             setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
@@ -571,6 +569,16 @@ const postUser = (session: Session | null, data: any, setter?: ((e:any) => void)
 
 const postIssue = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
     postDetailsToAPI(Api.Issues, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
+const postIssueImage = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
+    postDetailsToAPI(Api.IssueImages, session, data)
         .then((e) => {
             setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
         })
@@ -839,10 +847,11 @@ export {
     postLocationGroup,
     postBuilding,
     postScheduleAssignment,
-    postScheduleWorkEntrie,
+    postScheduleWorkEntry,
     postScheduleDefinition,
     postUser,
     postIssue,
+    postIssueImage,
 
     deleteGarbageCollectionScheduleTemplate,
     deleteGarbageCollectionScheduleTemplateEntry,
