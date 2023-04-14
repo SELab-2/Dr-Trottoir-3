@@ -6,12 +6,17 @@ import CloseIcon from '@mui/icons-material/Close';
 import {useEffect} from 'react';
 import {User} from '@/api/models';
 
-export default function UserElement() {
+type userElementProps = {
+    id: number,
+}
+
+export default function UserElement(props: userElementProps) {
     const {data: session} = useSession();
     const [userData, setUserData] = useAuthenticatedApi<User>();
 
     useEffect(() => {
-        getUserDetail(session, setUserData, 1);
+
+        getUserDetail(session, setUserData, props.id);
     }, [session, setUserData]);
 
     if (!userData) {
