@@ -29,7 +29,7 @@ export default function MobileNavbar({loading, nextPath, setNextPath, router, ch
                                 href={'/settings'} text={'Instellingen'}
                                 Icon={TuneRoundedIcon}/>
                             <MobileNavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
-                                href={'/login'} text={'Logout'}
+                                href={'/logout'} text={'Logout'}
                                 Icon={LogoutRoundedIcon}/>
                         </div>
                     </div>

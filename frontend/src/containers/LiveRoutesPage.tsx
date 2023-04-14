@@ -4,9 +4,10 @@ import {Building, LocationGroup} from "@/api/models";
 import React, {useEffect, useState} from "react";
 import BuildingTopBarComponent from "@/components/elements/ListViewElement/TopBarElements/BuildingTopBarComponent";
 import ListViewComponent from "@/components/elements/ListViewElement/ListViewComponent";
+import BuildingDetail from "@/components/elements/buildingdetailElement/buildingDetail";
 import BuildingListButtonComponent
     from "@/components/elements/ListViewElement/ListButtonElements/BuildingListButtonComponent";
-import BuildingDetail from "@/components/elements/buildingdetailElement/buildingDetail";
+import LiveRoutesElement from "@/components/elements/liveRoutesElement/LiveRoutesElement";
 
 // eslint-disable-next-line require-jsdoc
 export default function LiveRoutesPage() {
@@ -54,7 +55,7 @@ export default function LiveRoutesPage() {
                 ListItem={BuildingListButtonComponent}
                 TopBar={topBar}
             >
-                {current ? <BuildingDetail id={current}/> : <div>None selected</div>}
+                {current ? <LiveRoutesElement id={current}/> : <div>None selected</div>}
             </ListViewComponent>
         </>
     );
