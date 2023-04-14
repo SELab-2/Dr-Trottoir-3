@@ -1,17 +1,26 @@
 import {Box, Typography} from '@mui/material';
 import BuildingList from '@/components/modules/routeDetail/BuildingList';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import RouteMap from '@/components/modules/routeDetail/RouteMap';
 
-function RouteDetail() {
+type routeDetailProps = {
+    routeId: number | null,
+}
+
+function RouteDetail(props: routeDetailProps) {
+
     const [counter, setCounter] = useState(0);
     const [hovering, setHovering] = useState(-1);
-    const [list, setList] = useState([
-        {id: 'A', name: 'Building A', lat: 51.025819, lon: 3.713635},
-        {id: 'B', name: 'Building B', lat: 51.046237, lon: 3.725420},
-        {id: 'C', name: 'Building C', lat: 51.036277, lon: 3.723558},
-        {id: 'D', name: 'Building D', lat: 50.998364, lon: 3.766141},
-    ]);
+    // const [list, setList] = useState([
+    //     {id: 'A', name: 'Building A', lat: 51.025819, lon: 3.713635},
+    //     {id: 'B', name: 'Building B', lat: 51.046237, lon: 3.725420},
+    //     {id: 'C', name: 'Building C', lat: 51.036277, lon: 3.723558},
+    //     {id: 'D', name: 'Building D', lat: 50.998364, lon: 3.766141},
+    // ]);
+
+    useEffect(() => {
+        getBuildingList()
+    })
 
 
     function onAdd() {
