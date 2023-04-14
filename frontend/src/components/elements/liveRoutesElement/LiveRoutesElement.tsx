@@ -89,7 +89,7 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                             status: response.status,
                             success: response.success,
                             data: response.data.filter(
-                                (item) => item.schedule_assignment == scheduleAssignmentId
+                                (item) => item.schedule_assignment == props.id
                             ),
                         }));
         }
