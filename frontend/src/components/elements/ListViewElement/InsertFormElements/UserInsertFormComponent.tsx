@@ -129,7 +129,8 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings}: For
                                     MenuProps={{disablePortal: true}}
                                 >
                                     {Object.keys(userTypes).map((option) => (
-                                        <MenuItem key={option} value={option} style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                                        <MenuItem key={option} value={option}
+                                            style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                             {userTypes[option]}
                                         </MenuItem>
                                     ))}
@@ -145,7 +146,8 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings}: For
                         <Button variant="contained" className={styles.button} onClick={handleClose}>
                             Cancel
                         </Button>
-                        <Button variant="contained" className={styles.button} onClick={handleSubmitForm} style={{backgroundColor: '#E6E600'}}>
+                        <Button variant="contained" className={styles.button} onClick={handleSubmitForm}
+                            style={{backgroundColor: '#E6E600'}}>
                             Submit
                         </Button>
                     </div>

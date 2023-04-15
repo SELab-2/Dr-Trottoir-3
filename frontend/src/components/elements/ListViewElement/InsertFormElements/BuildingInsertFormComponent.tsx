@@ -62,10 +62,6 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
 
     const [formDescription, setFormDescription] = React.useState('');
 
-    const handleChangeFormDescription = (event: SelectChangeEvent) => {
-        setFormDescription(event.target.value as string);
-    };
-
     React.useEffect(() =>{
         setCanClose(true);
     });
