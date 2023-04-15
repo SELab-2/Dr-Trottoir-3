@@ -53,13 +53,6 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings}: For
         setFormIsSuperStudent(!formIsSuperStudent);
     };
 
-    const [formBuildings, setFormBuildings] = React.useState<Building[]>([]);
-
-    const handleChangeBuildings = (event: SelectChangeEvent<Building[]>) => {
-        const value = event.target.value as Building[];
-        setFormBuildings(value);
-    };
-
     const userTypes = {
         student: 'student',
         syndicus: 'syndicus',

@@ -15,6 +15,7 @@ type ListViewComponentProps = {
     ListItem: any,
     TopBar: any,
     children: any,
+    title: string,
 }
 
 
@@ -28,7 +29,7 @@ export default function ListViewComponent(props: ListViewComponentProps) {
                         <div className={styles.left_flex_container}>
                             <div className={styles.side_bar_top}>
                                 <div className={styles.title}>
-                                    <h1>Gebouwen</h1>
+                                    <h1>{props.title}</h1>
                                     <p>{props.listData.data.length} gevonden resultaten</p>
                                 </div>
                             </div>

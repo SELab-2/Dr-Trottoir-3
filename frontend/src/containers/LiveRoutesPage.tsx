@@ -112,6 +112,7 @@ export default function LiveRoutesPage() {
                     setCurrent={setCurrent}
                     ListItem={ActiveRouteListButtonComponent}
                     TopBar={topBar}
+                    title={'Live routes'}
                 >
                     {current ? <LiveRoutesElement id={current}/> : <div>None selected</div>}
                 </ListViewComponent>

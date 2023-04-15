@@ -71,11 +71,6 @@ export default function BuildingTopBarComponent({sorttype, setSorttype, selected
 
     return (
         <div className={styles.topBar}>
-            {/* <div className={styles.title}>*/}
-            {/*    <h1>Gebouwen</h1>*/}
-            {/*    <p>{amountOfResults} resultaten geladen</p>*/}
-            {/* </div>*/}
-
             <div className={styles.search}>
                 <Box sx={{display: 'flex', alignItems: 'flex-end'}}>
                     <IconButton type="button" sx={{p: '10px'}} aria-label="search">

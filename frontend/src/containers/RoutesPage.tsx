@@ -67,6 +67,7 @@ export default function RoutesPage() {
                 setCurrent={setCurrent}
                 ListItem={RouteListButtonComponent}
                 TopBar={topBar}
+                title={'Routes'}
             >
                 TODO: ROUTE DETAILS HERE
             </ListViewComponent>

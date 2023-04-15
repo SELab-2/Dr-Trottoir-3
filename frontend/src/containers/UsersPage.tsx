@@ -109,6 +109,7 @@ export default function UsersPage() {
                     setCurrent={setCurrent}
                     ListItem={UserListButtonComponent}
                     TopBar={topBar}
+                    title={'Gebruikers'}
                 >
                     {current ? <UserElement id={current}/> : <div>None selected</div>}
                 </ListViewComponent>

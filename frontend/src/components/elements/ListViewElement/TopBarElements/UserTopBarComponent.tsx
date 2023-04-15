@@ -86,11 +86,6 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
 
     return (
         <div className={styles.topBar}>
-            <div className={styles.title}>
-                <h1>Gebruikers</h1>
-                <p>{amountOfResults} gevonden resultaten</p>
-            </div>
-
             <div className={styles.search}>
                 <Box sx={{display: 'flex', alignItems: 'flex-end'}}>
                     <IconButton type="button" sx={{p: '10px'}} aria-label="search">

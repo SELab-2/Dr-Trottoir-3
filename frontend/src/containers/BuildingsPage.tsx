@@ -52,6 +52,7 @@ export default function BuildingsPage() {
                 setCurrent={setCurrent}
                 ListItem={BuildingListButtonComponent}
                 TopBar={topBar}
+                title={'Gebouwen'}
             >
                 {current ? <BuildingDetail id={current}/> : <div>None selected</div>}
             </ListViewComponent>
