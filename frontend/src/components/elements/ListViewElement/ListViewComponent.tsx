@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import styles from './listView.module.css';
 import {ApiData} from '@/api/api';
 import {LocationGroup} from '@/api/models';
@@ -38,14 +38,14 @@ export default function ListViewComponent(props: ListViewComponentProps) {
                                         props.listData.data.map((x) => {
                                             const location = props.locationGroups?.data
                                                 .filter((e) => x.location_group == e.id ).at(0);
-                                                return ( <div className={styles.button_wrapper} key={x.id}>
-                                                    <props.ListItem
-                                                        current={props.current}
-                                                        data={x}
-                                                        location={location.name}
-                                                        onClick={props.setCurrent}/>
-                                                </div> );
-                                            }
+                                            return ( <div className={styles.button_wrapper} key={x.id}>
+                                                <props.ListItem
+                                                    current={props.current}
+                                                    data={x}
+                                                    location={location ? location.name : ''}
+                                                    onClick={props.setCurrent}/>
+                                            </div> );
+                                        }
                                         )
                                     }
                                 </div>

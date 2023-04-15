@@ -1,27 +1,30 @@
 import React from 'react';
-import styles from '@/components/elements/ListViewElement/ListButtonElements/ButtonComponent.module.css';
+import styles from './ButtonComponent.module.css';
 import {Button} from '@mui/material';
 import {ListItemProps} from './ListButtonComponentInterface';
 
 
-const UserListButtonComponent = ({current, onClick, props}: ListItemProps) => {
-    const isCurrent = props.id == current;
+const UserListButtonComponent = (props: ListItemProps) => {
+    console.log(props);
+
+    const isCurrent = props.data.id == props.current;
+    const userType = props.data.admin ?
+        'admin' : (props.data.student ? (props.data.student.is_super_student ?
+            'superstudent' : 'student') : 'syndicus');
     return (
-        <div className={styles.button_wrapper}>
-            <Button id={(isCurrent)?styles.item_button_select : styles.item_button}
-                className={styles.button_default}
-                onClick={()=>onClick(props.id)}>
-                <div className={styles.big_item_text}>
-                    {props.naam}
-                </div>
-                <div className={styles.small_item_text}>
-                    {props.type}
-                </div>
-                <div className={styles.small_item_text}>
-                    {props.regio}
-                </div>
-            </Button>
-        </div>
+        <Button key={props.data.id} id={(isCurrent)?styles.item_button_select : styles.item_button}
+            className={styles.button_default}
+            onClick={()=>props.onClick(props.data.id)}>
+            <div className={styles.big_item_text}>
+                {props.data.first_name + ' ' + props.data.last_name}
+            </div>
+            <div className={styles.small_item_text}>
+                {userType}
+            </div>
+            <div className={styles.small_item_text}>
+                {props.location}
+            </div>
+        </Button>
     );
 };
 

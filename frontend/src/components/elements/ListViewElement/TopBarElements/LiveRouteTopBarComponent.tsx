@@ -1,9 +1,9 @@
 import React from 'react';
 import {
-    Backdrop,
-    Button, Checkbox,
+    Checkbox,
     FormControl,
-    IconButton, InputBase,
+    IconButton,
+    InputBase,
     InputLabel, ListItemText,
     MenuItem,
     Select,
@@ -13,47 +13,43 @@ import styles from '@/styles/ListView.module.css';
 import Box from '@mui/material/Box';
 import SearchIcon from '@mui/icons-material/Search';
 import SortIcon from '@mui/icons-material/Sort';
-import AddIcon from '@mui/icons-material/Add';
-import {LocationGroup, ScheduleDefinition} from '@/api/models';
-import Form from '../InsertFormElements/RoutesInsertFormComponent';
+import {LocationGroup} from '@/api/models';
 
 type TopBarProps = {
     sorttype: string,
     setSorttype: React.Dispatch<React.SetStateAction<string>>
     selectedRegions: LocationGroup[],
-    setRegion: React.Dispatch<React.SetStateAction<LocationGroup[]>>,
+    setSelectedRegions: React.Dispatch<React.SetStateAction<LocationGroup[]>>,
     allRegions: LocationGroup[],
     amountOfResults: number,
     searchEntry: string,
     setSearchEntry: React.Dispatch<React.SetStateAction<string>>,
-    selectedActive: string,
-    setSelectedActive: React.Dispatch<React.SetStateAction<string>>,
-    allRoutes: ScheduleDefinition[],
-};
+}
 
-export default function RouteTopBarComponent({sorttype, setSorttype, selectedRegions, setRegion, allRegions, amountOfResults,
-    searchEntry, setSearchEntry, selectedActive, setSelectedActive, allRoutes}:TopBarProps) {
-    const AllesSelected = selectedRegions.length>=allRegions.length;
+export default function LiveRouteTopBarComponent({sorttype, setSorttype, selectedRegions, setSelectedRegions, allRegions,
+    amountOfResults, searchEntry, setSearchEntry}:TopBarProps) {
+    const AllesSelectedRegions = selectedRegions.length>=allRegions.length;
 
     const handleChangeRegion = (event: SelectChangeEvent<LocationGroup[]>) => {
         const value = event.target.value as LocationGroup[];
-        setRegion(
+        setSelectedRegions(
             (value.indexOf('Alles')>-1)?
-                (AllesSelected)?
+                (AllesSelectedRegions)?
                     []:
                     allRegions:
                 value );
     };
 
-    const activeTypes = {
-        false: 'niet actief',
-        true: 'actief',
-    };
+    const dummyTypes = [
+        'actief',
+        'compleet',
+    ];
 
     const sorttypes = {
-        name: 'naam',
-        location_group__name: 'regio',
-        buildings: 'aantal gebouwen',
+        schedule_definition__name: 'naam',
+        schedule_definition__location_group__name: 'regio',
+        schedule_definition__student__name: 'student',
+        progress: 'voortgang',
     };
 
     const handleChangeSorttype = (event: SelectChangeEvent) => {
@@ -64,23 +60,17 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
         setSearchEntry(event.target.value as string);
     };
 
+    const [active, setActive] = React.useState('');
+
     const handleChangeActive = (event: SelectChangeEvent) => {
-        setSelectedActive(event.target.value as string);
+        setActive(event.target.value as string);
     };
 
-    const [open, setOpen] = React.useState(false);
-
-    const [canClose, setCanClose] = React.useState(true);
-
-    const handleToggle = () => {
-        setCanClose(false);
-        setOpen(!open);
-    };
 
     return (
         <div className={styles.topBar}>
             <div className={styles.title}>
-                <h1>Routes</h1>
+                <h1>Actieve Routes</h1>
                 <p>{amountOfResults} gevonden resultaten</p>
             </div>
 
@@ -132,15 +122,13 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
                                 onChange={handleChangeRegion}
                                 renderValue={() => 'regio'}
                             >
-                                <MenuItem key={'Alles '+((AllesSelected)?'deselecteren':'selecteren')} value={'Alles'}>
-                                    <Checkbox style ={{color: '#1C1C1C'}} checked={AllesSelected} />
-                                    <ListItemText style ={{width: 150}}
-                                        primary={'Alles '+((AllesSelected)?'deselecteren':'selecteren')} />
+                                <MenuItem key={'Alles '+((AllesSelectedRegions)?'deselecteren':'selecteren')} value={'Alles'}>
+                                    <Checkbox style ={{color: '#1C1C1C'}} checked={AllesSelectedRegions} />
+                                    <ListItemText style ={{width: 150}} primary={'Alles '+((AllesSelectedRegions)?'deselecteren':'selecteren')} />
                                 </MenuItem>
                                 {allRegions.map((option) => (
-                                    <MenuItem key={option.name} value={option}>
-                                        <Checkbox style ={{color: '#1C1C1C'}}
-                                            checked={selectedRegions.indexOf(option) > -1} />
+                                    <MenuItem key={option.id} value={option}>
+                                        <Checkbox style ={{color: '#1C1C1C'}} checked={selectedRegions.indexOf(option) > -1} />
                                         <ListItemText primaryTypographyProps=
                                             {{style: {whiteSpace: 'normal', wordBreak: 'break-all'}}}
                                         primary={option.name} />
@@ -151,37 +139,24 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
                     </div>
                     <div className={styles.filters}>
                         <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel>type</InputLabel>
+                            <InputLabel>status</InputLabel>
                             <Select
-                                value={selectedActive}
+                                value={active}
                                 onChange={handleChangeActive}
                                 label="Type"
                             >
-                                <MenuItem value={''}>
+                                <MenuItem value="">
                                     <em>Alle</em>
                                 </MenuItem>
-                                {Object.keys(activeTypes).map((option) => (
-                                    <MenuItem key={option} value={option}
-                                        style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
-                                        {activeTypes[option]}
+                                {dummyTypes.map((option) => (
+                                    <MenuItem key={option} value={option} style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                                        {option}
                                     </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
                     </div>
                 </div>
-                <Button variant="contained" className={styles.button} onMouseUp={handleToggle}>
-                    <AddIcon />
-                    Route toevoegen
-                </Button>
-                <Backdrop
-                    sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
-                    open={open}
-                    invisible={false}
-                >
-                    <Form setCanClose={setCanClose} canClose={canClose} setOpen={setOpen}
-                        allRegions={allRegions} allRoutes={allRoutes}></Form>
-                </Backdrop>
             </div>
         </div>
 
