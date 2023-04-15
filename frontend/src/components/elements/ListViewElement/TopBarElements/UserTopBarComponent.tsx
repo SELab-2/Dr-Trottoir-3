@@ -32,7 +32,7 @@ type TopBarProps = {
     allBuildings: Building[],
 }
 
-export default function UserTopBarComponent({sorttype, setSorttype, selectedRegions, setSelectedRegions, allRegions, amountOfResults,
+export default function UserTopBarComponent({sorttype, setSorttype, selectedRegions, setSelectedRegions, allRegions,
     searchEntry, setSearchEntry, selectedUserType, setSelectedUserType,
     allBuildings}:TopBarProps) {
     const AllesSelectedRegions = selectedRegions.length>=allRegions.length;
@@ -116,7 +116,8 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
                                 label="Sorteer op"
                             >
                                 {Object.keys(sorttypes).map((option) => (
-                                    <MenuItem key={option} value={option} style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                                    <MenuItem key={option} value={option}
+                                        style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                         {sorttypes[option]}
                                     </MenuItem>
                                 ))}
@@ -162,11 +163,13 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
                                 onChange={handleChangeUserType}
                                 label="Sorteer op"
                             >
-                                <MenuItem key={'alles'} value={''} style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                                <MenuItem key={'alles'} value={''}
+                                    style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                     {'Alle'}
                                 </MenuItem>
                                 {Object.keys(userTypes).map((option) => (
-                                    <MenuItem key={option} value={option} style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                                    <MenuItem key={option} value={option}
+                                        style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                         {userTypes[option]}
                                     </MenuItem>
                                 ))}

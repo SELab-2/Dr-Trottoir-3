@@ -26,8 +26,9 @@ type TopBarProps = {
     setSearchEntry: React.Dispatch<React.SetStateAction<string>>,
 }
 
-export default function LiveRouteTopBarComponent({sorttype, setSorttype, selectedRegions, setSelectedRegions, allRegions,
-    amountOfResults, searchEntry, setSearchEntry}:TopBarProps) {
+export default function LiveRouteTopBarComponent(
+    {sorttype, setSorttype, selectedRegions, setSelectedRegions, allRegions,
+        searchEntry, setSearchEntry}:TopBarProps) {
     const AllesSelectedRegions = selectedRegions.length>=allRegions.length;
 
     const handleChangeRegion = (event: SelectChangeEvent<LocationGroup[]>) => {
@@ -117,13 +118,16 @@ export default function LiveRouteTopBarComponent({sorttype, setSorttype, selecte
                                 onChange={handleChangeRegion}
                                 renderValue={() => 'regio'}
                             >
-                                <MenuItem key={'Alles '+((AllesSelectedRegions)?'deselecteren':'selecteren')} value={'Alles'}>
+                                <MenuItem key={'Alles '+((AllesSelectedRegions)?'deselecteren':'selecteren')}
+                                    value={'Alles'}>
                                     <Checkbox style ={{color: '#1C1C1C'}} checked={AllesSelectedRegions} />
-                                    <ListItemText style ={{width: 150}} primary={'Alles '+((AllesSelectedRegions)?'deselecteren':'selecteren')} />
+                                    <ListItemText style ={{width: 150}}
+                                        primary={'Alles '+((AllesSelectedRegions)?'deselecteren':'selecteren')} />
                                 </MenuItem>
                                 {allRegions.map((option) => (
                                     <MenuItem key={option.id} value={option}>
-                                        <Checkbox style ={{color: '#1C1C1C'}} checked={selectedRegions.indexOf(option) > -1} />
+                                        <Checkbox style ={{color: '#1C1C1C'}}
+                                            checked={selectedRegions.indexOf(option) > -1} />
                                         <ListItemText primaryTypographyProps=
                                             {{style: {whiteSpace: 'normal', wordBreak: 'break-all'}}}
                                         primary={option.name} />
@@ -144,7 +148,8 @@ export default function LiveRouteTopBarComponent({sorttype, setSorttype, selecte
                                     <em>Alle</em>
                                 </MenuItem>
                                 {dummyTypes.map((option) => (
-                                    <MenuItem key={option} value={option} style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                                    <MenuItem key={option} value={option}
+                                        style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                         {option}
                                     </MenuItem>
                                 ))}

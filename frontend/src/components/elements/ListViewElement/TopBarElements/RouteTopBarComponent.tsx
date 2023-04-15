@@ -31,7 +31,7 @@ type TopBarProps = {
     allRoutes: ScheduleDefinition[],
 };
 
-export default function RouteTopBarComponent({sorttype, setSorttype, selectedRegions, setRegion, allRegions, amountOfResults,
+export default function RouteTopBarComponent({sorttype, setSorttype, selectedRegions, setRegion, allRegions,
     searchEntry, setSearchEntry, selectedActive, setSelectedActive, allRoutes}:TopBarProps) {
     const AllesSelected = selectedRegions.length>=allRegions.length;
 

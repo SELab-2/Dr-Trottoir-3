@@ -29,7 +29,7 @@ type TopBarProps = {
     setSearchEntry: React.Dispatch<React.SetStateAction<string>>,
 };
 
-export default function BuildingTopBarComponent({sorttype, setSorttype, selectedRegions, setRegion, allRegions, amountOfResults,
+export default function BuildingTopBarComponent({sorttype, setSorttype, selectedRegions, setRegion, allRegions,
     searchEntry, setSearchEntry}:TopBarProps) {
     const AllesSelected = selectedRegions.length>=allRegions.length;
 
