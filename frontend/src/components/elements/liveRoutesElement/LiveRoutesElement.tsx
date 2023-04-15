@@ -43,7 +43,7 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
 
     useEffect(() => {
         getScheduleAssignmentDetail(session, setScheduleAssignmentData, props.id);
-    }, []);
+    }, [props.id]);
 
     useEffect(() => {
         if (scheduleAssignmentData) {

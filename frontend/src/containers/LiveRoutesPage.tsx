@@ -1,62 +1,120 @@
-import {useSession} from "next-auth/react";
-import {getBuildingsList, getLocationGroupsList, useAuthenticatedApi} from "@/api/api";
-import {Building, LocationGroup} from "@/api/models";
-import React, {useEffect, useState} from "react";
-import BuildingTopBarComponent from "@/components/elements/ListViewElement/TopBarElements/BuildingTopBarComponent";
-import ListViewComponent from "@/components/elements/ListViewElement/ListViewComponent";
-import BuildingDetail from "@/components/elements/buildingdetailElement/buildingDetail";
-import BuildingListButtonComponent
-    from "@/components/elements/ListViewElement/ListButtonElements/BuildingListButtonComponent";
-import LiveRoutesElement from "@/components/elements/liveRoutesElement/LiveRoutesElement";
+import {useSession} from 'next-auth/react';
+import {
+    getLocationGroupsList, getScheduleAssignmentsList,
+    getScheduleDefinitionsList, getScheduleWorkEntriesList,
+    getUsersList,
+    useAuthenticatedApi,
+} from '@/api/api';
+import {LocationGroup, ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry, User} from '@/api/models';
+import React, {useEffect, useState} from 'react';
+import ListViewComponent from '@/components/elements/ListViewElement/ListViewComponent';
+import LiveRoutesElement from '@/components/elements/liveRoutesElement/LiveRoutesElement';
+import LiveRouteTopBarComponent from '@/components/elements/ListViewElement/TopBarElements/LiveRouteTopBarComponent';
+import ActiveRouteListButtonComponent
+    from '@/components/elements/ListViewElement/ListButtonElements/ActiveRouteListButtonComponent';
+
+import styles from './ContainerStyles.module.css';
 
 // eslint-disable-next-line require-jsdoc
 export default function LiveRoutesPage() {
     const {data: session} = useSession();
-    const [buildings, setBuildings] = useAuthenticatedApi<Building[]>();
+    const [assignments, setAssignments] = useAuthenticatedApi<ScheduleAssignment[]>();
     const [locationGroups, setLocationGroups] = useAuthenticatedApi<LocationGroup[]>();
+    const [definitions, setDefinitions] = useAuthenticatedApi<ScheduleDefinition[]>();
+    const [workEntries, setWorkEntries] = useAuthenticatedApi<ScheduleWorkEntry[]>();
+    const [students, setStudents] = useAuthenticatedApi<User[]>();
 
+    const [searchEntry, setSearchEntry] = React.useState('');
     const [current, setCurrent] = useState<number | null>(null);
-    const [selectedRegions, setSelectedRegions] = useState<LocationGroup[]>([]);
-    const [searchEntry, setSearchEntry] = useState('');
-    const [sorttype, setSorttype] = useState('name');
+    const [sorttype, setSorttype] = React.useState('schedule_definition__name');
+    const [selectedRegions, setSelectedRegions] = React.useState<LocationGroup[]>([]);
 
     useEffect(() => {
+        getScheduleDefinitionsList(session, setDefinitions, {is_active: true});
         getLocationGroupsList(session, setLocationGroups);
+        getScheduleWorkEntriesList(session, setWorkEntries, {entry_type: 'AR'}); // TODO: mockdata currently only has AR but would make more sense to be DE
+        getUsersList(session, setStudents, {student__id__gt: 0});
     }, [session]);
 
     useEffect(() => {
-        getBuildingsList(session, setBuildings, {location_group: selectedRegions});
-    }, [session, selectedRegions]);
+        let regionsFilter = '';
+        selectedRegions.map((r) => {
+            regionsFilter+=r.id + ',';
+        });
+        const todayDate = new Date();
+        const today = todayDate.toISOString().split('T')[0];
+        getScheduleAssignmentsList(session, setAssignments, {
+            ordering: sorttype,
+            schedule_definition__location_group__in: regionsFilter,
+            assigned_date: today,
+        });
+    }, [session, sorttype, selectedRegions]);
 
 
-    const topBar = <BuildingTopBarComponent
-        sorttype={sorttype}
-        setSorttype={setSorttype}
-        selectedRegions={selectedRegions}
-        setRegion={setSelectedRegions}
-        allRegions={locationGroups ? locationGroups.data : []}
-        amountOfResults={buildings ? buildings.data.length : 0}
-        searchEntry={searchEntry}
-        setSearchEntry={setSearchEntry}
-    />;
+    useEffect(() => {
+        const element = document.getElementById(styles['scroll_style']);
+        if (element != null) {
+            element.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    }, [sorttype, selectedRegions]);
 
-    console.log(current);
+    const filterLiveRoutes = (data: any[], search: string) => {
+        if (!search) {
+            return data;
+        } else {
+            search = search.toLowerCase();
+            return data.filter((d) => d.toLowerCase().replace(/ /g, '').includes(search));
+        }
+    };
 
-    return (
-        <>
-            <ListViewComponent
-                listData={buildings}
-                setListData={setBuildings}
-                locationGroups={locationGroups}
-                selectedRegions={selectedRegions}
-                setSelectedRegions={setSelectedRegions}
-                current={current}
-                setCurrent={setCurrent}
-                ListItem={BuildingListButtonComponent}
-                TopBar={topBar}
-            >
-                {current ? <LiveRoutesElement id={current}/> : <div>None selected</div>}
-            </ListViewComponent>
-        </>
-    );
+
+    if (assignments && definitions && students && workEntries && locationGroups) {
+        const mappedAssignments = assignments.data.map((e) => {
+            const student = students.data.filter((user) => user.id === e.user)[0];
+            const definition = definitions.data.filter((def) => def.id === e.schedule_definition)[0];
+            return {
+                id: e.id,
+                name: definition.name,
+                totalBuildings: definition.buildings.length,
+                buildingsDone: workEntries.data.filter((e) => e.schedule_assignment === e.id).length,
+                location_group: locationGroups.data.filter((e) => e.id === definition.location_group)[0].name,
+                student: student.first_name + ' .' + student.last_name[0].toUpperCase(),
+            };
+        });
+
+        const filteredLiveRoutes = {
+            data: filterLiveRoutes(mappedAssignments, searchEntry),
+            status: 200,
+            success: true,
+        };
+
+        const topBar = <LiveRouteTopBarComponent
+            sorttype={sorttype}
+            setSorttype={setSorttype}
+            selectedRegions={selectedRegions}
+            setSelectedRegions={setSelectedRegions}
+            allRegions={locationGroups ? locationGroups.data : []}
+            amountOfResults={filteredLiveRoutes ? filteredLiveRoutes.data.length : 0}
+            searchEntry={searchEntry}
+            setSearchEntry={setSearchEntry}
+        />;
+
+        return (
+            <>
+                <ListViewComponent
+                    listData={filteredLiveRoutes}
+                    setListData={setAssignments}
+                    locationGroups={locationGroups}
+                    selectedRegions={selectedRegions}
+                    setSelectedRegions={setSelectedRegions}
+                    current={current}
+                    setCurrent={setCurrent}
+                    ListItem={ActiveRouteListButtonComponent}
+                    TopBar={topBar}
+                >
+                    {current ? <LiveRoutesElement id={current}/> : <div>None selected</div>}
+                </ListViewComponent>
+            </>
+        );
+    }
 }
