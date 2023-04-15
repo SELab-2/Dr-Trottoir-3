@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import {LocationGroup} from '@/api/models';
 import React from 'react';
-import styles from './TopBar.module.css';
+import styles from './topBar.module.css';
 import Box from '@mui/material/Box';
 import SearchIcon from '@mui/icons-material/Search';
 import SortIcon from '@mui/icons-material/Sort';

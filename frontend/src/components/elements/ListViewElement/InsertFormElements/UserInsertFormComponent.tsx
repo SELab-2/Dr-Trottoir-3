@@ -11,7 +11,7 @@ import {
     TextField,
 } from '@mui/material';
 import {ClickAwayListener} from '@mui/base';
-import styles from '@/styles/ListView.module.css';
+import styles from '@/styles/listView.module.css';
 import {Building} from '@/api/models';
 
 type FormProps = {

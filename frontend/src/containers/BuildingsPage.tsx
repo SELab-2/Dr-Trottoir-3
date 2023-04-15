@@ -2,7 +2,7 @@ import ListViewComponent from '@/components/elements/ListViewElement/ListViewCom
 import BuildingListButtonComponent
     from '@/components/elements/ListViewElement/ListButtonElements/BuildingListButtonComponent';
 import BuildingTopBarComponent from '@/components/elements/ListViewElement/TopBarElements/BuildingTopBarComponent';
-import BuildingDetail from '@/components/elements/buildingdetailElement/buildingDetail';
+import BuildingDetail from '@/components/elements/BuildingDetailElement/BuildingDetail';
 import React, {useEffect, useState} from 'react';
 import {useSession} from 'next-auth/react';
 import {getBuildingsList, getLocationGroupsList, useAuthenticatedApi} from '@/api/api';

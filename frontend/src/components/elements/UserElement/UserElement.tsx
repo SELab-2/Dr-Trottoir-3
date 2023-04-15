@@ -1,5 +1,5 @@
 import {Avatar} from '@mui/material';
-import styles from './UserElement.module.css';
+import styles from './userElement.module.css';
 import {getUserDetail, useAuthenticatedApi} from '@/api/api';
 import {useSession} from 'next-auth/react';
 import CloseIcon from '@mui/icons-material/Close';

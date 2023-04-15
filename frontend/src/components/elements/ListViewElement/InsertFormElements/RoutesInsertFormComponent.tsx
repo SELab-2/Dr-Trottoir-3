@@ -1,6 +1,6 @@
 import React from 'react';
 import {ClickAwayListener} from '@mui/base';
-import styles from '@/styles/ListView.module.css';
+import styles from '@/styles/listView.module.css';
 import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from '@mui/material';
 import {LocationGroup, ScheduleDefinition} from '@/api/models';
 import {postScheduleDefinition} from '@/api/api';

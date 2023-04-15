@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './ButtonComponent.module.css';
+import styles from './buttonComponent.module.css';
 import {Button} from '@mui/material';
 import {ListItemProps} from './ListButtonComponentInterface';
 

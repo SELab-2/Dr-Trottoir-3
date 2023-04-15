@@ -8,12 +8,12 @@ import {
 import {LocationGroup, ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry, User} from '@/api/models';
 import React, {useEffect, useState} from 'react';
 import ListViewComponent from '@/components/elements/ListViewElement/ListViewComponent';
-import LiveRoutesElement from '@/components/elements/liveRoutesElement/LiveRoutesElement';
+import LiveRoutesElement from '@/components/elements/LiveRoutesElement/LiveRoutesElement';
 import LiveRouteTopBarComponent from '@/components/elements/ListViewElement/TopBarElements/LiveRouteTopBarComponent';
 import ActiveRouteListButtonComponent
     from '@/components/elements/ListViewElement/ListButtonElements/ActiveRouteListButtonComponent';
 
-import styles from './ContainerStyles.module.css';
+import styles from './containerStyles.module.css';
 import SensorsRoundedIcon from "@mui/icons-material/SensorsRounded";
 
 // eslint-disable-next-line require-jsdoc

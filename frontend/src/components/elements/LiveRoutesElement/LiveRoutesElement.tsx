@@ -1,4 +1,4 @@
-import styles from './LiveRoutesElement.module.css';
+import styles from './liveRoutesElement.module.css';
 import {
     ApiData,
     getBuildingsList,

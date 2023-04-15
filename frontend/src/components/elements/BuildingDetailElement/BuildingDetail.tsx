@@ -1,4 +1,4 @@
-import styles from './buildingdetail.module.css';
+import styles from './buildingDetail.module.css';
 import {Box, Link, List, Modal, Typography} from '@mui/material';
 import {Building, GarbageCollectionSchedule, GarbageType, Issue, LocationGroup, User} from '@/api/models';
 import {PictureAsPdf} from '@mui/icons-material';
@@ -8,10 +8,10 @@ import {
 } from '@/api/api';
 import {defaultBuildingImage} from '@/constants/images';
 import {useSession} from 'next-auth/react';
-import ScheduleGarbageListItem from './scheduleGarbageListItem';
+import ScheduleGarbageListItem from './ScheduleGarbageListItem';
 import Button from '@mui/material/Button';
 import React, {useEffect, useState} from 'react';
-import BuildingIssueListItem from '@/components/elements/buildingdetailElement/buildingIssueListItem';
+import BuildingIssueListItem from '@/components/elements/BuildingDetailElement/BuildingIssueListItem';
 import ErrorPage from '@/containers/ErrorPage';
 
 interface IBuildingDetail {

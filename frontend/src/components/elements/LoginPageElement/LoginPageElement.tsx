@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {signIn} from 'next-auth/react';
-import styles from './LoginPageElement.module.css';
+import styles from './loginPageElement.module.css';
 import {Box, Button, TextField} from '@mui/material';
 
 export default function LoginPageElement() {

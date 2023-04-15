@@ -1,4 +1,4 @@
-import styles from './SchedulerPage.module.css';
+import styles from './schedulerPage.module.css';
 
 
 export default function SchedulerPage() {
