@@ -1,12 +1,12 @@
 import ListViewComponent from '@/components/elements/ListViewElement/ListViewComponent';
-import BuildingListButtonComponent from '@/components/elements/ListViewElement/ListButtonElements/BuildingListButtonComponent';
+import BuildingListButtonComponent
+    from '@/components/elements/ListViewElement/ListButtonElements/BuildingListButtonComponent';
 import BuildingTopBarComponent from '@/components/elements/ListViewElement/TopBarElements/BuildingTopBarComponent';
 import BuildingDetail from '@/components/elements/buildingdetailElement/buildingDetail';
 import React, {useEffect, useState} from 'react';
 import {useSession} from 'next-auth/react';
 import {getBuildingsList, getLocationGroupsList, useAuthenticatedApi} from '@/api/api';
 import {Building, LocationGroup} from '@/api/models';
-import UserElement from '@/components/elements/userElement/UserElement';
 
 export default function BuildingsPage() {
     const {data: session} = useSession();

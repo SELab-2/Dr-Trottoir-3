@@ -32,7 +32,8 @@ export default function LiveRoutesPage() {
     useEffect(() => {
         getScheduleDefinitionsList(session, setDefinitions, {is_active: true});
         getLocationGroupsList(session, setLocationGroups);
-        getScheduleWorkEntriesList(session, setWorkEntries, {entry_type: 'AR'}); // TODO: mockdata currently only has AR but would make more sense to be DE
+        // TODO: mockdata currently only has AR but would make more sense to be DE
+        getScheduleWorkEntriesList(session, setWorkEntries, {entry_type: 'AR'});
         getUsersList(session, setStudents, {student__id__gt: 0});
     }, [session]);
 
