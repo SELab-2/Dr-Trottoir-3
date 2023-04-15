@@ -7,8 +7,6 @@ import {ListItemProps} from './ListButtonComponentInterface';
 const RouteListButtonComponent = (props: ListItemProps) => {
     const isCurrent = props.data.id == props.current;
 
-    console.log(props);
-
     return (
         <div>
             <Button id={(isCurrent)?styles['item_button_select'] : styles['item_button']}

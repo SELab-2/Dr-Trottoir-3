@@ -5,7 +5,7 @@ import {getLocationGroupsList, getScheduleDefinitionsList, useAuthenticatedApi} 
 import {LocationGroup, ScheduleDefinition} from '@/api/models';
 import RouteTopBarComponent from '@/components/elements/ListViewElement/TopBarElements/RouteTopBarComponent';
 import RouteListButtonComponent
-    from "@/components/elements/ListViewElement/ListButtonElements/RouteListButtonComponent";
+    from '@/components/elements/ListViewElement/ListButtonElements/RouteListButtonComponent';
 
 
 // eslint-disable-next-line require-jsdoc

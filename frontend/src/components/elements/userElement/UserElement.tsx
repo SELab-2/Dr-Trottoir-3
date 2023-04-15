@@ -15,7 +15,6 @@ export default function UserElement(props: userElementProps) {
     const [userData, setUserData] = useAuthenticatedApi<User>();
 
     useEffect(() => {
-
         getUserDetail(session, setUserData, props.id);
     }, [session, setUserData]);
 
