@@ -16,6 +16,7 @@ type ListViewComponentProps = {
     TopBar: any,
     children: any,
     title: string,
+    Icon: any,
 }
 
 
@@ -29,8 +30,9 @@ export default function ListViewComponent(props: ListViewComponentProps) {
                         <div className={styles.left_flex_container}>
                             <div className={styles.side_bar_top}>
                                 <div className={styles.title}>
-                                    <h1>{props.title}</h1>
-                                    <p>{props.listData.data.length} gevonden resultaten</p>
+                                    <props.Icon className={styles.icon}/>
+                                    <p className={styles.title}>{props.title}</p>
+                                    <p className={styles.subtext}>{props.listData.data.length} gevonden resultaten</p>
                                 </div>
                             </div>
                             <div className={styles.scrollable}>
@@ -57,7 +59,7 @@ export default function ListViewComponent(props: ListViewComponentProps) {
                                 {props.TopBar}
                             </div>
                             <div className={styles.content_space}>
-                                {props.children}
+                                {/*{props.children}*/}
                             </div>
                         </div>
                     </div>

@@ -6,6 +6,7 @@ import {LocationGroup, ScheduleDefinition} from '@/api/models';
 import RouteTopBarComponent from '@/components/elements/ListViewElement/TopBarElements/RouteTopBarComponent';
 import RouteListButtonComponent
     from '@/components/elements/ListViewElement/ListButtonElements/RouteListButtonComponent';
+import RouteIcon from '@mui/icons-material/Route';
 
 
 // eslint-disable-next-line require-jsdoc
@@ -68,6 +69,7 @@ export default function RoutesPage() {
                 ListItem={RouteListButtonComponent}
                 TopBar={topBar}
                 title={'Routes'}
+                Icon={RouteIcon}
             >
                 TODO: ROUTE DETAILS HERE
             </ListViewComponent>

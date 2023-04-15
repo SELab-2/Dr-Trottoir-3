@@ -7,6 +7,7 @@ import React, {useEffect, useState} from 'react';
 import {useSession} from 'next-auth/react';
 import {getBuildingsList, getLocationGroupsList, useAuthenticatedApi} from '@/api/api';
 import {Building, LocationGroup} from '@/api/models';
+import ApartmentRoundedIcon from "@mui/icons-material/ApartmentRounded";
 
 export default function BuildingsPage() {
     const {data: session} = useSession();
@@ -53,6 +54,7 @@ export default function BuildingsPage() {
                 ListItem={BuildingListButtonComponent}
                 TopBar={topBar}
                 title={'Gebouwen'}
+                Icon={ApartmentRoundedIcon}
             >
                 {current ? <BuildingDetail id={current}/> : <div>None selected</div>}
             </ListViewComponent>

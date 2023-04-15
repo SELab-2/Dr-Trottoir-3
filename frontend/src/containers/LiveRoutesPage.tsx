@@ -14,6 +14,7 @@ import ActiveRouteListButtonComponent
     from '@/components/elements/ListViewElement/ListButtonElements/ActiveRouteListButtonComponent';
 
 import styles from './ContainerStyles.module.css';
+import SensorsRoundedIcon from "@mui/icons-material/SensorsRounded";
 
 // eslint-disable-next-line require-jsdoc
 export default function LiveRoutesPage() {
@@ -113,6 +114,7 @@ export default function LiveRoutesPage() {
                     ListItem={ActiveRouteListButtonComponent}
                     TopBar={topBar}
                     title={'Live routes'}
+                    Icon={SensorsRoundedIcon}
                 >
                     {current ? <LiveRoutesElement id={current}/> : <div>None selected</div>}
                 </ListViewComponent>

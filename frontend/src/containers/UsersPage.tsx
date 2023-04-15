@@ -8,6 +8,7 @@ import React, {useEffect, useState} from 'react';
 import UserTopBarComponent from '@/components/elements/ListViewElement/TopBarElements/UserTopBarComponent';
 import styles from './ContainerStyles.module.css';
 import UserListButtonComponent from '@/components/elements/ListViewElement/ListButtonElements/UserListButtonComponent';
+import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 
 export default function UsersPage() {
     const {data: session} = useSession();
@@ -110,6 +111,7 @@ export default function UsersPage() {
                     ListItem={UserListButtonComponent}
                     TopBar={topBar}
                     title={'Gebruikers'}
+                    Icon={PeopleAltRoundedIcon}
                 >
                     {current ? <UserElement id={current}/> : <div>None selected</div>}
                 </ListViewComponent>
