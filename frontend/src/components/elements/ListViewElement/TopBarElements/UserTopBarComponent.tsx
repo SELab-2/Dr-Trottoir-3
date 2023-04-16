@@ -2,21 +2,20 @@ import React from 'react';
 import {
     Backdrop,
     Button, Checkbox,
-    FormControl,
     IconButton, InputBase,
-    InputLabel, ListItemText,
+    ListItemText,
     MenuItem,
     Select,
     SelectChangeEvent,
 } from '@mui/material';
-import styles from '@/styles/listView.module.css';
-import Box from '@mui/material/Box';
 import SearchIcon from '@mui/icons-material/Search';
 import SortIcon from '@mui/icons-material/Sort';
 import AddIcon from '@mui/icons-material/Add';
 import {Building, LocationGroup} from '@/api/models';
 import Form from '../InsertFormElements/UserInsertFormComponent';
 import {Person} from '@mui/icons-material';
+import styles from './topBar.module.css';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 type TopBarProps = {
     sorttype: string,
@@ -73,112 +72,161 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
 
     return (
         <div className={styles.topBar}>
-            <div className={styles.search}>
-                <Box sx={{display: 'flex', alignItems: 'flex-end'}}>
-                    <IconButton type="button" sx={{p: '10px'}} aria-label="search">
-                        <SearchIcon />
-                    </IconButton>
-                    <InputBase
-                        sx={{p: '5px'}}
-                        autoComplete={'true'}
-                        fullWidth={true}
-                        placeholder="Zoek op naam"
-                        value={searchEntry}
-                        onChange={(e) => setSearchEntry(e.target.value as string)}
-                    />
-                </Box>
+            <div className={styles.search_container}>
+                <IconButton type="button" sx={{p: '10px'}} aria-label="search">
+                    <SearchIcon />
+                </IconButton>
+                <InputBase
+                    sx={{p: '5px'}}
+                    autoComplete={'true'}
+                    fullWidth={true}
+                    value={searchEntry}
+                    onChange={(e) => setSearchEntry(e.target.value as string)}
+                />
             </div>
-            <div className={styles.generic_wrapper}>
-                <div className={styles.filter_wrapper}>
-                    <div className={styles.filters}>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel>Sorteer op</InputLabel>
-                            <Select
-                                style={{width: 200}}
-                                IconComponent={() => (
-                                    <SortIcon/>
-                                )}
-                                value={sorttype}
-                                onChange={(e) => setSorttype(e.target.value as string)}
-                                label="Sorteer op"
-                            >
-                                {Object.entries(sorttypes).map(([option, value]) => (
-                                    <MenuItem key={option} value={option}
-                                        style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
-                                        {value}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </div>
-
-                    <div className={styles.filters}>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <Select
-                                displayEmpty={true}
-                                multiple
-                                value={selectedRegions}
-                                onChange={handleChangeRegion}
-                                renderValue={() => 'regio'}
-                            >
-                                <MenuItem
-                                    key={'Alles '+((AllesSelectedRegions)?'deselecteren':'selecteren')}
-                                    value={'Alles'}>
-                                    <Checkbox style ={{color: '#1C1C1C'}} checked={AllesSelectedRegions} />
-                                    <ListItemText style ={{width: 150}}
-                                        primary={'Alles '+((AllesSelectedRegions)?'deselecteren':'selecteren')} />
-                                </MenuItem>
-                                {allRegions.map((option) => (
-                                    <MenuItem key={option.name} value={option as unknown as string}>
-                                        <Checkbox style ={{color: '#1C1C1C'}}
-                                            checked={selectedRegions?.indexOf(option) > -1} />
-                                        <ListItemText primaryTypographyProps=
-                                            {{style: {whiteSpace: 'normal', wordBreak: 'break-all'}}}
-                                        primary={option.name} />
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </div>
-                    <div className={styles.filters}>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel>Type</InputLabel>
-                            <Select
-                                style={{width: 150}}
-                                IconComponent={() => (
-                                    <Person/>
-                                )}
-                                value={selectedUserType}
-                                onChange={(e) => setSelectedUserType(e.target.value as string)}
-                                label="Sorteer op"
-                            >
-                                <MenuItem key={'alles'} value={''}
-                                    style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
-                                    {'Alle'}
-                                </MenuItem>
-                                {Object.entries(userTypes).map(([option, value]) => (
-                                    <MenuItem key={option} value={option}
-                                        style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
-                                        {value}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </div>
-                </div>
-                <Button variant="contained" className={styles.button} onMouseUp={handleToggle}>
-                    <AddIcon />
-                    Gebruiker Toevoegen
+            <div className={styles.filters_container}>
+                <Button className={styles.filter_button}>
+                    <Select
+                        className={styles.hide_select}
+                        sx={{
+                            'padding': '0',
+                            'boxShadow': '0',
+                            '.MuiOutlinedInput-notchedOutline': {border: 0},
+                            '.Mui-focused-notchedOutline': {border: 0},
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                border: 0,
+                            },
+                        }}
+                        inputProps={{
+                            MenuProps: {
+                                MenuListProps: {
+                                    sx: {
+                                        backgroundColor: 'var(--secondary-light)',
+                                    },
+                                },
+                            },
+                        }}
+                        IconComponent={() => null}
+                        value={sorttype}
+                        onChange={(e) => setSorttype(e.target.value as string)}
+                        label="Sorteer op"
+                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>{sorttype}</p>}
+                    >
+                        {Object.entries(sorttypes).map(([option, value]) => (
+                            <MenuItem key={option} value={option}
+                                style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                                {value}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    <SortIcon/>
                 </Button>
-                <Backdrop
-                    sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
-                    open={open}
-                    invisible={false}
-                >
-                    <Form setCanClose={setCanClose} canClose={canClose} setOpen={setOpen}
-                        allBuildings={allBuildings}></Form>
-                </Backdrop>
+
+                <Button className={styles.filter_button}>
+                    <Select
+                        className={styles.hide_select}
+                        sx={{
+                            'padding': '0',
+                            'boxShadow': '0',
+                            '.MuiOutlinedInput-notchedOutline': {border: 0},
+                            '.Mui-focused-notchedOutline': {border: 0},
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                border: 0,
+                            },
+                        }}
+                        inputProps={{
+                            MenuProps: {
+                                MenuListProps: {
+                                    sx: {
+                                        backgroundColor: 'var(--secondary-light)',
+                                    },
+                                },
+                            },
+                        }}
+                        IconComponent={() => null}
+                        displayEmpty={true}
+                        multiple
+                        value={selectedRegions}
+                        onChange={handleChangeRegion}
+                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>regio</p>}
+                    >
+                        <MenuItem
+                            key={'Alles '+((AllesSelectedRegions)?'deselecteren':'selecteren')}
+                            value={'Alles'}>
+                            <Checkbox style ={{color: '#1C1C1C'}} checked={AllesSelectedRegions} />
+                            <ListItemText style ={{width: 150}}
+                                primary={'Alles '+((AllesSelectedRegions)?'deselecteren':'selecteren')} />
+                        </MenuItem>
+                        {allRegions.map((option) => (
+                            <MenuItem key={option.name} value={option as unknown as string}>
+                                <Checkbox style ={{color: '#1C1C1C'}}
+                                    checked={selectedRegions?.indexOf(option) > -1} />
+                                <ListItemText primaryTypographyProps=
+                                    {{style: {whiteSpace: 'normal', wordBreak: 'break-all'}}}
+                                primary={option.name} />
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    <FilterAltIcon/>
+                </Button>
+                <Button className={styles.filter_button}>
+                    <Select
+                        className={styles.hide_select}
+                        sx={{
+                            'padding': '0',
+                            'boxShadow': '0',
+                            '.MuiOutlinedInput-notchedOutline': {border: 0},
+                            '.Mui-focused-notchedOutline': {border: 0},
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                border: 0,
+                            },
+                        }}
+                        inputProps={{
+                            MenuProps: {
+                                MenuListProps: {
+                                    sx: {
+                                        backgroundColor: 'var(--secondary-light)',
+                                    },
+                                },
+                            },
+                        }}
+                        IconComponent={() => null}
+                        value={selectedUserType}
+                        onChange={(e) => setSelectedUserType(e.target.value as string)}
+                        label="Sorteer op"
+                        renderValue={() =>
+                            <p className={styles.collapse_text} style={{width: '40px'}}>
+                                {(selectedUserType != '') ? selectedUserType : 'alles'}
+                            </p>}
+                    >
+                        <MenuItem key={'alles'} value={''}
+                            style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                            {'Alle'}
+                        </MenuItem>
+                        {Object.entries(userTypes).map(([option, value]) => (
+                            <MenuItem key={option} value={option}
+                                style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                                {value}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    <Person/>
+                </Button>
             </div>
+
+            <Button className={styles.insert_button} onMouseUp={handleToggle}>
+                <AddIcon style={{margin: '0px'}}/>
+                <p className={styles.collapse_text}>gebruiker toevoegen</p>
+            </Button>
+
+            <Backdrop
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                open={open}
+                invisible={false}
+            >
+                <Form setCanClose={setCanClose} canClose={canClose} setOpen={setOpen}
+                    allBuildings={allBuildings}></Form>
+            </Backdrop>
         </div>
 
 

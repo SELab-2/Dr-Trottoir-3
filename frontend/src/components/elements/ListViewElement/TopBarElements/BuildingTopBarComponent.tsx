@@ -100,7 +100,7 @@ export default function BuildingTopBarComponent({sorttype, setSorttype, selected
                         displayEmpty={true}
                         onChange={(e) => setSorttype(e.target.value as string)}
                         label="Sorteer op"
-                        renderValue={() => <p className={styles.collapse_text}>{sorttype}</p>}
+                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>{sorttype}</p>}
                     >
                         {Object.entries(sorttypes).map(([option, value]) => (
                             <MenuItem key={option} value={option}
@@ -137,7 +137,7 @@ export default function BuildingTopBarComponent({sorttype, setSorttype, selected
                         multiple
                         value={selectedRegions}
                         onChange={handleChangeRegion}
-                        renderValue={() => <p className={styles.collapse_text}>regio</p>}
+                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>regio</p>}
                     >
                         <MenuItem key={'Alles '+((AllesSelected)?'deselecteren':'selecteren')} value={'Alles'}>
                             <Checkbox style ={{color: '#1C1C1C'}} checked={AllesSelected} />
@@ -160,7 +160,7 @@ export default function BuildingTopBarComponent({sorttype, setSorttype, selected
 
             <Button className={styles.insert_button} onMouseUp={handleToggle}>
                 <AddIcon style={{margin: '0px'}}/>
-                <p className={styles.collapse_text}>Gebouw Toevoegen</p>
+                <p className={styles.collapse_text}>gebouw toevoegen</p>
             </Button>
 
             <Backdrop

@@ -266,6 +266,7 @@
     .collapse_text {
         font-size: 14px;
         font-weight: 300;
+        text-overflow: ellipsis;
     }
 
     .insert_button{
