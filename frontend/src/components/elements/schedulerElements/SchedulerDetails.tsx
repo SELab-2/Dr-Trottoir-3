@@ -19,32 +19,42 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
     const {data: session} = useSession();
     const [scheduleAssignments, setScheduleAssignments] = useAuthenticatedApi<ScheduleAssignment[]>();
 
-    useEffect(() => {
+
+    const load_assignments = () => {
         if (props.scheduleDefinitions?.data) {
             const allScheduleDefinitionIds = props.scheduleDefinitions.data.map((scheduleDefinition) => {
                 return scheduleDefinition.id;
             }).toString();
 
-            const allDates = Array.from(Array(props.interval).keys()).map((index) => {
-                const date = new Date();
-                date.setDate(props.start + index);
-                return date.toISOString().split('T')[0];
-            }).toString();
-
+            const firstDay = new Date();
+            const lastDay = new Date();
+            firstDay.setDate(props.start);
+            lastDay.setDate(props.start + 7);
 
             getScheduleAssignmentsList(
                 session,
                 setScheduleAssignments,
-                {schedule_definition__in: allScheduleDefinitionIds, assigned_date__in: allDates});
+                {
+                    schedule_definition__in: allScheduleDefinitionIds,
+                    assigned_date__gt: firstDay,
+                    assigned_date__lt: lastDay,
+                });
         }
+    };
+
+
+    useEffect(() => {
+        load_assignments();
     }, [props.scheduleDefinitions, props.start, session]);
 
-    // useEffect(() => {
-    //     const intervalId = setInterval(() => {
-    //         getScheduleAssignmentsList(session, setScheduleAssignments);
-    //     }, 1000);
-    //     return () => clearInterval(intervalId);
-    // }, []);
+    // repeat every second
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            load_assignments();
+        }, 1000);
+        return () => clearInterval(intervalId);
+    }, []);
+
 
     if (props.users?.data && props.scheduleDefinitions?.data && props.buildings?.data) {
         let filteredAssignments: ApiData<ScheduleAssignment[]> | undefined = undefined;
