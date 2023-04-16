@@ -120,5 +120,7 @@ export default function LiveRoutesPage() {
                 </ListViewComponent>
             </>
         );
+    } else {
+        return (<div>error</div>);
     }
 }
