@@ -24,7 +24,7 @@ export default function BuildingsPage() {
     }, [session]);
 
     useEffect(() => {
-        getBuildingsList(session, setBuildings, {location_group: selectedRegions});
+        getBuildingsList(session, setBuildings, {location_group__in: selectedRegions.map((e) => e.id).join(',')});
     }, [session, selectedRegions]);
 
 

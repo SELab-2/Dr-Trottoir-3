@@ -56,7 +56,7 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
     };
 
 
-    const handleChangeUserType = (event: SelectChangeEvent<string[]>) => {
+    const handleChangeUserType = (event: SelectChangeEvent<string>) => {
         setSelectedUserType(event.target.value as string);
     };
 

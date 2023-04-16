@@ -117,5 +117,7 @@ export default function UsersPage() {
                 </ListViewComponent>
             </>
         );
+    } else {
+        return (<div>error</div>);
     }
 }
