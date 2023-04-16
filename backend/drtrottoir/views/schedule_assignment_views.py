@@ -48,7 +48,7 @@ class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet)
     serializer_class = ScheduleAssignmentSerializer
 
     filterset_fields = {
-        "assigned_date": ('exact', 'in'),
+        "assigned_date": ('exact', 'in', 'gt', 'lt'),
         "schedule_definition": ('exact', 'in'),
         "user": {'exact'}
     }

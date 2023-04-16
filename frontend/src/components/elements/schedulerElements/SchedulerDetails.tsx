@@ -20,7 +20,7 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
     const [scheduleAssignments, setScheduleAssignments] = useAuthenticatedApi<ScheduleAssignment[]>();
 
 
-    const load_assignments = () => {
+    const loadAssignments = () => {
         if (props.scheduleDefinitions?.data) {
             const allScheduleDefinitionIds = props.scheduleDefinitions.data.map((scheduleDefinition) => {
                 return scheduleDefinition.id;
@@ -28,29 +28,29 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
 
             const firstDay = new Date();
             const lastDay = new Date();
-            firstDay.setDate(props.start);
-            lastDay.setDate(props.start + 7);
+            firstDay.setDate(props.start - 1);
+            lastDay.setDate(props.start + 8);
 
             getScheduleAssignmentsList(
                 session,
                 setScheduleAssignments,
                 {
                     schedule_definition__in: allScheduleDefinitionIds,
-                    assigned_date__gt: firstDay,
-                    assigned_date__lt: lastDay,
+                    assigned_date__gt: firstDay.toISOString().split('T')[0],
+                    assigned_date__lt: lastDay.toISOString().split('T')[0],
                 });
         }
     };
 
 
     useEffect(() => {
-        load_assignments();
+        loadAssignments();
     }, [props.scheduleDefinitions, props.start, session]);
 
     // repeat every second
     useEffect(() => {
         const intervalId = setInterval(() => {
-            load_assignments();
+            loadAssignments();
         }, 1000);
         return () => clearInterval(intervalId);
     }, []);
@@ -66,6 +66,7 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
             };
         }
 
+        console.log(scheduleAssignments);
 
         return (
             <div className={styles.calendar_component}>
