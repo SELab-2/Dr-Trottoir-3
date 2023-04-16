@@ -8,7 +8,7 @@ import React, {useEffect, useState} from 'react';
 import UserTopBarComponent from '@/components/elements/ListViewElement/TopBarElements/UserTopBarComponent';
 import styles from './containerStyles.module.css';
 import UserListButtonComponent from '@/components/elements/ListViewElement/ListButtonElements/UserListButtonComponent';
-import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
+import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 
 export default function UsersPage() {
     const {data: session} = useSession();

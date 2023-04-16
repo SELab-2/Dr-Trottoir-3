@@ -1,7 +1,7 @@
 import React from 'react';
 import {ClickAwayListener} from '@mui/base';
 import styles from '@/styles/listView.module.css';
-import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from '@mui/material';
+import {Button, FormControl, InputLabel, MenuItem, Select, TextField} from '@mui/material';
 import {LocationGroup} from '@/api/models';
 import {postBuilding} from '@/api/api';
 import {useSession} from 'next-auth/react';
@@ -41,25 +41,9 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
     };
 
     const [formName, setFormName] = React.useState('');
-    const handleChangeFormName = (event: SelectChangeEvent) => {
-        setFormName(event.target.value as string);
-    };
-
     const [formAddress, setFormAddress] = React.useState('');
-    const handleChangeFormAdres = (event: SelectChangeEvent) => {
-        setFormAddress(event.target.value as string);
-    };
-
     const [formRegion, setFormRegion] = React.useState<LocationGroup>();
-    const handleChangeFormRegion = (event: SelectChangeEvent) => {
-        setFormRegion(event.target.value as LocationGroup);
-    };
-
     const [formSyndic, setFormSyndic] = React.useState('');
-    const handleChangeFormSyndic = (event: SelectChangeEvent) => {
-        setFormSyndic(event.target.value as string);
-    };
-
     const [formDescription, setFormDescription] = React.useState('');
 
     React.useEffect(() =>{
@@ -84,7 +68,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                             <InputLabel>regio</InputLabel>
                             <Select
                                 value={formRegion?.name}
-                                onChange={handleChangeFormRegion}
+                                onChange={(e) => setFormRegion(e.target.value as unknown as LocationGroup)}
                                 label="regio"
                                 defaultValue=""
                                 MenuProps={{disablePortal: true}}
@@ -119,7 +103,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                             <InputLabel>syndicus</InputLabel>
                             <Select
                                 value={formSyndic}
-                                onChange={handleChangeFormSyndic}
+                                onChange={(e) => setFormSyndic(e.target.value as string)}
                                 label="syndicus"
                                 defaultValue=""
                                 MenuProps={{disablePortal: true}}

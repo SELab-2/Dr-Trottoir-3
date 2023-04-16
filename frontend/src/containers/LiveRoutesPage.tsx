@@ -14,7 +14,7 @@ import ActiveRouteListButtonComponent
     from '@/components/elements/ListViewElement/ListButtonElements/ActiveRouteListButtonComponent';
 
 import styles from './containerStyles.module.css';
-import SensorsRoundedIcon from "@mui/icons-material/SensorsRounded";
+import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
 
 // eslint-disable-next-line require-jsdoc
 export default function LiveRoutesPage() {
@@ -120,5 +120,7 @@ export default function LiveRoutesPage() {
                 </ListViewComponent>
             </>
         );
+    } else {
+        return (<div>error</div>);
     }
 }

@@ -59,7 +59,7 @@ export default function ListViewComponent(props: ListViewComponentProps) {
                                 {props.TopBar}
                             </div>
                             <div className={styles.content_space}>
-                                {/*{props.children}*/}
+                                {/* {props.children} */}
                             </div>
                         </div>
                     </div>

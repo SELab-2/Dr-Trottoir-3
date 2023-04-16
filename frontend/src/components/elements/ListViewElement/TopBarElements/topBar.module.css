@@ -222,7 +222,7 @@
     flex: 4;
     flex-basis: 200px;
     border-radius: var(--small_corner);
-    background: red;
+    background: var(--secondary-light);
     height: 30px !important;
     width: 100% !important;
 }
@@ -230,7 +230,7 @@
 @media screen and (max-width:1200px) {
     .collapse_text {
         display: none;
-        font-size: 0px;
+        font-size: 0;
     }
 
     .insert_button{
@@ -244,11 +244,28 @@
         color: var(--primary-dark);
         margin-right: 20px;
     }
+
+    .filter_button{
+        height: 30px !important;
+        width: 40px !important;
+        background: var(--secondary-light);
+        border-radius: var(--small_corner);
+        border-width: 0;
+        text-transform: none;
+        color: var(--primary-dark);
+        font-size: 0 !important;
+    }
+
+    .hide_select {
+        width: 0 !important;
+        box-shadow: none !important;
+    }
 }
 
 @media screen and (min-width:1200px) {
     .collapse_text {
         font-size: 14px;
+        font-weight: 300;
     }
 
     .insert_button{
@@ -262,18 +279,17 @@
         color: var(--primary-dark);
         margin-right: 20px;
     }
-}
 
-
-.filter_button{
-    height: 30px !important;
-    width: 130px !important;
-    background: var(--secondary-light);
-    border-radius: var(--small_corner);
-    border-width: 0;
-    text-transform: none;
-    color: var(--primary-dark);
-    text
+    .filter_button{
+        height: 30px !important;
+        width: 130px !important;
+        background: var(--secondary-light);
+        border-radius: var(--small_corner);
+        border-width: 0;
+        text-transform: none;
+        color: var(--primary-dark);
+        font-size: 0 !important;
+    }
 }
 
 .filters_container {

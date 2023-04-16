@@ -7,7 +7,6 @@ import {
     FormControlLabel,
     InputLabel, MenuItem,
     Select,
-    SelectChangeEvent,
     TextField,
 } from '@mui/material';
 import {ClickAwayListener} from '@mui/base';
@@ -33,25 +32,9 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings}: For
     };
 
     const [formFirstName, setFormFirstName] = React.useState('');
-    const handleChangeFormFirstName = (event: SelectChangeEvent) => {
-        setFormFirstName(event.target.value as string);
-    };
-
     const [formLastName, setFormLastName] = React.useState('');
-    const handleChangeFormSurName = (event: SelectChangeEvent) => {
-        setFormLastName(event.target.value as string);
-    };
-
     const [formUserType, setFormUserType] = React.useState('');
-    const handleChangeFormType = (event: SelectChangeEvent) => {
-        setFormUserType(event.target.value as string);
-    };
-
     const [formIsSuperStudent, setFormIsSuperStudent] = React.useState(false);
-
-    const handleChangeFormIsSuperStudent = () => {
-        setFormIsSuperStudent(!formIsSuperStudent);
-    };
 
     const userTypes = {
         student: 'student',
@@ -59,11 +42,11 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings}: For
         admin: 'admin',
     };
 
-    const BuildingsOrSuperStudentField = (userType: string) => {
+    const buildingsOrSuperStudentField = (userType: string) => {
         if (userType === 'student') {
             return (
                 <FormControlLabel control={<Checkbox defaultChecked={false} value={formIsSuperStudent}
-                    onChange={handleChangeFormIsSuperStudent} />}
+                    onChange={() => setFormIsSuperStudent(!formIsSuperStudent)} />}
                 label="superstudent" sx={{color: 'black'}}/>
             );
         } else if (userType === 'syndicus') {
@@ -107,7 +90,7 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings}: For
                                 required
                                 label="voornaam"
                                 value={formFirstName}
-                                onChange={handleChangeFormFirstName}
+                                onChange={(e) => setFormFirstName(e.target.value as string)}
                             />
                         </div>
                         <div className={styles.field}>
@@ -115,7 +98,7 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings}: For
                                 required
                                 label="achternaam"
                                 value={formLastName}
-                                onChange={handleChangeFormSurName}
+                                onChange={(e) => setFormLastName(e.target.value as string)}
                             />
                         </div>
                         <div className={styles.field}>
@@ -123,22 +106,22 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings}: For
                                 <InputLabel>type</InputLabel>
                                 <Select
                                     value={formUserType}
-                                    onChange={handleChangeFormType}
+                                    onChange={(e) => setFormUserType(e.target.value as string)}
                                     label="type"
                                     defaultValue=""
                                     MenuProps={{disablePortal: true}}
                                 >
-                                    {Object.keys(userTypes).map((option) => (
+                                    {Object.entries(userTypes).map(([option, value]) => (
                                         <MenuItem key={option} value={option}
                                             style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
-                                            {userTypes[option]}
+                                            {value}
                                         </MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
                         </div>
                         <div className={styles.field}>
-                            {BuildingsOrSuperStudentField(formUserType)}
+                            {buildingsOrSuperStudentField(formUserType)}
                         </div>
 
                     </div>
