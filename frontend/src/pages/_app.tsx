@@ -12,7 +12,7 @@ export default function App(
 
     return (
         // eslint-disable-next-line no-undef
-        <SessionProvider session={session} basePath={process.env.NEXT_INTERNAL_API_AUTH_URL}>
+        <SessionProvider session={session} basePath={process.env.NEXT_API_AUTH_URL}>
             {getLayout(<Component {...pageProps} />)}
         </SessionProvider>
     );
