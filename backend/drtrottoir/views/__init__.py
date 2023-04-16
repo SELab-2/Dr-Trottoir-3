@@ -8,10 +8,10 @@ from .garbage_type import GarbageTypeViewSet
 from .issue import IssueViewSet
 from .issue_image import IssueImageViewSet
 from .location_group import LocationGroupViewSet
-from .schedule_assignment_views import ScheduleAssignmentViewSet
+from .schedule_assignment import ScheduleAssignmentViewSet
 from .schedule_definition import ScheduleDefinitionViewSet
-from .schedule_work_entry_views import ScheduleWorkEntryViewSet
-from .users import UserViewSet
+from .schedule_work_entry import ScheduleWorkEntryViewSet
+from .user import UserViewSet
 
 __all__ = [
     "LocationGroupViewSet",

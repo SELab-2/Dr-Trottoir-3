@@ -46,7 +46,11 @@ class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    filterset_fields = ["student__is_super_student", "student__location_group"]
+    filterset_fields = {
+        "student__is_super_student": ("exact",),
+        "student__location_group": ("exact", "in"),
+        "syndicus__buildings": ("exact",),
+    }
     search_fields = ["first_name", "last_name", "username"]
 
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]

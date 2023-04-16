@@ -70,7 +70,11 @@ class ScheduleDefinitionViewSet(
     queryset = ScheduleDefinition.objects.all()
     serializer_class = ScheduleDefinitionSerializer
 
-    filterset_fields = ["version", "location_group"]
+    filterset_fields = {
+        "version": ("exact", "in"),
+        "location_group": ("exact", "in"),
+        "buildings": ("exact",),
+    }
     search_fields = ["name"]
 
     # This method allows more granular selection of permissions for any given

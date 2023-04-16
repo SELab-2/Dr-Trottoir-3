@@ -1,23 +1,48 @@
 import {Avatar} from '@mui/material';
 import styles from './UserElement.module.css';
-import {getUserDetail, useAuthenticatedApi} from '@/api/api';
+import {
+    getLocationGroupDetail, getScheduleAssignmentsList,
+    getScheduleDefinitionsList,
+    getUserDetail,
+    useAuthenticatedApi,
+} from '@/api/api';
 import {useSession} from 'next-auth/react';
-import CloseIcon from '@mui/icons-material/Close';
-import {useEffect} from 'react';
-import {User} from '@/api/models';
+import React, {useEffect} from 'react';
+import {LocationGroup, ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
+
 
 export default function UserElement() {
     const {data: session} = useSession();
+
+    const userId = 2;
+
     const [userData, setUserData] = useAuthenticatedApi<User>();
+    const [scheduleDefinitions, setScheduleDefinitions] = useAuthenticatedApi<Array<ScheduleDefinition>>();
+    const [scheduleAssignmentsData, setScheduleAssignmentsData] = useAuthenticatedApi<Array<ScheduleAssignment>>();
+    const [locationGroupData, setLocationGroupData] = useAuthenticatedApi<LocationGroup>();
 
     useEffect(() => {
-        getUserDetail(session, setUserData, 1);
+        getUserDetail(session, setUserData, userId);
     }, [session]);
 
-    if (!userData) {
+    useEffect(() => {
+        getScheduleDefinitionsList(session, setScheduleDefinitions);
+    }, [session]);
+
+    useEffect(() => {
+        getScheduleAssignmentsList(session, setScheduleAssignmentsData, {user: userId});
+    }, [session, setUserData]);
+
+    useEffect(() => {
+        if (userData && userData.data.student?.location_group) {
+            getLocationGroupDetail(session, setLocationGroupData, userData.data.student.location_group);
+        }
+    }, [session, userData]);
+
+    if (!userData || !scheduleDefinitions || !scheduleAssignmentsData) {
         return (<div>Loading...</div>);
     } else {
-        if (userData.success) {
+        if (userData.success && scheduleDefinitions.success && scheduleAssignmentsData.success) {
             return (
                 <div className={styles.userElement}>
                     <div className={styles.userHeader}>
@@ -35,7 +60,7 @@ export default function UserElement() {
                                 </p>
                             </div>
                             <div className={styles.firstColumnRow}>
-                                <p>Gent</p>
+                                <p>{userData.data.student ? locationGroupData?.data.name : ''}</p>
                                 <p>Some random address</p>
                                 <p>+32 000 00 00 00</p>
                             </div>
@@ -79,49 +104,69 @@ export default function UserElement() {
                             <div className={styles.scrollList}>
                                 <div className={styles.routesItems}>
                                     <h3 className={styles.routesSubtitle + ' ' + styles.extraTitlePadding}>Gepland</h3>
-
-                                    <div className={styles.routesItem}>
-                                        <h4>Route A</h4>
-                                        <p>24-2-2023</p>
-                                        <CloseIcon/>
-                                    </div>
-                                    <div className={styles.routesItem}>
-                                        <h4>Route A</h4>
-                                        <p>24-2-2023</p>
-                                        <CloseIcon/>
-                                    </div>
+                                    {
+                                        scheduleAssignmentsData?.data
+                                            .filter((e) => {
+                                                const dateParts = e.assigned_date.split('-');
+                                                const dateObject = new Date(
+                                                    +dateParts[2],
+                                                    // @ts-ignore
+                                                dateParts[1] - 1,
+                                                    +dateParts[0]
+                                                );
+                                                return dateObject <= new Date(Date.now());
+                                            })
+                                            .map((e) => {
+                                                return (
+                                                    <div className={styles.routesItem}>
+                                                        <h4>
+                                                            {
+                                                                // @ts-ignore
+                                                                scheduleDefinitions?.data.filter(
+                                                                    // eslint-disable-next-line max-len
+                                                                    (scheduleDefinition) => scheduleDefinition.id == e.schedule_definition
+                                                                ).at(0).name
+                                                            }
+                                                        </h4>
+                                                        <p>{e.assigned_date}</p>
+                                                    </div>
+                                                );
+                                            })
+                                    }
                                 </div>
 
                                 <div className={styles.routesItems}>
                                     <h3 className={styles.routesSubtitle + ' ' + styles.extraTitlePadding}>
                                         Geschiedenis
                                     </h3>
-
-                                    <div className={styles.routesItem}>
-                                        <h4>Route A</h4>
-                                        <p>24-2-2023</p>
-                                        <CloseIcon/>
-                                    </div>
-                                    <div className={styles.routesItem}>
-                                        <h4>Route A</h4>
-                                        <p>24-2-2023</p>
-                                        <CloseIcon/>
-                                    </div>
-                                    <div className={styles.routesItem}>
-                                        <h4>Route A</h4>
-                                        <p>24-2-2023</p>
-                                        <CloseIcon/>
-                                    </div>
-                                    <div className={styles.routesItem}>
-                                        <h4>Route A</h4>
-                                        <p>24-2-2023</p>
-                                        <CloseIcon/>
-                                    </div>
-                                    <div className={styles.routesItem}>
-                                        <h4>Route A</h4>
-                                        <p>24-2-2023</p>
-                                        <CloseIcon/>
-                                    </div>
+                                    {
+                                        scheduleAssignmentsData?.data
+                                            .filter((e) => {
+                                                const dateParts = e.assigned_date.split('-');
+                                                // @ts-ignore
+                                                const dateObject = new Date(
+                                                    +dateParts[2],
+                                                    // @ts-ignore
+                                                dateParts[1] - 1,
+                                                    +dateParts[0]
+                                                );
+                                                return dateObject > new Date(Date.now());
+                                            })
+                                            .map((e) => {
+                                                return (
+                                                    <div className={styles.routesItem}>
+                                                        <h4>
+                                                            {
+                                                                // @ts-ignore
+                                                                // eslint-disable-next-line max-len
+                                                                scheduleDefinitions?.data.filter((scheduleDefinition) => scheduleDefinition.id == e.schedule_definition).at(0).name
+                                                            }
+                                                        </h4>
+                                                        <p>{e.assigned_date}</p>
+                                                    </div>
+                                                );
+                                            })
+                                    }
                                 </div>
                             </div>
                         </div>

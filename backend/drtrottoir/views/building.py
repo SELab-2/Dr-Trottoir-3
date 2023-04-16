@@ -109,8 +109,6 @@ class BuildingViewSet(
                 All the garbage collection schedules of this building on this given day.
     """
 
-    filterset_fields = ["is_active"]
-    search_fields = ["address", "description"]
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
     permission_classes_by_action = {
         "retrieve": [permissions.IsAuthenticated],
@@ -133,6 +131,9 @@ class BuildingViewSet(
             IsStudent,
         ],
     }
+
+    filterset_fields = {"is_active": ("exact",), "location_group": ("exact", "in")}
+    search_fields = ["address", "description"]
 
     queryset = Building.objects.all()
     serializer_class = BuildingSerializer

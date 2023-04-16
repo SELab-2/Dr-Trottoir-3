@@ -14,6 +14,7 @@
     display: flex;
     flex-direction: row;
     padding: 25px;
+    gap: 100px;
     justify-content: space-between;
     border-radius: var(--large-corner) var(--large-corner) 0 0;
 }
@@ -46,7 +47,8 @@
     line-height: 12px;
 }
 
-.picture {
+.loadingBar {
+    flex-grow: 1;
     display:flex;
     flex-direction: column;
     justify-content: center;
@@ -87,17 +89,13 @@
     display: flex;
     flex-direction: row;
     gap: 25px;
-    height: 1%; /* needs a default height */
-    flex-grow: 1;
+    height: 100%;
 }
 
 .userRoutes {
     display: flex;
     flex-direction: column;
     gap: 50px;
-    height: 100%;
-    flex-wrap: nowrap;
-    overflow:scroll;
 }
 
 .userRoutesPadding {

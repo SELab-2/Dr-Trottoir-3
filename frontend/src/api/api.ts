@@ -12,7 +12,7 @@ export enum Api {
     GarbageCollectionScheduleTemplateEntryDetail = 'garbage_collection_schedule_template_entries/:id/',
     GarbageTypes = 'garbage_types/',
     GarbageTypeDetail = 'garbage_types/:id/',
-    GarbageCollectionScheduleDetail = 'garbage_collection_schedules/:id',
+    GarbageCollectionScheduleDetail = 'garbage_collection_schedules/:id/',
     LocationGroups = 'location_groups/',
     LocationGroupDetail = 'location_groups/:id/',
     LocationGroupDetailBuildings = 'location_groups/:id/buildings/',
@@ -34,6 +34,8 @@ export enum Api {
     ScheduleDefinitionDetailScheduleWorkEntries = 'schedule_definitions/:id/schedule_work_entries/',
     Users = 'users/',
     UserDetail = 'users/:id/',
+    Issues = 'issues/',
+    IssueDetail = 'issues/:id/'
 }
 
 
@@ -330,7 +332,7 @@ const getLocationGroupDetail = (session: Session | null, setter: ((e:any) => voi
 };
 
 const getLocationGroupDetailBuildings = (session: Session | null, setter: ((e:any) => void), id: number) => {
-    return getDetailsFromAPI(Api.LocationGroupDetailBuildings, session, id)
+    getDetailsFromAPI(Api.LocationGroupDetailBuildings, session, id)
         .then((e) => {
             setter({success: true, status: e.status, data: e.data});
         })
@@ -470,6 +472,17 @@ const getUserDetail = (session: Session | null, setter: ((e:any) => void), id: n
         });
 };
 
+
+const getIssueDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
+    getDetailsFromAPI(Api.IssueDetail, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
+};
+
 const postGarbageType = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
     postDetailsToAPI(Api.GarbageTypes, session, data)
         .then((e) => {
@@ -539,6 +552,18 @@ const postUser = (session: Session | null, data: any, setter?: ((e:any) => void)
             setter ? setter({success: false, status: e.status, data: e}) : undefined;
         });
 };
+
+
+const postIssue = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
+    postDetailsToAPI(Api.Issues, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
 
 const deleteGarbageCollectionScheduleTemplate = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
     deleteDetailsOnAPI(Api.GarbageCollectionScheduleTemplateDetail, session, id)
@@ -640,6 +665,17 @@ const deleteUser = (session: Session | null, id: number, setter?: ((e:any) => vo
         });
 };
 
+const deleteIssue = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
+    deleteDetailsOnAPI(Api.IssueDetail, session, id)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
+
 const patchGarbageCollectionScheduleTemplateDetail = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
     patchDetailsOnAPI(Api.GarbageCollectionScheduleTemplateDetail, session, id, data)
         .then((e) => {
@@ -740,6 +776,16 @@ const patchUserDetail = (session: Session | null, id: number, data: any, setter?
         });
 };
 
+const patchIssueDetail = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
+    patchDetailsOnAPI(Api.IssueDetail, session, id, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
 
 export {
     useAuthenticatedApi,
@@ -771,6 +817,7 @@ export {
     getScheduleDefinitionDetailScheduleWorkEntries,
     getUsersList,
     getUserDetail,
+    getIssueDetail,
 
     postGarbageType,
     postLocationGroup,
@@ -779,6 +826,7 @@ export {
     postScheduleWorkEntrie,
     postScheduleDefinition,
     postUser,
+    postIssue,
 
     deleteGarbageCollectionScheduleTemplate,
     deleteGarbageCollectionScheduleTemplateEntry,
@@ -790,6 +838,7 @@ export {
     deleteScheduleWorkEntry,
     deleteScheduleDefinition,
     deleteUser,
+    deleteIssue,
 
     patchGarbageCollectionScheduleTemplateDetail,
     patchGarbageCollectionScheduleTemplateEntryDetail,
@@ -801,4 +850,5 @@ export {
     patchScheduleWorkEntryDetail,
     patchScheduleDefinitionDetail,
     patchUserDetail,
+    patchIssueDetail,
 };
