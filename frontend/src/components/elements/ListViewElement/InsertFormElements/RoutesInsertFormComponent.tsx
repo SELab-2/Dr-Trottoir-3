@@ -37,13 +37,13 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allRou
     };
 
     const [formName, setFormName] = React.useState('');
-    const handleChangeFormName = (event: SelectChangeEvent) => {
-        setFormName(event.target.value as string);
-    };
+    // const handleChangeFormName = (event: SelectChangeEvent) => {
+    //     setFormName(event.target.value as string);
+    // };
 
     const [formRegion, setFormRegion] = React.useState<LocationGroup>();
     const handleChangeFormRegion = (event: SelectChangeEvent) => {
-        setFormRegion(event.target.value as LocationGroup);
+        setFormRegion(event.target.value as unknown as LocationGroup);
     };
 
     React.useEffect(() =>{
@@ -60,7 +60,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allRou
                                 required
                                 label="naam"
                                 value={formName}
-                                onChange={handleChangeFormName}
+                                onChange={(e) => setFormName(e.target.value as string)}
                             />
                         </div>
                         <FormControl required sx={{minWidth: 150}}>

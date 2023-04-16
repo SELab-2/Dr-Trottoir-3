@@ -40,7 +40,8 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
     const handleChangeRegion = (event: SelectChangeEvent<LocationGroup[]>) => {
         const value = event.target.value as LocationGroup[];
         setSelectedRegions(
-            (value.indexOf('Alles')>-1)?
+            // @ts-ignore
+            (value.indexOf('Alles') > -1)?
                 (AllesSelectedRegions)?
                     []:
                     allRegions:
@@ -55,24 +56,10 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
         admin: 'admins',
     };
 
-
-    const handleChangeUserType = (event: SelectChangeEvent<string[]>) => {
-        setSelectedUserType(event.target.value as string);
-    };
-
     const sorttypes = {
         first_name: 'voornaam',
         last_name: 'familienaam',
     };
-
-    const handleChangeSorttype = (event: SelectChangeEvent) => {
-        setSorttype(event.target.value as string);
-    };
-
-    const handleChangeSearchEntry = (event: SelectChangeEvent) => {
-        setSearchEntry(event.target.value as string);
-    };
-
 
     const [open, setOpen] = React.useState(false);
 
@@ -97,7 +84,7 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
                         fullWidth={true}
                         placeholder="Zoek op naam"
                         value={searchEntry}
-                        onChange={handleChangeSearchEntry}
+                        onChange={(e) => setSearchEntry(e.target.value as string)}
                     />
                 </Box>
             </div>
@@ -112,13 +99,13 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
                                     <SortIcon/>
                                 )}
                                 value={sorttype}
-                                onChange={handleChangeSorttype}
+                                onChange={(e) => setSorttype(e.target.value as string)}
                                 label="Sorteer op"
                             >
-                                {Object.keys(sorttypes).map((option) => (
+                                {Object.entries(sorttypes).map(([option, value]) => (
                                     <MenuItem key={option} value={option}
                                         style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
-                                        {sorttypes[option]}
+                                        {value}
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -140,7 +127,7 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
                                         primary={'Alles '+((AllesSelectedRegions)?'deselecteren':'selecteren')} />
                                 </MenuItem>
                                 {allRegions.map((option) => (
-                                    <MenuItem key={option.name} value={option}>
+                                    <MenuItem key={option.name} value={option as unknown as string}>
                                         <Checkbox style ={{color: '#1C1C1C'}}
                                             checked={selectedRegions?.indexOf(option) > -1} />
                                         <ListItemText primaryTypographyProps=
@@ -160,17 +147,17 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
                                     <Person/>
                                 )}
                                 value={selectedUserType}
-                                onChange={handleChangeUserType}
+                                onChange={(e) => setSelectedUserType(e.target.value as string)}
                                 label="Sorteer op"
                             >
                                 <MenuItem key={'alles'} value={''}
                                     style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                     {'Alle'}
                                 </MenuItem>
-                                {Object.keys(userTypes).map((option) => (
+                                {Object.entries(userTypes).map(([option, value]) => (
                                     <MenuItem key={option} value={option}
                                         style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
-                                        {userTypes[option]}
+                                        {value}
                                     </MenuItem>
                                 ))}
                             </Select>

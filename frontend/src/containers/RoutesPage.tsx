@@ -51,8 +51,8 @@ export default function RoutesPage() {
         amountOfResults={routes ? routes.data.length : 0}
         searchEntry={searchEntry}
         setSearchEntry={setSearchEntry}
-        selectedActive={setSelectedActive}
-        setSelectedActive={(e) => (e)}
+        selectedActive={selectedActive}
+        setSelectedActive={setSelectedActive}
         allRoutes={allRoutes ? allRoutes.data : []}
     />;
 

@@ -26,8 +26,8 @@ type TopBarProps = {
     amountOfResults: number,
     searchEntry: string,
     setSearchEntry: React.Dispatch<React.SetStateAction<string>>,
-    selectedActive: string,
-    setSelectedActive: React.Dispatch<React.SetStateAction<string>>,
+    selectedActive: number | null,
+    setSelectedActive: React.Dispatch<React.SetStateAction<number | null>>,
     allRoutes: ScheduleDefinition[],
 };
 
@@ -38,7 +38,8 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
     const handleChangeRegion = (event: SelectChangeEvent<LocationGroup[]>) => {
         const value = event.target.value as LocationGroup[];
         setRegion(
-            (value.indexOf('Alles')>-1)?
+            // @ts-ignore
+            (value.indexOf('Alles') > -1)?
                 (AllesSelected)?
                     []:
                     allRegions:
@@ -54,18 +55,6 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
         name: 'naam',
         location_group__name: 'regio',
         buildings: 'aantal gebouwen',
-    };
-
-    const handleChangeSorttype = (event: SelectChangeEvent) => {
-        setSorttype(event.target.value as string);
-    };
-
-    const handleChangeSearchEntry = (event: SelectChangeEvent) => {
-        setSearchEntry(event.target.value as string);
-    };
-
-    const handleChangeActive = (event: SelectChangeEvent) => {
-        setSelectedActive(event.target.value as string);
     };
 
     const [open, setOpen] = React.useState(false);
@@ -90,7 +79,7 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
                         fullWidth={true}
                         placeholder="Zoek op naam"
                         value={searchEntry}
-                        onChange={handleChangeSearchEntry}
+                        onChange={(e) => setSearchEntry(e.target.value as string)}
                     />
                 </Box>
             </div>
@@ -105,13 +94,13 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
                                     <SortIcon/>
                                 )}
                                 value={sorttype}
-                                onChange={handleChangeSorttype}
+                                onChange={(e) => setSorttype(e.target.value as string)}
                                 label="Sorteer op"
                             >
-                                {Object.keys(sorttypes).map((option) => (
+                                {Object.entries(sorttypes).map(([option, value]) => (
                                     <MenuItem key={option} value={option}
                                         style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
-                                        {sorttypes[option]}
+                                        {value}
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -133,7 +122,7 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
                                         primary={'Alles '+((AllesSelected)?'deselecteren':'selecteren')} />
                                 </MenuItem>
                                 {allRegions.map((option) => (
-                                    <MenuItem key={option.name} value={option}>
+                                    <MenuItem key={option.name} value={option as unknown as string}>
                                         <Checkbox style ={{color: '#1C1C1C'}}
                                             checked={selectedRegions.indexOf(option) > -1} />
                                         <ListItemText primaryTypographyProps=
@@ -149,16 +138,16 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
                             <InputLabel>type</InputLabel>
                             <Select
                                 value={selectedActive}
-                                onChange={handleChangeActive}
+                                onChange={(e) => setSelectedActive(e.target.value as number)}
                                 label="Type"
                             >
                                 <MenuItem value={''}>
                                     <em>Alle</em>
                                 </MenuItem>
-                                {Object.keys(activeTypes).map((option) => (
+                                {Object.entries(activeTypes).map(([option, value]) => (
                                     <MenuItem key={option} value={option}
                                         style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
-                                        {activeTypes[option]}
+                                        {value}
                                     </MenuItem>
                                 ))}
                             </Select>

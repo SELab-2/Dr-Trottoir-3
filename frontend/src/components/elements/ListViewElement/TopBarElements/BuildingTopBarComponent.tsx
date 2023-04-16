@@ -31,13 +31,16 @@ type TopBarProps = {
 
 export default function BuildingTopBarComponent({sorttype, setSorttype, selectedRegions, setRegion, allRegions,
     searchEntry, setSearchEntry}:TopBarProps) {
-    const AllesSelected = selectedRegions.length>=allRegions.length;
+    const AllesSelected = selectedRegions.length >= allRegions.length;
 
     const handleChangeRegion = (event: SelectChangeEvent<LocationGroup[]>) => {
         const value = event.target.value as LocationGroup[];
 
         setRegion(
-            (value.indexOf('Alles')>-1)?
+            // value contains both string and LocationGroup, but I have no idea how
+            // or why so I'm keeping this here for now
+            // @ts-ignore
+            (value.indexOf('Alles') > -1)?
                 (AllesSelected)?
                     []:
                     allRegions:
@@ -50,18 +53,7 @@ export default function BuildingTopBarComponent({sorttype, setSorttype, selected
         location_group__name: 'regio',
     };
 
-
-    const handleChangeSorttype = (event: SelectChangeEvent) => {
-        setSorttype(event.target.value as string);
-    };
-
-
-    const handleChangeSearchEntry = (event: SelectChangeEvent) => {
-        setSearchEntry(event.target.value as string);
-    };
-
     const [open, setOpen] = React.useState(false);
-
     const [canClose, setCanClose] = React.useState(true);
 
     const handleToggle = () => {
@@ -82,7 +74,7 @@ export default function BuildingTopBarComponent({sorttype, setSorttype, selected
                         fullWidth={true}
                         placeholder="Zoek op naam"
                         value={searchEntry}
-                        onChange={handleChangeSearchEntry}
+                        onChange={(e) => setSearchEntry(e.target.value as string)}
                     />
                 </Box>
             </div>
@@ -97,13 +89,13 @@ export default function BuildingTopBarComponent({sorttype, setSorttype, selected
                                     <SortIcon/>
                                 )}
                                 value={sorttype}
-                                onChange={handleChangeSorttype}
+                                onChange={(e) => setSorttype(e.target.value as string)}
                                 label="Sorteer op"
                             >
-                                {Object.keys(sorttypes).map((option) => (
+                                {Object.entries(sorttypes).map(([option, value]) => (
                                     <MenuItem key={option} value={option}
                                         style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
-                                        {sorttypes[option]}
+                                        {value}
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -125,7 +117,7 @@ export default function BuildingTopBarComponent({sorttype, setSorttype, selected
                                         primary={'Alles '+((AllesSelected)?'deselecteren':'selecteren')} />
                                 </MenuItem>
                                 {allRegions.map((option) => (
-                                    <MenuItem key={option.name} value={option}>
+                                    <MenuItem key={option.name} value={option as unknown as string}>
                                         <Checkbox style ={{color: '#1C1C1C'}}
                                             checked={selectedRegions?.indexOf(option) > -1} />
                                         <ListItemText primaryTypographyProps=

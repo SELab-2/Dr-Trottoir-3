@@ -7,7 +7,7 @@ import React, {useEffect, useState} from 'react';
 import {useSession} from 'next-auth/react';
 import {getBuildingsList, getLocationGroupsList, useAuthenticatedApi} from '@/api/api';
 import {Building, LocationGroup} from '@/api/models';
-import ApartmentRoundedIcon from "@mui/icons-material/ApartmentRounded";
+import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded';
 
 export default function BuildingsPage() {
     const {data: session} = useSession();

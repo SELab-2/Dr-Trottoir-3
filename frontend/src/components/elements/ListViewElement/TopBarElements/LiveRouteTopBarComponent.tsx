@@ -34,7 +34,8 @@ export default function LiveRouteTopBarComponent(
     const handleChangeRegion = (event: SelectChangeEvent<LocationGroup[]>) => {
         const value = event.target.value as LocationGroup[];
         setSelectedRegions(
-            (value.indexOf('Alles')>-1)?
+            // @ts-ignore
+            (value.indexOf('Alles') > -1)?
                 (AllesSelectedRegions)?
                     []:
                     allRegions:
@@ -51,14 +52,6 @@ export default function LiveRouteTopBarComponent(
         schedule_definition__location_group__name: 'regio',
         schedule_definition__student__name: 'student',
         progress: 'voortgang',
-    };
-
-    const handleChangeSorttype = (event: SelectChangeEvent) => {
-        setSorttype(event.target.value as string);
-    };
-
-    const handleChangeSearchEntry = (event: SelectChangeEvent) => {
-        setSearchEntry(event.target.value as string);
     };
 
     const [active, setActive] = React.useState('');
@@ -81,7 +74,7 @@ export default function LiveRouteTopBarComponent(
                         fullWidth={true}
                         placeholder="Zoek op naam"
                         value={searchEntry}
-                        onChange={handleChangeSearchEntry}
+                        onChange={(e) => setSearchEntry(e.target.value as string)}
                     />
                 </Box>
             </div>
@@ -96,13 +89,13 @@ export default function LiveRouteTopBarComponent(
                                     <SortIcon/>
                                 )}
                                 value={sorttype}
-                                onChange={handleChangeSorttype}
+                                onChange={(e) => setSorttype(e.target.value as string)}
                                 label="Sorteer op"
                             >
-                                {Object.keys(sorttypes).map((option) => (
+                                {Object.entries(sorttypes).map(([option, value]) => (
                                     <MenuItem key={option} value={option}
                                         style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
-                                        {sorttypes[option]}
+                                        {value}
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -125,7 +118,7 @@ export default function LiveRouteTopBarComponent(
                                         primary={'Alles '+((AllesSelectedRegions)?'deselecteren':'selecteren')} />
                                 </MenuItem>
                                 {allRegions.map((option) => (
-                                    <MenuItem key={option.id} value={option}>
+                                    <MenuItem key={option.id} value={option as unknown as string}>
                                         <Checkbox style ={{color: '#1C1C1C'}}
                                             checked={selectedRegions.indexOf(option) > -1} />
                                         <ListItemText primaryTypographyProps=
