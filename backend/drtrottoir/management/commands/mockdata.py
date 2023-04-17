@@ -177,8 +177,8 @@ class Command(BaseCommand):
                 schedule_definition=schedule_definition,
                 user=random.choice(students).user,
             )
-            for i in range(10, 25)
-            for schedule_definition in schedule_definitions
+            for i in range(10, 25, 2)
+            for schedule_definition in schedule_definitions[0:3]
         ]
 
         for s in schedule_assignments:

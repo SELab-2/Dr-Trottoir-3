@@ -7,7 +7,6 @@ import {Building, ScheduleAssignment, ScheduleDefinition, User} from '@/api/mode
 import {
     ApiData,
     deleteScheduleAssignment,
-    getScheduleAssignmentsList,
     patchScheduleAssignmentDetail,
     postScheduleAssignment,
 } from '@/api/api';
@@ -23,6 +22,7 @@ type schedulerProps = {
     setScheduleAssignments: (e: (ApiData<ScheduleAssignment[]> | undefined)) => void,
     start: number,
     interval: number,
+    setTriggerReload: (e: any) => void,
 }
 
 export default function WeekComponent(props: schedulerProps) {
@@ -241,7 +241,7 @@ export default function WeekComponent(props: schedulerProps) {
 
     useEffect(() => {
         if (requestChecker) {
-            getScheduleAssignmentsList(session, props.setScheduleAssignments);
+            props.setTriggerReload(true);
             if (props.scheduleAssignments) {
                 updateTaskLists(props.scheduleAssignments);
             }

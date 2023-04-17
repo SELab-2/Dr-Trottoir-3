@@ -74,6 +74,7 @@ type PaginatedResponse<T> = {
 
 /**
  * @deprecated The method should not be used
+ * @deprecated The method should not be used
  * @param {Array<string>} args
  * @return {Promise<T>}
  * **/

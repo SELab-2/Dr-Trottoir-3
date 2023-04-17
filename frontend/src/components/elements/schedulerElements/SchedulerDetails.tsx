@@ -1,7 +1,7 @@
 import WeekComponent from '@/components/elements/schedulerElements/CustomCalendar/WeekComponent';
 
 import styles from './SchedulerDetails.module.css';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ApiData, getScheduleAssignmentsList, useAuthenticatedApi} from '@/api/api';
 import {useSession} from 'next-auth/react';
 import {Building, ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
@@ -18,9 +18,10 @@ type schedulerDetailsProps = {
 export default function SchedulerDetails(props: schedulerDetailsProps) {
     const {data: session} = useSession();
     const [scheduleAssignments, setScheduleAssignments] = useAuthenticatedApi<ScheduleAssignment[]>();
-
+    const [triggerReload, setTriggerReload] = useState<boolean>(false);
 
     const loadAssignments = () => {
+        console.log(props.scheduleDefinitions);
         if (props.scheduleDefinitions?.data) {
             const allScheduleDefinitionIds = props.scheduleDefinitions.data.map((scheduleDefinition) => {
                 return scheduleDefinition.id;
@@ -42,14 +43,17 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
         }
     };
 
-
     useEffect(() => {
+        if (triggerReload) {
+            setTriggerReload(false);
+        }
         loadAssignments();
-    }, [props.scheduleDefinitions, props.start, session]);
+    }, [props.scheduleDefinitions, props.start, session, triggerReload]);
 
     // repeat every second
     useEffect(() => {
         const intervalId = setInterval(() => {
+            console.log('here');
             loadAssignments();
         }, 1000);
         return () => clearInterval(intervalId);
@@ -66,8 +70,6 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
             };
         }
 
-        console.log(scheduleAssignments);
-
         return (
             <div className={styles.calendar_component}>
                 <WeekComponent
@@ -77,7 +79,8 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
                     buildings={props.buildings}
                     setScheduleAssignments={setScheduleAssignments}
                     start={props.start}
-                    interval={props.interval}/>
+                    interval={props.interval}
+                    setTriggerReload={setTriggerReload}/>
             </div>
         );
     } else {
