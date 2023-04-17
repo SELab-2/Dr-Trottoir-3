@@ -1,8 +1,4 @@
 import {Avatar} from '@mui/material';
-<<<<<<< HEAD:frontend/src/components/elements/UserElement/UserElement.tsx
-import styles from './userElement.module.css';
-import {getUserDetail, useAuthenticatedApi} from '@/api/api';
-=======
 import styles from './UserElement.module.css';
 import {
     getLocationGroupDetail, getScheduleAssignmentsList,
@@ -10,7 +6,6 @@ import {
     getUserDetail,
     useAuthenticatedApi,
 } from '@/api/api';
->>>>>>> development:frontend/src/components/elements/userElement/UserElement.tsx
 import {useSession} from 'next-auth/react';
 import React, {useEffect} from 'react';
 import {LocationGroup, ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
@@ -120,7 +115,7 @@ export default function UserElement(props: userElementProps) {
                                                 const dateObject = new Date(
                                                     +dateParts[2],
                                                     // @ts-ignore
-                                                dateParts[1] - 1,
+                                                    dateParts[1] - 1,
                                                     +dateParts[0]
                                                 );
                                                 return dateObject <= new Date(Date.now());
@@ -156,7 +151,7 @@ export default function UserElement(props: userElementProps) {
                                                 const dateObject = new Date(
                                                     +dateParts[2],
                                                     // @ts-ignore
-                                                dateParts[1] - 1,
+                                                    dateParts[1] - 1,
                                                     +dateParts[0]
                                                 );
                                                 return dateObject > new Date(Date.now());
