@@ -1,5 +1,5 @@
 import {Avatar} from '@mui/material';
-import styles from './UserElement.module.css';
+import styles from './userElement.module.css';
 import {
     getLocationGroupDetail, getScheduleAssignmentsList,
     getScheduleDefinitionsList,
