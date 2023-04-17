@@ -15,7 +15,7 @@ const refreshAccessToken = async (refreshToken: string) => {
             accessToken: access,
             refreshToken: refreshToken,
             userid: decodedJwt['user_id'],
-            accessTokenExpires: parseInt(decodedJwt['exp']) * 1000,
+            accessTokenExpires: parseInt(decodedJwt['exp']),
         };
     } catch (error) {
         console.error(error);
@@ -30,7 +30,7 @@ const cookie = {
 };
 const session = {
     jwt: true,
-    maxAge: 30 * 24 * 60 * 60,
+    // maxAge: 30 * 24 * 60 * 60,
 };
 
 const providers = [
@@ -81,10 +81,10 @@ const callbacks = {
             token.accessToken = user['access'];
             token.refreshToken = user['refresh'];
             token.userid = decodedJwt['user_id'];
-            token.accessTokenExpires = parseInt(decodedJwt['exp']) * 100000;
+            token.accessTokenExpires = parseInt(decodedJwt['exp']);
         }
 
-        if (Date.now() < token.accessTokenExpires) {
+        if (Date.now() / 1000 < token.accessTokenExpires) {
             return Promise.resolve(token);
         }
 
@@ -100,6 +100,8 @@ const callbacks = {
         session.userid = token.userid;
         session.refreshToken = token.refreshToken;
         session.jwt = token.jwt;
+        // Length of token - 30s
+        session.maxAge = token.accessTokenExpires - Date.now() / 1000 - 30;
 
         return Promise.resolve(session);
     },
