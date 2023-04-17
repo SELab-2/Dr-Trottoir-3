@@ -114,9 +114,7 @@ sqlite_config = {
 }
 
 DATABASES = {
-    "default": (
-        postgres_config if os.environ.get("DATABASE") == "postgres" else sqlite_config
-    )
+    "default": (postgres_config if os.environ.get("DB_HOST") else sqlite_config)
 }
 
 
