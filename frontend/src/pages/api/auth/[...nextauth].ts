@@ -6,7 +6,9 @@ import {NextApiRequest, NextApiResponse} from 'next';
 const refreshAccessToken = async (refreshToken: string) => {
     try {
         // eslint-disable-next-line no-undef
-        const response = await axios.post(`${process.env.NEXT_INTERNAL_API_URL}auth/token/refresh/`, {refresh: refreshToken});
+        const response = await axios.post(
+            `${process.env.NEXT_INTERNAL_API_URL}auth/token/refresh/`, {refresh: refreshToken}
+        );
         const {access} = response.data;
         // eslint-disable-next-line no-undef
         const decodedJwt = JSON.parse(Buffer.from(access.split('.')[1], 'base64').toString());

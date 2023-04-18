@@ -1,14 +1,13 @@
 import React from 'react';
 import Router from 'next/router';
-import styles from './navbar.desktop.module.css';
+import styles from './navbar.mobile.module.css';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import Button from '@mui/material/Button';
 import {navbarProps, buttonProps} from './NavbarComponentInterface';
-import {signOut} from 'next-auth/react';
 
-export default function DesktopNavbar({loading, nextPath, setNextPath, router, children, topButtons}: navbarProps) {
+export default function MobileNavbar({loading, nextPath, setNextPath, router, children, topButtons}: navbarProps) {
     return (
         <div className={styles.full}>
             <div className={styles.row_flex_container}>
@@ -17,23 +16,25 @@ export default function DesktopNavbar({loading, nextPath, setNextPath, router, c
                     <div className={styles.scrollable}>
                         <div className={styles.side_bar_mid}>
                             { topButtons.map((term) =>
-                                <DesktopNavButton key={term.id} router={router} nextPath={nextPath}
+                                <MobileNavButton key={term.id} router={router} nextPath={nextPath}
                                     setNextPath={setNextPath} href={term.href} text={term.text}
                                     Icon={term.icon} />
                             )}
                         </div>
                         <div className={styles.side_bar_bot}>
-                            <DesktopNavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
+                            <MobileNavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
                                 href={'/users'}
                                 text={'Account'} Icon={PersonRoundedIcon}/>
-                            <DesktopNavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
+                            <MobileNavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
                                 href={'/settings'} text={'Instellingen'}
                                 Icon={TuneRoundedIcon}/>
-                            <DesktopLogoutButton/>
+                            <MobileNavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
+                                href={'/logout'} text={'Logout'}
+                                Icon={LogoutRoundedIcon}/>
                         </div>
                     </div>
                 </div>
-                <div className={styles.right_flex_container} style={{backgroundColor: 'red'}}>
+                <div className={styles.right_flex_container}>
                     <div className={styles.top_bar}></div>
                     <div className={styles.content_space}>
                         {loading ? children : <h1 style={{color: 'black'}}>LOADING</h1>}
@@ -45,7 +46,7 @@ export default function DesktopNavbar({loading, nextPath, setNextPath, router, c
 }
 
 
-const DesktopNavButton = ({href, text, router, Icon, nextPath, setNextPath, buttonAction}: buttonProps) => {
+const MobileNavButton = ({href, text, router, Icon, nextPath, setNextPath}: buttonProps) => {
     const isActive: boolean = router.asPath === href;
     const isLoading: boolean = href === nextPath;
 
@@ -61,21 +62,6 @@ const DesktopNavButton = ({href, text, router, Icon, nextPath, setNextPath, butt
             <>
                 <Icon className={styles.icon}/>
                 <p className={styles.text}>{text}</p>
-            </>
-        </Button>
-    );
-};
-
-
-const DesktopLogoutButton = () => {
-    return (
-        <Button id={styles.button}
-            onClick={() => signOut({callbackUrl: '/login'})}
-            className={styles.button_default}
-        >
-            <>
-                <LogoutRoundedIcon className={styles.icon}/>
-                <p className={styles.text}>Logout</p>
             </>
         </Button>
     );

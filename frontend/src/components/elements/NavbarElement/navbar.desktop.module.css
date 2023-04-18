@@ -30,7 +30,6 @@
     flex: 999;
 }
 
-
 .side_bar_mid {
     display: flex;
     flex-flow: column;
@@ -60,7 +59,7 @@
 
 
 
-@media screen and (min-width:950px) {
+@media screen and (min-width:1000px) {
 
     #button {
         font-size: 14px;
@@ -79,7 +78,7 @@
     }
 }
 
-@media screen and (max-width:950px) {
+@media screen and (max-width:1000px) {
 
     #button {
         /* Hide the text. */

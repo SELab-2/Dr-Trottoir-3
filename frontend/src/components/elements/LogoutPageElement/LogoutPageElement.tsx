@@ -1,5 +1,5 @@
 import Router from 'next/router';
-import styles from './LogoutPageElement.module.css';
+import styles from './logoutPageElement.module.css';
 import {Button} from '@mui/material';
 import React from 'react';
 import CheckIcon from '@mui/icons-material/Check';

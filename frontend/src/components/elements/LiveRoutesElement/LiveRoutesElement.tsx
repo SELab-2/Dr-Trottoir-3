@@ -1,4 +1,4 @@
-import styles from './LiveRoutesElement.module.css';
+import styles from './liveRoutesElement.module.css';
 import {
     ApiData,
     getBuildingsList,
@@ -27,10 +27,12 @@ const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
     },
 }));
 
-export default function LiveRoutesElement() {
-    const {data: session} = useSession();
+type liveRoutesElementProps = {
+    id: number
+}
 
-    const scheduleAssignmentId = 1;
+export default function LiveRoutesElement(props: liveRoutesElementProps) {
+    const {data: session} = useSession();
 
     // TODO - all frontend filtering should be replaced with filter queries
     const [scheduleDefinitionData, setScheduleDefinitionData] = useAuthenticatedApi<ScheduleDefinition>();
@@ -40,8 +42,8 @@ export default function LiveRoutesElement() {
     const [workEntriesData, setWorkEntriesData] = useAuthenticatedApi<Array<ScheduleWorkEntry>>();
 
     useEffect(() => {
-        getScheduleAssignmentDetail(session, setScheduleAssignmentData, scheduleAssignmentId);
-    }, []);
+        getScheduleAssignmentDetail(session, setScheduleAssignmentData, props.id);
+    }, [props.id]);
 
     useEffect(() => {
         if (scheduleAssignmentData) {
@@ -87,7 +89,7 @@ export default function LiveRoutesElement() {
                             status: response.status,
                             success: response.success,
                             data: response.data.filter(
-                                (item) => item.schedule_assignment == scheduleAssignmentId
+                                (item) => item.schedule_assignment == props.id
                             ),
                         }));
         }

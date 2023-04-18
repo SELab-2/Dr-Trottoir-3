@@ -1,4 +1,4 @@
-import styles from './buildingdetail.module.css';
+import styles from './buildingDetail.module.css';
 import {Box, Link, List, Modal, Typography} from '@mui/material';
 import {Building, GarbageCollectionSchedule, GarbageType, Issue, LocationGroup, User} from '@/api/models';
 import {PictureAsPdf} from '@mui/icons-material';
@@ -8,10 +8,10 @@ import {
 } from '@/api/api';
 import {defaultBuildingImage} from '@/constants/images';
 import {useSession} from 'next-auth/react';
-import ScheduleGarbageListItem from './scheduleGarbageListItem';
+import ScheduleGarbageListItem from './ScheduleGarbageListItem';
 import Button from '@mui/material/Button';
 import React, {useEffect, useState} from 'react';
-import BuildingIssueListItem from '@/components/elements/buildingdetailElement/buildingIssueListItem';
+import BuildingIssueListItem from '@/components/elements/BuildingDetailElement/BuildingIssueListItem';
 import ErrorPage from '@/containers/ErrorPage';
 
 interface IBuildingDetail {
@@ -45,7 +45,8 @@ function BuildingDetailManualLink(props:{path: string | null }):JSX.Element {
 }
 
 // eslint-disable-next-line require-jsdoc
-export default function BuildingDetail(props: { id: number }): JSX.Element {
+
+export default function BuildingDetail(props: { id: number|null }): JSX.Element {
     const {id} = props;
 
     const [buildingDetail, setBuildingDetail] =
@@ -66,7 +67,9 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
 
     // Get building data
     useEffect(()=>{
-        getBuildingDetail(session, setBuilding, id);
+        if (id != null) {
+            getBuildingDetail(session, setBuilding, id);
+        }
     }, [id, session]);
 
     // Get location group
@@ -78,7 +81,9 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
 
     // Get schedules
     useEffect(() => {
-        getBuildingDetailGarbageCollectionSchedules(session, setSchedules, id);
+        if (id != null) {
+            getBuildingDetailGarbageCollectionSchedules(session, setSchedules, id);
+        }
     }, [id, session]);
 
     // Get garbage types
@@ -88,7 +93,9 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
 
     // Get issues
     useEffect(()=> {
-        getBuildingDetailIssues(session, setIssues, id);
+        if (id != null) {
+            getBuildingDetailIssues(session, setIssues, id);
+        }
     }, [id, session]);
 
     useEffect(()=> {
@@ -121,7 +128,7 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
                     (syndicus) => `${syndicus.last_name} ${syndicus.first_name}`).
                     sort().join(', ');
                 const detail: IBuildingDetail = {
-                    id: id,
+                    id: id ? id : 1,
                     location_group: location.data.name,
                     name: building.data.name ? building.data.name : building.data.address,
                     address: building.data.address,
@@ -141,6 +148,10 @@ export default function BuildingDetail(props: { id: number }): JSX.Element {
 
     if (sessionError !== 0) {
         return <ErrorPage status={sessionError}/>;
+    }
+
+    if (id == null) {
+        return <p>None selected</p>;
     }
 
     if (!buildingDetail) {

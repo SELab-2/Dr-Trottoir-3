@@ -1,0 +1,12 @@
+#scroll_style::-webkit-scrollbar
+{
+    width: 8px;
+    background-color: white;
+}
+
+#scroll_style::-webkit-scrollbar-thumb
+{
+    background-clip: padding-box;
+    border-radius: 8px;
+    background-color: #E6E600;
+}
