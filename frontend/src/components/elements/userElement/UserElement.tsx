@@ -111,7 +111,7 @@ export default function UserElement() {
                                                 const dateObject = new Date(
                                                     +dateParts[2],
                                                     // @ts-ignore
-                                                dateParts[1] - 1,
+                                                    dateParts[1] - 1,
                                                     +dateParts[0]
                                                 );
                                                 return dateObject <= new Date(Date.now());
@@ -147,7 +147,7 @@ export default function UserElement() {
                                                 const dateObject = new Date(
                                                     +dateParts[2],
                                                     // @ts-ignore
-                                                dateParts[1] - 1,
+                                                    dateParts[1] - 1,
                                                     +dateParts[0]
                                                 );
                                                 return dateObject > new Date(Date.now());
