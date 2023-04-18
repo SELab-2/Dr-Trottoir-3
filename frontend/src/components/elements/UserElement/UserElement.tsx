@@ -1,5 +1,5 @@
 import {Avatar} from '@mui/material';
-import styles from './UserElement.module.css';
+import styles from './userElement.module.css';
 import {
     getLocationGroupDetail, getScheduleAssignmentsList,
     getScheduleDefinitionsList,
@@ -11,7 +11,11 @@ import React, {useEffect} from 'react';
 import {LocationGroup, ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
 
 
-export default function UserElement() {
+type userElementProps = {
+    id: number,
+}
+
+export default function UserElement(props: userElementProps) {
     const {data: session} = useSession();
 
     const userId = 2;

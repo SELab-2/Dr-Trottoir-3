@@ -7,8 +7,7 @@ const refreshAccessToken = async (refreshToken: string) => {
     try {
         // eslint-disable-next-line no-undef
         const response = await axios.post(
-            `${process.env.NEXT_INTERNAL_API_URL}auth/token/refresh/`,
-            {refresh: refreshToken}
+            `${process.env.NEXT_INTERNAL_API_URL}auth/token/refresh/`, {refresh: refreshToken}
         );
         const {access} = response.data;
         // eslint-disable-next-line no-undef
