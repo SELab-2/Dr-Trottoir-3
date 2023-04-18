@@ -39,7 +39,6 @@ export default function BuildingsPage() {
         setSearchEntry={setSearchEntry}
     />;
 
-    console.log(current);
 
     return (
         <>
