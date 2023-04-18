@@ -9,6 +9,7 @@ services:
     volumes:
       - ./:/frontend
       - /frontend/node_modules
+      - /dev/null:/frontend/.env
     environment:
       - NEXT_API_URL=$NEXT_API_URL
       - NEXT_INTERNAL_API_URL=$NEXT_INTERNAL_API_URL

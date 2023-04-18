@@ -6,7 +6,9 @@ import {NextApiRequest, NextApiResponse} from 'next';
 const refreshAccessToken = async (refreshToken: string) => {
     try {
         // eslint-disable-next-line no-undef
-        const response = await axios.post(`${process.env.NEXT_API_URL}auth/token/refresh/`, {refresh: refreshToken});
+        const response = await axios.post(
+            `${process.env.NEXT_INTERNAL_API_URL}auth/token/refresh/`, {refresh: refreshToken}
+        );
         const {access} = response.data;
         // eslint-disable-next-line no-undef
         const decodedJwt = JSON.parse(Buffer.from(access.split('.')[1], 'base64').toString());
@@ -15,7 +17,7 @@ const refreshAccessToken = async (refreshToken: string) => {
             accessToken: access,
             refreshToken: refreshToken,
             userid: decodedJwt['user_id'],
-            accessTokenExpires: parseInt(decodedJwt['exp']) * 1000,
+            accessTokenExpires: parseInt(decodedJwt['exp']),
         };
     } catch (error) {
         console.error(error);
@@ -30,7 +32,7 @@ const cookie = {
 };
 const session = {
     jwt: true,
-    maxAge: 30 * 24 * 60 * 60,
+    // maxAge: 30 * 24 * 60 * 60,
 };
 
 const providers = [
@@ -46,7 +48,7 @@ const providers = [
                 if (credentials) {
                     const user = await axios.post(
                         // eslint-disable-next-line no-undef
-                        `${process.env.NEXT_API_URL}auth/token/`,
+                        `${process.env.NEXT_INTERNAL_API_URL}auth/token/`,
                         {
                             username: credentials.username,
                             password: credentials.password,
@@ -81,10 +83,10 @@ const callbacks = {
             token.accessToken = user['access'];
             token.refreshToken = user['refresh'];
             token.userid = decodedJwt['user_id'];
-            token.accessTokenExpires = parseInt(decodedJwt['exp']) * 100000;
+            token.accessTokenExpires = parseInt(decodedJwt['exp']);
         }
 
-        if (Date.now() < token.accessTokenExpires) {
+        if (Date.now() / 1000 < token.accessTokenExpires) {
             return Promise.resolve(token);
         }
 
@@ -100,6 +102,8 @@ const callbacks = {
         session.userid = token.userid;
         session.refreshToken = token.refreshToken;
         session.jwt = token.jwt;
+        // Length of token - 30s
+        session.maxAge = token.accessTokenExpires - Date.now() / 1000 - 30;
 
         return Promise.resolve(session);
     },
