@@ -1,0 +1,10 @@
+.full {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--primary-dark);
+    color: var(--primary-light);
+    margin: 5px;
+    padding: 5px;
+    border-radius: var(--small_corner);
+}
