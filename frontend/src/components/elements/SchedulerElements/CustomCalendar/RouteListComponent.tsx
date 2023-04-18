@@ -1,8 +1,8 @@
 import styles from './RouteListComponent.module.css';
 import {Droppable} from 'react-beautiful-dnd';
-import CalendarEntry from '@/components/elements/schedulerElements/CustomCalendar/entries/CalendarEntry';
+import CalendarEntry from '@/components/elements/SchedulerElements/CustomCalendar/entries/CalendarEntry';
 import React, {memo} from 'react';
-import EmptyEntry from '@/components/elements/schedulerElements/CustomCalendar/entries/EmptyEntry';
+import EmptyEntry from '@/components/elements/SchedulerElements/CustomCalendar/entries/EmptyEntry';
 import {Building, ScheduleAssignment, ScheduleDefinition} from '@/api/models';
 import {
     ApiData,

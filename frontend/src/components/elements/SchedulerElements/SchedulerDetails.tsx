@@ -1,4 +1,4 @@
-import WeekComponent from '@/components/elements/schedulerElements/CustomCalendar/WeekComponent';
+import WeekComponent from '@/components/elements/SchedulerElements/CustomCalendar/WeekComponent';
 
 import styles from './SchedulerDetails.module.css';
 import React, {useEffect, useState} from 'react';

@@ -1,6 +1,6 @@
-import SchedulerSelect from '../components/elements/schedulerElements/SchedulerSelect';
-import SchedulerDetails from '../components/elements/schedulerElements/SchedulerDetails';
-import styles from './SchedulerPage.module.css';
+import SchedulerSelect from '../components/elements/SchedulerElements/SchedulerSelect';
+import SchedulerDetails from '../components/elements/SchedulerElements/SchedulerDetails';
+import styles from './schedulerPage.module.css';
 import React, {useEffect, useState} from 'react';
 import {useSession} from 'next-auth/react';
 import {
