@@ -1,6 +1,6 @@
 import {MapContainer, Marker, TileLayer, Tooltip} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import {latLngBounds} from 'leaflet';
+import {latLng, latLngBounds, LatLngTuple} from 'leaflet';
 import {useRouter} from 'next/router';
 import {Building} from '@/api/models';
 
@@ -17,11 +17,11 @@ function RouteMap({buildings, onHovering, hovering}: Props) {
         if (latitude != null && longitude != null) {
             return (
                 <Marker key={index} position={[latitude, longitude]}
-                    eventHandlers={{
-                        mouseover: () => onHovering(index),
-                        mouseout: () => onHovering(-1),
-                        click: () => router.push(`/buildings/${id}`),
-                    }}>
+                        eventHandlers={{
+                            mouseover: () => onHovering(index),
+                            mouseout: () => onHovering(-1),
+                            click: () => router.push(`/buildings/${id}`),
+                        }}>
                     {hovering == index && <Tooltip direction={'right'} permanent={true}>{name}</Tooltip>}
                 </Marker>
             );
@@ -30,19 +30,13 @@ function RouteMap({buildings, onHovering, hovering}: Props) {
         }
     });
 
-    const bounds = latLngBounds(buildings
+    const coords: LatLngTuple[] = buildings
         .filter(({latitude, longitude}) => latitude != null && longitude != null)
-        .map(({latitude, longitude}) => {
-            if (latitude != null && longitude != null) {
-                return [latitude, longitude];
-            } else {
-            // will never be reached
-                return [1, 1];
-            }
-        }));
-
-
-    console.log(bounds);
+        .map(({latitude, longitude}) => [latitude || 0, longitude || 0]);
+    if (coords.length === 0) {
+        coords.push([50.833341, 3.142672], [51.482056, 5.018877]);
+    }
+    const bounds = latLngBounds(coords);
 
     return (
         <MapContainer style={{width: '100%', height: '100%'}} bounds={bounds}>

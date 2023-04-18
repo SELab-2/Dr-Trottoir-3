@@ -2,42 +2,41 @@ import {Box, Typography} from '@mui/material';
 import BuildingList from '@/components/modules/routeDetail/BuildingList';
 import {useEffect, useState} from 'react';
 import RouteMap from '@/components/modules/routeDetail/RouteMap';
-import {deleteBuilding, getBuildingsList, postBuilding, useAuthenticatedApi} from '@/api/api';
+import {
+    deleteBuilding,
+    getBuildingsList, getScheduleDefinitionDetail,
+    getScheduleDefinitionDetailBuildings,
+    postBuilding,
+    useAuthenticatedApi
+} from '@/api/api';
 import {useSession} from 'next-auth/react';
-import {Building} from '@/api/models';
+import {Building, ScheduleDefinition} from '@/api/models';
 
 type routeDetailProps = {
-    routeId: number | null,
+    schedule_definition_id: number | null,
 }
 
-function RouteDetail(props: routeDetailProps) {
+function RouteDetail({schedule_definition_id}: routeDetailProps) {
     const {data: session} = useSession();
 
-    const [counter, setCounter] = useState(0);
     const [hovering, setHovering] = useState(-1);
+    const [scheduleDefinition, setScheduleDefinition] = useAuthenticatedApi<ScheduleDefinition>();
     const [list, setList] = useAuthenticatedApi<Building[]>();
 
     useEffect(() => {
-        getBuildingsList(session, setList);
+        if (schedule_definition_id !== null) {
+            getScheduleDefinitionDetail(session, setScheduleDefinition, schedule_definition_id);
+            getScheduleDefinitionDetailBuildings(session, setList, schedule_definition_id);
+        }
     }, [session]);
 
 
     function onAdd() {
-        postBuilding(session,
-            {
-                id: counter.toString(),
-                name: `Building ${counter}`,
-                latitude: 51.025819,
-                longitude: 3.713635,
-            }
-        );
-        getBuildingsList(session, setList);
-        setCounter(counter + 1);
+        console.error("Not implemented");
     }
 
     function onRemove(id: number) {
-        deleteBuilding(session, id);
-        getBuildingsList(session, setList);
+        console.error("Not implemented")
     }
 
     return (
