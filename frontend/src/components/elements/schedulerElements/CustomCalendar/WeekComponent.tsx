@@ -34,6 +34,7 @@ export default function WeekComponent(props: schedulerProps) {
 
     const firstDay = new Date();
     firstDay.setDate(props.start);
+    firstDay.setHours(firstDay.getHours() + 2);
 
 
     const updateTaskLists = (scheduleAssignments: ApiData<ScheduleAssignment[]>) => {
@@ -103,6 +104,7 @@ export default function WeekComponent(props: schedulerProps) {
                 if (typeof scheduleAssignmentIndex == 'number') {
                     const date = new Date();
                     date.setDate(props.start + scheduleAssignmentIndex);
+                    date.setHours(date.getHours() + 2);
                     newTask = {
                         id: -1, // will be ignored by django, but required to fit type
                         user: userId,
@@ -165,6 +167,7 @@ export default function WeekComponent(props: schedulerProps) {
                         if (source.index < index) {
                             if (destination.index >= index) {
                                 newDate.setDate(props.start + index-1);
+                                newDate.setHours(newDate.getHours() + 2);
                                 e.assigned_date = newDate.toISOString().split('T')[0];
                                 patchScheduleAssignmentDetail(
                                     session,
@@ -178,6 +181,7 @@ export default function WeekComponent(props: schedulerProps) {
                                     deleteScheduleAssignment(session, e.id, setRequestChecker);
                                 } else {
                                     newDate.setDate(props.start + index + 1);
+                                    newDate.setHours(newDate.getHours() + 2);
                                     e.assigned_date = newDate.toISOString().split('T')[0];
                                     patchScheduleAssignmentDetail(
                                         session,
@@ -191,6 +195,7 @@ export default function WeekComponent(props: schedulerProps) {
                         if (e.schedule_definition == Number(source.droppableId)) {
                             if (source.index < index) {
                                 newDate.setDate(props.start + index - 1);
+                                newDate.setHours(newDate.getHours() + 2);
                                 e.assigned_date = newDate.toISOString().split('T')[0];
                                 patchScheduleAssignmentDetail(
                                     session,
@@ -204,6 +209,7 @@ export default function WeekComponent(props: schedulerProps) {
                                     deleteScheduleAssignment(session, e.id, setRequestChecker);
                                 } else {
                                     newDate.setDate(props.start + index + 1);
+                                    newDate.setHours(newDate.getHours() + 2);
                                     e.assigned_date = newDate.toISOString().split('T')[0];
                                     patchScheduleAssignmentDetail(
                                         session,
@@ -218,6 +224,7 @@ export default function WeekComponent(props: schedulerProps) {
                     if (e.schedule_definition == Number(source.droppableId) && index == source.index) {
                         // primary move object
                         newDate.setDate(props.start + destination.index);
+                        newDate.setHours(newDate.getHours() + 2);
                         patchScheduleAssignmentDetail(
                             session,
                             e.id,
@@ -263,7 +270,9 @@ export default function WeekComponent(props: schedulerProps) {
                 </div>
                 <div className={styles.calendar_header_days}>
                     {Array.from(Array(props.interval).keys()).map((dayId) => {
-                        const date = new Date(new Date().setDate(props.start + dayId)).toISOString().split('T')[0];
+                        const day = new Date(new Date().setDate(props.start + dayId));
+                        day.setHours(day.getHours() + 2);
+                        const date = day.toISOString().split('T')[0];
                         return (
                             <DayHeader
                                 key={date}

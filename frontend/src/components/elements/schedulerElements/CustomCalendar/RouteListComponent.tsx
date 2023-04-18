@@ -7,7 +7,7 @@ import {Building, ScheduleAssignment, ScheduleDefinition} from '@/api/models';
 import {
     ApiData,
 } from '@/api/api';
-import {Tooltip} from "@mui/material";
+import {Tooltip} from '@mui/material';
 
 type routeListComponentProps = {
     index: number,

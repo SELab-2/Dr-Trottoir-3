@@ -39,6 +39,7 @@ export default function CreateAssignmentForm(props: createAssignmentFormProps) {
 
             const day = new Date();
             day.setDate(props.initialInfo.schedulerAssignmentIndex + props.start);
+            day.setHours(day.getHours() + 2);
             setFormDate(
                 day.toISOString().split('T')[0]
             );
@@ -52,9 +53,10 @@ export default function CreateAssignmentForm(props: createAssignmentFormProps) {
     const handleSubmitForm = () =>{
         const scheduleDefinition = props.allRoutes.data.filter((e) => e.name == formScheduleDefinition);
         const user = props.allUsers.data.filter((e) => e.first_name + ' ' + e.last_name == formUser);
+        const day = new Date(formDate);
 
         if (user.length > 0 && scheduleDefinition.length > 0) {
-            props.onCreateClick(scheduleDefinition[0].id, formDate, user[0].id);
+            props.onCreateClick(scheduleDefinition[0].id, day.toISOString().split('T')[0], user[0].id);
             handleClose();
         }
     };

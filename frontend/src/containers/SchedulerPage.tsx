@@ -57,6 +57,8 @@ export default function SchedulerPage() {
         setFirst(first - interval);
     };
 
+    console.log(first);
+
     return (
         <div className={styles.full_calendar_flex_container}>
             <SchedulerSelect nextWeek={nextWeek} prevWeek={prevWeek}/>

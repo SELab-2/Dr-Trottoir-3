@@ -21,7 +21,6 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
     const [triggerReload, setTriggerReload] = useState<boolean>(false);
 
     const loadAssignments = () => {
-        console.log(props.scheduleDefinitions);
         if (props.scheduleDefinitions?.data) {
             const allScheduleDefinitionIds = props.scheduleDefinitions.data.map((scheduleDefinition) => {
                 return scheduleDefinition.id;
@@ -30,7 +29,9 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
             const firstDay = new Date();
             const lastDay = new Date();
             firstDay.setDate(props.start - 1);
+            firstDay.setHours(firstDay.getHours() + 2);
             lastDay.setDate(props.start + 8);
+            lastDay.setHours(lastDay.getHours() + 2);
 
             getScheduleAssignmentsList(
                 session,
@@ -53,7 +54,6 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
     // repeat every second
     useEffect(() => {
         const intervalId = setInterval(() => {
-            console.log('here');
             loadAssignments();
         }, 1000);
         return () => clearInterval(intervalId);
