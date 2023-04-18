@@ -9,7 +9,6 @@ const DynamicBuildingsComponent = dynamic(() =>
 export default function BuildingsPage() {
     const {data: session} = useSession();
 
-    // To add the building, add a <BuildingDetail id={...}/> component where id is the id of the building
     if (session) {
         return (
             <DynamicBuildingsComponent/>

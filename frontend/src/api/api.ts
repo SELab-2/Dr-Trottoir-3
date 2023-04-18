@@ -76,6 +76,7 @@ type PaginatedResponse<T> = {
 
 /**
  * @deprecated The method should not be used
+ * @deprecated The method should not be used
  * @param {Array<string>} args
  * @return {Promise<T>}
  * **/
@@ -247,7 +248,7 @@ const getScheduleAssignmentsList = (session: Session | null, setter: ((e:any) =>
         .then((e) => {
             setter({success: true, status: e.status, data: e.data});
         })
-        .catch((e) => {
+        .catch( (e) => {
             setter({success: false, status: e.status, data: []});
         });
 };
