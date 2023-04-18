@@ -1,9 +1,24 @@
 /** @type {import('next').NextConfig} */
 
+const path = require('path');
+const CopyPlugin = require('copy-webpack-plugin');
 require('dotenv').config();
 
 const nextConfig = {
     reactStrictMode: false,
+    webpack: (config) => {
+    config.plugins.push(
+        new CopyPlugin({
+          patterns: [
+            {
+              from: 'node_modules/leaflet/dist/images',
+              to: path.resolve(__dirname, 'public', 'leaflet', 'images')
+            },
+          ],
+        }),
+    )
+    return config
+    },
     env: {
         NEXT_API_URL: process.env.NEXT_API_URL,
         NEXT_INTERNAL_API_URL: process.env.NEXT_INTERNAL_API_URL,
