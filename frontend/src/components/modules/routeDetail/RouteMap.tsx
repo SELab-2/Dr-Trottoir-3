@@ -1,13 +1,13 @@
 import {MapContainer, Marker, TileLayer, Tooltip} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import {latLng, latLngBounds, LatLngTuple} from 'leaflet';
+import {latLngBounds, LatLngTuple} from 'leaflet';
 import {useRouter} from 'next/router';
 import {Building} from '@/api/models';
 
 interface Props {
     buildings: Building[];
-    onHovering: (hovering: number) => void;
-    hovering: number;
+    onHovering: (hovering: Building['id'] | null) => void;
+    hovering: Building['id'] | null;
 }
 
 function RouteMap({buildings, onHovering, hovering}: Props) {
@@ -18,17 +18,15 @@ function RouteMap({buildings, onHovering, hovering}: Props) {
             return (
                 <Marker key={index} position={[latitude, longitude]}
                         eventHandlers={{
-                            mouseover: () => onHovering(index),
-                            mouseout: () => onHovering(-1),
+                            mouseover: () => onHovering(id),
+                            mouseout: () => onHovering(null),
                             click: () => router.push(`/buildings/${id}`),
                         }}>
-                    {hovering == index && <Tooltip direction={'right'} permanent={true}>{name}</Tooltip>}
+                    {hovering === id && <Tooltip direction={'right'} permanent={true}>{name}</Tooltip>}
                 </Marker>
             );
-        } else {
-            return (<></>);
         }
-    });
+    }).filter((item) => item !== undefined);
 
     const coords: LatLngTuple[] = buildings
         .filter(({latitude, longitude}) => latitude != null && longitude != null)

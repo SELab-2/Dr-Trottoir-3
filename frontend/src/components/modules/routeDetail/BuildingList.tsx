@@ -6,11 +6,11 @@ import {Building} from '@/api/models';
 
 interface Props {
     list: Building[];
-    onReorder: (e: any) => void;
-    onRemove: (id: number) => void;
+    onReorder: (newList: Building['id'][]) => void;
+    onRemove: (buildingId: Building['id']) => void;
     onAdd: () => void;
-    onHovering: (hovering: number) => void;
-    hovering: number;
+    onHovering: (hovering: Building['id'] | null) => void;
+    hovering: Building['id'] | null;
 }
 
 function BuildingList({list, onReorder, onRemove, onAdd, onHovering, hovering}: Props) {
@@ -29,10 +29,10 @@ function BuildingList({list, onReorder, onRemove, onAdd, onHovering, hovering}: 
         const templist = Array.from(list);
         const [building] = templist.splice(source.index, 1);
         templist.splice(destination.index, 0, building);
-        onReorder(templist);
+        onReorder(templist.map(({id}) => id));
     };
 
-
+    // TODO support duplicate id's
     return (
         <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId={'BuildingList'}>
@@ -40,27 +40,27 @@ function BuildingList({list, onReorder, onRemove, onAdd, onHovering, hovering}: 
                     <Box {...provided.droppableProps} ref={provided.innerRef}>
                         {list.map(({id, name}, index) =>
                             // @ts-ignore
-                            <Draggable key={id} draggableId={id} index={index}>
+                            <Draggable key={id.toString()} draggableId={id.toString()} index={index}>
                                 {((draggableProvided) => (
                                     <Box paddingBottom={1} {...draggableProvided.draggableProps}
-                                        ref={draggableProvided.innerRef}>
+                                         ref={draggableProvided.innerRef}>
                                         <Box
-                                            bgcolor={hovering == index ?
+                                            bgcolor={hovering == id ?
                                                 'var(--primary-yellow)' :
                                                 'var(--secondary-light)'}
                                             borderRadius={'var(--small_corner)'}
                                             paddingY={0.2} paddingX={'3%'} alignItems={'center'} display={'flex'}
-                                            onMouseEnter={() => onHovering(index)}
-                                            onMouseLeave={() => onHovering(-1)}
+                                            onMouseEnter={() => onHovering(id)}
+                                            onMouseLeave={() => onHovering(null)}
                                         >
                                             <Box marginRight={'3%'} textAlign={'center'} color={'grey'}>
                                                 {index + 1}
                                             </Box>
                                             <Link flexGrow={5} noWrap href={`/building/${id}`} color={'inherit'}
-                                                underline={'none'}>{name}</Link>
+                                                  underline={'none'}>{name}</Link>
                                             <IconButton onClick={() => {
-                                                onHovering(-1);
-                                                onRemove(index);
+                                                onHovering(null);
+                                                onRemove(id);
                                             }} size={'small'}>
                                                 <Clear style={{flexGrow: 1}}/>
                                             </IconButton>
@@ -75,7 +75,7 @@ function BuildingList({list, onReorder, onRemove, onAdd, onHovering, hovering}: 
                         {provided.placeholder}
                         <Box paddingBottom={1}>
                             <Box bgcolor={'var(--secondary-light)'} borderRadius={'var(--small_corner)'}
-                                paddingY={0.2} paddingX={'3%'} display={'flex'} alignItems={'center'}>
+                                 paddingY={0.2} paddingX={'3%'} display={'flex'} alignItems={'center'}>
                                 <Box flexGrow={1}/>
                                 <IconButton onClick={onAdd} size={'small'}>
                                     <Add/>

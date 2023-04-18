@@ -36,10 +36,12 @@ export default function RoutesPage() {
     useEffect(() => {
         let regionsFilter = '';
         selectedRegions.map((r) => {
-            regionsFilter+=r.id + ',';
+            regionsFilter += r.id + ',';
         });
-        getScheduleDefinitionsList(session, setRoutes, {search: searchEntry, ordering: sorttype,
-            location_group__in: regionsFilter, is_active: selectedActive});
+        getScheduleDefinitionsList(session, setRoutes, {
+            search: searchEntry, ordering: sorttype,
+            location_group__in: regionsFilter, is_active: selectedActive,
+        });
     }, [session, searchEntry, selectedRegions, sorttype, selectedActive]);
 
 
@@ -72,7 +74,7 @@ export default function RoutesPage() {
                 title={'Routes'}
                 Icon={RouteIcon}
             >
-                <RouteDetail schedule_definition_id={1}/>
+                <RouteDetail scheduleDefinitionId={current}/>
             </ListViewComponent>
         </>
     );
