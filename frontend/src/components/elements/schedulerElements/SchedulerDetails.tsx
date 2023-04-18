@@ -2,9 +2,9 @@ import WeekComponent from '@/components/elements/schedulerElements/CustomCalenda
 
 import styles from './SchedulerDetails.module.css';
 import React, {useEffect, useState} from 'react';
-import {ApiData, getScheduleAssignmentsList, useAuthenticatedApi} from '@/api/api';
+import {ApiData, getScheduleAssignmentsList, getScheduleWorkEntriesList, useAuthenticatedApi} from '@/api/api';
 import {useSession} from 'next-auth/react';
-import {Building, ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
+import {Building, ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry, User} from '@/api/models';
 
 
 type schedulerDetailsProps = {
@@ -18,6 +18,8 @@ type schedulerDetailsProps = {
 export default function SchedulerDetails(props: schedulerDetailsProps) {
     const {data: session} = useSession();
     const [scheduleAssignments, setScheduleAssignments] = useAuthenticatedApi<ScheduleAssignment[]>();
+    const [workEntries, setWorkEntries] = useAuthenticatedApi<ScheduleWorkEntry[]>();
+
     const [triggerReload, setTriggerReload] = useState<boolean>(false);
 
     const loadAssignments = () => {
@@ -58,6 +60,14 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
         }, 1000);
         return () => clearInterval(intervalId);
     }, []);
+
+    useEffect(() => {
+        getScheduleWorkEntriesList(
+            session,
+            setWorkEntries,
+            {}
+        );
+    })
 
 
     if (props.users?.data && props.scheduleDefinitions?.data && props.buildings?.data) {

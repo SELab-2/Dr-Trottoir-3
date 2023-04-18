@@ -196,93 +196,93 @@ class Command(BaseCommand):
 
             work_entries = []
 
-            # for index in range(len(buildings_in_schedule_definition_of_0) - 2):
-            #     building = buildings_in_schedule_definition_of_0[index]
-            #     work_entries.append(
-            #         ScheduleWorkEntry(
-            #             creation_timestamp=f"{date} 12:{index}0:00",
-            #             image="/some/path",
-            #             creator=schedule_assignment.user,
-            #             building=building,
-            #             schedule_assignment=schedule_assignment,
-            #             entry_type="AR",
-            #         )
-            #     )
-            #     work_entries.append(
-            #         ScheduleWorkEntry(
-            #             creation_timestamp=f"{date} 12:{index}1:00",
-            #             image="/some/path",
-            #             creator=schedule_assignment.user,
-            #             building=building,
-            #             schedule_assignment=schedule_assignment,
-            #             entry_type="AR",
-            #         )
-            #     )
-            #     work_entries.append(
-            #         ScheduleWorkEntry(
-            #             creation_timestamp=f"{date} 12:{index}2:00",
-            #             image="/some/path",
-            #             creator=schedule_assignment.user,
-            #             building=building,
-            #             schedule_assignment=schedule_assignment,
-            #             entry_type="WO",
-            #         )
-            #     )
-            #     work_entries.append(
-            #         ScheduleWorkEntry(
-            #             creation_timestamp=f"{date} 12:{index}3:00",
-            #             image="/some/path",
-            #             creator=schedule_assignment.user,
-            #             building=building,
-            #             schedule_assignment=schedule_assignment,
-            #             entry_type="WO",
-            #         )
-            #     )
-            #     work_entries.append(
-            #         ScheduleWorkEntry(
-            #             creation_timestamp=f"{date} 12:{index}4:00",
-            #             image="/some/path",
-            #             creator=schedule_assignment.user,
-            #             building=building,
-            #             schedule_assignment=schedule_assignment,
-            #             entry_type="WO",
-            #         )
-            #     )
-            #     work_entries.append(
-            #         ScheduleWorkEntry(
-            #             creation_timestamp=f"{date} 12:{index}5:00",
-            #             image="/some/path",
-            #             creator=schedule_assignment.user,
-            #             building=building,
-            #             schedule_assignment=schedule_assignment,
-            #             entry_type="DE",
-            #         )
-            #     )
-            #
-            # work_entries.append(
-            #     ScheduleWorkEntry(
-            #         creation_timestamp=f"{date} 13:00:00",
-            #         image="/some/path",
-            #         creator=schedule_assignment.user,
-            #         building=buildings_in_schedule_definition_of_0[
-            #             len(buildings_in_schedule_definition_of_0) - 2
-            #         ],
-            #         schedule_assignment=schedule_assignment,
-            #         entry_type="AR",
-            #     )
-            # )
-            # work_entries.append(
-            #     ScheduleWorkEntry(
-            #         creation_timestamp=f"{date} 13:07:00",
-            #         image="/some/path",
-            #         creator=schedule_assignment.user,
-            #         building=buildings_in_schedule_definition_of_0[
-            #             len(buildings_in_schedule_definition_of_0) - 2
-            #         ],
-            #         schedule_assignment=schedule_assignment,
-            #         entry_type="WO",
-            #     )
-            # )
+            for index in range(len(buildings_in_schedule_definition_of_0) - 2):
+                building = buildings_in_schedule_definition_of_0[index]
+                work_entries.append(
+                    ScheduleWorkEntry(
+                        creation_timestamp=f"{date} 12:{index}0:00",
+                        image="/some/path",
+                        creator=schedule_assignment.user,
+                        building=building,
+                        schedule_assignment=schedule_assignment,
+                        entry_type="AR",
+                    )
+                )
+                work_entries.append(
+                    ScheduleWorkEntry(
+                        creation_timestamp=f"{date} 12:{index}1:00",
+                        image="/some/path",
+                        creator=schedule_assignment.user,
+                        building=building,
+                        schedule_assignment=schedule_assignment,
+                        entry_type="AR",
+                    )
+                )
+                work_entries.append(
+                    ScheduleWorkEntry(
+                        creation_timestamp=f"{date} 12:{index}2:00",
+                        image="/some/path",
+                        creator=schedule_assignment.user,
+                        building=building,
+                        schedule_assignment=schedule_assignment,
+                        entry_type="WO",
+                    )
+                )
+                work_entries.append(
+                    ScheduleWorkEntry(
+                        creation_timestamp=f"{date} 12:{index}3:00",
+                        image="/some/path",
+                        creator=schedule_assignment.user,
+                        building=building,
+                        schedule_assignment=schedule_assignment,
+                        entry_type="WO",
+                    )
+                )
+                work_entries.append(
+                    ScheduleWorkEntry(
+                        creation_timestamp=f"{date} 12:{index}4:00",
+                        image="/some/path",
+                        creator=schedule_assignment.user,
+                        building=building,
+                        schedule_assignment=schedule_assignment,
+                        entry_type="WO",
+                    )
+                )
+                work_entries.append(
+                    ScheduleWorkEntry(
+                        creation_timestamp=f"{date} 12:{index}5:00",
+                        image="/some/path",
+                        creator=schedule_assignment.user,
+                        building=building,
+                        schedule_assignment=schedule_assignment,
+                        entry_type="DE",
+                    )
+                )
+
+            work_entries.append(
+                ScheduleWorkEntry(
+                    creation_timestamp=f"{date} 13:00:00",
+                    image="/some/path",
+                    creator=schedule_assignment.user,
+                    building=buildings_in_schedule_definition_of_0[
+                        len(buildings_in_schedule_definition_of_0) - 2
+                    ],
+                    schedule_assignment=schedule_assignment,
+                    entry_type="AR",
+                )
+            )
+            work_entries.append(
+                ScheduleWorkEntry(
+                    creation_timestamp=f"{date} 13:07:00",
+                    image="/some/path",
+                    creator=schedule_assignment.user,
+                    building=buildings_in_schedule_definition_of_0[
+                        len(buildings_in_schedule_definition_of_0) - 2
+                    ],
+                    schedule_assignment=schedule_assignment,
+                    entry_type="WO",
+                )
+            )
 
             for x in work_entries:
                 x.save()
