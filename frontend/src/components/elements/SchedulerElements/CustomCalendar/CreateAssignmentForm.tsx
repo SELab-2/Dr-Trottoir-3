@@ -1,5 +1,5 @@
 import React, {SyntheticEvent, useEffect, useState} from 'react';
-import styles from '@/styles/ListView.module.css';
+import styles from '@/styles/listView.module.css';
 import {
     Autocomplete,
     Button,
