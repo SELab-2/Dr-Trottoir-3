@@ -1,0 +1,14 @@
+.test {
+    display: flex;
+    width: 14.28%;
+    height: 50px;
+    padding: 0 2px;
+}
+
+.inner {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: var(--primary-light);
+    border-radius: var(--small_corner);
+}
