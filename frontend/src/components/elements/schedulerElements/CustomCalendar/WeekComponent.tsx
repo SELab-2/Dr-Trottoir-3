@@ -155,12 +155,16 @@ export default function WeekComponent(props: schedulerProps) {
 
             const newDate = new Date();
 
+            console.log(source, destination);
+
             // patch moved
             const newScheduleAssignments = {
                 status: props.scheduleAssignments.status,
                 success: props.scheduleAssignments.success,
                 data: props.scheduleAssignments.data.map((e) => {
-                    const index: number = new Date(e.assigned_date).getDate() - props.start;
+                    console.log(e);
+                    const index: number = new Date(e.assigned_date).getDay();
+                    console.log(index);
                     if (Number(destination.droppableId) == Number(source.droppableId) &&
                         Number(destination.droppableId) == e.schedule_definition) {
                         // object moved on this row
