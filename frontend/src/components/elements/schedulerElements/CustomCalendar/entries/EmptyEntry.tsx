@@ -1,6 +1,7 @@
 import styles from './EmptyEntry.module.css';
 import {Draggable} from 'react-beautiful-dnd';
 import Button from '@mui/material/Button';
+import {memo} from 'react';
 
 type calendarEntryProps = {
     index: number,
@@ -8,7 +9,7 @@ type calendarEntryProps = {
     onCreateClick: any,
 }
 
-export default function EmptyEntry(props: calendarEntryProps) {
+function EmptyEntry(props: calendarEntryProps) {
     return (
         <Draggable
             draggableId={'empty' + props.index.toString() + props.scheduleDefinitionId.toString()}
@@ -30,3 +31,5 @@ export default function EmptyEntry(props: calendarEntryProps) {
         </Draggable>
     );
 }
+
+export default memo(EmptyEntry);

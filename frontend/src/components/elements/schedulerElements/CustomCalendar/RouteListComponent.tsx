@@ -1,7 +1,7 @@
 import styles from './RouteListComponent.module.css';
 import {Droppable} from 'react-beautiful-dnd';
 import CalendarEntry from '@/components/elements/schedulerElements/CustomCalendar/entries/CalendarEntry';
-import React from 'react';
+import React, {memo} from 'react';
 import EmptyEntry from '@/components/elements/schedulerElements/CustomCalendar/entries/EmptyEntry';
 import {Building, ScheduleAssignment, ScheduleDefinition} from '@/api/models';
 import {
@@ -22,7 +22,7 @@ type routeListComponentProps = {
 }
 
 
-export default function RouteListComponent(props: routeListComponentProps) {
+function RouteListComponent(props: routeListComponentProps) {
     return (
         <div className={styles.full}>
             <Tooltip title={props.buildings.map((e) => e.address).join(', ')} placement="right">
@@ -69,3 +69,5 @@ export default function RouteListComponent(props: routeListComponentProps) {
         </div>
     );
 }
+
+export default memo(RouteListComponent);
