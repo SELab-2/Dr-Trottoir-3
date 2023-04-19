@@ -57,7 +57,7 @@ function CalendarEntry(props: calendarEntryProps) {
                             (!props.scheduleAssignment.linkLeft ? styles.link_left : undefined) ||
                             (!props.scheduleAssignment.linkRight ? styles.link_right : undefined)}
                             className={styles.inner}
-                            style={workEntries?.data.length != 0 ? {backgroundColor: 'grey'} : {}}
+                            style={workEntries?.data.length !== 0 ? {backgroundColor: 'grey'} : {}}
                         >
                             <div className={styles.content}>
                                 <p className={styles.text}>

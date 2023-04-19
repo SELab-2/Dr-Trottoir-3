@@ -196,7 +196,7 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
                         label="Sorteer op"
                         renderValue={() =>
                             <p className={styles.collapse_text} style={{width: '40px'}}>
-                                {(selectedUserType != '') ? selectedUserType : 'alles'}
+                                {(selectedUserType !== '') ? selectedUserType : 'alles'}
                             </p>}
                     >
                         <MenuItem key={'alles'} value={''}

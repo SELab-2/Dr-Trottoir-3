@@ -18,7 +18,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
     const [list, setList] = useAuthenticatedApi<Building[]>();
 
     useEffect(() => {
-        if (scheduleDefinitionId !=== null) {
+        if (scheduleDefinitionId !== null) {
             setScheduleDefinition(undefined);
             setList(undefined);
             getScheduleDefinitionDetail(session, setScheduleDefinition, scheduleDefinitionId);
@@ -27,7 +27,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
     }, [session, scheduleDefinitionId]);
 
     function onReorder(newList: Building['id'][]) {
-        // if (schedule_definition_id !=== null) {
+        // if (schedule_definition_id !== null) {
         //     patchScheduleDefinitionDetail(session, schedule_definition_id, {buildings: newList}, (...args) => {
         //         setScheduleDefinition(...args);
         //         getScheduleDefinitionDetailBuildings(session, setList, schedule_definition_id);
@@ -46,11 +46,11 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
     }
 
     return (
-        scheduleDefinitionId !=== null ?
+        scheduleDefinitionId !== null ?
             (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'}>
                 <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
-                     borderRadius={'var(--small_corner)'}
-                     display={'flex'}>
+                    borderRadius={'var(--small_corner)'}
+                    display={'flex'}>
                     <Box>
                         <Typography variant={'h4'}>{scheduleDefinition?.data.name}</Typography>
                         <Typography variant={'subtitle1'}>{scheduleDefinition?.data.location_group}</Typography>
@@ -64,8 +64,8 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
                     <Box flexGrow={2} flexBasis={0}>
                         <Typography variant={'h5'}>Gebouwen</Typography>
                         <BuildingList list={list ? list.data : []} onReorder={onReorder} onRemove={onRemove}
-                                      onAdd={onAdd}
-                                      onHovering={setHovering} hovering={hovering}/>
+                            onAdd={onAdd}
+                            onHovering={setHovering} hovering={hovering}/>
                     </Box>
                     <Box flexGrow={5}>
                         {list ? <RouteMap buildings={list.data} onHovering={setHovering} hovering={hovering}/> :
@@ -76,8 +76,8 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
             </Box>) :
             (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'}>
                 <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
-                     borderRadius={'var(--small_corner)'}
-                     display={'flex'}>
+                    borderRadius={'var(--small_corner)'}
+                    display={'flex'}>
                     <Box>
                         <Typography variant={'h4'}>Geen route geselecteerd</Typography>
                         <Typography variant={'subtitle1'}>Selecteer een route om details weer te geven</Typography>

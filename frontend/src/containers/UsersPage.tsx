@@ -40,7 +40,7 @@ export default function UsersPage() {
         let syndicusFilter = '';
         let studentFilter = '';
         let superStudentFilter = '';
-        if (userType ===== 'super_student') {
+        if (userType === 'super_student') {
             superStudentFilter = 'true';
         } else if (userType === 'admin') {
             adminFilter='0';
@@ -58,7 +58,7 @@ export default function UsersPage() {
 
     useEffect(() => {
         const element = document.getElementById(styles.scroll_style);
-        if (element != null) {
+        if (element !== null) {
             element.scrollTo({top: 0, behavior: 'smooth'});
         }
     }, [sorttype, selectedRegions]);

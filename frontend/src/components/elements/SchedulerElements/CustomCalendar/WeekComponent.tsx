@@ -83,7 +83,7 @@ export default function WeekComponent(props: schedulerProps) {
                 {
                     success: props.scheduleAssignments.success,
                     status: props.scheduleAssignments.status,
-                    data: props.scheduleAssignments.data.filter((e) => e.id != id),
+                    data: props.scheduleAssignments.data.filter((e) => e.id !== id),
                 }
             );
         }

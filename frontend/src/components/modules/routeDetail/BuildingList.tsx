@@ -18,7 +18,7 @@ function BuildingList({list, onReorder, onRemove, onAdd, onHovering, hovering}: 
         document.body.style.color = 'inherit';
         const {destination, source} = result;
 
-        if (!destination || destination.droppableId !=== source.droppableId) {
+        if (!destination || destination.droppableId !== source.droppableId) {
             return;
         }
 
@@ -43,7 +43,7 @@ function BuildingList({list, onReorder, onRemove, onAdd, onHovering, hovering}: 
                             <Draggable key={id.toString()} draggableId={id.toString()} index={index}>
                                 {((draggableProvided) => (
                                     <Box paddingBottom={1} {...draggableProvided.draggableProps}
-                                         ref={draggableProvided.innerRef}>
+                                        ref={draggableProvided.innerRef}>
                                         <Box
                                             bgcolor={hovering === id ?
                                                 'var(--primary-yellow)' :
@@ -57,7 +57,7 @@ function BuildingList({list, onReorder, onRemove, onAdd, onHovering, hovering}: 
                                                 {index + 1}
                                             </Box>
                                             <Link flexGrow={5} noWrap href={`/building/${id}`} color={'inherit'}
-                                                  underline={'none'}>{name}</Link>
+                                                underline={'none'}>{name}</Link>
                                             <IconButton onClick={() => {
                                                 onHovering(null);
                                                 onRemove(id);
@@ -75,7 +75,7 @@ function BuildingList({list, onReorder, onRemove, onAdd, onHovering, hovering}: 
                         {provided.placeholder}
                         <Box paddingBottom={1}>
                             <Box bgcolor={'var(--secondary-light)'} borderRadius={'var(--small_corner)'}
-                                 paddingY={0.2} paddingX={'3%'} display={'flex'} alignItems={'center'}>
+                                paddingY={0.2} paddingX={'3%'} display={'flex'} alignItems={'center'}>
                                 <Box flexGrow={1}/>
                                 <IconButton onClick={onAdd} size={'small'}>
                                     <Add/>

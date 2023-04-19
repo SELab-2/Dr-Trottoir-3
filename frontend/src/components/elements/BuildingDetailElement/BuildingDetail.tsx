@@ -67,7 +67,7 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
 
     // Get building data
     useEffect(()=>{
-        if (id != null) {
+        if (id !== null) {
             getBuildingDetail(session, setBuilding, id);
         }
     }, [id, session]);
@@ -81,7 +81,7 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
 
     // Get schedules
     useEffect(() => {
-        if (id != null) {
+        if (id !== null) {
             getBuildingDetailGarbageCollectionSchedules(session, setSchedules, id);
         }
     }, [id, session]);
@@ -93,7 +93,7 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
 
     // Get issues
     useEffect(()=> {
-        if (id != null) {
+        if (id !== null) {
             getBuildingDetailIssues(session, setIssues, id);
         }
     }, [id, session]);
@@ -146,7 +146,7 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
     },
     [id, session, building, location, schedules, garbageTypes, issues, syndici]);
 
-    if (sessionError !=== 0) {
+    if (sessionError !== 0) {
         return <ErrorPage status={sessionError}/>;
     }
 
