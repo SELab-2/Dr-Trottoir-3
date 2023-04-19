@@ -1,0 +1,83 @@
+#item_button {
+    color: var(--primary-dark);
+    background-color: var(--secondary-light);
+}
+
+#item_button_select {
+    color: var(--primary-light);
+    background-color: var(--secondary-dark);
+}
+
+.button_default {
+    display: flex;
+    height: 76px;
+    word-break: break-word;
+    font-family: 'Inter', sans-serif;
+    color: #1C1C1C;
+    text-transform: none;
+    background-color: #1C1C1C;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.button_default:hover{
+    width: 100%;
+    text-align: left;
+    color: #E6E600;
+}
+
+.big_item_text {
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.small_item_text {
+    width: 100%;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 300;
+}
+
+@media screen and (min-width:750px) {
+    .content_container {
+        display: flex;
+        flex-flow: column;
+        flex-grow: 1;
+        height: 100%;
+    }
+
+    .state_container {
+        display: flex;
+        flex-basis: 20px;
+        height: 100%;
+        padding-bottom: 50px;
+    }
+}
+
+
+@media screen and (max-width:750px) {
+    .content_container {
+        display: none;
+    }
+
+    .state_container {
+        display: flex;
+        flex-basis: 20px;
+        height: 100%;
+        padding: 20px;
+    }
+}
+
+.icon_container {
+    display: flex;
+    flex-basis: 70px;
+    height: 100%;
+}
+
+.image {
+    width: 55px;
+    height: 55px;
+    margin: auto;
+}

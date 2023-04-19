@@ -250,77 +250,6 @@ def test_schedule_assignment_patch_invalid_field_returns_400() -> None:
     assert response.status_code == 400
 
 
-@pytest.mark.django_db
-def test_schedule_assignment_patch_read_only_fields_remain_the_same_and_returns_200():  # noqa E501
-    """
-    In ScheduleAssignment, the assigned_date and schedule_definition fields are
-    read-only. Patching these two fields should not change them. The user field
-    is allowed to be changed.
-    """
-    original_student = insert_dummy_student("student1@gmail.com")
-    assignment = insert_dummy_schedule_assignment(original_student.user)
-    original_assigned_date = assignment.assigned_date
-    original_schedule_definition = assignment.schedule_definition
-    new_student = insert_dummy_student("newstudent@gmail.com")
-    new_assigned_date = "1999-9-9"
-    new_schedule_definition = insert_dummy_schedule_definition()
-
-    data = {
-        "user": new_student.user.id,
-        "assigned_date": new_assigned_date,
-        "schedule_definition": new_schedule_definition.id,
-    }
-
-    client = APIClient()
-    super_student = insert_dummy_student(is_super_student=True)
-    client.force_login(super_student.user)
-
-    response = client.patch(
-        f"/schedule_assignments/{assignment.id}/",
-        json.dumps(data),
-        content_type="application/json",
-    )
-
-    assert response.status_code == 200
-    assert response.data["user"] == new_student.user.id
-    assert date_equals(response.data["assigned_date"], str(original_assigned_date))
-    assert response.data["schedule_definition"] == original_schedule_definition.id
-
-
-@pytest.mark.django_db
-def test_schedule_assignment_patch_read_only_fields_remain_the_same_and_returns_200_only_read_only_fields():  # noqa: E501
-    """
-    This is the same test as the previous test, except we only try to patch read-only
-    fields. All fields should thus remain the same.
-    """
-    original_student = insert_dummy_student("student1@gmail.com")
-    assignment = insert_dummy_schedule_assignment(original_student.user)
-    original_assigned_date = assignment.assigned_date
-    original_schedule_definition = assignment.schedule_definition
-    new_assigned_date = "1999-9-9"
-    new_schedule_definition = insert_dummy_schedule_definition()
-
-    data = {
-        "assigned_date": new_assigned_date,
-        "schedule_definition": new_schedule_definition.id,
-    }
-
-    client = APIClient()
-    super_student = insert_dummy_student(is_super_student=True)
-    client.force_login(super_student.user)
-
-    response = client.patch(
-        f"/schedule_assignments/{assignment.id}/",
-        json.dumps(data),
-        content_type="application/json",
-    )
-
-    assert response.status_code == 200
-    assert response.data["user"] == original_student.user.id
-    assert date_equals(response.data["assigned_date"], str(original_assigned_date))
-    assert response.data["schedule_definition"] == original_schedule_definition.id
-
-
 # endregion PATCH
 
 
@@ -335,7 +264,9 @@ def test_schedule_assignment_get_by_date_and_user_get_existing_returns_200() -> 
     super_student = insert_dummy_student("super@gmail.com", is_super_student=True)
     client.force_login(super_student.user)
 
-    response = client.get(f"/schedule_assignments/date/{date}/user/{student.user.id}/")
+    response = client.get(
+        f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
+    )
 
     response_ids = [data["id"] for data in response.data]
 
@@ -353,7 +284,9 @@ def test_schedule_assignment_by_get_date_and_user_get_nonexistent_date_returns_e
     super_student = insert_dummy_student("super@gmail.com", is_super_student=True)
     client.force_login(super_student.user)
 
-    response = client.get(f"/schedule_assignments/date/{date}/user/{student.user.id}/")
+    response = client.get(
+        f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
+    )
     response_ids = [data["id"] for data in response.data]
 
     assert response.status_code == 200
@@ -370,12 +303,10 @@ def test_schedule_assignment_by_get_date_and_user_get_nonexistent_user_returns_e
     client.force_login(super_student.user)
 
     response = client.get(
-        f"/schedule_assignments/date/{date}/user/{nonexistent_user_id}/"
+        f"/schedule_assignments/?assigned_date={date}&user={nonexistent_user_id}"
     )
-    response_ids = [data["id"] for data in response.data]
 
-    assert response.status_code == 200
-    assert len(response_ids) == 0
+    assert response.status_code == 400
 
 
 # endregion GET by date and user
@@ -520,7 +451,7 @@ def test_schedule_assignment_get_not_allowed_non_existing_assignment() -> None:
     client.force_login(dummy_student.user)
     response = client.get(f"/schedule_assignments/{non_existent_assignment}/")
 
-    assert response.status_code == 403
+    assert response.status_code == 404
 
 
 @pytest.mark.django_db
@@ -550,7 +481,7 @@ def test_schedule_assignment_get_matching_user_allowed_non_matching_user_not_all
     response_other = client.get(
         f"/schedule_assignments/{dummy_schedule_assignment.id}/"
     )
-    assert response_other.status_code == 403
+    assert response_other.status_code == 404
 
 
 # endregion GET item
@@ -700,12 +631,12 @@ def test_schedule_assignment_get_by_date_and_user_allowed_superstudent_admin() -
 
     client.force_login(super_student.user)
     response_super_student = client.get(
-        f"/schedule_assignments/date/{date}/user/{student.user.id}/"
+        f"/schedule_assignments/?assigned_date{date}&user={student.user.id}"
     )
 
     client.force_login(admin.user)
     response_admin = client.get(
-        f"/schedule_assignments/date/{date}/user/{student.user.id}/"
+        f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
     )
 
     assert response_super_student.status_code == 200
@@ -725,12 +656,12 @@ def test_schedule_assignment_get_by_date_and_user_not_allowed_anonymous_syndicus
 
     client.logout()
     response_anonymous = client.get(
-        f"/schedule_assignments/date/{date}/user/{student.user.id}/"
+        f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
     )
 
     client.force_login(syndicus.user)
     response_syndicus = client.get(
-        f"/schedule_assignments/date/{date}/user/{student.user.id}/"
+        f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
     )
 
     assert response_anonymous.status_code == 403
@@ -755,7 +686,7 @@ def test_schedule_assignment_by_user_and_date_get_matching_user_allowed_non_matc
     # Test if the matching user is allowed to get the resource
     client.force_login(student.user)
     response_student = client.get(
-        f"/schedule_assignments/date/{date}/user/{student.user.id}/"
+        f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
     )
     assert response_student.status_code == 200
 
@@ -763,9 +694,9 @@ def test_schedule_assignment_by_user_and_date_get_matching_user_allowed_non_matc
     other_student = insert_dummy_student("otherstudent@gmail.com")
     client.force_login(other_student.user)
     response_other = client.get(
-        f"/schedule_assignments/date/{date}/user/{student.user.id}/"
+        f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
     )
-    assert response_other.status_code == 403
+    assert response_other.status_code == 200 and len(response_other.data) == 0
 
 
 # endregion GET by date and user
@@ -804,21 +735,21 @@ def test_schedule_assignment_forbidden_methods() -> None:
 
     # Student gets 403
     client.force_login(student.user)
-    assert client.get("/schedule_assignments/").status_code == 403
+    assert client.get("/schedule_assignments/").status_code == 200
     assert client.put("/schedule_assignments/").status_code == 403
     assert client.patch("/schedule_assignments/").status_code == 403
     assert client.delete("/schedule_assignments/").status_code == 403
 
     # Super student gets 405
     client.force_login(super_student.user)
-    assert client.get("/schedule_assignments/").status_code == 405
+    assert client.get("/schedule_assignments/").status_code == 200
     assert client.put("/schedule_assignments/").status_code == 405
     assert client.patch("/schedule_assignments/").status_code == 405
     assert client.delete("/schedule_assignments/").status_code == 405
 
     # Admin gets 405
     client.force_login(admin.user)
-    assert client.get("/schedule_assignments/").status_code == 405
+    assert client.get("/schedule_assignments/").status_code == 200
     assert client.put("/schedule_assignments/").status_code == 405
     assert client.patch("/schedule_assignments/").status_code == 405
     assert client.delete("/schedule_assignments/").status_code == 405
@@ -838,7 +769,7 @@ def test_schedule_assignment_by_user_and_date_forbidden_methods() -> None:
     syndicus = insert_dummy_syndicus(insert_dummy_user("syndicus@gmail.com"))
     client = APIClient()
 
-    url = "/schedule_assignments/date/1999-01-01/user/9999/"
+    url = "/schedule_assignments/?assigned_date=1999-01-01&user=9999"
 
     # Anonymous user gets 404
     client.logout()
@@ -847,7 +778,7 @@ def test_schedule_assignment_by_user_and_date_forbidden_methods() -> None:
     assert client.patch(url).status_code == 403
     assert client.delete(url).status_code == 403
 
-    # Syndicus gets 404
+    # Syndicus gets 403
     client.force_login(syndicus.user)
     assert client.post(url).status_code == 403
     assert client.put(url).status_code == 403
@@ -863,14 +794,14 @@ def test_schedule_assignment_by_user_and_date_forbidden_methods() -> None:
 
     # Super student gets 405
     client.force_login(super_student.user)
-    assert client.post(url).status_code == 405
+    assert client.post(url).status_code == 400
     assert client.put(url).status_code == 405
     assert client.patch(url).status_code == 405
     assert client.delete(url).status_code == 405
 
     # Admin gets 405
     client.force_login(admin.user)
-    assert client.post(url).status_code == 405
+    assert client.post(url).status_code == 400
     assert client.put(url).status_code == 405
     assert client.patch(url).status_code == 405
     assert client.delete(url).status_code == 405

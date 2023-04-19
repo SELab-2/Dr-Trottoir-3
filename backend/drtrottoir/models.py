@@ -24,6 +24,12 @@ def get_file_path_building_pdf_guide(instance, filename):
     return os.path.join("building_pdf_guides/", filename)
 
 
+def get_file_path_building_image(instance, filename):
+    extension = filename.split(".")[-1]
+    filename = str(uuid.uuid4()) + "." + extension
+    return os.path.join("building_images/", filename)
+
+
 class Building(models.Model):
     """
     Represents a building.
@@ -35,12 +41,17 @@ class Building(models.Model):
         is_active (bool): Whether a building is active. Defaults to True
     """
 
+    name = models.CharField(max_length=255, default="")
     address = models.CharField(max_length=255)
     pdf_guide = models.FileField(upload_to=get_file_path_building_pdf_guide, null=True)
     location_group = models.ForeignKey(
         LocationGroup, on_delete=models.RESTRICT, related_name="buildings"
     )
     is_active = models.BooleanField(default=True)
+    description = models.TextField(null=True)
+    image = models.ImageField(upload_to=get_file_path_building_image, null=True)
+    longitude = models.DecimalField(max_digits=22, decimal_places=16, null=True)
+    latitude = models.DecimalField(max_digits=22, decimal_places=16, null=True)
 
 
 class ScheduleDefinition(models.Model):
@@ -141,7 +152,7 @@ class Syndicus(models.Model):
     """
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    buildings = models.ManyToManyField(Building)
+    buildings = models.ManyToManyField(Building, related_name="syndici")
 
 
 class Issue(models.Model):
@@ -238,6 +249,12 @@ class ScheduleWorkEntry(models.Model):
 
     """
 
+    TYPE_CHOICES = [
+        ("AR", "Arrival"),
+        ("WO", "Working"),
+        ("DE", "Departure"),
+    ]
+
     creation_timestamp = models.DateTimeField()
     image = models.ImageField(upload_to=get_file_path_schedule_work_entry_image)
     creator = models.ForeignKey(
@@ -246,9 +263,10 @@ class ScheduleWorkEntry(models.Model):
     building = models.ForeignKey(
         Building, on_delete=models.RESTRICT, related_name="schedule_work_entries"
     )
-    schedule_definition = models.ForeignKey(
-        ScheduleDefinition, on_delete=models.RESTRICT, related_name="work_entries"
+    schedule_assignment = models.ForeignKey(
+        ScheduleAssignment, on_delete=models.RESTRICT, related_name="work_entries"
     )
+    entry_type = models.CharField(max_length=2, choices=TYPE_CHOICES, default="AR")
 
 
 class GarbageCollectionScheduleTemplate(models.Model):
@@ -318,3 +336,4 @@ class GarbageCollectionSchedule(models.Model):
     garbage_type = models.ForeignKey(
         GarbageType, on_delete=models.RESTRICT, related_name="collection_schedules"
     )
+    note = models.TextField(null=True)

@@ -176,7 +176,7 @@ def _test_schedule_definition_schedule_work_entries(creator, user=None):
         client.force_login(user)
 
     work_entry = insert_dummy_schedule_work_entry(creator)
-    sched = work_entry.schedule_definition
+    sched = work_entry.schedule_assignment.schedule_definition
 
     return work_entry, client.get(
         f"/schedule_definitions/{sched.id}/schedule_work_entries/"
