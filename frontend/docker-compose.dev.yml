@@ -2,6 +2,7 @@ version: '3.8'
 services:
   frontend:
     build:
+      network: host
       context: .
     command: npm run dev
     ports:

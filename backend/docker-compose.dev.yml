@@ -3,6 +3,7 @@ version: '3.8'
 services:
   backend:
     build:
+      network: host
       context: .
     command: >
       sh -c "python manage.py wait_for_db &&
