@@ -173,9 +173,9 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
                 sx={{background: 'var(--secondary-light)'}}>
                 {/* Building data container */}
                 <Box className={styles.building_data_container}>
-                    <Typography variant="h1" className={styles.building_data_header}>
+                    <h1>
                         {buildingDetail.name}
-                    </Typography>
+                    </h1>
                     <br/>
                     <Box className={styles.building_data_container_data}>
                         <Typography className={styles.building_data_data}>
@@ -235,7 +235,7 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
                 </Box>
 
                 {/* Garbage schedule calendar */}
-                <Box style={{background: 'limegreen', width: '100%'}}>
+                <Box className={styles.garbage_calendar}>
           Calendar here
                 </Box>
             </Box>
