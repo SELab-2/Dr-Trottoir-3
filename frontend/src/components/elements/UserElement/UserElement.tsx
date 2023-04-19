@@ -126,7 +126,7 @@ export default function UserElement(props: userElementProps) {
                                                                 // @ts-ignore
                                                                 scheduleDefinitions?.data.filter(
                                                                     // eslint-disable-next-line max-len
-                                                                    (scheduleDefinition) => scheduleDefinition.id == e.schedule_definition
+                                                                    (scheduleDefinition) => scheduleDefinition.id === e.schedule_definition
                                                                 ).at(0).name
                                                             }
                                                         </h4>
@@ -161,7 +161,7 @@ export default function UserElement(props: userElementProps) {
                                                             {
                                                                 // @ts-ignore
                                                                 // eslint-disable-next-line max-len
-                                                                scheduleDefinitions?.data.filter((scheduleDefinition) => scheduleDefinition.id == e.schedule_definition).at(0).name
+                                                                scheduleDefinitions?.data.filter((scheduleDefinition) => scheduleDefinition.id === e.schedule_definition).at(0).name
                                                             }
                                                         </h4>
                                                         <p>{e.assigned_date}</p>

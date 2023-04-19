@@ -5,7 +5,7 @@ import {ListItemProps} from './ListButtonComponentInterface';
 
 
 const BuildingListButtonComponent = (props: ListItemProps) => {
-    const isCurrent = props.data.id == props.current;
+    const isCurrent = props.data.id === props.current;
 
     return (
         <div>

@@ -6,7 +6,7 @@ import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
 
 
 const RouteListButtonComponent = (props: ListItemProps) => {
-    const isCurrent = props.data.id == props.current;
+    const isCurrent = props.data.id === props.current;
     return (
         <div>
             <Button id={(isCurrent)?styles['item_button_select'] : styles['item_button']}

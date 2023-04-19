@@ -18,7 +18,7 @@ function BuildingList({list, onReorder, onRemove, onAdd, onHovering, hovering}: 
         document.body.style.color = 'inherit';
         const {destination, source} = result;
 
-        if (!destination || destination.droppableId !== source.droppableId) {
+        if (!destination || destination.droppableId !=== source.droppableId) {
             return;
         }
 
@@ -45,7 +45,7 @@ function BuildingList({list, onReorder, onRemove, onAdd, onHovering, hovering}: 
                                     <Box paddingBottom={1} {...draggableProvided.draggableProps}
                                          ref={draggableProvided.innerRef}>
                                         <Box
-                                            bgcolor={hovering == id ?
+                                            bgcolor={hovering === id ?
                                                 'var(--primary-yellow)' :
                                                 'var(--secondary-light)'}
                                             borderRadius={'var(--small_corner)'}

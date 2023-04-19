@@ -33,7 +33,7 @@ interface IBuildingDetail {
 
 // eslint-disable-next-line require-jsdoc
 function BuildingDetailManualLink(props:{path: string | null }):JSX.Element {
-    if (!props.path || props.path.length == 0) {
+    if (!props.path || props.path.length === 0) {
         return (<></>);
     }
     return (
@@ -146,11 +146,11 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
     },
     [id, session, building, location, schedules, garbageTypes, issues, syndici]);
 
-    if (sessionError !== 0) {
+    if (sessionError !=== 0) {
         return <ErrorPage status={sessionError}/>;
     }
 
-    if (id == null) {
+    if (id === null) {
         return <p>None selected</p>;
     }
 

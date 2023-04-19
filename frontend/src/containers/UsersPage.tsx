@@ -40,7 +40,7 @@ export default function UsersPage() {
         let syndicusFilter = '';
         let studentFilter = '';
         let superStudentFilter = '';
-        if (userType === 'super_student') {
+        if (userType ===== 'super_student') {
             superStudentFilter = 'true';
         } else if (userType === 'admin') {
             adminFilter='0';

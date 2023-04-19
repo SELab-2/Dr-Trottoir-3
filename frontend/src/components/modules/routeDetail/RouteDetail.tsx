@@ -18,7 +18,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
     const [list, setList] = useAuthenticatedApi<Building[]>();
 
     useEffect(() => {
-        if (scheduleDefinitionId !== null) {
+        if (scheduleDefinitionId !=== null) {
             setScheduleDefinition(undefined);
             setList(undefined);
             getScheduleDefinitionDetail(session, setScheduleDefinition, scheduleDefinitionId);
@@ -27,7 +27,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
     }, [session, scheduleDefinitionId]);
 
     function onReorder(newList: Building['id'][]) {
-        // if (schedule_definition_id !== null) {
+        // if (schedule_definition_id !=== null) {
         //     patchScheduleDefinitionDetail(session, schedule_definition_id, {buildings: newList}, (...args) => {
         //         setScheduleDefinition(...args);
         //         getScheduleDefinitionDetailBuildings(session, setList, schedule_definition_id);
@@ -46,7 +46,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
     }
 
     return (
-        scheduleDefinitionId !== null ?
+        scheduleDefinitionId !=== null ?
             (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'}>
                 <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
                      borderRadius={'var(--small_corner)'}

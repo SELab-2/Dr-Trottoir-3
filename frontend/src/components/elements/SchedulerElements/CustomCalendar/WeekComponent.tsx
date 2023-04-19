@@ -42,14 +42,14 @@ export default function WeekComponent(props: schedulerProps) {
             const taskList: any[] = new Array(props.interval).fill({type: 0});
             scheduleAssignments.data
                 .filter((scheduleAssignment) => {
-                    return scheduleAssignment.schedule_definition == scheduleDefinition.id;
+                    return scheduleAssignment.schedule_definition === scheduleDefinition.id;
                 })
                 .forEach((assignment) => {
                     const index = new Date(assignment.assigned_date).getDay();
 
                     taskList[index] = {
                         type: 1,
-                        user: props.users.data.filter((e) => e.id == assignment.user).at(0),
+                        user: props.users.data.filter((e) => e.id === assignment.user).at(0),
                         id: assignment.id,
                         date: assignment.assigned_date,
                         linkLeft: false,
@@ -57,13 +57,13 @@ export default function WeekComponent(props: schedulerProps) {
                     };
 
                     if (index > 0 &&
-                            taskList[index - 1].type == 1 &&
-                            taskList[index - 1].user.id == assignment.user) {
+                            taskList[index - 1].type === 1 &&
+                            taskList[index - 1].user.id === assignment.user) {
                         taskList[index - 1].linkRight = true;
                         taskList[index].linkLeft = true;
                     }
-                    if (index < props.interval - 1 && taskList[index + 1].type == 1 &&
-                            taskList[index + 1].user.id == assignment.user) {
+                    if (index < props.interval - 1 && taskList[index + 1].type === 1 &&
+                            taskList[index + 1].user.id === assignment.user) {
                         taskList[index + 1].linkLeft = true;
                         taskList[index].linkRight = true;
                     }
@@ -101,7 +101,7 @@ export default function WeekComponent(props: schedulerProps) {
                 });
             } else {
                 let newTask: ScheduleAssignment;
-                if (typeof scheduleAssignmentIndex == 'number') {
+                if (typeof scheduleAssignmentIndex === 'number') {
                     const date = new Date();
                     date.setDate(props.start + scheduleAssignmentIndex);
                     date.setHours(date.getHours() + 2);
@@ -143,7 +143,7 @@ export default function WeekComponent(props: schedulerProps) {
             const {destination, source} = result;
 
             // drop at start position
-            if (source.droppableId == destination?.droppableId && source.index == destination.index) {
+            if (source.droppableId === destination?.droppableId && source.index === destination.index) {
                 return;
             }
 
@@ -165,8 +165,8 @@ export default function WeekComponent(props: schedulerProps) {
                     console.log(e);
                     const index: number = new Date(e.assigned_date).getDay();
                     console.log(index);
-                    if (Number(destination.droppableId) == Number(source.droppableId) &&
-                        Number(destination.droppableId) == e.schedule_definition) {
+                    if (Number(destination.droppableId) === Number(source.droppableId) &&
+                        Number(destination.droppableId) === e.schedule_definition) {
                         // object moved on this row
                         if (source.index < index) {
                             if (destination.index >= index) {
@@ -196,7 +196,7 @@ export default function WeekComponent(props: schedulerProps) {
                             }
                         }
                     } else {
-                        if (e.schedule_definition == Number(source.droppableId)) {
+                        if (e.schedule_definition === Number(source.droppableId)) {
                             if (source.index < index) {
                                 newDate.setDate(props.start + index - 1);
                                 newDate.setHours(newDate.getHours() + 2);
@@ -207,7 +207,7 @@ export default function WeekComponent(props: schedulerProps) {
                                     {assigned_date: e.assigned_date},
                                     setRequestChecker);
                             }
-                        } else if (e.schedule_definition == Number(destination.droppableId)) {
+                        } else if (e.schedule_definition === Number(destination.droppableId)) {
                             if (destination.index <= index) {
                                 if (index >= props.interval-1) {
                                     deleteScheduleAssignment(session, e.id, setRequestChecker);
@@ -225,7 +225,7 @@ export default function WeekComponent(props: schedulerProps) {
                         }
                     }
 
-                    if (e.schedule_definition == Number(source.droppableId) && index == source.index) {
+                    if (e.schedule_definition === Number(source.droppableId) && index === source.index) {
                         // primary move object
                         newDate.setDate(props.start + destination.index);
                         newDate.setHours(newDate.getHours() + 2);

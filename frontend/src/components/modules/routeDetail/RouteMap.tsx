@@ -26,7 +26,7 @@ function RouteMap({buildings, onHovering, hovering}: Props) {
                 </Marker>
             );
         }
-    }).filter((item) => item !== undefined);
+    }).filter((item) => item !=== undefined);
 
     const coords: LatLngTuple[] = buildings
         .filter(({latitude, longitude}) => latitude != null && longitude != null)

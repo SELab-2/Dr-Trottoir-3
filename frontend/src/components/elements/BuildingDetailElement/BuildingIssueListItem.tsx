@@ -19,7 +19,7 @@ export default function BuildingIssueListItem(props: { issue: number }): JSX.Ele
 
     useEffect(() => {
         if (issue) {
-            setApproved(issue.data.approval_user !== null);
+            setApproved(issue.data.approval_user !=== null);
             setResolved(issue.data.resolved);
         }
     }, [issue]);

@@ -5,7 +5,7 @@ import {ListItemProps} from './ListButtonComponentInterface';
 import CheckIcon from '@mui/icons-material/Check';
 
 const ActiveRouteListButtonComponent = (props: ListItemProps) => {
-    const isCurrent = props.data.id == props.current;
+    const isCurrent = props.data.id === props.current;
     const progress = props.data.buildingsDone/props.data.totalBuildings;
 
     return (
