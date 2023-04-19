@@ -18,15 +18,13 @@ type userElementProps = {
 export default function UserElement(props: userElementProps) {
     const {data: session} = useSession();
 
-    const userId = 2;
-
     const [userData, setUserData] = useAuthenticatedApi<User>();
     const [scheduleDefinitions, setScheduleDefinitions] = useAuthenticatedApi<Array<ScheduleDefinition>>();
     const [scheduleAssignmentsData, setScheduleAssignmentsData] = useAuthenticatedApi<Array<ScheduleAssignment>>();
     const [locationGroupData, setLocationGroupData] = useAuthenticatedApi<LocationGroup>();
 
     useEffect(() => {
-        getUserDetail(session, setUserData, userId);
+        getUserDetail(session, setUserData, props.id);
     }, [session]);
 
     useEffect(() => {
@@ -34,7 +32,7 @@ export default function UserElement(props: userElementProps) {
     }, [session]);
 
     useEffect(() => {
-        getScheduleAssignmentsList(session, setScheduleAssignmentsData, {user: userId});
+        getScheduleAssignmentsList(session, setScheduleAssignmentsData, {user: props.id});
     }, [session, setUserData]);
 
     useEffect(() => {
