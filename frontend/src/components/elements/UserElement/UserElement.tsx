@@ -25,7 +25,7 @@ export default function UserElement(props: userElementProps) {
 
     useEffect(() => {
         getUserDetail(session, setUserData, props.id);
-    }, [session]);
+    }, [session, props.id]);
 
     useEffect(() => {
         getScheduleDefinitionsList(session, setScheduleDefinitions);
@@ -33,7 +33,7 @@ export default function UserElement(props: userElementProps) {
 
     useEffect(() => {
         getScheduleAssignmentsList(session, setScheduleAssignmentsData, {user: props.id});
-    }, [session, setUserData]);
+    }, [session, props.id]);
 
     useEffect(() => {
         if (userData && userData.data.student?.location_group) {
