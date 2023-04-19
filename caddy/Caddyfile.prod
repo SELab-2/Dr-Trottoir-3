@@ -3,7 +3,7 @@
 }
 
 sel2-3.ugent.be {
-    reverse_proxy /api/* http://proxy:8000
+    reverse_proxy /backend/* http://proxy:8000
     handle_path /docs/* {
         reverse_proxy http://docs:80
     }

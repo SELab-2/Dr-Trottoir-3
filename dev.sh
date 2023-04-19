@@ -21,7 +21,7 @@ full)
     $BASE_CMD down -v
     ;;
   *)
-    $BASE_CMD up
+    $BASE_CMD up --abort-on-container-exit
     ;;
   esac
   ;;
@@ -59,7 +59,7 @@ backend)
     $BASE_CMD down -v
     ;;
   *)
-    $BASE_CMD up
+    $BASE_CMD up --abort-on-container-exit
     ;;
   esac
   ;;

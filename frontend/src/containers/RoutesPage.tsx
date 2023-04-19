@@ -7,6 +7,7 @@ import RouteTopBarComponent from '@/components/elements/ListViewElement/TopBarEl
 import RouteListButtonComponent
     from '@/components/elements/ListViewElement/ListButtonElements/RouteListButtonComponent';
 import RouteIcon from '@mui/icons-material/Route';
+import RouteDetail from '@/components/modules/routeDetail/RouteDetail';
 
 
 // eslint-disable-next-line require-jsdoc
@@ -35,10 +36,12 @@ export default function RoutesPage() {
     useEffect(() => {
         let regionsFilter = '';
         selectedRegions.map((r) => {
-            regionsFilter+=r.id + ',';
+            regionsFilter += r.id + ',';
         });
-        getScheduleDefinitionsList(session, setRoutes, {search: searchEntry, ordering: sorttype,
-            location_group__in: regionsFilter, is_active: selectedActive});
+        getScheduleDefinitionsList(session, setRoutes, {
+            search: searchEntry, ordering: sorttype,
+            location_group__in: regionsFilter, is_active: selectedActive,
+        });
     }, [session, searchEntry, selectedRegions, sorttype, selectedActive]);
 
 
@@ -71,7 +74,7 @@ export default function RoutesPage() {
                 title={'Routes'}
                 Icon={RouteIcon}
             >
-                TODO: ROUTE DETAILS HERE
+                <RouteDetail scheduleDefinitionId={current}/>
             </ListViewComponent>
         </>
     );
