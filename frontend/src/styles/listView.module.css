@@ -135,7 +135,7 @@ display: flex;
 .listItemRightSide{
     display: flex;
     width: 100%;
-    justify-content: end;
+    justify-content: flex-end;
     align-items: center;
 }
 
@@ -232,5 +232,5 @@ display: flex;
 .formButtonsEnd{
     display: flex;
     flex-direction: column;
-    justify-content: end;
+    justify-content: flex-end;
 }
