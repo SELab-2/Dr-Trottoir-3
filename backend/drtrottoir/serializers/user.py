@@ -58,12 +58,16 @@ class UserSerializer(serializers.ModelSerializer):
             Admin.objects.create(user=user, **admin_data)
 
         if syndicus_data is not None:
-            Syndicus.objects.create(user=user, **syndicus_data)
+            buildings = syndicus_data.pop("buildings")
+            syndicus = Syndicus.objects.create(user=user, **syndicus_data)
+            syndicus.buildings.set(buildings)
 
         return user
 
     @staticmethod
-    def update_one_on_one_field(instance, validated_data, field_name, field_model):
+    def update_one_on_one_field(
+        instance, validated_data, field_name, field_model, many_to_many_fields=None
+    ):
         """
         Utility function for the `update` method that updates a one-on-one
         field's reverse relationship. It handles the following cases:
@@ -71,6 +75,9 @@ class UserSerializer(serializers.ModelSerializer):
         * New data is provided for an existing relationship
         * An existing relationship is set to null, meaning it should be removed
         """
+        if many_to_many_fields is None:
+            many_to_many_fields = set()
+
         if field_name in validated_data:
             field_data = validated_data.pop(field_name)
             old_relation_exists = hasattr(instance, field_name)
@@ -86,9 +93,18 @@ class UserSerializer(serializers.ModelSerializer):
                 relation_instance = getattr(instance, field_name)
 
                 for field, value in field_data.items():
-                    setattr(relation_instance, field, value)
+                    # many-to-many fields need to be changed using the set
+                    # command
+                    if field in many_to_many_fields:
+                        getattr(relation_instance, field).set(value)
 
-                relation_instance.save(update_fields=field_data.keys())
+                    else:
+                        setattr(relation_instance, field, value)
+
+                # update_fields may not include m2m field names
+                relation_instance.save(
+                    update_fields=set(field_data.keys()) - many_to_many_fields
+                )
 
             # Relationship doesn't exist, but data is provided -> create
             # relation
@@ -104,7 +120,7 @@ class UserSerializer(serializers.ModelSerializer):
         )
         UserSerializer.update_one_on_one_field(instance, validated_data, "admin", Admin)
         UserSerializer.update_one_on_one_field(
-            instance, validated_data, "syndicus", Syndicus
+            instance, validated_data, "syndicus", Syndicus, {"buildings"}
         )
 
         # Remaining data is what should be updated on the User instance itself
