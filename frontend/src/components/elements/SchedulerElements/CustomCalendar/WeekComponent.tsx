@@ -152,9 +152,6 @@ export default function WeekComponent(props: schedulerProps) {
                 return;
             }
 
-
-            const newDate = new Date();
-
             console.log(source, destination);
 
             // patch moved
@@ -163,6 +160,7 @@ export default function WeekComponent(props: schedulerProps) {
                 success: props.scheduleAssignments.success,
                 data: props.scheduleAssignments.data.map((e) => {
                     console.log(e);
+                    const newDate = new Date();
                     const index: number = new Date(e.assigned_date).getDay();
                     console.log(index);
                     if (Number(destination.droppableId) == Number(source.droppableId) &&
@@ -184,9 +182,11 @@ export default function WeekComponent(props: schedulerProps) {
                                 if (index >= props.interval-1) {
                                     deleteScheduleAssignment(session, e.id, setRequestChecker);
                                 } else {
+                                    console.log("HERE")
                                     newDate.setDate(props.start + index + 1);
                                     newDate.setHours(newDate.getHours() + 2);
                                     e.assigned_date = newDate.toISOString().split('T')[0];
+                                    console.log(e.assigned_date)
                                     patchScheduleAssignmentDetail(
                                         session,
                                         e.id,
@@ -249,6 +249,8 @@ export default function WeekComponent(props: schedulerProps) {
             props.setScheduleAssignments(newScheduleAssignments);
         }
     };
+
+    console.log(tasks);
 
     useEffect(() => {
         if (requestChecker) {

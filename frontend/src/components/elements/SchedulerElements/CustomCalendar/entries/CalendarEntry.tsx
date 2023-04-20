@@ -38,6 +38,8 @@ function CalendarEntry(props: calendarEntryProps) {
         <Draggable draggableId={props.scheduleAssignment.id.toString()} index={props.index}>
             {(draggableProvided, snapshot) => {
                 const handle = workEntries?.data.length == 0 ? {...draggableProvided.dragHandleProps} : undefined;
+                console.log(props.scheduleAssignment.user.first_name)
+                console.log(draggableProvided)
                 return (
                     <div
                         onMouseOver={() => setHover(true)}
