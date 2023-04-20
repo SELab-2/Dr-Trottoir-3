@@ -33,7 +33,7 @@ interface IBuildingDetail {
 
 // eslint-disable-next-line require-jsdoc
 function BuildingDetailManualLink(props:{path: string | null }):JSX.Element {
-    if (!props.path || props.path.length == 0) {
+    if (!props.path || props.path.length === 0) {
         return (<></>);
     }
     return (
@@ -67,7 +67,7 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
 
     // Get building data
     useEffect(()=>{
-        if (id != null) {
+        if (id !== null) {
             getBuildingDetail(session, setBuilding, id);
         }
     }, [id, session]);
@@ -81,7 +81,7 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
 
     // Get schedules
     useEffect(() => {
-        if (id != null) {
+        if (id !== null) {
             getBuildingDetailGarbageCollectionSchedules(session, setSchedules, id);
         }
     }, [id, session]);
@@ -93,7 +93,7 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
 
     // Get issues
     useEffect(()=> {
-        if (id != null) {
+        if (id !== null) {
             getBuildingDetailIssues(session, setIssues, id);
         }
     }, [id, session]);
@@ -150,7 +150,7 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
         return <ErrorPage status={sessionError}/>;
     }
 
-    if (id == null) {
+    if (id === null) {
         return <p>None selected</p>;
     }
 
