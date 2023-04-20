@@ -5,7 +5,7 @@ import {ListItemProps} from './ListButtonComponentInterface';
 
 
 const UserListButtonComponent = (props: ListItemProps) => {
-    const isCurrent = props.data.id == props.current;
+    const isCurrent = props.data.id === props.current;
     const userType = props.data.admin ?
         'admin' : (props.data.student ? (props.data.student.is_super_student ?
             'superstudent' : 'student') : 'syndicus');

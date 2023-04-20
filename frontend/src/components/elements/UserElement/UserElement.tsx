@@ -18,24 +18,22 @@ type userElementProps = {
 export default function UserElement(props: userElementProps) {
     const {data: session} = useSession();
 
-    const userId = 2;
-
     const [userData, setUserData] = useAuthenticatedApi<User>();
     const [scheduleDefinitions, setScheduleDefinitions] = useAuthenticatedApi<Array<ScheduleDefinition>>();
     const [scheduleAssignmentsData, setScheduleAssignmentsData] = useAuthenticatedApi<Array<ScheduleAssignment>>();
     const [locationGroupData, setLocationGroupData] = useAuthenticatedApi<LocationGroup>();
 
     useEffect(() => {
-        getUserDetail(session, setUserData, userId);
-    }, [session]);
+        getUserDetail(session, setUserData, props.id);
+    }, [session, props.id]);
 
     useEffect(() => {
         getScheduleDefinitionsList(session, setScheduleDefinitions);
     }, [session]);
 
     useEffect(() => {
-        getScheduleAssignmentsList(session, setScheduleAssignmentsData, {user: userId});
-    }, [session, setUserData]);
+        getScheduleAssignmentsList(session, setScheduleAssignmentsData, {user: props.id});
+    }, [session, props.id]);
 
     useEffect(() => {
         if (userData && userData.data.student?.location_group) {
@@ -128,7 +126,7 @@ export default function UserElement(props: userElementProps) {
                                                                 // @ts-ignore
                                                                 scheduleDefinitions?.data.filter(
                                                                     // eslint-disable-next-line max-len
-                                                                    (scheduleDefinition) => scheduleDefinition.id == e.schedule_definition
+                                                                    (scheduleDefinition) => scheduleDefinition.id === e.schedule_definition
                                                                 ).at(0).name
                                                             }
                                                         </h4>
@@ -163,7 +161,7 @@ export default function UserElement(props: userElementProps) {
                                                             {
                                                                 // @ts-ignore
                                                                 // eslint-disable-next-line max-len
-                                                                scheduleDefinitions?.data.filter((scheduleDefinition) => scheduleDefinition.id == e.schedule_definition).at(0).name
+                                                                scheduleDefinitions?.data.filter((scheduleDefinition) => scheduleDefinition.id === e.schedule_definition).at(0).name
                                                             }
                                                         </h4>
                                                         <p>{e.assigned_date}</p>

@@ -49,8 +49,8 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
         scheduleDefinitionId !== null ?
             (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'}>
                 <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
-                     borderRadius={'var(--small_corner)'}
-                     display={'flex'}>
+                    borderRadius={'var(--small_corner)'}
+                    display={'flex'}>
                     <Box>
                         <Typography variant={'h4'}>{scheduleDefinition?.data.name}</Typography>
                         <Typography variant={'subtitle1'}>{scheduleDefinition?.data.location_group}</Typography>
@@ -64,8 +64,8 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
                     <Box flexGrow={2} flexBasis={0}>
                         <Typography variant={'h5'}>Gebouwen</Typography>
                         <BuildingList list={list ? list.data : []} onReorder={onReorder} onRemove={onRemove}
-                                      onAdd={onAdd}
-                                      onHovering={setHovering} hovering={hovering}/>
+                            onAdd={onAdd}
+                            onHovering={setHovering} hovering={hovering}/>
                     </Box>
                     <Box flexGrow={5}>
                         {list ? <RouteMap buildings={list.data} onHovering={setHovering} hovering={hovering}/> :
@@ -76,8 +76,8 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
             </Box>) :
             (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'}>
                 <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
-                     borderRadius={'var(--small_corner)'}
-                     display={'flex'}>
+                    borderRadius={'var(--small_corner)'}
+                    display={'flex'}>
                     <Box>
                         <Typography variant={'h4'}>Geen route geselecteerd</Typography>
                         <Typography variant={'subtitle1'}>Selecteer een route om details weer te geven</Typography>
