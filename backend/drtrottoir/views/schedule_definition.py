@@ -143,3 +143,25 @@ class ScheduleDefinitionViewSet(
         serializer = ScheduleWorkEntrySerializer(schedule_work_entries, many=True)
 
         return Response(serializer.data)
+
+    @action(detail=False)
+    def newest(self, request):
+        # This proved to be an incredibly difficult query to perform using just
+        # ORM instructions, so I've written an SQL query instead
+        schedule_definitions = ScheduleDefinition.objects.raw(
+            """
+SELECT t1.*
+    FROM drtrottoir_scheduledefinition t1
+    INNER JOIN
+    (
+        SELECT name, MAX(version) AS max_version
+        FROM drtrottoir_scheduledefinition
+        GROUP BY name
+    ) t2
+        ON t1.name = t2.name AND t1.version = t2.max_version
+            """
+        )
+
+        serializer = ScheduleDefinitionSerializer(schedule_definitions, many=True)
+
+        return Response(serializer.data)

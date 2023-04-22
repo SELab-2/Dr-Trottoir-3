@@ -197,3 +197,37 @@ def test_schedule_definition_schedule_work_entries_fail():
     )
 
     assert res.status_code == 403
+
+
+def _test_schedule_definition_list_newest(user=None):
+    client = APIClient()
+
+    if user is not None:
+        client.force_login(user)
+
+    insert_dummy_schedule_definition(name="dummy 1", version=1)
+    schedule2 = insert_dummy_schedule_definition(name="dummy 1", version=2)
+    schedule3 = insert_dummy_schedule_definition(name="dummy 2", version=1)
+
+    return [schedule2, schedule3], client.get("/schedule_definitions/newest/")
+
+
+@pytest.mark.django_db
+def test_schedule_definition_list_newest_success():
+    student = insert_dummy_student(is_super_student=True)
+
+    scheds, res = _test_schedule_definition_list_newest(student.user)
+
+    assert res.status_code == 200 and sorted([x["id"] for x in res.data]) == sorted(
+        [x.id for x in scheds]
+    )
+
+
+@pytest.mark.django_db
+def test_schedule_definition_list_newest_fail():
+    _, res = _test_schedule_definition_list_newest()
+    assert res.status_code == 403
+
+    student = insert_dummy_student(is_super_student=False)
+    _, res = _test_schedule_definition_list_newest(student.user)
+    assert res.status_code == 403
