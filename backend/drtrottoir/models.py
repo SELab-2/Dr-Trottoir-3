@@ -96,6 +96,10 @@ class ScheduleDefinitionBuilding(models.Model):
     )
     position = models.IntegerField()
 
+    # class Meta:
+    #     constraints = [models.UniqueConstraint(fields=['building',
+    #     'position'], name='unique_building_position')]
+
 
 class User(AbstractUser):
     """
