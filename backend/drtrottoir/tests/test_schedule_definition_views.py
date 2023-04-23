@@ -2,10 +2,12 @@ import pytest
 from rest_framework.test import APIClient
 
 from .dummy_data import (
+    insert_dummy_admin,
     insert_dummy_schedule_assignment,
     insert_dummy_schedule_definition,
     insert_dummy_schedule_work_entry,
     insert_dummy_student,
+    insert_dummy_syndicus,
 )
 
 
@@ -213,10 +215,21 @@ def _test_schedule_definition_list_newest(user=None):
 
 
 @pytest.mark.django_db
-def test_schedule_definition_list_newest_success():
+def test_schedule_definition_list_newest_success_superstudent():
     student = insert_dummy_student(is_super_student=True)
 
     scheds, res = _test_schedule_definition_list_newest(student.user)
+
+    assert res.status_code == 200 and sorted([x["id"] for x in res.data]) == sorted(
+        [x.id for x in scheds]
+    )
+
+
+@pytest.mark.django_db
+def test_schedule_definition_list_newest_success_admin():
+    admin = insert_dummy_admin()
+
+    scheds, res = _test_schedule_definition_list_newest(admin.user)
 
     assert res.status_code == 200 and sorted([x["id"] for x in res.data]) == sorted(
         [x.id for x in scheds]
@@ -230,4 +243,8 @@ def test_schedule_definition_list_newest_fail():
 
     student = insert_dummy_student(is_super_student=False)
     _, res = _test_schedule_definition_list_newest(student.user)
+    assert res.status_code == 403
+
+    syndicus = insert_dummy_syndicus()
+    _, res = _test_schedule_definition_list_newest(syndicus.user)
     assert res.status_code == 403

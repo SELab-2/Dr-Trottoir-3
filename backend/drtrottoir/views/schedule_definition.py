@@ -116,10 +116,10 @@ class ScheduleDefinitionViewSet(
             (
                 ScheduleDefinitionBuilding(
                     schedule_definition=schedule_definition,
-                    building=binding["building"],
-                    position=binding["position"],
+                    building=building["building"],
+                    position=building["position"],
                 )
-                for binding in serializer.validated_data
+                for building in serializer.validated_data
             )
         )
 

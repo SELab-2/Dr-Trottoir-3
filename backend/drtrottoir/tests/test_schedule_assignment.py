@@ -520,7 +520,7 @@ def test_schedule_assignment_delete_allowed_admin() -> None:
 
 
 @pytest.mark.django_db
-def test_schedule_assignment_delete_not_allowed_work_entries() -> None:
+def test_schedule_assignment_delete_not_allowed_with_existing_work_entries() -> None:
     dummy_student = insert_dummy_student("dummystudent@gmail.com")
     dummy_work_entry = insert_dummy_schedule_work_entry(dummy_student.user)
 
