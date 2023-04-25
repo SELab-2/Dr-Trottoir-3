@@ -15,7 +15,7 @@ class LocationGroup(models.Model):
         name (str): Name of the location group.
     """
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
 
 
 def get_file_path_building_pdf_guide(instance, filename):
@@ -41,7 +41,7 @@ class Building(models.Model):
         is_active (bool): Whether a building is active. Defaults to True
     """
 
-    name = models.CharField(max_length=255, default="")
+    name = models.CharField(max_length=255, default="", unique=True)
     address = models.CharField(max_length=255)
     pdf_guide = models.FileField(upload_to=get_file_path_building_pdf_guide, null=True)
     location_group = models.ForeignKey(
@@ -79,6 +79,13 @@ class ScheduleDefinition(models.Model):
     )
     buildings = models.ManyToManyField(Building, through="ScheduleDefinitionBuilding")
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["name", "version"], name="unique_name_version"
+            )
+        ]
+
 
 class ScheduleDefinitionBuilding(models.Model):
     """
@@ -96,9 +103,19 @@ class ScheduleDefinitionBuilding(models.Model):
     )
     position = models.IntegerField()
 
-    # class Meta:
-    #     constraints = [models.UniqueConstraint(fields=['building',
-    #     'position'], name='unique_building_position')]
+    class Meta:
+        constraints = [
+            # A schedule definition can only have one building in any given position
+            models.UniqueConstraint(
+                fields=["schedule_definition", "position"],
+                name="unique_schedule_definition_position",
+            ),
+            # A schedule definition can have each building only once
+            models.UniqueConstraint(
+                fields=["schedule_definition", "building"],
+                name="unique_schedule_definition_building",
+            ),
+        ]
 
 
 class User(AbstractUser):
@@ -224,6 +241,15 @@ class ScheduleAssignment(models.Model):
         User, on_delete=models.RESTRICT, related_name="assignments"
     )
 
+    class Meta:
+        constraints = [
+            # A schedule definition can only be scheduled once per day
+            models.UniqueConstraint(
+                fields=["assigned_date", "schedule_definition"],
+                name="unique_assigned_date_schedule_definition",
+            )
+        ]
+
 
 def get_file_path_schedule_work_entry_image(instance, filename):
     extension = filename.split(".")[-1]
@@ -283,7 +309,7 @@ class GarbageCollectionScheduleTemplate(models.Model):
         building (Building): What building this template is for
     """
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     building = models.ForeignKey(
         Building,
         on_delete=models.RESTRICT,
@@ -299,7 +325,7 @@ class GarbageType(models.Model):
         name (str): name of the garbage type.
     """
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
 
 
 class GarbageCollectionScheduleTemplateEntry(models.Model):
@@ -322,6 +348,16 @@ class GarbageCollectionScheduleTemplateEntry(models.Model):
         related_name="entries",
     )
 
+    class Meta:
+        constraints = [
+            # Each garbage type can only be scheduled once per day for a given
+            # template
+            models.UniqueConstraint(
+                fields=["day", "garbage_type", "garbage_collection_schedule_template"],
+                name="unique_day_garbage_type_garbage_collection_schedule_template",
+            )
+        ]
+
 
 class GarbageCollectionSchedule(models.Model):
     """
@@ -341,3 +377,13 @@ class GarbageCollectionSchedule(models.Model):
         GarbageType, on_delete=models.RESTRICT, related_name="collection_schedules"
     )
     note = models.TextField(null=True)
+
+    class Meta:
+        constraints = [
+            # For a given building, a given garbage type can only be scheduled
+            # once per day
+            models.UniqueConstraint(
+                fields=["for_day", "building", "garbage_type"],
+                name="unique_for_day_building_garbage_type",
+            )
+        ]
