@@ -13,6 +13,7 @@ import Button from '@mui/material/Button';
 import React, {useEffect, useState} from 'react';
 import BuildingIssueListItem from '@/components/elements/BuildingDetailElement/BuildingIssueListItem';
 import ErrorPage from '@/containers/ErrorPage';
+import BuildingMap from "@/components/elements/BuildingDetailElement/BuildingMap";
 
 interface IBuildingDetail {
   id: number,
@@ -28,7 +29,6 @@ interface IBuildingDetail {
   latitude: number | null
 }
 
-// TODO Add street map using latitude and longitude
 // TODO in case there is an error, detail.status is undefined, and not a proper status code. This needs to be fixed.
 
 // eslint-disable-next-line require-jsdoc
@@ -196,9 +196,7 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
 
                 {/* Building description container */}
                 <Box className={styles.building_desc_container}>
-                    <Typography>
-                      TODO add street map longitude {buildingDetail.longitude} and latitude {buildingDetail.latitude}
-                    </Typography>
+                    <BuildingMap longitude={buildingDetail.longitude} latitude={buildingDetail.latitude}/>
                 </Box>
 
                 {/* Building image container */}

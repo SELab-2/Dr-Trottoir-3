@@ -1,10 +1,14 @@
 import React from 'react';
 import {ClickAwayListener} from '@mui/base';
 import styles from '@/styles/listView.module.css';
-import {Button, FormControl, InputLabel, MenuItem, Select, TextField} from '@mui/material';
+import {Box, Button, FormControl, IconButton, InputLabel, MenuItem, Select, TextField} from '@mui/material';
 import {LocationGroup} from '@/api/models';
 import {postBuilding} from '@/api/api';
 import {useSession} from 'next-auth/react';
+import {LatLng, LatLngExpression} from "leaflet";
+import BuildingMapSelector from "@/components/elements/ListViewElement/InsertFormElements/BuildingMapSelector";
+import axios from "axios";
+import {PinDrop, PushPin} from "@mui/icons-material";
 
 const dummySindici = [
     {name: 'Jan Tomas'},
@@ -28,9 +32,11 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
         }
     };
 
-    const handleSubmitForm = () =>{
+    const handleSubmitForm = () => {
         postBuilding(session, {
             address: formAddress,
+            latitude: formCoordinate.lat,
+            longitude: formCoordinate.lng,
             pdf_guide: null,
             is_active: false,
             description: formDescription,
@@ -42,11 +48,12 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
 
     const [formName, setFormName] = React.useState('');
     const [formAddress, setFormAddress] = React.useState('');
+    const [formCoordinate, setFormCoordinate] = React.useState<LatLng>(new LatLng(51.1576985, 4.0807745));
     const [formRegion, setFormRegion] = React.useState<LocationGroup>();
     const [formSyndic, setFormSyndic] = React.useState('');
     const [formDescription, setFormDescription] = React.useState('');
 
-    React.useEffect(() =>{
+    React.useEffect(() => {
         setCanClose(true);
     });
     return (
@@ -56,7 +63,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                     <h2 style={{color: 'black'}}>Gebouw Toevoegen</h2>
                     <div className={styles.formFields}>
                         <div className={styles.field}>
-                            <TextField
+                            <TextField fullWidth
                                 required
                                 label="naam"
                                 value={formName}
@@ -75,7 +82,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                             >
                                 {allRegions.map((option) => (
                                     <MenuItem id="menuitem" key={option.id} value={option.id}
-                                        style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                                              style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                         {option.name}
                                     </MenuItem>
                                 ))}
@@ -88,9 +95,26 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                                 value={formAddress}
                                 onChange={(e) => setFormAddress(e.target.value as string)}
                             />
+                            <IconButton onClick={() => {
+                                axios
+                                    .get(`https://nominatim.openstreetmap.org/search?format=json&q=${formAddress}`)
+                                    .then(({data}) => {
+                                        if (data[0]) setFormCoordinate(new LatLng(data[0].lat, data[0].lon));
+                                        console.log(data);
+                                    })
+                                    .catch((error) => {
+                                        console.error(error);
+                                    })
+                            }}>
+                                <PinDrop/>
+                            </IconButton>
                         </div>
+                        <Box width={'100%'} height={150}>
+                            <BuildingMapSelector coordinate={formCoordinate} setCoordinate={setFormCoordinate}/>
+                        </Box>
                         <div className={styles.field}>
                             <TextField
+                                fullWidth
                                 required
                                 multiline
                                 rows={4}
@@ -113,7 +137,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                                 </MenuItem>
                                 {dummySindici.map((option) => (
                                     <MenuItem id="menuitem" key={option.name} value={option.name}
-                                        style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                                              style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                         {option.name}
                                     </MenuItem>
                                 ))}
@@ -125,7 +149,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                             Cancel
                         </Button>
                         <Button variant="contained" className={styles.button} onClick={handleSubmitForm}
-                            style={{backgroundColor: '#E6E600'}}>
+                                style={{backgroundColor: '#E6E600'}}>
                             Submit
                         </Button>
                     </div>
