@@ -4,6 +4,7 @@ Django command to populate the database with some predefined mock data.
 import random
 
 from django.core.management.base import BaseCommand
+from django.db.utils import IntegrityError
 
 from drtrottoir.models import (
     Admin,
@@ -47,6 +48,7 @@ class Command(BaseCommand):
 
         buildings = [
             Building(
+                name=f"building {i}",
                 address=f"address {i}",
                 location_group=lgs[i % len(lgs)],
             )
@@ -151,7 +153,11 @@ class Command(BaseCommand):
                 ]
 
                 for sched_building in sched_buildings:
-                    sched_building.save()
+                    try:
+                        sched_building.save()
+
+                    except IntegrityError:
+                        pass
 
                 schedule_definitions.append(sched)
 
@@ -305,7 +311,7 @@ class Command(BaseCommand):
 
         gcs_templates = [
             GarbageCollectionScheduleTemplate(name=f"template {i}", building=b)
-            for b in buildings
+            for i, b in enumerate(buildings)
         ]
 
         for template in gcs_templates:
@@ -321,7 +327,11 @@ class Command(BaseCommand):
             ]
 
             for e in entries:
-                e.save()
+                try:
+                    e.save()
+
+                except IntegrityError:
+                    pass
 
         self.stdout.write("Adding garbage collection schedules...")
 
@@ -331,7 +341,12 @@ class Command(BaseCommand):
                 building=random.choice(buildings),
                 garbage_type=random.choice(garbage_types),
             )
-            gcs.save()
+
+            try:
+                gcs.save()
+
+            except IntegrityError:
+                pass
 
         self.stdout.write("Done!")
         self.stdout.write(
