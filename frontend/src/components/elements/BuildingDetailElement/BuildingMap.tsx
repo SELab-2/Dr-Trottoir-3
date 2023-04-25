@@ -1,7 +1,7 @@
-import {MapContainer, Marker, TileLayer} from "react-leaflet";
+import {MapContainer, Marker, TileLayer} from 'react-leaflet';
 import {Map} from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import {createRef, useEffect} from "react";
+import {createRef, useEffect} from 'react';
 
 interface Props {
     longitude: number | null,
@@ -12,9 +12,10 @@ interface Props {
 function BuildingMap({longitude, latitude}: Props) {
     const mapRef = createRef<Map>();
     useEffect(() => {
-        if (latitude && longitude)
+        if (latitude && longitude) {
             mapRef.current?.flyTo([latitude, longitude], 14);
-    }, [latitude, longitude])
+        }
+    }, [latitude, longitude]);
 
     return (
         <MapContainer style={{width: '100%', height: '100%'}} zoom={latitude && longitude ? 14 : 9} ref={mapRef}

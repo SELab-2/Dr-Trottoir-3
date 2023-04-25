@@ -5,10 +5,10 @@ import {Box, Button, FormControl, IconButton, InputLabel, MenuItem, Select, Text
 import {LocationGroup} from '@/api/models';
 import {postBuilding} from '@/api/api';
 import {useSession} from 'next-auth/react';
-import {LatLng, LatLngExpression} from "leaflet";
-import BuildingMapSelector from "@/components/elements/ListViewElement/InsertFormElements/BuildingMapSelector";
-import axios from "axios";
-import {PinDrop, PushPin} from "@mui/icons-material";
+import {LatLng} from 'leaflet';
+import BuildingMapSelector from '@/components/elements/ListViewElement/InsertFormElements/BuildingMapSelector';
+import axios from 'axios';
+import {PinDrop} from '@mui/icons-material';
 
 const dummySindici = [
     {name: 'Jan Tomas'},
@@ -65,7 +65,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                         <div className={styles.field}>
                             <TextField fullWidth
                                 required
-                                label="naam"
+                                label='naam'
                                 value={formName}
                                 onChange={(e) => setFormName(e.target.value as string)
                                 }
@@ -76,12 +76,12 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                             <Select
                                 value={formRegion?.name}
                                 onChange={(e) => setFormRegion(e.target.value as unknown as LocationGroup)}
-                                label="regio"
-                                defaultValue=""
+                                label='regio'
+                                defaultValue=''
                                 MenuProps={{disablePortal: true}}
                             >
                                 {allRegions.map((option) => (
-                                    <MenuItem id="menuitem" key={option.id} value={option.id}
+                                    <MenuItem id='menuitem' key={option.id} value={option.id}
                                               style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                         {option.name}
                                     </MenuItem>
@@ -91,7 +91,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                         <div className={styles.field}>
                             <TextField
                                 required
-                                label="adres"
+                                label='adres'
                                 value={formAddress}
                                 onChange={(e) => setFormAddress(e.target.value as string)}
                             />
@@ -104,7 +104,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                                     })
                                     .catch((error) => {
                                         console.error(error);
-                                    })
+                                    });
                             }}>
                                 <PinDrop/>
                             </IconButton>
@@ -118,7 +118,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                                 required
                                 multiline
                                 rows={4}
-                                label="beschrijving"
+                                label='beschrijving'
                                 value={formDescription}
                                 onChange={(e) => setFormDescription(e.target.value as string)}
                             />
@@ -128,15 +128,15 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                             <Select
                                 value={formSyndic}
                                 onChange={(e) => setFormSyndic(e.target.value as string)}
-                                label="syndicus"
-                                defaultValue=""
+                                label='syndicus'
+                                defaultValue=''
                                 MenuProps={{disablePortal: true}}
                             >
-                                <MenuItem value="">
+                                <MenuItem value=''>
                                     <em>geen</em>
                                 </MenuItem>
                                 {dummySindici.map((option) => (
-                                    <MenuItem id="menuitem" key={option.name} value={option.name}
+                                    <MenuItem id='menuitem' key={option.name} value={option.name}
                                               style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                         {option.name}
                                     </MenuItem>
@@ -145,10 +145,10 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                         </FormControl>
                     </div>
                     <div className={styles.formButtons}>
-                        <Button variant="contained" className={styles.button} onClick={handleClose}>
+                        <Button variant='contained' className={styles.button} onClick={handleClose}>
                             Cancel
                         </Button>
-                        <Button variant="contained" className={styles.button} onClick={handleSubmitForm}
+                        <Button variant='contained' className={styles.button} onClick={handleSubmitForm}
                                 style={{backgroundColor: '#E6E600'}}>
                             Submit
                         </Button>

@@ -13,7 +13,7 @@ import Button from '@mui/material/Button';
 import React, {useEffect, useState} from 'react';
 import BuildingIssueListItem from '@/components/elements/BuildingDetailElement/BuildingIssueListItem';
 import ErrorPage from '@/containers/ErrorPage';
-import BuildingMap from "@/components/elements/BuildingDetailElement/BuildingMap";
+import BuildingMap from '@/components/elements/BuildingDetailElement/BuildingMap';
 
 interface IBuildingDetail {
   id: number,
