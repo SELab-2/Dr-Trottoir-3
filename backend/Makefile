@@ -46,3 +46,7 @@ lint:
 .PHONY: test
 test:
 	'$(VENV)'/bin/pytest --cov --cov-config=.coveragerc drtrottoir/tests
+
+.PHONY: run
+run:
+	./venv/bin/python manage.py runserver -6

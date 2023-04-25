@@ -9,6 +9,7 @@ from drtrottoir.tests.dummy_data import (
     insert_dummy_admin,
     insert_dummy_schedule_assignment,
     insert_dummy_schedule_definition,
+    insert_dummy_schedule_work_entry,
     insert_dummy_student,
     insert_dummy_syndicus,
     insert_dummy_user,
@@ -516,6 +517,22 @@ def test_schedule_assignment_delete_allowed_admin() -> None:
     )
 
     assert response_admin.status_code == 204
+
+
+@pytest.mark.django_db
+def test_schedule_assignment_delete_not_allowed_with_existing_work_entries() -> None:
+    dummy_student = insert_dummy_student("dummystudent@gmail.com")
+    dummy_work_entry = insert_dummy_schedule_work_entry(dummy_student.user)
+
+    client = APIClient()
+    admin = insert_dummy_admin()
+
+    client.force_login(admin.user)
+    response_admin = client.delete(
+        f"/schedule_assignments/{dummy_work_entry.schedule_assignment.id}/"
+    )
+
+    assert response_admin.status_code == 400
 
 
 @pytest.mark.django_db

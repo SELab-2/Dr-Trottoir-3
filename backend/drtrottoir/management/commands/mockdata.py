@@ -138,7 +138,7 @@ class Command(BaseCommand):
 
         for i in range(10):
             lg = lgs[i % len(lgs)]
-            for version in range(1):
+            for version in range(1, 5):
                 sched = ScheduleDefinition(
                     name=f"schedule definition {i}", version=version, location_group=lg
                 )

@@ -4,9 +4,9 @@ import styles from './schedulerPage.module.css';
 import React, {useEffect, useState} from 'react';
 import {useSession} from 'next-auth/react';
 import {
-    getBuildingsList,
+    getBuildingsList, getLatestScheduleDefinitionsList,
     getLocationGroupsList,
-    getScheduleDefinitionsList, getUsersList,
+    getUsersList,
     useAuthenticatedApi,
 } from '@/api/api';
 import {Building, LocationGroup, ScheduleDefinition, User} from '@/api/models';
@@ -32,7 +32,7 @@ export default function SchedulerPage() {
 
     useEffect(() => {
         if (locationGroups) {
-            getScheduleDefinitionsList(session, setScheduleDefinitions, {name: locationGroups.data.at(0)?.id});
+            getLatestScheduleDefinitionsList(session, setScheduleDefinitions, {name: locationGroups.data.at(0)?.id});
         }
     }, [locationGroups, session]);
 
