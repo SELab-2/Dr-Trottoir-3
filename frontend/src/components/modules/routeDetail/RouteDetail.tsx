@@ -1,10 +1,11 @@
-import {Box, Typography} from '@mui/material';
+import {Box, Button, Typography} from '@mui/material';
 import BuildingList from '@/components/modules/routeDetail/BuildingList';
 import {useEffect, useState} from 'react';
 import RouteMap from '@/components/modules/routeDetail/RouteMap';
 import {getScheduleDefinitionDetail, getScheduleDefinitionDetailBuildings, useAuthenticatedApi} from '@/api/api';
 import {useSession} from 'next-auth/react';
 import {Building, ScheduleDefinition} from '@/api/models';
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 type routeDetailProps = {
     scheduleDefinitionId: ScheduleDefinition['id'] | null,
@@ -12,7 +13,7 @@ type routeDetailProps = {
 
 function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
     const {data: session} = useSession();
-
+    const mobileView = useMediaQuery('(max-width:1000px)');
     const [hovering, setHovering] = useState<Building['id'] | null>(null);
     const [scheduleDefinition, setScheduleDefinition] = useAuthenticatedApi<ScheduleDefinition>();
     const [list, setList] = useAuthenticatedApi<Building[]>();
@@ -47,27 +48,28 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
 
     return (
         scheduleDefinitionId !== null ?
-            (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'}>
+            (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'} overflow={'auto'}>
                 <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
-                    borderRadius={'var(--small_corner)'}
-                    display={'flex'}>
+                     borderRadius={'var(--small_corner)'}
+                     display={'flex'} flexDirection={mobileView ? 'column' : 'row'}>
                     <Box>
-                        <Typography variant={'h4'}>{scheduleDefinition?.data.name}</Typography>
-                        <Typography variant={'subtitle1'}>{scheduleDefinition?.data.location_group}</Typography>
+                        <Typography variant={mobileView ? 'h5' : 'h4'}
+                                    noWrap>{scheduleDefinition?.data.name}</Typography>
+                        <Typography variant={'subtitle1'} noWrap>{scheduleDefinition?.data.location_group}</Typography>
                     </Box>
                     <Box flexGrow={1}>
-                        <Typography textAlign={'end'}>ID: {scheduleDefinitionId},
+                        <Typography textAlign={mobileView ? 'start' : 'end'}>ID: {scheduleDefinitionId},
                             Hovering {hovering ? hovering : 'nothing'}</Typography>
                     </Box>
                 </Box>
-                <Box display={'flex'} gap={1} flexGrow={1}>
+                <Box display={'flex'} gap={1} flexGrow={1} flexDirection={mobileView ? 'column' : 'row'}>
                     <Box flexGrow={2} flexBasis={0}>
                         <Typography variant={'h5'}>Gebouwen</Typography>
                         <BuildingList list={list ? list.data : []} onReorder={onReorder} onRemove={onRemove}
                             onAdd={onAdd}
                             onHovering={setHovering} hovering={hovering}/>
                     </Box>
-                    <Box flexGrow={5}>
+                    <Box flexGrow={5} minHeight={300}>
                         {list ? <RouteMap buildings={list.data} onHovering={setHovering} hovering={hovering}/> :
                             <div>No list data</div>
                         }
@@ -76,8 +78,8 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
             </Box>) :
             (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'}>
                 <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
-                    borderRadius={'var(--small_corner)'}
-                    display={'flex'}>
+                     borderRadius={'var(--small_corner)'}
+                     display={'flex'}>
                     <Box>
                         <Typography variant={'h4'}>Geen route geselecteerd</Typography>
                         <Typography variant={'subtitle1'}>Selecteer een route om details weer te geven</Typography>

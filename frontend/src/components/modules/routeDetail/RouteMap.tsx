@@ -14,7 +14,7 @@ function RouteMap({buildings, onHovering, hovering}: Props) {
     const router = useRouter();
 
     const markers = buildings.map(({name, id, latitude, longitude}, index) => {
-        if (latitude !== null && longitude !== null) {
+        if (latitude && longitude) {
             return (
                 <Marker key={index} position={[latitude, longitude]}
                     eventHandlers={{
@@ -29,7 +29,7 @@ function RouteMap({buildings, onHovering, hovering}: Props) {
     }).filter((item) => item !== undefined);
 
     const coords: LatLngTuple[] = buildings
-        .filter(({latitude, longitude}) => latitude !== null && longitude !== null)
+        .filter(({latitude, longitude}) => latitude && longitude)
         .map(({latitude, longitude}) => [latitude || 0, longitude || 0]);
     if (coords.length === 0) {
         coords.push([50.833341, 3.142672], [51.482056, 5.018877]);
