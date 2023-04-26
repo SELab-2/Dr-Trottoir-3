@@ -11,6 +11,13 @@ export default function LoginPageElement() {
         signIn('credentials', {callbackUrl: '/live_routes', password: password, username: email});
     }
 
+    document.addEventListener('keydown', function(event: KeyboardEvent) {
+        if (event.key === 'Enter') {
+            const myButton = document.getElementById('loginButton') as HTMLButtonElement;
+            myButton.click();
+        }
+    });
+
     return (
         <div className={styles.full_login_page}>
             <div className={styles.login_page_image_container}>
@@ -108,7 +115,7 @@ export default function LoginPageElement() {
                             type={'password'}
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                        <Button className={styles.login_button} onClick={handleLogin}>
+                        <Button className={styles.login_button} id={'loginButton'} onClick={handleLogin}>
                             <p>login</p>
                         </Button>
                     </div>
