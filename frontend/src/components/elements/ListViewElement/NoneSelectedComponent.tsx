@@ -1,5 +1,4 @@
 import {Box, Typography} from '@mui/material';
-import RouteDetail from "@/components/modules/routeDetail/RouteDetail";
 
 type NoneSelectedProps = {
     ElementName: string,

@@ -8,7 +8,7 @@ import {useSession} from 'next-auth/react';
 import {getBuildingsList, getLocationGroupsList, useAuthenticatedApi} from '@/api/api';
 import {Building, LocationGroup} from '@/api/models';
 import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded';
-import NoneSelected from "@/components/elements/ListViewElement/NoneSelectedComponent";
+import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
 
 export default function BuildingsPage() {
     const {data: session} = useSession();
@@ -56,7 +56,7 @@ export default function BuildingsPage() {
                 title={'Gebouwen'}
                 Icon={ApartmentRoundedIcon}
             >
-                {current ? <BuildingDetail id={current}/> : <NoneSelected ElementName={"gebouw"}/>}
+                {current ? <BuildingDetail id={current}/> : <NoneSelected ElementName={'gebouw'}/>}
             </ListViewComponent>
         </>
     );

@@ -5,7 +5,7 @@ import RouteMap from '@/components/modules/routeDetail/RouteMap';
 import {getScheduleDefinitionDetail, getScheduleDefinitionDetailBuildings, useAuthenticatedApi} from '@/api/api';
 import {useSession} from 'next-auth/react';
 import {Building, ScheduleDefinition} from '@/api/models';
-import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent'
+import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
 
 type routeDetailProps = {
     scheduleDefinitionId: ScheduleDefinition['id'] | null,
@@ -75,7 +75,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
                     </Box>
                 </Box>
             </Box>) :
-            (<NoneSelected ElementName={"route"}/>));
+            (<NoneSelected ElementName={'route'}/>));
 }
 
 export default RouteDetail;
