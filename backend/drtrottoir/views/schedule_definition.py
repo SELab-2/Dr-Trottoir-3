@@ -12,6 +12,7 @@ from drtrottoir.permissions import (
     IsSuperstudentOrAdmin,
 )
 from drtrottoir.serializers import (
+    BuildingSerializer,
     ScheduleAssignmentSerializer,
     ScheduleDefinitionBuildingSerializer,
     ScheduleDefinitionSerializer,
@@ -87,10 +88,19 @@ class ScheduleDefinitionViewSet(
     permission_classes_by_action = {
         "retrieve": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
         "buildings": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
+        "order": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
     }
 
     @action(detail=True)
     def buildings(self, request, pk=None):
+        schedule_definition = self.get_object()
+        buildings = schedule_definition.buildings.all()
+        serializer = BuildingSerializer(buildings, many=True)
+
+        return Response(serializer.data)
+
+    @action(detail=True)
+    def order(self, request, pk=None):
         schedule_definition = self.get_object()
         buildings = ScheduleDefinitionBuilding.objects.filter(
             schedule_definition=schedule_definition
@@ -101,8 +111,8 @@ class ScheduleDefinitionViewSet(
 
     # This counts as a different action than 'buildings', and therefore falls
     # under the default permission_classes
-    @buildings.mapping.post
-    def set_buildings(self, request, pk=None):
+    @order.mapping.post
+    def set_order(self, request, pk=None):
         serializer = ScheduleDefinitionBuildingSerializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
 
@@ -124,7 +134,7 @@ class ScheduleDefinitionViewSet(
         )
 
         # Return ordered list of buildings
-        return self.buildings(request, pk)
+        return self.order(request, pk)
 
     @action(detail=True)
     def schedule_assignments(self, request, pk=None):
