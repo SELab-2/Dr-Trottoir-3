@@ -94,7 +94,7 @@ def test_schedule_definition_detail_fail():
     assert res.status_code == 403
 
 
-def _test_schedule_definition_buildings(assignment_user, user=None):
+def _test_schedule_definition_order(assignment_user, user=None):
     client = APIClient()
 
     if user is not None:
@@ -103,19 +103,19 @@ def _test_schedule_definition_buildings(assignment_user, user=None):
     assignment = insert_dummy_schedule_assignment(assignment_user)
     sched = assignment.schedule_definition
 
-    return assignment, client.get(f"/schedule_definitions/{sched.id}/buildings/")
+    return assignment, client.get(f"/schedule_definitions/{sched.id}/order/")
 
 
 @pytest.mark.django_db
-def test_schedule_definition_buildings_fail():
+def test_schedule_definition_order_fail():
     assignment_student = insert_dummy_student(email="assignment@student.com")
 
-    _, res = _test_schedule_definition_buildings(assignment_student.user)
+    _, res = _test_schedule_definition_order(assignment_student.user)
 
     assert res.status_code == 403
 
     student = insert_dummy_student()
-    _, res = _test_schedule_definition_buildings(assignment_student.user, student.user)
+    _, res = _test_schedule_definition_order(assignment_student.user, student.user)
 
     assert res.status_code == 403
 
