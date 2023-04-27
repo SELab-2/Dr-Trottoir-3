@@ -55,7 +55,7 @@ export default function LiveRoutesPage() {
 
     useEffect(() => {
         const element = document.getElementById(styles['scroll_style']);
-        if (element != null) {
+        if (element !== null) {
             element.scrollTo({top: 0, behavior: 'smooth'});
         }
     }, [sorttype, selectedRegions]);

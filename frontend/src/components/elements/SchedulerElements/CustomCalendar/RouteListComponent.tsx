@@ -37,7 +37,7 @@ function RouteListComponent(props: routeListComponentProps) {
                             {...droppableProvided.droppableProps}
                             className={styles.drop_list}>
                             {props.taskData.map((task, index) => {
-                                if (task.type == 0) {
+                                if (task.type === 0) {
                                     return (
                                         <EmptyEntry
                                             key={index}
@@ -48,7 +48,7 @@ function RouteListComponent(props: routeListComponentProps) {
                                     );
                                 } else {
                                     const nextOpen = index < props.interval-1 &&
-                                        props.taskData[index+1].type == 0;
+                                        props.taskData[index+1].type === 0;
                                     return (
                                         <CalendarEntry
                                             key={index}

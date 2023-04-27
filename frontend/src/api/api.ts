@@ -29,6 +29,7 @@ export enum Api {
     ScheduleWorkEntries = 'schedule_work_entries/',
     ScheduleWorkEntryDetail = 'schedule_work_entries/:id/',
     ScheduleDefinitions = 'schedule_definitions/',
+    LatestScheduleDefinitions = 'schedule_definitions/newest/',
     ScheduleDefinitionDetail = 'schedule_definitions/:id/',
     ScheduleDefinitionDetailBuildings = 'schedule_definitions/:id/buildings/',
     ScheduleDefinitionDetailScheduleAssignments = 'schedule_definitions/:id/schedule_assignments/',
@@ -235,6 +236,16 @@ const getBuildingsList = (session: Session | null, setter: ((e:any) => void), qu
 
 const getScheduleDefinitionsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.ScheduleDefinitions, session, params ? params : {}, query ? query : {})
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: []});
+        });
+};
+
+const getLatestScheduleDefinitionsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
+    getListFromApi(Api.LatestScheduleDefinitions, session, params ? params : {}, query ? query : {})
         .then((e) => {
             setter({success: true, status: e.status, data: e.data});
         })
@@ -836,6 +847,7 @@ export {
     getScheduleWorkEntriesList,
     getScheduleWorkEntryDetail,
     getScheduleDefinitionsList,
+    getLatestScheduleDefinitionsList,
     getScheduleDefinitionDetail,
     getScheduleDefinitionDetailBuildings,
     getScheduleDefinitionDetailScheduleAssignments,

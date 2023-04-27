@@ -32,7 +32,7 @@ export default function CreateAssignmentForm(props: createAssignmentFormProps) {
     useEffect(() => {
         if (props.initialInfo) {
             const route = props.allRoutes.data.filter(
-                (e) => e.id == props.initialInfo.schedulerDefinitionIndex
+                (e) => e.id === props.initialInfo.schedulerDefinitionIndex
             )[0];
 
             setFormScheduleDefinition(route.name.toString());
@@ -51,8 +51,8 @@ export default function CreateAssignmentForm(props: createAssignmentFormProps) {
     };
 
     const handleSubmitForm = () =>{
-        const scheduleDefinition = props.allRoutes.data.filter((e) => e.name == formScheduleDefinition);
-        const user = props.allUsers.data.filter((e) => e.first_name + ' ' + e.last_name == formUser);
+        const scheduleDefinition = props.allRoutes.data.filter((e) => e.name === formScheduleDefinition);
+        const user = props.allUsers.data.filter((e) => e.first_name + ' ' + e.last_name === formUser);
         const day = new Date(formDate);
 
         if (user.length > 0 && scheduleDefinition.length > 0) {

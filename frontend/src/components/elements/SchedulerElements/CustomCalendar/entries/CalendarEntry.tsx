@@ -37,7 +37,7 @@ function CalendarEntry(props: calendarEntryProps) {
     return (
         <Draggable draggableId={props.scheduleAssignment.id.toString()} index={props.index}>
             {(draggableProvided, snapshot) => {
-                const handle = workEntries?.data.length == 0 ? {...draggableProvided.dragHandleProps} : undefined;
+                const handle = workEntries?.data.length === 0 ? {...draggableProvided.dragHandleProps} : undefined;
                 return (
                     <div
                         onMouseOver={() => setHover(true)}
@@ -57,7 +57,7 @@ function CalendarEntry(props: calendarEntryProps) {
                             (!props.scheduleAssignment.linkLeft ? styles.link_left : undefined) ||
                             (!props.scheduleAssignment.linkRight ? styles.link_right : undefined)}
                             className={styles.inner}
-                            style={workEntries?.data.length != 0 ? {backgroundColor: 'grey'} : {}}
+                            style={workEntries?.data.length !== 0 ? {backgroundColor: 'grey'} : {}}
                         >
                             <div className={styles.content}>
                                 <p className={styles.text}>
@@ -88,7 +88,7 @@ function CalendarEntry(props: calendarEntryProps) {
                                 {(!props.scheduleAssignment.linkRight ||
                             snapshot.isDragging ||
                             hover) &&
-                            workEntries?.data.length == 0 ?
+                            workEntries?.data.length === 0 ?
                                     <IconButton
                                         size='small'
                                         className={styles.icon}

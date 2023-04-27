@@ -2,10 +2,12 @@ import pytest
 from rest_framework.test import APIClient
 
 from .dummy_data import (
+    insert_dummy_admin,
     insert_dummy_schedule_assignment,
     insert_dummy_schedule_definition,
     insert_dummy_schedule_work_entry,
     insert_dummy_student,
+    insert_dummy_syndicus,
 )
 
 
@@ -92,7 +94,7 @@ def test_schedule_definition_detail_fail():
     assert res.status_code == 403
 
 
-def _test_schedule_definition_buildings(assignment_user, user=None):
+def _test_schedule_definition_order(assignment_user, user=None):
     client = APIClient()
 
     if user is not None:
@@ -101,29 +103,19 @@ def _test_schedule_definition_buildings(assignment_user, user=None):
     assignment = insert_dummy_schedule_assignment(assignment_user)
     sched = assignment.schedule_definition
 
-    return assignment, client.get(f"/schedule_definitions/{sched.id}/buildings/")
+    return assignment, client.get(f"/schedule_definitions/{sched.id}/order/")
 
 
 @pytest.mark.django_db
-def test_schedule_definition_buildings_success():
-    student = insert_dummy_student()
-    assignment, res = _test_schedule_definition_buildings(student.user, student.user)
-
-    assert res.status_code == 200 and sorted(x["id"] for x in res.data) == sorted(
-        x.id for x in assignment.schedule_definition.buildings.all()
-    )
-
-
-@pytest.mark.django_db
-def test_schedule_definition_buildings_fail():
+def test_schedule_definition_order_fail():
     assignment_student = insert_dummy_student(email="assignment@student.com")
 
-    _, res = _test_schedule_definition_buildings(assignment_student.user)
+    _, res = _test_schedule_definition_order(assignment_student.user)
 
     assert res.status_code == 403
 
     student = insert_dummy_student()
-    _, res = _test_schedule_definition_buildings(assignment_student.user, student.user)
+    _, res = _test_schedule_definition_order(assignment_student.user, student.user)
 
     assert res.status_code == 403
 
@@ -206,4 +198,53 @@ def test_schedule_definition_schedule_work_entries_fail():
         creator_student.user, student.user
     )
 
+    assert res.status_code == 403
+
+
+def _test_schedule_definition_list_newest(user=None):
+    client = APIClient()
+
+    if user is not None:
+        client.force_login(user)
+
+    insert_dummy_schedule_definition(name="dummy 1", version=1)
+    schedule2 = insert_dummy_schedule_definition(name="dummy 1", version=2)
+    schedule3 = insert_dummy_schedule_definition(name="dummy 2", version=1)
+
+    return [schedule2, schedule3], client.get("/schedule_definitions/newest/")
+
+
+@pytest.mark.django_db
+def test_schedule_definition_list_newest_success_superstudent():
+    student = insert_dummy_student(is_super_student=True)
+
+    scheds, res = _test_schedule_definition_list_newest(student.user)
+
+    assert res.status_code == 200 and sorted([x["id"] for x in res.data]) == sorted(
+        [x.id for x in scheds]
+    )
+
+
+@pytest.mark.django_db
+def test_schedule_definition_list_newest_success_admin():
+    admin = insert_dummy_admin()
+
+    scheds, res = _test_schedule_definition_list_newest(admin.user)
+
+    assert res.status_code == 200 and sorted([x["id"] for x in res.data]) == sorted(
+        [x.id for x in scheds]
+    )
+
+
+@pytest.mark.django_db
+def test_schedule_definition_list_newest_fail():
+    _, res = _test_schedule_definition_list_newest()
+    assert res.status_code == 403
+
+    student = insert_dummy_student(is_super_student=False)
+    _, res = _test_schedule_definition_list_newest(student.user)
+    assert res.status_code == 403
+
+    syndicus = insert_dummy_syndicus()
+    _, res = _test_schedule_definition_list_newest(syndicus.user)
     assert res.status_code == 403
