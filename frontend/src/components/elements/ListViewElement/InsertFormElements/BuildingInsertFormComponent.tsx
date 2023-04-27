@@ -34,6 +34,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
 
     const handleSubmitForm = () => {
         postBuilding(session, {
+            name: formName,
             address: formAddress,
             latitude: formCoordinate.lat,
             longitude: formCoordinate.lng,
