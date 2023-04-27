@@ -14,6 +14,7 @@ import SortIcon from '@mui/icons-material/Sort';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import AddIcon from '@mui/icons-material/Add';
 import Form from '../InsertFormElements/BuildingInsertFormComponent';
+import {Clear} from '@mui/icons-material';
 
 
 type TopBarProps = {
@@ -25,10 +26,11 @@ type TopBarProps = {
     amountOfResults: number,
     searchEntry: string,
     setSearchEntry: React.Dispatch<React.SetStateAction<string>>,
+    handleSearch: (b: boolean) => void,
 };
 
 export default function BuildingTopBarComponent({sorttype, setSorttype, selectedRegions, setRegion, allRegions,
-    searchEntry, setSearchEntry}:TopBarProps) {
+    searchEntry, setSearchEntry, handleSearch}:TopBarProps) {
     const AllesSelected = selectedRegions.length >= allRegions.length;
 
     const handleChangeRegion = (event: SelectChangeEvent<LocationGroup[]>) => {
@@ -62,7 +64,7 @@ export default function BuildingTopBarComponent({sorttype, setSorttype, selected
     return (
         <div className={styles.topBar}>
             <div className={styles.search_container}>
-                <IconButton type="button" sx={{p: '10px'}} aria-label="search">
+                <IconButton type="button" sx={{p: '10px'}} aria-label="search" onClick={() => handleSearch(false)}>
                     <SearchIcon />
                 </IconButton>
                 <InputBase
@@ -71,7 +73,20 @@ export default function BuildingTopBarComponent({sorttype, setSorttype, selected
                     fullWidth={true}
                     value={searchEntry}
                     onChange={(e) => setSearchEntry(e.target.value as string)}
+                    onKeyDown={(e) => {
+                        if (e.key == 'Enter') {
+                            handleSearch(false);
+                        }
+                    }}
                 />
+                <IconButton type="button" sx={{p: '10px'}} aria-label="clear" onClick={
+                    (e) => {
+                        setSearchEntry('');
+                        handleSearch(true);
+                    }
+                }>
+                    <Clear />
+                </IconButton>
             </div>
             <div className={styles.filters_container}>
                 <Button className={styles.filter_button}>
