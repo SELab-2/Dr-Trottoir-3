@@ -1,4 +1,3 @@
-
 import ListViewComponent from '@/components/elements/ListViewElement/ListViewComponent';
 import UserElement from '@/components/elements/UserElement/UserElement';
 import {useSession} from 'next-auth/react';
@@ -32,6 +31,24 @@ export default function UsersPage() {
 
 
     useEffect(() => {
+        handleSearch(false);
+    }, [session, selectedRegions, sorttype, userType]);
+
+
+    useEffect(() => {
+        const element = document.getElementById(styles.scroll_style);
+        if (element !== null) {
+            element.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    }, [sorttype, selectedRegions]);
+
+    const handleSearch = (clear: boolean = false) => {
+        let searchEntryOverwritten: string;
+        if (clear) {
+            searchEntryOverwritten = '';
+        } else {
+            searchEntryOverwritten = searchEntry;
+        }
         let regionsFilter = '';
         selectedRegions.map((r) => {
             regionsFilter+=r.id + ',';
@@ -50,29 +67,11 @@ export default function UsersPage() {
             syndicusFilter = '0';
         }
 
-        getUsersList(session, setUsers, {ordering: sorttype, student__location_group__in: regionsFilter,
+        getUsersList(session, setUsers, {
+            search: searchEntryOverwritten,
+            ordering: sorttype, student__location_group__in: regionsFilter,
             syndicus__id__gt: syndicusFilter, admin__id__gt: adminFilter, student__id__gt: studentFilter,
             student__is_super_student: superStudentFilter});
-    }, [session, selectedRegions, sorttype, userType]);
-
-
-    useEffect(() => {
-        const element = document.getElementById(styles.scroll_style);
-        if (element !== null) {
-            element.scrollTo({top: 0, behavior: 'smooth'});
-        }
-    }, [sorttype, selectedRegions]);
-
-    const filterUsers = (data: User[], search: string) => {
-        if (!search) {
-            return data;
-        } else {
-            search = search.toLowerCase();
-            return data.filter((d) => {
-                return (d.first_name.toLowerCase().replace(/ /g, '').includes(search) ||
-                    d.last_name.toLowerCase().replace(/ /g, '').includes(search));
-            });
-        }
     };
 
 
@@ -88,20 +87,16 @@ export default function UsersPage() {
         selectedUserType={userType}
         setSelectedUserType={setUserType}
         allBuildings={allBuildings ? allBuildings.data : []}
+        handleSearch={handleSearch}
     />;
 
     if (users) {
-        const filteredUsers: ApiData<User[]> = {
-            data: filterUsers(users.data, searchEntry),
-            status: users.status,
-            success: users.success,
-        };
 
         return (
 
             <>
                 <ListViewComponent
-                    listData={filteredUsers}
+                    listData={users}
                     setListData={setUsers}
                     locationGroups={locationGroups}
                     selectedRegions={selectedRegions}

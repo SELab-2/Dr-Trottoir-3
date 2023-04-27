@@ -24,10 +24,7 @@ export default function BuildingsPage() {
     }, [session]);
 
     useEffect(() => {
-        getBuildingsList(session, setBuildings, {
-            ordering: sorttype,
-            search: searchEntry,
-            location_group__in: selectedRegions.map((e) => e.id).join(',')});
+        handleSearch(false);
     }, [session, selectedRegions, sorttype]);
 
     const handleSearch = (clear: boolean = false) => {
