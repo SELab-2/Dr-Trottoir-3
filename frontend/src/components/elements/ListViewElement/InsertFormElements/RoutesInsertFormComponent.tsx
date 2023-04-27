@@ -17,8 +17,12 @@ type FormProps = {
 export default function Form({setCanClose, canClose, setOpen, allRegions, allRoutes}: FormProps) {
     const {data: session} = useSession();
     const handleSubmitForm = () =>{
-        const prevVers = allRoutes.filter((e) => e.name === formName);
+        const prevVers = allRoutes.filter((e) => {
+            console.log(e.name + " - " + formName);
+            return (e.name === formName);
+        });
         let version = 1;
+        console.log(prevVers);
         if (prevVers.length > 0) {
             version = prevVers[prevVers.length-1].version + 1;
         }
