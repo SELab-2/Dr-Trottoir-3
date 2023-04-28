@@ -8,6 +8,7 @@ import RouteListButtonComponent
     from '@/components/elements/ListViewElement/ListButtonElements/RouteListButtonComponent';
 import RouteIcon from '@mui/icons-material/Route';
 import RouteDetail from '@/components/modules/routeDetail/RouteDetail';
+import Head from 'next/head';
 
 
 // eslint-disable-next-line require-jsdoc
@@ -61,6 +62,9 @@ export default function RoutesPage() {
 
     return (
         <>
+            <Head>
+                <title>Routes</title>
+            </Head>
             <ListViewComponent
                 listData={routes}
                 setListData={setRoutes}

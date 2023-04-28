@@ -9,6 +9,7 @@ import UserTopBarComponent from '@/components/elements/ListViewElement/TopBarEle
 import styles from './containerStyles.module.css';
 import UserListButtonComponent from '@/components/elements/ListViewElement/ListButtonElements/UserListButtonComponent';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
+import Head from 'next/head';
 
 export default function UsersPage() {
     const {data: session} = useSession();
@@ -100,6 +101,9 @@ export default function UsersPage() {
         return (
 
             <>
+                <Head>
+                    <title>Gebruikers</title>
+                </Head>
                 <ListViewComponent
                     listData={filteredUsers}
                     setListData={setUsers}

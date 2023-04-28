@@ -5,6 +5,7 @@ import {SessionProvider} from 'next-auth/react';
 
 import {useEffect} from 'react';
 import Navbar from '../components/elements/NavbarElement/Navbar';
+import Head from 'next/head';
 
 export default function App({Component, pageProps: {session, ...pageProps}}: AppProps) {
     useEffect(() => {
@@ -16,9 +17,14 @@ export default function App({Component, pageProps: {session, ...pageProps}}: App
     const getLayout = (props: any) => <Navbar>{props}</Navbar>;
 
     return (
-        // eslint-disable-next-line no-undef
-        <SessionProvider session={session} basePath={process.env.NEXT_API_AUTH_URL}>
-            {getLayout(<Component {...pageProps} />)}
-        </SessionProvider>
+        <>
+            <Head>
+                <title>DrTrottoir</title>
+            </Head>
+            {/*eslint-disable-next-line no-undef*/}
+            <SessionProvider session={session} basePath={process.env.NEXT_API_AUTH_URL}>
+                {getLayout(<Component {...pageProps} />)}
+            </SessionProvider>
+        </>
     );
 }
