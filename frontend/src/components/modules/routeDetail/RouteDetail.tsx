@@ -1,6 +1,5 @@
 import {Box, Typography} from '@mui/material';
 import BuildingList from '@/components/modules/routeDetail/BuildingList';
-import * as React from 'react';
 import {useEffect, useState} from 'react';
 import RouteMap from '@/components/modules/routeDetail/RouteMap';
 import {
@@ -24,7 +23,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
     const {data: session} = useSession();
     const mobileView = useMediaQuery('(max-width:1000px)');
     const [hovering, setHovering] = useState<Building['id'] | null>(null);
-    const [dialogOpen, setDialogOpen] = React.useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
     const [scheduleDefinition, setScheduleDefinition] = useAuthenticatedApi<ScheduleDefinition>();
     const [locationGroup, setLocationGroup] = useAuthenticatedApi<ScheduleDefinition>();
     const [buildings, setBuildings] = useAuthenticatedApi<Building[]>();
