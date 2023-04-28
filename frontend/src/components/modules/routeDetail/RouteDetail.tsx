@@ -5,7 +5,6 @@ import RouteMap from '@/components/modules/routeDetail/RouteMap';
 import {getScheduleDefinitionDetail, getScheduleDefinitionDetailBuildings, useAuthenticatedApi} from '@/api/api';
 import {useSession} from 'next-auth/react';
 import {Building, ScheduleDefinition} from '@/api/models';
-import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
 
 type routeDetailProps = {
     scheduleDefinitionId: ScheduleDefinition['id'] | null,
