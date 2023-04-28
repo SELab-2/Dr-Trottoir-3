@@ -1,8 +1,9 @@
 import {MapContainer, Marker, TileLayer, Tooltip} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import {latLngBounds, LatLngTuple} from 'leaflet';
+import {latLngBounds, LatLngTuple, Map} from 'leaflet';
 import {useRouter} from 'next/router';
 import {Building} from '@/api/models';
+import {createRef, useEffect} from 'react';
 
 interface Props {
     buildings: Building[];
@@ -12,6 +13,7 @@ interface Props {
 
 function RouteMap({buildings, onHovering, hovering}: Props) {
     const router = useRouter();
+    const mapRef = createRef<Map>();
 
     const markers = buildings.map(({name, id, latitude, longitude}, index) => {
         if (latitude && longitude) {
@@ -28,16 +30,23 @@ function RouteMap({buildings, onHovering, hovering}: Props) {
         }
     }).filter((item) => item !== undefined);
 
-    const coords: LatLngTuple[] = buildings
-        .filter(({latitude, longitude}) => latitude && longitude)
-        .map(({latitude, longitude}) => [latitude || 0, longitude || 0]);
-    if (coords.length === 0) {
-        coords.push([50.833341, 3.142672], [51.482056, 5.018877]);
+    function getBounds() {
+        const coords: LatLngTuple[] = buildings
+            .filter(({latitude, longitude}) => latitude && longitude)
+            .map(({latitude, longitude}) => [latitude || 0, longitude || 0]);
+        if (coords.length === 0) {
+            coords.push([50.833341, 3.142672], [51.482056, 5.018877]);
+            return latLngBounds(coords);
+        }
+        return latLngBounds(coords).pad(1);
     }
-    const bounds = latLngBounds(coords);
+
+    useEffect(() => {
+        mapRef.current?.flyToBounds(getBounds());
+    }, [buildings]);
 
     return (
-        <MapContainer style={{width: '100%', height: '100%'}} bounds={bounds}>
+        <MapContainer style={{width: '100%', height: '100%'}} bounds={getBounds()} ref={mapRef}>
             <TileLayer
                 url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
                 attribution='&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
