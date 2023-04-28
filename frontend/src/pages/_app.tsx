@@ -21,7 +21,7 @@ export default function App({Component, pageProps: {session, ...pageProps}}: App
             <Head>
                 <title>DrTrottoir</title>
             </Head>
-            {/*eslint-disable-next-line no-undef*/}
+            {/* eslint-disable-next-line no-undef*/}
             <SessionProvider session={session} basePath={process.env.NEXT_API_AUTH_URL}>
                 {getLayout(<Component {...pageProps} />)}
             </SessionProvider>
