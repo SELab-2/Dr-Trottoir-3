@@ -198,7 +198,9 @@ class Command(BaseCommand):
         for x in garbage_types:
             x.save()
 
-        self.stdout.write("Adding garbage collection schedules and schedule work entries...")
+        self.stdout.write(
+            "Adding garbage collection schedules and schedule work entries..."
+        )
 
         for schedule_assignment in schedule_assignments:
             schedule_definition_of_0 = schedule_assignment.schedule_definition
@@ -211,14 +213,10 @@ class Command(BaseCommand):
             # Add garbage schedules
             for building in buildings_in_schedule_definition_of_0:
                 garbage_collection_schedule_1 = GarbageCollectionSchedule(
-                    for_day=date,
-                    building=building,
-                    garbage_type=garbage_types[0]
+                    for_day=date, building=building, garbage_type=garbage_types[0]
                 )
                 garbage_collection_schedule_2 = GarbageCollectionSchedule(
-                    for_day=date,
-                    building=building,
-                    garbage_type=garbage_types[1]
+                    for_day=date, building=building, garbage_type=garbage_types[1]
                 )
                 garbage_collection_schedule_1.save()
                 garbage_collection_schedule_2.save()
