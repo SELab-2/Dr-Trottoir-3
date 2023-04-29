@@ -1,4 +1,8 @@
-from .building import BuildingSerializer, ScheduleDefinitionBuildingSerializer
+from .building import (
+    BuildingSerializer,
+    PublicBuildingSerializer,
+    ScheduleDefinitionBuildingSerializer,
+)
 from .garbage_collection_schedule import GarbageCollectionScheduleSerializer
 from .garbage_collection_schedule_template import (
     GarbageCollectionScheduleTemplateEntrySerializer,
@@ -29,4 +33,5 @@ __all__ = [
     "ScheduleDefinitionBuildingSerializer",
     "PdfUploadSerializer",
     "UserSerializer",
+    "PublicBuildingSerializer",
 ]

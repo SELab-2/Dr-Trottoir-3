@@ -21,6 +21,7 @@ from drtrottoir.serializers import (
     GarbageCollectionScheduleSerializer,
     GarbageCollectionScheduleTemplateSerializer,
     IssueSerializer,
+    PublicBuildingSerializer,
     ScheduleDefinitionSerializer,
 )
 
@@ -216,7 +217,7 @@ class BuildingViewSet(
         detail=False,
         methods=["GET"],
         # https://ihateregex.io/expr/uuid/
-        url_path=r"link/(?P<uuid>[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})",  # noqa
+        url_path=r"(?P<uuid>[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})",  # noqa
         permission_classes=[],
     )
     def uuid_link(self, request, uuid):
@@ -226,6 +227,6 @@ class BuildingViewSet(
         except Building.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = BuildingSerializer(building)
+        serializer = PublicBuildingSerializer(building)
 
         return Response(serializer.data)
