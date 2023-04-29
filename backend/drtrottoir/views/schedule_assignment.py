@@ -58,10 +58,18 @@ class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet)
         "user": ("exact", "in"),
         "schedule_definition__location_group": ("exact", "in"),
     }
-    search_fields: List[str] = ["schedule_definition__name", "user__username", "user__first_name", "user__last_name"]
+    search_fields: List[str] = [
+        "schedule_definition__name",
+        "user__username",
+        "user__first_name",
+        "user__last_name",
+    ]
 
-    ordering_fields: List[str] = ["schedule_definition__name", "schedule_definition__location_group__name",
-                                  "user__username"]
+    ordering_fields: List[str] = [
+        "schedule_definition__name",
+        "schedule_definition__location_group__name",
+        "user__username",
+    ]
 
     def get_queryset(self):
         """
