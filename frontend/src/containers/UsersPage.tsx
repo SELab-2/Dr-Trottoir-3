@@ -1,7 +1,7 @@
 import ListViewComponent from '@/components/elements/ListViewElement/ListViewComponent';
 import UserElement from '@/components/elements/UserElement/UserElement';
 import {useSession} from 'next-auth/react';
-import {ApiData, getBuildingsList, getLocationGroupsList, getUsersList, useAuthenticatedApi} from '@/api/api';
+import {getBuildingsList, getLocationGroupsList, getUsersList, useAuthenticatedApi} from '@/api/api';
 import {Building, LocationGroup, User} from '@/api/models';
 import React, {useEffect, useState} from 'react';
 import UserTopBarComponent from '@/components/elements/ListViewElement/TopBarElements/UserTopBarComponent';
