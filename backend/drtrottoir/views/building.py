@@ -217,6 +217,7 @@ class BuildingViewSet(
         methods=["GET"],
         # https://ihateregex.io/expr/uuid/
         url_path=r"link/(?P<uuid>[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})",  # noqa
+        permission_classes=[],
     )
     def uuid_link(self, request, uuid):
         try:
