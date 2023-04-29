@@ -1,38 +1,46 @@
-import NextAuth from 'next-auth';
+import NextAuth, {AuthOptions} from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-// import {getCsrfToken} from 'next-auth/react';
 import axios from 'axios';
+import {NextApiRequest, NextApiResponse} from 'next';
 
-// TODO
-// async function refreshAccessToken(tokenObject) {
-//     const csrfToken = await getCsrfToken();
-//     try {
-//         // eslint-disable-next-line no-undef
-//         const url = process.env.NEXT_INTERNAL_API_URL;
-//
-//         return {
-//             ...tokenObject,
-//             accessToken: "",
-//             accessTokenExpires: Date.now() + 100 * 1000,
-//             refreshToken: tokenObject.refreshToken
-//         }
-//     } catch (error) {
-//         return {
-//             ...tokenObject,
-//             error: "RefreshAccessTokenError",
-//         }
-//     }
-// }
+const refreshAccessToken = async (refreshToken: string) => {
+    try {
+        // eslint-disable-next-line no-undef
+        const response = await axios.post(
+            `${process.env.NEXT_INTERNAL_API_URL}auth/token/refresh/`, {refresh: refreshToken}
+        );
+        const {access} = response.data;
+        // eslint-disable-next-line no-undef
+        const decodedJwt = JSON.parse(Buffer.from(access.split('.')[1], 'base64').toString());
+
+        return {
+            accessToken: access,
+            refreshToken: refreshToken,
+            userid: decodedJwt['user_id'],
+            accessTokenExpires: parseInt(decodedJwt['exp']),
+        };
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
 
 
-// A list of providers to sign in with
+const cookie = {
+    // eslint-disable-next-line no-undef
+    secure: process.env.NODE_ENV && process.env.NODE_ENV === 'production',
+};
+const session = {
+    jwt: true,
+    // maxAge: 30 * 24 * 60 * 60,
+};
+
 const providers = [
-
     // eslint-disable-next-line new-cap
     CredentialsProvider({
         name: 'Credentials',
         credentials: {
-            username: {label: 'Username', type: 'text', placeholder: 'jsmith'},
+            username: {label: 'Username', type: 'text'},
             password: {label: 'Password', type: 'password'},
         },
         authorize: async (credentials) => {
@@ -40,36 +48,31 @@ const providers = [
                 if (credentials) {
                     const user = await axios.post(
                         // eslint-disable-next-line no-undef
-                        `${process.env.NEXT_API_URL}auth/token/`, {
+                        `${process.env.NEXT_INTERNAL_API_URL}auth/token/`,
+                        {
                             username: credentials.username,
                             password: credentials.password,
-                        }, {
-                            'headers': {
+                        },
+                        {
+                            headers: {
                                 'Content-Type': 'application/json',
                             },
-                        });
-
-                    // @ts-ignore
+                        }
+                    );
                     if (user.data.access) {
-                        // @ts-ignore
                         return user.data;
                     }
                     return null;
                 }
             } catch (e) {
-                // @ts-ignore
-                throw new Error(e);
+                console.error(e);
             }
         },
     }),
 ];
 
-// these callbacks are run when new access token is received
+
 const callbacks = {
-    // // @ts-ignore
-    // async signIn({ user, account, profile, email, credentials }) {
-    //     return true
-    // },
     // @ts-ignore
     jwt: async ({token, user}) => {
         if (user) {
@@ -80,19 +83,17 @@ const callbacks = {
             token.accessToken = user['access'];
             token.refreshToken = user['refresh'];
             token.userid = decodedJwt['user_id'];
-            token.accessTokenExpires = parseInt(decodedJwt['exp']) * 1000;
+            token.accessTokenExpires = parseInt(decodedJwt['exp']);
         }
 
-
-        // If the token is still valid, just return it.
-        if (Date.now() < token.accessTokenExpires) {
+        if (Date.now() / 1000 < token.accessTokenExpires) {
             return Promise.resolve(token);
         }
 
-        // TODO
-        // token = refreshAccessToken(token);
-        return Promise.resolve(token);
+        const newToken = await refreshAccessToken(token.refreshToken);
+        return Promise.resolve(newToken);
     },
+
     // @ts-ignore
     session: async ({session, token}) => {
         session.accessToken = token.accessToken;
@@ -100,18 +101,22 @@ const callbacks = {
         session.error = token.error;
         session.userid = token.userid;
         session.refreshToken = token.refreshToken;
-
-        // TODO - Should retrieve the permission roles, username, email, ... here and add it to the session.
+        session.jwt = token.jwt;
+        // Length of token - 30s
+        session.maxAge = token.accessTokenExpires - Date.now() / 1000 - 30;
 
         return Promise.resolve(session);
     },
+
     // @ts-ignore
     redirect: async ({url, baseUrl}) => {
         return url;
     },
 };
 
-export const options = {
+const configuration = {
+    cookie,
+    session,
     providers,
     callbacks,
     pages: {
@@ -121,5 +126,5 @@ export const options = {
 
 // @ts-ignore
 // eslint-disable-next-line new-cap
-const Auth = (req, res) => NextAuth(req, res, options);
+const Auth = (req: AuthOptions | NextApiRequest, res: NextApiResponse<any>) => NextAuth(req, res, configuration);
 export default Auth;

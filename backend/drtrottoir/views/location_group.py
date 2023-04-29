@@ -1,3 +1,5 @@
+from typing import Dict, Tuple
+
 from rest_framework import mixins, permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -10,6 +12,8 @@ from drtrottoir.serializers import (
     ScheduleDefinitionSerializer,
 )
 
+from .mixins import PermissionsByActionMixin
+
 
 class LocationGroupViewSet(
     mixins.ListModelMixin,
@@ -17,6 +21,7 @@ class LocationGroupViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
+    PermissionsByActionMixin,
     viewsets.GenericViewSet,
 ):
     """
@@ -66,19 +71,14 @@ class LocationGroupViewSet(
                 All the schedule definitions that are in this location group.
     """
 
-    filterset_fields = ["name"]
-    search_fields = ["name"]
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
     permission_classes_by_action = {
         "retrieve": [permissions.IsAuthenticated],
         "list": [permissions.IsAuthenticated],
     }
 
-    def get_permissions(self):
-        if self.action not in self.permission_classes_by_action:
-            return [perm() for perm in self.permission_classes]
-
-        return [perm() for perm in self.permission_classes_by_action[self.action]]
+    filterset_fields: Dict[str, Tuple[str]] = {}
+    search_fields = ["name"]
 
     queryset = LocationGroup.objects.all()
     serializer_class = LocationGroupSerializer
@@ -86,15 +86,13 @@ class LocationGroupViewSet(
     @action(detail=True)
     def buildings(self, request, pk=None) -> Response:
         location_group: LocationGroup = self.get_object()
-        buildings = self.paginate_queryset(location_group.buildings.all())
+        buildings = location_group.buildings.all()
         serializer = BuildingSerializer(buildings, many=True)
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
     @action(detail=True)
     def schedule_definitions(self, request, pk=None) -> Response:
         location_group: LocationGroup = self.get_object()
-        schedule_definitions = self.paginate_queryset(
-            location_group.schedule_definitions.all()
-        )
+        schedule_definitions = location_group.schedule_definitions.all()
         serializer = ScheduleDefinitionSerializer(schedule_definitions, many=True)
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)

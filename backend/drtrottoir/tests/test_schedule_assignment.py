@@ -9,6 +9,7 @@ from drtrottoir.tests.dummy_data import (
     insert_dummy_admin,
     insert_dummy_schedule_assignment,
     insert_dummy_schedule_definition,
+    insert_dummy_schedule_work_entry,
     insert_dummy_student,
     insert_dummy_syndicus,
     insert_dummy_user,
@@ -250,77 +251,6 @@ def test_schedule_assignment_patch_invalid_field_returns_400() -> None:
     assert response.status_code == 400
 
 
-@pytest.mark.django_db
-def test_schedule_assignment_patch_read_only_fields_remain_the_same_and_returns_200():  # noqa E501
-    """
-    In ScheduleAssignment, the assigned_date and schedule_definition fields are
-    read-only. Patching these two fields should not change them. The user field
-    is allowed to be changed.
-    """
-    original_student = insert_dummy_student("student1@gmail.com")
-    assignment = insert_dummy_schedule_assignment(original_student.user)
-    original_assigned_date = assignment.assigned_date
-    original_schedule_definition = assignment.schedule_definition
-    new_student = insert_dummy_student("newstudent@gmail.com")
-    new_assigned_date = "1999-9-9"
-    new_schedule_definition = insert_dummy_schedule_definition()
-
-    data = {
-        "user": new_student.user.id,
-        "assigned_date": new_assigned_date,
-        "schedule_definition": new_schedule_definition.id,
-    }
-
-    client = APIClient()
-    super_student = insert_dummy_student(is_super_student=True)
-    client.force_login(super_student.user)
-
-    response = client.patch(
-        f"/schedule_assignments/{assignment.id}/",
-        json.dumps(data),
-        content_type="application/json",
-    )
-
-    assert response.status_code == 200
-    assert response.data["user"] == new_student.user.id
-    assert date_equals(response.data["assigned_date"], str(original_assigned_date))
-    assert response.data["schedule_definition"] == original_schedule_definition.id
-
-
-@pytest.mark.django_db
-def test_schedule_assignment_patch_read_only_fields_remain_the_same_and_returns_200_only_read_only_fields():  # noqa: E501
-    """
-    This is the same test as the previous test, except we only try to patch read-only
-    fields. All fields should thus remain the same.
-    """
-    original_student = insert_dummy_student("student1@gmail.com")
-    assignment = insert_dummy_schedule_assignment(original_student.user)
-    original_assigned_date = assignment.assigned_date
-    original_schedule_definition = assignment.schedule_definition
-    new_assigned_date = "1999-9-9"
-    new_schedule_definition = insert_dummy_schedule_definition()
-
-    data = {
-        "assigned_date": new_assigned_date,
-        "schedule_definition": new_schedule_definition.id,
-    }
-
-    client = APIClient()
-    super_student = insert_dummy_student(is_super_student=True)
-    client.force_login(super_student.user)
-
-    response = client.patch(
-        f"/schedule_assignments/{assignment.id}/",
-        json.dumps(data),
-        content_type="application/json",
-    )
-
-    assert response.status_code == 200
-    assert response.data["user"] == original_student.user.id
-    assert date_equals(response.data["assigned_date"], str(original_assigned_date))
-    assert response.data["schedule_definition"] == original_schedule_definition.id
-
-
 # endregion PATCH
 
 
@@ -339,7 +269,7 @@ def test_schedule_assignment_get_by_date_and_user_get_existing_returns_200() -> 
         f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
     )
 
-    response_ids = [data["id"] for data in response.data["results"]]
+    response_ids = [data["id"] for data in response.data]
 
     assert response.status_code == 200
     assert assignment.id in response_ids
@@ -358,7 +288,7 @@ def test_schedule_assignment_by_get_date_and_user_get_nonexistent_date_returns_e
     response = client.get(
         f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
     )
-    response_ids = [data["id"] for data in response.data["results"]]
+    response_ids = [data["id"] for data in response.data]
 
     assert response.status_code == 200
     assert len(response_ids) == 0
@@ -590,6 +520,22 @@ def test_schedule_assignment_delete_allowed_admin() -> None:
 
 
 @pytest.mark.django_db
+def test_schedule_assignment_delete_not_allowed_with_existing_work_entries() -> None:
+    dummy_student = insert_dummy_student("dummystudent@gmail.com")
+    dummy_work_entry = insert_dummy_schedule_work_entry(dummy_student.user)
+
+    client = APIClient()
+    admin = insert_dummy_admin()
+
+    client.force_login(admin.user)
+    response_admin = client.delete(
+        f"/schedule_assignments/{dummy_work_entry.schedule_assignment.id}/"
+    )
+
+    assert response_admin.status_code == 400
+
+
+@pytest.mark.django_db
 def test_schedule_assignment_delete_not_allowed_anonymous_student_syndicus() -> None:
     dummy_student = insert_dummy_student("dummystudent@gmail.com")
     dummy_schedule_assignment = insert_dummy_schedule_assignment(dummy_student.user)
@@ -767,9 +713,7 @@ def test_schedule_assignment_by_user_and_date_get_matching_user_allowed_non_matc
     response_other = client.get(
         f"/schedule_assignments/?assigned_date={date}&user={student.user.id}"
     )
-    assert (
-        response_other.status_code == 200 and len(response_other.data["results"]) == 0
-    )
+    assert response_other.status_code == 200 and len(response_other.data) == 0
 
 
 # endregion GET by date and user

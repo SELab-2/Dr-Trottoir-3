@@ -13,4 +13,4 @@ class BuildingSerializer(serializers.ModelSerializer):
 class ScheduleDefinitionBuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScheduleDefinitionBuilding
-        fields = "__all__"
+        fields = ["building", "position"]

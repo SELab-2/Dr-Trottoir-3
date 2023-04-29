@@ -26,14 +26,20 @@ export type GarbageCollectionSchedule = {
     for_day: string;
     building: number;
     garbage_type: number;
+    note: string;
 };
 
 export type Building = {
     id: number;
+    name: string,
     address: string;
     pdf_guide: string;
     is_active: boolean;
     location_group: number;
+    image: string;
+    description: string;
+    longitude: number | null,
+    latitude: number | null,
 };
 
 export type ScheduleAssignment = {
@@ -50,6 +56,7 @@ export type ScheduleWorkEntry = {
     creator: number;
     building: number;
     schedule_assignment: number;
+    entry_type: string;
 };
 
 export type ScheduleDefinition = {
@@ -58,4 +65,39 @@ export type ScheduleDefinition = {
     version: number;
     location_group: number;
     buildings: number[];
+}
+
+export type Student = {
+    id: number,
+    user: number,
+    is_super_student: boolean,
+    location_group: number,
+}
+
+export type Admin = {
+    id: number,
+    user: number,
+}
+
+export type Syndicus = {
+    id: number,
+    user: number,
+}
+
+export type User = {
+    id: number,
+    first_name: string,
+    last_name: string,
+    student: undefined | Student,
+    admin: undefined | Admin,
+    syndicus: undefined | Syndicus,
+}
+
+export type Issue = {
+    id: number
+    resolved: boolean,
+    message: string,
+    building: number,
+    from_user: number,
+    approval_user: number | null | undefined
 }

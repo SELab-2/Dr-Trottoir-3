@@ -41,6 +41,7 @@ class Building(models.Model):
         is_active (bool): Whether a building is active. Defaults to True
     """
 
+    name = models.CharField(max_length=255, default="")
     address = models.CharField(max_length=255)
     pdf_guide = models.FileField(upload_to=get_file_path_building_pdf_guide, null=True)
     location_group = models.ForeignKey(
@@ -50,6 +51,8 @@ class Building(models.Model):
     description = models.TextField(null=True)
     image = models.ImageField(upload_to=get_file_path_building_image, null=True)
     secret_link = models.UUIDField(null=True, unique=True)
+    longitude = models.DecimalField(max_digits=22, decimal_places=16, null=True)
+    latitude = models.DecimalField(max_digits=22, decimal_places=16, null=True)
 
 
 class ScheduleDefinition(models.Model):
@@ -93,6 +96,10 @@ class ScheduleDefinitionBuilding(models.Model):
         ScheduleDefinition, on_delete=models.CASCADE
     )
     position = models.IntegerField()
+
+    # class Meta:
+    #     constraints = [models.UniqueConstraint(fields=['building',
+    #     'position'], name='unique_building_position')]
 
 
 class User(AbstractUser):
@@ -150,7 +157,7 @@ class Syndicus(models.Model):
     """
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    buildings = models.ManyToManyField(Building)
+    buildings = models.ManyToManyField(Building, related_name="syndici")
 
 
 class Issue(models.Model):

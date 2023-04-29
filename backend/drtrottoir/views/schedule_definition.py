@@ -1,7 +1,12 @@
 from rest_framework import mixins, permissions, viewsets
 from rest_framework.decorators import action
+from rest_framework.response import Response
 
-from drtrottoir.models import ScheduleDefinition, ScheduleWorkEntry
+from drtrottoir.models import (
+    ScheduleDefinition,
+    ScheduleDefinitionBuilding,
+    ScheduleWorkEntry,
+)
 from drtrottoir.permissions import (
     HasAssignmentForScheduleDefinition,
     IsSuperstudentOrAdmin,
@@ -9,15 +14,19 @@ from drtrottoir.permissions import (
 from drtrottoir.serializers import (
     BuildingSerializer,
     ScheduleAssignmentSerializer,
+    ScheduleDefinitionBuildingSerializer,
     ScheduleDefinitionSerializer,
     ScheduleWorkEntrySerializer,
 )
+
+from .mixins import PermissionsByActionMixin
 
 
 class ScheduleDefinitionViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.ListModelMixin,
+    PermissionsByActionMixin,
     viewsets.GenericViewSet,
 ):
     """
@@ -66,7 +75,11 @@ class ScheduleDefinitionViewSet(
     queryset = ScheduleDefinition.objects.all()
     serializer_class = ScheduleDefinitionSerializer
 
-    filterset_fields = ["version"]
+    filterset_fields = {
+        "version": ("exact", "in"),
+        "location_group": ("exact", "in"),
+        "buildings": ("exact",),
+    }
     search_fields = ["name"]
 
     # This method allows more granular selection of permissions for any given
@@ -75,38 +88,90 @@ class ScheduleDefinitionViewSet(
     permission_classes_by_action = {
         "retrieve": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
         "buildings": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
+        "order": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
     }
-
-    def get_permissions(self):
-        if self.action not in self.permission_classes_by_action:
-            return [perm() for perm in self.permission_classes]
-
-        return [perm() for perm in self.permission_classes_by_action[self.action]]
 
     @action(detail=True)
     def buildings(self, request, pk=None):
         schedule_definition = self.get_object()
-        buildings = self.paginate_queryset(schedule_definition.buildings.all())
+        buildings = schedule_definition.buildings.all()
         serializer = BuildingSerializer(buildings, many=True)
 
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
+
+    @action(detail=True)
+    def order(self, request, pk=None):
+        schedule_definition = self.get_object()
+        buildings = ScheduleDefinitionBuilding.objects.filter(
+            schedule_definition=schedule_definition
+        ).order_by("position")
+        serializer = ScheduleDefinitionBuildingSerializer(buildings, many=True)
+
+        return Response(serializer.data)
+
+    # This counts as a different action than 'buildings', and therefore falls
+    # under the default permission_classes
+    @order.mapping.post
+    def set_order(self, request, pk=None):
+        serializer = ScheduleDefinitionBuildingSerializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+
+        schedule_definition = self.get_object()
+
+        # Remove old order & replace with new order
+        ScheduleDefinitionBuilding.objects.filter(
+            schedule_definition=schedule_definition
+        ).delete()
+        ScheduleDefinitionBuilding.objects.bulk_create(
+            (
+                ScheduleDefinitionBuilding(
+                    schedule_definition=schedule_definition,
+                    building=building["building"],
+                    position=building["position"],
+                )
+                for building in serializer.validated_data
+            )
+        )
+
+        # Return ordered list of buildings
+        return self.order(request, pk)
 
     @action(detail=True)
     def schedule_assignments(self, request, pk=None):
         schedule_definition = self.get_object()
-        assignments = self.paginate_queryset(schedule_definition.assignments.all())
+        assignments = schedule_definition.assignments.all()
         serializer = ScheduleAssignmentSerializer(assignments, many=True)
 
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
     @action(detail=True)
     def schedule_work_entries(self, request, pk=None):
         schedule_definition = self.get_object()
-        schedule_work_entries = self.paginate_queryset(
-            ScheduleWorkEntry.objects.filter(
-                schedule_assignment__schedule_definition=schedule_definition
-            )
+        schedule_work_entries = ScheduleWorkEntry.objects.filter(
+            schedule_assignment__schedule_definition=schedule_definition
         )
         serializer = ScheduleWorkEntrySerializer(schedule_work_entries, many=True)
 
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
+
+    @action(detail=False)
+    def newest(self, request):
+        # This proved to be an incredibly difficult query to perform using just
+        # ORM instructions, so I've written an SQL query instead
+        schedule_definitions = ScheduleDefinition.objects.raw(
+            """
+SELECT t1.*
+    FROM drtrottoir_scheduledefinition t1
+    INNER JOIN
+    (
+        SELECT name, MAX(version) AS max_version
+        FROM drtrottoir_scheduledefinition
+        GROUP BY name
+    ) t2
+        ON t1.name = t2.name AND t1.version = t2.max_version
+            """
+        )
+
+        serializer = ScheduleDefinitionSerializer(schedule_definitions, many=True)
+
+        return Response(serializer.data)
