@@ -6,7 +6,7 @@ import {
     Select,
     SelectChangeEvent,
 } from '@mui/material';
-import {LocationGroup} from '@/api/models';
+import {LocationGroup, User} from '@/api/models';
 import React from 'react';
 import styles from './topBar.module.css';
 import SearchIcon from '@mui/icons-material/Search';
@@ -27,10 +27,11 @@ type TopBarProps = {
     searchEntry: string,
     setSearchEntry: React.Dispatch<React.SetStateAction<string>>,
     handleSearch: (b: boolean) => void,
+    allSyndici: User[],
 };
 
 export default function BuildingTopBarComponent({sorttype, setSorttype, selectedRegions, setRegion, allRegions,
-    searchEntry, setSearchEntry, handleSearch}:TopBarProps) {
+    searchEntry, setSearchEntry, handleSearch, allSyndici}:TopBarProps) {
     const AllesSelected = selectedRegions.length >= allRegions.length;
 
     const handleChangeRegion = (event: SelectChangeEvent<LocationGroup[]>) => {
@@ -183,7 +184,7 @@ export default function BuildingTopBarComponent({sorttype, setSorttype, selected
                 invisible={false}
             >
                 <Form setCanClose={setCanClose} canClose={canClose} setOpen={setOpen}
-                    allRegions={allRegions}></Form>
+                    allRegions={allRegions} allSyndici={allSyndici}></Form>
             </Backdrop>
         </div>
     );

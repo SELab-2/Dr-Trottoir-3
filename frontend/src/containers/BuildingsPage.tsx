@@ -5,8 +5,8 @@ import BuildingTopBarComponent from '@/components/elements/ListViewElement/TopBa
 import BuildingDetail from '@/components/elements/BuildingDetailElement/BuildingDetail';
 import React, {useEffect, useState} from 'react';
 import {useSession} from 'next-auth/react';
-import {getBuildingsList, getLocationGroupsList, useAuthenticatedApi} from '@/api/api';
-import {Building, LocationGroup} from '@/api/models';
+import {getBuildingsList, getLocationGroupsList, getUsersList, useAuthenticatedApi} from '@/api/api';
+import {Building, LocationGroup, User} from '@/api/models';
 import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded';
 
 export default function BuildingsPage() {
@@ -19,13 +19,17 @@ export default function BuildingsPage() {
     const [searchEntry, setSearchEntry] = useState('');
     const [sorttype, setSorttype] = useState('name');
 
+    const [allSyndici, setAllSyndici] = useAuthenticatedApi<User[]>();
+
     useEffect(() => {
         getLocationGroupsList(session, setLocationGroups);
+        getUsersList(session, setAllSyndici, {syndicus__id__gt: 0});
     }, [session]);
 
     useEffect(() => {
         handleSearch(false);
     }, [session, selectedRegions, sorttype]);
+
 
     const handleSearch = (clear: boolean = false) => {
         let searchEntryOverwritten: string;
@@ -50,6 +54,7 @@ export default function BuildingsPage() {
         searchEntry={searchEntry}
         setSearchEntry={setSearchEntry}
         handleSearch={handleSearch}
+        allSyndici={allSyndici ? allSyndici.data: []}
     />;
 
 

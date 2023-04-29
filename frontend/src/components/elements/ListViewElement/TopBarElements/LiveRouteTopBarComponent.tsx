@@ -15,7 +15,7 @@ import {LocationGroup} from '@/api/models';
 import Button from '@mui/material/Button';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
-import {Clear} from "@mui/icons-material";
+import {Clear} from '@mui/icons-material';
 
 type TopBarProps = {
     sorttype: string,
