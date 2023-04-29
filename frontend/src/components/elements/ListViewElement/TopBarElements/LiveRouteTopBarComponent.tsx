@@ -15,6 +15,7 @@ import {LocationGroup} from '@/api/models';
 import Button from '@mui/material/Button';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
+import {Clear} from "@mui/icons-material";
 
 type TopBarProps = {
     sorttype: string,
@@ -25,11 +26,12 @@ type TopBarProps = {
     amountOfResults: number,
     searchEntry: string,
     setSearchEntry: React.Dispatch<React.SetStateAction<string>>,
+    handleSearch: (b: boolean) => void,
 }
 
 export default function LiveRouteTopBarComponent(
     {sorttype, setSorttype, selectedRegions, setSelectedRegions, allRegions,
-        searchEntry, setSearchEntry}:TopBarProps) {
+        searchEntry, setSearchEntry, handleSearch}:TopBarProps) {
     const AllesSelectedRegions = selectedRegions.length>=allRegions.length;
 
     const handleChangeRegion = (event: SelectChangeEvent<LocationGroup[]>) => {
@@ -65,7 +67,7 @@ export default function LiveRouteTopBarComponent(
     return (
         <div className={styles.topBar}>
             <div className={styles.search_container}>
-                <IconButton type="button" sx={{p: '10px'}} aria-label="search">
+                <IconButton type="button" sx={{p: '10px'}} aria-label="search" onClick={() => handleSearch(false)}>
                     <SearchIcon />
                 </IconButton>
                 <InputBase
@@ -74,7 +76,20 @@ export default function LiveRouteTopBarComponent(
                     fullWidth={true}
                     value={searchEntry}
                     onChange={(e) => setSearchEntry(e.target.value as string)}
+                    onKeyDown={(e) => {
+                        if (e.key == 'Enter') {
+                            handleSearch(false);
+                        }
+                    }}
                 />
+                <IconButton type="button" sx={{p: '10px'}} aria-label="clear" onClick={
+                    (e) => {
+                        setSearchEntry('');
+                        handleSearch(true);
+                    }
+                }>
+                    <Clear />
+                </IconButton>
             </div>
             <div className={styles.filters_container}>
                 <Button className={styles.filter_button}>

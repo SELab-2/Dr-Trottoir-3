@@ -202,9 +202,9 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
                         value={selectedActive}
                         onChange={(e) => setSelectedActive(e.target.value as string)}
                         label="Type"
-                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>
-                            {selectedActive.toString() === 'true' ? 'Actief' : 'Alle'}
-                        </p>}
+                        // renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>
+                        //     {selectedActive.toString() === 'true' ? 'Actief' : 'Alle'}
+                        // </p>}
                     >
                         {Object.entries(newestOnly).map(([option, value]) => (
                             <MenuItem key={option} value={option}
