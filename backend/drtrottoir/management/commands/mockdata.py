@@ -184,7 +184,21 @@ class Command(BaseCommand):
         for s in schedule_assignments:
             s.save()
 
-        self.stdout.write("Adding schedule work entries...")
+        self.stdout.write("Adding garbage types...")
+        types = [
+            "Rest",
+            "GFT",
+            "Glas",
+            "PMD",
+            "Klein Gevaarlijk Afval",
+            "Nucleair Afval",
+        ]
+        garbage_types = [GarbageType(name=t) for t in types]
+
+        for x in garbage_types:
+            x.save()
+
+        self.stdout.write("Adding garbage collection schedules and schedule work entries...")
 
         for schedule_assignment in schedule_assignments:
             schedule_definition_of_0 = schedule_assignment.schedule_definition
@@ -194,6 +208,22 @@ class Command(BaseCommand):
                 schedule_definition_of_0.buildings.all()
             )
 
+            # Add garbage schedules
+            for building in buildings_in_schedule_definition_of_0:
+                garbage_collection_schedule_1 = GarbageCollectionSchedule(
+                    for_day=date,
+                    building=building,
+                    garbage_type=garbage_types[0]
+                )
+                garbage_collection_schedule_2 = GarbageCollectionSchedule(
+                    for_day=date,
+                    building=building,
+                    garbage_type=garbage_types[1]
+                )
+                garbage_collection_schedule_1.save()
+                garbage_collection_schedule_2.save()
+
+            # Add work entries
             work_entries = []
 
             for index in range(len(buildings_in_schedule_definition_of_0) - 2):
@@ -286,20 +316,6 @@ class Command(BaseCommand):
 
             for x in work_entries:
                 x.save()
-
-        self.stdout.write("Adding garbage types...")
-        types = [
-            "Rest",
-            "GFT",
-            "Glas",
-            "PMD",
-            "Klein Gevaarlijk Afval",
-            "Nucleair Afval",
-        ]
-        garbage_types = [GarbageType(name=t) for t in types]
-
-        for x in garbage_types:
-            x.save()
 
         self.stdout.write("Adding garbage collection schedule templates...")
 

@@ -1,5 +1,4 @@
 import {Box, IconButton, TextField, Typography} from '@mui/material';
-import Carousel from 'react-material-ui-carousel';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import {Add, CameraAltRounded, ChevronLeft, ChevronRight} from '@mui/icons-material';
@@ -27,11 +26,11 @@ interface IActiveRouteData {
   work_entries_done: { AR: boolean, WO: boolean, DE: boolean }
 }
 
-export default function ActiveRouteComponent(props: { id: number; }): JSX.Element {
-    const {id: id} = props;
+export default function ActiveRouteComponent(props: { scheduleAssignmentId: number; }): JSX.Element {
+    const {scheduleAssignmentId: id} = props;
     const {data: session} = useSession();
 
-    const [activeRoutes, setActiveRoutes] = React.useState<IActiveRouteData[] | undefined>(undefined);
+    const [activeRoutes, setActiveRoutes] = React.useState<IActiveRouteData[]>([]);
     const [scheduleAssignment, setScheduleAssignment] = useAuthenticatedApi<ScheduleAssignment>();
     const [scheduleDefinition, setScheduleDefinition] = useAuthenticatedApi<ScheduleDefinition>();
     const [garbageSchedules, setGarbageSchedules] = useAuthenticatedApi<GarbageCollectionSchedule[]>();
@@ -39,7 +38,7 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
     const [garbageTypes, setGarbageTypes] = useAuthenticatedApi<GarbageType[]>();
     const [scheduleWorkEntries, setScheduleWorkEntries] = useAuthenticatedApi<ScheduleWorkEntry[]>();
     const [sessionError, setSessionError] = React.useState(0);
-
+    const [activeRouteBuildingIndex, setActiveRouteBuildingIndex] = React.useState<number>(0);
     // Get schedule assignment
     useEffect(() => {
         getScheduleAssignmentDetail(session, setScheduleAssignment, id);
@@ -146,17 +145,16 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
         return <ErrorPage status={sessionError}/>;
     }
 
-    if (activeRoutes === undefined) {
-        return <p>Loading...</p>;
-    }
-
-    if (activeRoutes.length === 0) {
-        return <p>This schedule has no entries...</p>;
+    function showSlide(slide: number): void {
+        if (activeRoutes !== null) {
+            const total = activeRoutes.length;
+            const index = ((slide % total) + total) % total;
+            setActiveRouteBuildingIndex(index);
+        }
     }
 
     // @ts-ignore
     const user = session.userid;
-
 
     async function uploadIssue(route: IActiveRouteData, message: string, images: Set<File>): Promise<void> {
         const issue = {
@@ -178,6 +176,7 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
                 }
             }
         });
+        alert('Opmerking verzonden.');
     }
 
     async function uploadScheduleWorkEntry(route: IActiveRouteData, type: string, image: File) {
@@ -270,29 +269,21 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
 
         return (
             <Box
-                className={styles.active_route_issue}
-                style={{background: 'var(--secondary-light)', color: 'var(--secondary-dark)', display: 'inline-block'}}
-            >
+                className={styles.active_route_issue}>
                 {/* Input text */}
                 <TextField
                     aria-label="minimum height"
-                    minRows={3}
+                    minRows={2}
                     maxRows={3}
-                    placeholder={'Issue'}
+                    placeholder={'Opmerking'}
                     value={issueText}
                     multiline={true}
-                    style={{width: '100%', height: '75%', resize: 'none'}}
                     onChange={(e) => setIssueText(e.target.value)}
+                    className={styles.active_route_issue_box}
                 />
                 <br/>
                 {/* Buttons */}
-                <Box style={{
-                    display: 'flex',
-                    flexWrap: 'nowrap',
-                    flexDirection: 'row',
-                    justifyContent: 'space-around',
-                    alignItems: 'center',
-                }}>
+                <Box className={styles.active_route_issue_icons}>
                     {/* Clear button */}
                     <IconButton onClick={clearIssue}>
                         <CancelIcon></CancelIcon>
@@ -324,44 +315,61 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
                             // Clear issue data
                             clearIssue();
                         } else {
-                            alert('Error: issue message is empty.');
+                            alert('Error: opmerkingsveld is leeg.');
                         }
                     }}>
                         <PublishIcon></PublishIcon>
                     </IconButton>
                 </Box>
-
             </Box>);
+    }
+
+    function ActiveRouteData(props: { route: IActiveRouteData }): JSX.Element {
+        const {route} = props;
+        return (<Box className={styles.active_route_data}>
+            {
+                route.name ?
+                    <><h1>{route.name}</h1><br/></> :
+                    <></>
+            }
+            <p>{route.address}</p>
+            <p>{route.garbage}</p>
+            {
+                route.pdf_guide ?
+                    <><br/><a href={route.pdf_guide} style={{textDecoration: 'underline'}}>Handleiding</a></>:
+                    <></>
+            }
+        </Box>);
     }
 
     // View of a single route item
     function ActiveRouteItem(props: { route: IActiveRouteData }): JSX.Element {
         const {route} = props;
         return (
-            <div className={styles.grid_test}>
-                {/* Building data */}
-                <Box
-                    className={styles.active_route_data}
-                >
-                    <h1>{route.name}</h1>
-                    <br/>
-                    <p>{route.address}</p>
-                    <p>{route.garbage}</p>
-                    <br/>
-                    {
-                        route.pdf_guide ?
-                            <a href={route.pdf_guide} style={{textDecoration: 'underline'}}>Handleiding</a> :
-                            <p></p>
-                    }
-                </Box>
+            <div className={styles.active_route_grid}>
+                <div style={{display: 'grid', gridTemplateRows: '100%', gridTemplateColumns: '15% 70% 15%'}}>
+                    {/* Button previous */}
+                    <IconButton onClick={()=> showSlide(activeRouteBuildingIndex-1)}>
+                        <ChevronLeft/>
+                    </IconButton>
+                    {/* Building data */}
+                    <ActiveRouteData route={route}/>
+                    {/* Button next */}
+                    <IconButton onClick={()=> showSlide(activeRouteBuildingIndex+1)}>
+                        <ChevronRight/>
+                    </IconButton>
+                </div>
                 {/* Building image */}
-                <Box className={styles.active_route_image_container}>
-                    {
-                        route.image ?
-                            <img src={route.image} alt={'building'}/> :
-                            <img src={defaultBuildingImage} alt={'building'}/>
-                    }
-                </Box>
+                {
+                    <Box className={styles.active_route_image_container}>
+                        {
+                            route.image ?
+                                <img className={styles.active_route_image} src={route.image} alt={'building'}/> :
+                                <img className={styles.active_route_image} src={defaultBuildingImage} alt={'building'}/>
+
+                        }
+                    </Box>
+                }
                 {/* Work entries */}
                 <ActiveRouteItemEntries route={route}/>
                 {/* Issues */}
@@ -370,35 +378,18 @@ export default function ActiveRouteComponent(props: { id: number; }): JSX.Elemen
         );
     }
 
+    if (activeRoutes.length === 0) {
+        return <p>No entries...</p>;
+    }
+
+
     return (
-        <>
-            <Carousel
-                NextIcon={<ChevronRight/>}
-                PrevIcon={<ChevronLeft/>}
-                autoPlay={false}
-                animation={'slide'}
-                indicators={false}
-                navButtonsAlwaysVisible={true}
-                fullHeightHover={false}
-                swipe={false}
-                navButtonsWrapperProps={{
-                    style: {
-                        // Move them to the middle of the top row
-                        bottom: 'unset',
-                        top: '5%',
-                    },
-                }}
-            >
-                {
-                    activeRoutes.map((route) =>
-                        <ActiveRouteItem
-                            key={route.building_id}
-                            route={route}
-                        />
-                    )
-                }
-            </Carousel>
-        </>
+        // TODO remove the outer div when implementing this in the application
+        <div style={{height: '640px', width: '360px', border: 'solid 4px orange'}}>
+            <ActiveRouteItem
+                key={activeRoutes[activeRouteBuildingIndex].building_id}
+                route={activeRoutes[activeRouteBuildingIndex]}
+            />
+        </div>
     );
 }
-
