@@ -36,7 +36,8 @@ export enum Api {
     Users = 'users/',
     UserDetail = 'users/:id/',
     Issues = 'issues/',
-    IssueDetail = 'issues/:id/'
+    IssueDetail = 'issues/:id/',
+    Me = 'users/me/'
 }
 
 
@@ -798,6 +799,24 @@ const patchIssueDetail = (session: Session | null, id: number, data: any, setter
         });
 };
 
+async function getMeFromAPI(route: Api, session: any) {
+    const data = await axios.get(process.env.NEXT_API_URL + route, {headers: getAuthHeader(session)});
+
+    if (!('data' in data)) {
+        throw new ApiError(data);
+    }
+
+    return data;
+}
+const getMe = (session: Session | null, setter: ((e:any) => void)) => {
+    getMeFromAPI(Api.Me, session)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
+};
 
 export {
     useAuthenticatedApi,
@@ -831,6 +850,7 @@ export {
     getUsersList,
     getUserDetail,
     getIssueDetail,
+    getMe,
 
     postGarbageType,
     postLocationGroup,
