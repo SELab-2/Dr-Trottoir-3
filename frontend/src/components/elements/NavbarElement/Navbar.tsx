@@ -9,16 +9,16 @@ import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
 import DesktopNavbarComponent from './DesktopNavbarComponent';
 import MobileNavbarComponent from './MobileNavbarComponent';
 import {useSession} from 'next-auth/react';
-import {getMe, useAuthenticatedApi} from "@/api/api";
-import {User} from "@/api/models";
+import {getMe, useAuthenticatedApi} from '@/api/api';
+import {User} from '@/api/models';
 
 const topButtonsStudent = [
     {id: '0', text: 'Mijn Planning', href: '/my-schedule', icon: DateRangeIcon},
-]
+];
 
 const topButtonsSyndicus = [
     {id: '0', text: 'Mijn Gebouwen', href: '/my-buildings', icon: DateRangeIcon},
-]
+];
 
 const topButtonsAdmin = [
     {id: '0', text: 'Planner', href: '/scheduler', icon: DateRangeIcon},
@@ -26,7 +26,7 @@ const topButtonsAdmin = [
     {id: '2', text: 'Gebruikers', href: '/users', icon: PeopleAltRoundedIcon},
     {id: '3', text: 'Routes', href: '/routes', icon: RouteIcon},
     {id: '4', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon},
-]
+];
 
 const includeRoutes = [
     '/scheduler',
@@ -60,15 +60,17 @@ export default function Navbar(props: any) {
     const [userData, setUserData] = useAuthenticatedApi<User>();
 
     useEffect(() => {
-        if(session) {
-            //@ts-ignore
+        if (session) {
+            // @ts-ignore
             getMe(session, setUserData);
         }
     }, [session]);
 
     const showNavBar = includeRoutes.includes(router.asPath);
 
-    const [topButtonsForUser, setTopButtonsForUser] = useState<Array<{id: string, text: string, href: string, icon: any }>>([]);
+    const [topButtonsForUser, setTopButtonsForUser] =
+        useState<Array<{id: string, text: string, href: string, icon: any}>>([]);
+
     useEffect(() => {
         if (userData && userData.data) {
             if (userData.data.student && !userData.data.student.is_super_student) {

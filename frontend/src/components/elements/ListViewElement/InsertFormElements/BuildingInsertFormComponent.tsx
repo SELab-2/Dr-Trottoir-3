@@ -82,7 +82,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                             >
                                 {allRegions.map((option) => (
                                     <MenuItem id='menuitem' key={option.id} value={option.id}
-                                              style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                                        style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                         {option.name}
                                     </MenuItem>
                                 ))}
@@ -137,7 +137,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                                 </MenuItem>
                                 {dummySindici.map((option) => (
                                     <MenuItem id='menuitem' key={option.name} value={option.name}
-                                              style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                                        style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                         {option.name}
                                     </MenuItem>
                                 ))}
@@ -149,7 +149,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                             Cancel
                         </Button>
                         <Button variant='contained' className={styles.button} onClick={handleSubmitForm}
-                                style={{backgroundColor: '#E6E600'}}>
+                            style={{backgroundColor: '#E6E600'}}>
                             Submit
                         </Button>
                     </div>
