@@ -101,3 +101,13 @@ export type Issue = {
     from_user: number,
     approval_user: number | null | undefined
 }
+
+export type PublicBuilding = {
+    name: string,
+    address: string,
+    description: string | null,
+    image: string | null,
+    longitude: number | null,
+    latitude: number | null,
+    schedule_work_entries: ScheduleWorkEntry[]
+}
