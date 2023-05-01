@@ -19,7 +19,7 @@ function BuildingMap({longitude, latitude}: Props) {
 
     return (
         <MapContainer style={{width: '100%', height: '100%'}} zoom={latitude && longitude ? 14 : 9} ref={mapRef}
-                      center={latitude && longitude ? [latitude, longitude] : [51.1576985, 4.0807745]}>
+            center={latitude && longitude ? [latitude, longitude] : [51.1576985, 4.0807745]}>
             <TileLayer
                 url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
                 attribution='&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'

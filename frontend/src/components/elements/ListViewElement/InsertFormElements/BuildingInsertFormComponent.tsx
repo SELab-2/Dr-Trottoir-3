@@ -55,6 +55,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allSyn
 
     const [formName, setFormName] = React.useState('');
     const [formAddress, setFormAddress] = React.useState('');
+    const [formAddressError, setFormAddressError] = React.useState(false);
     const [formCoordinate, setFormCoordinate] = React.useState<LatLng>(new LatLng(51.1576985, 4.0807745));
     const [formRegion, setFormRegion] = React.useState<LocationGroup>();
     const [formSyndic, setFormSyndic] = React.useState<User>();
@@ -97,18 +98,20 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allSyn
                             </Select>
                         </FormControl>
                         <div className={styles.field}>
-                            <TextField
-                                required
-                                label='adres'
-                                value={formAddress}
-                                onChange={(e) => setFormAddress(e.target.value as string)}
+                            <TextField error={formAddressError}
+                                       required
+                                       label='adres'
+                                       value={formAddress}
+                                       onChange={(e) => setFormAddress(e.target.value as string)}
                             />
                             <IconButton onClick={() => {
                                 axios
                                     .get(`https://nominatim.openstreetmap.org/search?format=json&q=${formAddress}`)
                                     .then(({data}) => {
-                                        if (data[0]) setFormCoordinate(new LatLng(data[0].lat, data[0].lon));
-                                        console.log(data);
+                                        if (data[0]) {
+                                            setFormCoordinate(new LatLng(data[0].lat, data[0].lon));
+                                            setFormAddressError(false);
+                                        } else setFormAddressError(true);
                                     })
                                     .catch((error) => {
                                         console.error(error);
