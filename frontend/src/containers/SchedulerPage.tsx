@@ -72,6 +72,6 @@ export default function SchedulerPage() {
                     buildings={buildings}
                     interval={interval}/>
             </div>
-    </>
+        </>
     );
 }

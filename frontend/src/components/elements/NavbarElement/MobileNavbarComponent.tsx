@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Router, {NextRouter} from 'next/router';
 import styles from './navbar.mobile.module.css';
 import Button from '@mui/material/Button';
@@ -12,17 +12,39 @@ import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import {getMe, useAuthenticatedApi} from '@/api/api';
+import {User} from '@/api/models';
+import {useSession} from 'next-auth/react';
 
-const topButtons = [
+
+const topButtonsStudent = [
+    {id: '0', text: 'Mijn Planning', href: '/my-schedule', icon: DateRangeIcon},
+    {id: '1', text: 'Logout', href: '/logout', icon: LogoutRoundedIcon},
+];
+
+const topButtonsSyndicus = [
+    {id: '0', text: 'Mijn Gebouwen', href: '/my-buildings', icon: DateRangeIcon},
+    {id: '1', text: 'Logout', href: '/logout', icon: LogoutRoundedIcon},
+];
+
+const topButtonsAdmin = [
     {id: '0', text: 'Planner', href: '/scheduler', icon: DateRangeIcon},
     {id: '1', text: 'Live Routes', href: '/live_routes', icon: SensorsRoundedIcon},
     {id: '2', text: 'Gebruikers', href: '/users', icon: PeopleAltRoundedIcon},
     {id: '3', text: 'Routes', href: '/routes', icon: RouteIcon},
     {id: '4', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon},
-    {id: '4', text: 'Logout', href: '/logout', icon: LogoutRoundedIcon},
+    {id: '5', text: 'Logout', href: '/logout', icon: LogoutRoundedIcon},
 ];
 
-const botButtons = [
+const botButtonsStudent = [
+    {id: '0', text: 'Mijn Planning', href: '/my-schedule', icon: DateRangeIcon},
+];
+
+const botButtonsSyndicus = [
+    {id: '0', text: 'Mijn Gebouwen', href: '/my-buildings', icon: DateRangeIcon},
+];
+
+const botButtonsAdmin = [
     {id: '0', text: 'Planner', href: '/scheduler', icon: DateRangeIcon},
     {id: '1', text: 'Live Routes', href: '/live_routes', icon: SensorsRoundedIcon},
     {id: '2', text: 'Gebruikers', href: '/users', icon: PeopleAltRoundedIcon},
@@ -32,6 +54,37 @@ const botButtons = [
 
 export default function MobileNavbar(props: navbarProps) {
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
+
+    const {data: session} = useSession();
+
+    const [userData, setUserData] = useAuthenticatedApi<User>();
+
+    useEffect(() => {
+        if (session) {
+            // @ts-ignore
+            getMe(session, setUserData);
+        }
+    }, [session]);
+
+    const [topButtonsForUser, setTopButtonsForUser] =
+        useState<Array<{id: string, text: string, href: string, icon: any}>>([]);
+    const [botButtonsForUser, setBotButtonsForUser] =
+        useState<Array<{id: string, text: string, href: string, icon: any}>>([]);
+
+    useEffect(() => {
+        if (userData && userData.data) {
+            if (userData.data.student && !userData.data.student.is_super_student) {
+                setTopButtonsForUser(topButtonsStudent);
+                setBotButtonsForUser(botButtonsStudent);
+            } else if (userData.data.syndicus) {
+                setTopButtonsForUser(topButtonsSyndicus);
+                setBotButtonsForUser(botButtonsSyndicus);
+            } else {
+                setTopButtonsForUser(topButtonsAdmin);
+                setBotButtonsForUser(botButtonsAdmin);
+            }
+        }
+    }, [userData]);
 
     return (
         <div className={styles.full}>
@@ -56,7 +109,7 @@ export default function MobileNavbar(props: navbarProps) {
             </div>
 
             <div className={styles.bot_bar_container}>
-                { botButtons.map((term) =>
+                { botButtonsForUser.map((term) =>
                     <MobileNavIconButton key={term.id} router={props.router} nextPath={props.nextPath}
                         setNextPath={props.setNextPath} href={term.href} text={term.text}
                         Icon={term.icon} />
@@ -85,7 +138,7 @@ export default function MobileNavbar(props: navbarProps) {
                     </div>
 
                     <div className={styles.drawer_list_container}>
-                        { topButtons.map((term) =>
+                        { topButtonsForUser.map((term) =>
                             <MobileNavButton key={term.id} router={props.router} nextPath={props.nextPath}
                                 setNextPath={props.setNextPath} href={term.href} text={term.text}
                                 Icon={term.icon} openDrawer={setShowDrawer}/>
