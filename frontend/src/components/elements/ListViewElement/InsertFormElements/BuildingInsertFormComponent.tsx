@@ -1,8 +1,18 @@
 import React from 'react';
 import {ClickAwayListener} from '@mui/base';
 import styles from '@/styles/listView.module.css';
-import {Box, Button, FormControl, IconButton, InputLabel, MenuItem, Select, TextField} from '@mui/material';
-import {LocationGroup} from '@/api/models';
+import {
+    Autocomplete,
+    Box,
+    Button,
+    FormControl,
+    IconButton,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
+} from '@mui/material';
+import {LocationGroup, User} from '@/api/models';
 import {postBuilding} from '@/api/api';
 import {useSession} from 'next-auth/react';
 import {LatLng} from 'leaflet';
@@ -10,20 +20,16 @@ import BuildingMapSelector from '@/components/elements/ListViewElement/InsertFor
 import axios from 'axios';
 import {PinDrop} from '@mui/icons-material';
 
-const dummySindici = [
-    {name: 'Jan Tomas'},
-    {name: 'Peter Selie'},
-    {name: 'Wily Willson'},
-];
 
 type FormProps = {
     setCanClose: React.Dispatch<React.SetStateAction<boolean>>,
     canClose: boolean,
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
     allRegions: LocationGroup[],
+    allSyndici: User[],
 }
 
-export default function Form({setCanClose, canClose, setOpen, allRegions}: FormProps) {
+export default function Form({setCanClose, canClose, setOpen, allRegions, allSyndici}: FormProps) {
     const {data: session} = useSession();
 
     const handleClose = () => {
@@ -52,8 +58,9 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
     const [formAddressError, setFormAddressError] = React.useState(false);
     const [formCoordinate, setFormCoordinate] = React.useState<LatLng>(new LatLng(51.1576985, 4.0807745));
     const [formRegion, setFormRegion] = React.useState<LocationGroup>();
-    const [formSyndic, setFormSyndic] = React.useState('');
+    const [formSyndic, setFormSyndic] = React.useState<User>();
     const [formDescription, setFormDescription] = React.useState('');
+
 
     React.useEffect(() => {
         setCanClose(true);
@@ -66,11 +73,11 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                     <div className={styles.formFields}>
                         <div className={styles.field}>
                             <TextField fullWidth
-                                       required
-                                       label='naam'
-                                       value={formName}
-                                       onChange={(e) => setFormName(e.target.value as string)
-                                       }
+                                required
+                                label='naam'
+                                value={formName}
+                                onChange={(e) => setFormName(e.target.value as string)
+                                }
                             />
                         </div>
                         <FormControl required sx={{minWidth: 150}}>
@@ -92,10 +99,10 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                         </FormControl>
                         <div className={styles.field}>
                             <TextField error={formAddressError}
-                                       required
-                                       label='adres'
-                                       value={formAddress}
-                                       onChange={(e) => setFormAddress(e.target.value as string)}
+                                required
+                                label='adres'
+                                value={formAddress}
+                                onChange={(e) => setFormAddress(e.target.value as string)}
                             />
                             <IconButton onClick={() => {
                                 axios
@@ -127,25 +134,26 @@ export default function Form({setCanClose, canClose, setOpen, allRegions}: FormP
                                 onChange={(e) => setFormDescription(e.target.value as string)}
                             />
                         </div>
-                        <FormControl sx={{minWidth: 200}}>
-                            <InputLabel>syndicus</InputLabel>
-                            <Select
+                        <FormControl sx={{m: 1, width: 200}}>
+                            <Autocomplete
+                                id="tags-standard"
+                                options={allSyndici}
+                                getOptionLabel={(option) => option.first_name[0] + '. ' + option.last_name}
                                 value={formSyndic}
-                                onChange={(e) => setFormSyndic(e.target.value as string)}
-                                label='syndicus'
-                                defaultValue=''
-                                MenuProps={{disablePortal: true}}
-                            >
-                                <MenuItem value=''>
-                                    <em>geen</em>
-                                </MenuItem>
-                                {dummySindici.map((option) => (
-                                    <MenuItem id='menuitem' key={option.name} value={option.name}
-                                        style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
-                                        {option.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
+                                onChange={(e, v) => {
+                                    if (v !== null) {
+                                        setFormSyndic(v);
+                                    }
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        variant="standard"
+                                        label="syndicus"
+                                        placeholder="syndicus"
+                                    />
+                                )}
+                            />
                         </FormControl>
                     </div>
                     <div className={styles.formButtons}>
