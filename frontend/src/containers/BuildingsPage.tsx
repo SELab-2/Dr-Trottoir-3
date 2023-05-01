@@ -8,6 +8,7 @@ import {useSession} from 'next-auth/react';
 import {getBuildingsList, getLocationGroupsList, useAuthenticatedApi} from '@/api/api';
 import {Building, LocationGroup} from '@/api/models';
 import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded';
+import Head from 'next/head';
 import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
 
 export default function BuildingsPage() {
@@ -43,6 +44,9 @@ export default function BuildingsPage() {
 
     return (
         <>
+            <Head>
+                <title>Gebouwen</title>
+            </Head>
             <ListViewComponent
                 listData={buildings}
                 setListData={setBuildings}
