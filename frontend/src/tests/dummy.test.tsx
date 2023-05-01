@@ -1,6 +1,7 @@
 import LoginPage from '@/pages/login';
+import {render} from '@testing-library/react';
 import {describe, it, expect} from '@jest/globals';
-import {render, screen} from '@testing-library/react';
+import '@testing-library/jest-dom';
 
 /*
 For testing we make use of Jest, with the react-test-renderer plugin. The structure of a Jest test unit
@@ -53,8 +54,8 @@ describe('Dummy async test', () => {
 
 describe('Dummy login test', () => {
     it('Tests whether the login page has a login button', async ()=> {
-        render(<LoginPage/>);
-        const loginButton = screen.getByLabelText('login');
+        const {findByText} = render(<LoginPage/>);
+        const loginButton = await findByText('login'); // Notice the 'await'
         expect(loginButton).toBeInTheDocument();
     });
 });
