@@ -109,7 +109,8 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
                 </Box>
                 {buildings && order ?
                     <AddBuildingPopup open={dialogOpen}
-                        buildings={buildings.data.filter(({id}) => !order.data.map(({building}) => building).includes(id))}
+                        buildings={buildings.data
+                            .filter(({id}) => !order.data.map(({building}) => building).includes(id))}
                         onClose={onAdding}/> : <></>}
             </Box>) :
             (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'}>
