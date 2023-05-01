@@ -11,7 +11,7 @@ import RouteIcon from '@mui/icons-material/Route';
 import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
-import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 
 const topButtons = [
     {id: '0', text: 'Planner', href: '/scheduler', icon: DateRangeIcon},
@@ -19,7 +19,7 @@ const topButtons = [
     {id: '2', text: 'Gebruikers', href: '/users', icon: PeopleAltRoundedIcon},
     {id: '3', text: 'Routes', href: '/routes', icon: RouteIcon},
     {id: '4', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon},
-    {id: '4', text: 'Logout', href: '/logout', icon: LogoutRoundedIcon}
+    {id: '4', text: 'Logout', href: '/logout', icon: LogoutRoundedIcon},
 ];
 
 const botButtons = [
