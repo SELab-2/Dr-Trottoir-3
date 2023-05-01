@@ -31,6 +31,7 @@ export enum Api {
     LatestScheduleDefinitions = 'schedule_definitions/newest/',
     ScheduleDefinitionDetail = 'schedule_definitions/:id/',
     ScheduleDefinitionDetailBuildings = 'schedule_definitions/:id/buildings/',
+    ScheduleDefinitionDetailOrder = 'schedule_definitions/:id/order/',
     ScheduleDefinitionDetailScheduleAssignments = 'schedule_definitions/:id/schedule_assignments/',
     ScheduleDefinitionDetailScheduleWorkEntries = 'schedule_definitions/:id/schedule_work_entries/',
     Users = 'users/',
@@ -181,6 +182,18 @@ async function postDetailsToAPI(route: Api, session: any, postData: any) {
     const routeStr = route.toString();
 
     const data = await axios.post(process.env.NEXT_API_URL + routeStr, postData, {headers: getAuthHeader(session)});
+
+    if (!('data' in data)) {
+        throw new ApiError(data);
+    }
+
+    return data;
+}
+
+async function postDetailsOnAPIWithId(route: Api, session: any, id: number, patchData: any) {
+    const routeStr = route.replace(':id', id.toString());
+
+    const data = await axios.post(process.env.NEXT_API_URL + routeStr, patchData, {headers: getAuthHeader(session)});
 
     if (!('data' in data)) {
         throw new ApiError(data);
@@ -445,6 +458,16 @@ const getScheduleDefinitionDetailBuildings = (session: Session | null, setter: (
         });
 };
 
+const getScheduleDefinitionDetailOrder = (session: Session | null, setter: ((e:any) => void), id: number) => {
+    getDetailsFromAPI(Api.ScheduleDefinitionDetailOrder, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
+};
+
 const getScheduleDefinitionDetailScheduleAssignments = (session: Session | null, setter: ((e:any) => void), id: number) => {
     getDetailsFromAPI(Api.ScheduleDefinitionDetailScheduleAssignments, session, id)
         .then((e) => {
@@ -548,6 +571,16 @@ const postScheduleWorkEntrie = (session: Session | null, data: any, setter?: ((e
 
 const postScheduleDefinition = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
     postDetailsToAPI(Api.ScheduleDefinitions, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
+const postScheduleDefinitionDetailOrder = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
+    postDetailsOnAPIWithId(Api.ScheduleDefinitionDetailOrder, session, id, data)
         .then((e) => {
             setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
         })
@@ -845,6 +878,7 @@ export {
     getLatestScheduleDefinitionsList,
     getScheduleDefinitionDetail,
     getScheduleDefinitionDetailBuildings,
+    getScheduleDefinitionDetailOrder,
     getScheduleDefinitionDetailScheduleAssignments,
     getScheduleDefinitionDetailScheduleWorkEntries,
     getUsersList,
@@ -858,6 +892,7 @@ export {
     postScheduleAssignment,
     postScheduleWorkEntrie,
     postScheduleDefinition,
+    postScheduleDefinitionDetailOrder,
     postUser,
     postIssue,
 

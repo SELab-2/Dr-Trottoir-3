@@ -10,6 +10,7 @@ import {
     useAuthenticatedApi,
 } from '@/api/api';
 import {Building, LocationGroup, ScheduleDefinition, User} from '@/api/models';
+import Head from 'next/head';
 
 
 export default function SchedulerPage() {
@@ -58,14 +59,19 @@ export default function SchedulerPage() {
     };
 
     return (
-        <div className={styles.full_calendar_flex_container}>
-            <SchedulerSelect nextWeek={nextWeek} prevWeek={prevWeek}/>
-            <SchedulerDetails
-                start={first}
-                scheduleDefinitions={scheduleDefinitions}
-                users={users}
-                buildings={buildings}
-                interval={interval}/>
-        </div>
+        <>
+            <Head>
+                <title>Planner</title>
+            </Head>
+            <div className={styles.full_calendar_flex_container}>
+                <SchedulerSelect nextWeek={nextWeek} prevWeek={prevWeek}/>
+                <SchedulerDetails
+                    start={first}
+                    scheduleDefinitions={scheduleDefinitions}
+                    users={users}
+                    buildings={buildings}
+                    interval={interval}/>
+            </div>
+    </>
     );
 }

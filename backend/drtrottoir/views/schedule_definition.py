@@ -81,6 +81,7 @@ class ScheduleDefinitionViewSet(
         "buildings": ("exact",),
     }
     search_fields = ["name"]
+    ordering_fields = ["name", "location_group__name"]
 
     # This method allows more granular selection of permissions for any given
     # action
@@ -171,7 +172,6 @@ SELECT t1.*
         ON t1.name = t2.name AND t1.version = t2.max_version
             """
         )
-
         serializer = ScheduleDefinitionSerializer(schedule_definitions, many=True)
 
         return Response(serializer.data)

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {SyntheticEvent} from 'react';
 import {
     Autocomplete,
     Button,
@@ -11,17 +11,59 @@ import {
 } from '@mui/material';
 import {ClickAwayListener} from '@mui/base';
 import styles from '@/styles/listView.module.css';
-import {Building} from '@/api/models';
+import {Building, LocationGroup} from '@/api/models';
+import {postUser} from '@/api/api';
+import {useSession} from 'next-auth/react';
 
 type FormProps = {
     setCanClose: React.Dispatch<React.SetStateAction<boolean>>,
     canClose: boolean,
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
     allBuildings: Building[],
+    allRegions: LocationGroup[],
 }
 
-export default function Form({setCanClose, canClose, setOpen, allBuildings}: FormProps) {
+export default function Form({setCanClose, canClose, setOpen, allBuildings, allRegions}: FormProps) {
+    const {data: session} = useSession();
+    const [formUsername, setFormUsername] = React.useState('');
+    const [formFirstName, setFormFirstName] = React.useState('');
+    const [formLastName, setFormLastName] = React.useState('');
+    const [formUserType, setFormUserType] = React.useState('');
+    const [formIsSuperStudent, setFormIsSuperStudent] = React.useState(false);
+    const [selectedBuildings, setSelectedBuildings] = React.useState<Building[]>([]);
+    const [formRegion, setFormRegion] = React.useState<LocationGroup>();
+
+    const userTypes = {
+        student: 'student',
+        syndicus: 'syndicus',
+        admin: 'admin',
+    };
+
     const handleSubmitForm = () =>{
+        const blds: number[] = [];
+        selectedBuildings.map((b) => {
+            blds.push(b.id);
+        });
+        const postData: Record<string, any> = {};
+        postData.username = formUsername;
+        postData.first_name = formFirstName;
+        postData.last_name = formLastName;
+        postData.admin = null;
+        postData.student = null;
+        postData.syndicus = null;
+        if (formUserType === 'admin') {
+            postData.admin = {};
+        } else if (formUserType === 'student') {
+            postData.student = {
+                location_group: formRegion,
+                is_super_student: formIsSuperStudent,
+            };
+        } else if (formUserType == 'syndicus') {
+            postData.syndicus = {
+                buildings: blds,
+            };
+        }
+        postUser(session, postData);
         handleClose();
     };
 
@@ -31,43 +73,66 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings}: For
         }
     };
 
-    const [formFirstName, setFormFirstName] = React.useState('');
-    const [formLastName, setFormLastName] = React.useState('');
-    const [formUserType, setFormUserType] = React.useState('');
-    const [formIsSuperStudent, setFormIsSuperStudent] = React.useState(false);
-
-    const userTypes = {
-        student: 'student',
-        syndicus: 'syndicus',
-        admin: 'admin',
+    const handleChangeBuildings = (event: SyntheticEvent<Element, Event>, value: React.SetStateAction<Building[]>) => {
+        // const value = event.target;
+        setSelectedBuildings(value);
     };
 
     const buildingsOrSuperStudentField = (userType: string) => {
         if (userType === 'student') {
             return (
-                <FormControlLabel control={<Checkbox defaultChecked={false} value={formIsSuperStudent}
-                    onChange={() => setFormIsSuperStudent(!formIsSuperStudent)} />}
-                label="superstudent" sx={{color: 'black'}}/>
+                <>
+                    <div className={styles.field}>
+                        <FormControlLabel control={<Checkbox defaultChecked={false} value={formIsSuperStudent}
+                            onChange={() => setFormIsSuperStudent(!formIsSuperStudent)} />}
+                        label="superstudent" sx={{color: 'black'}}/>
+                    </div>
+                    <div className={styles.field}>
+                        <FormControl required sx={{minWidth: 150}}>
+                            <InputLabel>regio</InputLabel>
+                            <Select
+                                value={formRegion?.name}
+                                onChange={(e) => setFormRegion(e.target.value as unknown as LocationGroup)}
+                                label='regio'
+                                defaultValue=''
+                                MenuProps={{disablePortal: true}}
+                            >
+                                {allRegions.map((option) => (
+                                    <MenuItem id='menuitem' key={option.id} value={option.id}
+                                        style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                                        {option.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+                </>
+
+
             );
         } else if (userType === 'syndicus') {
             return (
-                <FormControl sx={{m: 1, width: 200}}>
-                    <Autocomplete
-                        multiple
-                        id="tags-standard"
-                        options={allBuildings}
-                        getOptionLabel={(option) => option.name}
-                        defaultValue={[]}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                variant="standard"
-                                label="Gebouwen"
-                                placeholder="Gebouwen"
-                            />
-                        )}
-                    />
-                </FormControl>
+                <div className={styles.field}>
+                    <FormControl sx={{m: 1, width: 200}}>
+                        <Autocomplete
+                            multiple
+                            id="tags-standard"
+                            options={allBuildings}
+                            getOptionLabel={(option) => option.name}
+                            defaultValue={[]}
+                            value={selectedBuildings}
+                            onChange={handleChangeBuildings}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    variant="standard"
+                                    label="Gebouwen"
+                                    placeholder="Gebouwen"
+                                />
+                            )}
+                        />
+                    </FormControl>
+                </div>
             );
         } else {
             return (
@@ -85,6 +150,14 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings}: For
                 <div className={styles.form}>
                     <h2 style={{color: 'black'}}>Gebruiker Toevoegen</h2>
                     <div className={styles.formFields}>
+                        <div className={styles.field}>
+                            <TextField
+                                required
+                                label="gebruikersnaam"
+                                value={formUsername}
+                                onChange={(e) => setFormUsername(e.target.value as string)}
+                            />
+                        </div>
                         <div className={styles.field}>
                             <TextField
                                 required
@@ -120,9 +193,8 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings}: For
                                 </Select>
                             </FormControl>
                         </div>
-                        <div className={styles.field}>
-                            {buildingsOrSuperStudentField(formUserType)}
-                        </div>
+
+                        {buildingsOrSuperStudentField(formUserType)}
 
                     </div>
                     <div className={styles.formButtons}>
