@@ -67,6 +67,10 @@ export default function StudentTaskList({userId}: StudentTaskListProps) {
 
             </div>
         );
+    } else {
+        return (
+            <div>Loading...</div>
+        )
     }
 }
 
