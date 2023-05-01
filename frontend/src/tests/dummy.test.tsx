@@ -22,6 +22,9 @@ Jest allows per describe unit to also define several functions to be called befo
 are: beforeAll, afterEach. The documentation can be found at:
 - https://jestjs.io/docs/getting-started
 - https://testing-library.com/docs/guide-disappearance/
+
+Warning: when using 'render', make sure to use the render from '@testing-library/react', and not from other
+libraries.
  */
 
 describe('Dummy test', () => {
