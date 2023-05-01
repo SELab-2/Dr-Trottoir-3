@@ -16,6 +16,7 @@ import ActiveRouteListButtonComponent
 import styles from './containerStyles.module.css';
 import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
 import Head from 'next/head';
+import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
 
 // eslint-disable-next-line require-jsdoc
 export default function LiveRoutesPage() {
@@ -120,7 +121,7 @@ export default function LiveRoutesPage() {
                     title={'Live routes'}
                     Icon={SensorsRoundedIcon}
                 >
-                    {current ? <LiveRoutesElement id={current}/> : <div>None selected</div>}
+                    {current ? <LiveRoutesElement id={current}/> : <NoneSelected ElementName={'route'}/>}
                 </ListViewComponent>
             </>
         );

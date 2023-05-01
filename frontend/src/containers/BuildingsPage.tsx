@@ -9,6 +9,7 @@ import {getBuildingsList, getLocationGroupsList, useAuthenticatedApi} from '@/ap
 import {Building, LocationGroup} from '@/api/models';
 import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded';
 import Head from 'next/head';
+import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
 
 export default function BuildingsPage() {
     const {data: session} = useSession();
@@ -59,7 +60,7 @@ export default function BuildingsPage() {
                 title={'Gebouwen'}
                 Icon={ApartmentRoundedIcon}
             >
-                {current ? <BuildingDetail id={current}/> : <div>None selected</div>}
+                {current ? <BuildingDetail id={current}/> : <NoneSelected ElementName={'gebouw'}/>}
             </ListViewComponent>
         </>
     );
