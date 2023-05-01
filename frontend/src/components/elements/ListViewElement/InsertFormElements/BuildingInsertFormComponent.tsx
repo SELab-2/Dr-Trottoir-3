@@ -99,10 +99,10 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allSyn
                         </FormControl>
                         <div className={styles.field}>
                             <TextField error={formAddressError}
-                                       required
-                                       label='adres'
-                                       value={formAddress}
-                                       onChange={(e) => setFormAddress(e.target.value as string)}
+                                required
+                                label='adres'
+                                value={formAddress}
+                                onChange={(e) => setFormAddress(e.target.value as string)}
                             />
                             <IconButton onClick={() => {
                                 axios
