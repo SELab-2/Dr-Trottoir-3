@@ -8,6 +8,7 @@ import RouteListButtonComponent
     from '@/components/elements/ListViewElement/ListButtonElements/RouteListButtonComponent';
 import RouteIcon from '@mui/icons-material/Route';
 import RouteDetail from '@/components/modules/routeDetail/RouteDetail';
+import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
 
 
 // eslint-disable-next-line require-jsdoc
@@ -74,7 +75,7 @@ export default function RoutesPage() {
                 title={'Routes'}
                 Icon={RouteIcon}
             >
-                <RouteDetail scheduleDefinitionId={current}/>
+                {current ? <RouteDetail scheduleDefinitionId={current}/> : <NoneSelected ElementName={'route'}/>}
             </ListViewComponent>
         </>
     );

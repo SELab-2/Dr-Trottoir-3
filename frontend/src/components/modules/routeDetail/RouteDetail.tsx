@@ -46,44 +46,34 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
     }
 
     return (
-        scheduleDefinitionId !== null ?
-            (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'}>
-                <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
-                    borderRadius={'var(--small_corner)'}
-                    display={'flex'}>
-                    <Box>
-                        <Typography variant={'h4'}>{scheduleDefinition?.data.name}</Typography>
-                        <Typography variant={'subtitle1'}>{scheduleDefinition?.data.location_group}</Typography>
-                    </Box>
-                    <Box flexGrow={1}>
-                        <Typography textAlign={'end'}>ID: {scheduleDefinitionId},
-                            Hovering {hovering ? hovering : 'nothing'}</Typography>
-                    </Box>
+        <Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'}>
+            <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
+                borderRadius={'var(--small_corner)'}
+                display={'flex'}>
+                <Box>
+                    <Typography variant={'h4'}>{scheduleDefinition?.data.name}</Typography>
+                    <Typography variant={'subtitle1'}>{scheduleDefinition?.data.location_group}</Typography>
                 </Box>
-                <Box display={'flex'} gap={1} flexGrow={1}>
-                    <Box flexGrow={2} flexBasis={0}>
-                        <Typography variant={'h5'}>Gebouwen</Typography>
-                        <BuildingList list={list ? list.data : []} onReorder={onReorder} onRemove={onRemove}
-                            onAdd={onAdd}
-                            onHovering={setHovering} hovering={hovering}/>
-                    </Box>
-                    <Box flexGrow={5}>
-                        {list ? <RouteMap buildings={list.data} onHovering={setHovering} hovering={hovering}/> :
-                            <div>No list data</div>
-                        }
-                    </Box>
+                <Box flexGrow={1}>
+                    <Typography textAlign={'end'}>ID: {scheduleDefinitionId},
+                        Hovering {hovering ? hovering : 'nothing'}</Typography>
                 </Box>
-            </Box>) :
-            (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'}>
-                <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
-                    borderRadius={'var(--small_corner)'}
-                    display={'flex'}>
-                    <Box>
-                        <Typography variant={'h4'}>Geen route geselecteerd</Typography>
-                        <Typography variant={'subtitle1'}>Selecteer een route om details weer te geven</Typography>
-                    </Box>
+            </Box>
+            <Box display={'flex'} gap={1} flexGrow={1}>
+                <Box flexGrow={2} flexBasis={0}>
+                    <Typography variant={'h5'}>Gebouwen</Typography>
+                    <BuildingList list={list ? list.data : []} onReorder={onReorder} onRemove={onRemove}
+                        onAdd={onAdd}
+                        onHovering={setHovering} hovering={hovering}/>
                 </Box>
-            </Box>));
+                <Box flexGrow={5}>
+                    {list ? <RouteMap buildings={list.data} onHovering={setHovering} hovering={hovering}/> :
+                        <div>No list data</div>
+                    }
+                </Box>
+            </Box>
+        </Box>
+    );
 }
 
 export default RouteDetail;
