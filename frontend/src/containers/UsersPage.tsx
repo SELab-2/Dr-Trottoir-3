@@ -9,6 +9,8 @@ import UserTopBarComponent from '@/components/elements/ListViewElement/TopBarEle
 import styles from './containerStyles.module.css';
 import UserListButtonComponent from '@/components/elements/ListViewElement/ListButtonElements/UserListButtonComponent';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
+import Head from 'next/head';
+import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
 
 export default function UsersPage() {
     const {data: session} = useSession();
@@ -100,6 +102,9 @@ export default function UsersPage() {
         return (
 
             <>
+                <Head>
+                    <title>Gebruikers</title>
+                </Head>
                 <ListViewComponent
                     listData={filteredUsers}
                     setListData={setUsers}
@@ -113,7 +118,7 @@ export default function UsersPage() {
                     title={'Gebruikers'}
                     Icon={PeopleAltRoundedIcon}
                 >
-                    {current ? <UserElement id={current}/> : <div>None selected</div>}
+                    {current ? <UserElement id={current}/> : <NoneSelected ElementName={'gebruiker'}/>}
                 </ListViewComponent>
             </>
         );
