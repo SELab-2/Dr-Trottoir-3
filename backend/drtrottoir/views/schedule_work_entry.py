@@ -70,6 +70,7 @@ class ScheduleWorkEntryViewSet(
         "building": ("exact", "in"),
         "schedule_assignment": ("exact", "in"),
         "entry_type": ("exact", "in"),
+        "schedule_assignment__user": ("exact", "in"),
     }
     search_fields: List[str] = []
 
