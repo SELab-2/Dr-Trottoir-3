@@ -10,7 +10,7 @@ import {
     useAuthenticatedApi,
 } from '@/api/api';
 import {ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry} from '@/api/models';
-import Link from "next/link";
+import Link from 'next/link';
 
 
 type StudentTaskListProps = {
