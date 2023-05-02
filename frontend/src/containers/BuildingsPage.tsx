@@ -5,9 +5,10 @@ import BuildingTopBarComponent from '@/components/elements/ListViewElement/TopBa
 import BuildingDetail from '@/components/elements/BuildingDetailElement/BuildingDetail';
 import React, {useEffect, useState} from 'react';
 import {useSession} from 'next-auth/react';
-import {getBuildingsList, getLocationGroupsList, useAuthenticatedApi} from '@/api/api';
-import {Building, LocationGroup} from '@/api/models';
+import {getBuildingsList, getLocationGroupsList, getUsersList, useAuthenticatedApi} from '@/api/api';
+import {Building, LocationGroup, User} from '@/api/models';
 import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded';
+import Head from 'next/head';
 import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
 
 export default function BuildingsPage() {
@@ -20,14 +21,30 @@ export default function BuildingsPage() {
     const [searchEntry, setSearchEntry] = useState('');
     const [sorttype, setSorttype] = useState('name');
 
+    const [allSyndici, setAllSyndici] = useAuthenticatedApi<User[]>();
+
     useEffect(() => {
         getLocationGroupsList(session, setLocationGroups);
+        getUsersList(session, setAllSyndici, {syndicus__id__gt: 0});
     }, [session]);
 
     useEffect(() => {
-        getBuildingsList(session, setBuildings, {location_group__in: selectedRegions.map((e) => e.id).join(',')});
-    }, [session, selectedRegions]);
+        handleSearch(false);
+    }, [session, selectedRegions, sorttype]);
 
+
+    const handleSearch = (clear: boolean = false) => {
+        let searchEntryOverwritten: string;
+        if (clear) {
+            searchEntryOverwritten = '';
+        } else {
+            searchEntryOverwritten = searchEntry;
+        }
+        getBuildingsList(session, setBuildings, {
+            ordering: sorttype,
+            search: searchEntryOverwritten,
+            location_group__in: selectedRegions.map((e) => e.id).join(',')});
+    };
 
     const topBar = <BuildingTopBarComponent
         sorttype={sorttype}
@@ -38,11 +55,16 @@ export default function BuildingsPage() {
         amountOfResults={buildings ? buildings.data.length : 0}
         searchEntry={searchEntry}
         setSearchEntry={setSearchEntry}
+        handleSearch={handleSearch}
+        allSyndici={allSyndici ? allSyndici.data: []}
     />;
 
 
     return (
         <>
+            <Head>
+                <title>Gebouwen</title>
+            </Head>
             <ListViewComponent
                 listData={buildings}
                 setListData={setBuildings}

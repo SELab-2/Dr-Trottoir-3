@@ -50,6 +50,9 @@ class UserViewSet(ModelViewSet):
         "student__is_super_student": ("exact",),
         "student__location_group": ("exact", "in"),
         "syndicus__buildings": ("exact",),
+        "student__id": ("gt",),
+        "syndicus__id": ("gt",),
+        "admin__id": ("gt",),
     }
     search_fields = ["first_name", "last_name", "username"]
 
