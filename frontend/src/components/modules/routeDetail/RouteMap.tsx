@@ -12,7 +12,6 @@ interface Props {
 }
 
 function RouteMap({buildings, onHovering, hovering}: Props) {
-    const router = useRouter();
     const mapRef = createRef<Map>();
 
     const markers = buildings.map(({name, id, latitude, longitude}, index) => {
@@ -22,7 +21,6 @@ function RouteMap({buildings, onHovering, hovering}: Props) {
                     eventHandlers={{
                         mouseover: () => onHovering(id),
                         mouseout: () => onHovering(null),
-                        click: () => router.push(`/buildings/${id}`),
                     }}>
                     {hovering === id && <Tooltip direction={'right'} permanent={true}>{name}</Tooltip>}
                 </Marker>
