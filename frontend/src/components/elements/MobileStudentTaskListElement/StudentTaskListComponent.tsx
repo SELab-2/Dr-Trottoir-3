@@ -1,5 +1,5 @@
 import styles from './studentTaskList.module.css';
-import {Button, Link} from '@mui/material';
+import {Button, Link as MuiLink} from '@mui/material';
 import React, {useEffect} from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import {PlayArrow} from '@mui/icons-material';
@@ -10,6 +10,7 @@ import {
     useAuthenticatedApi,
 } from '@/api/api';
 import {ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry} from '@/api/models';
+import Link from "next/link";
 
 
 type StudentTaskListProps = {
@@ -89,8 +90,16 @@ const Day = ({date, assignments, definitions, workEntries}: RoutesByDay) => {
         <div className={styles.dayDiv}>
             {dateOrToday(date)}
             {
-                mappedAssignments.map((x) => <RouteEntry name={x.name} totalBuildings={x.totalBuildings}
-                    buildingsDone={x.buildingsDone} isToday={false}/>)
+                mappedAssignments.map((x) =>
+                    <Link href={`/active-route/${x.id}`}>
+                        <RouteEntry
+                            name={x.name}
+                            totalBuildings={x.totalBuildings}
+                            buildingsDone={x.buildingsDone}
+                            isToday={false}
+                        />
+                    </Link>
+                )
             }
         </div>
     );
@@ -102,8 +111,8 @@ const RouteEntry = ({name, totalBuildings, buildingsDone, isToday}: DisplayRoute
             <Button className={styles.button_default} >
                 <div className={styles.listItemLeftSide}>
                     <div className={styles.big_item_text}>
-                        <Link flexGrow={5} noWrap color={'inherit'}
-                            underline={'none'}>{name}</Link>
+                        <MuiLink flexGrow={5} noWrap color={'inherit'}
+                            underline={'none'}>{name}</MuiLink>
                     </div>
                 </div>
                 <div className={styles.listItemRightSide}>

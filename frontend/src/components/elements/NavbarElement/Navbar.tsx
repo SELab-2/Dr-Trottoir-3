@@ -37,6 +37,8 @@ const includeRoutes = [
     '/routes',
     '/my-schedule',
     '/my-buildings',
+    '/active_route',
+    '/active-route',
 ];
 
 export default function Navbar(props: any) {
