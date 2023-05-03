@@ -58,7 +58,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allSyn
     const [formAddressError, setFormAddressError] = React.useState(false);
     const [formCoordinate, setFormCoordinate] = React.useState<LatLng>(new LatLng(51.1576985, 4.0807745));
     const [formRegion, setFormRegion] = React.useState<LocationGroup>();
-    const [formSyndic, setFormSyndic] = React.useState<User>();
+    const [formSyndici, setFormSyndici] = React.useState<User[]>([]);
     const [formDescription, setFormDescription] = React.useState('');
 
 
@@ -137,12 +137,14 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allSyn
                         <FormControl sx={{m: 1, width: 200}}>
                             <Autocomplete
                                 id="tags-standard"
+                                multiple
                                 options={allSyndici}
                                 getOptionLabel={(option) => option.first_name[0] + '. ' + option.last_name}
-                                value={formSyndic}
+                                value={formSyndici}
+                                defaultValue={[]}
                                 onChange={(e, v) => {
                                     if (v !== null) {
-                                        setFormSyndic(v);
+                                        setFormSyndici(v);
                                     }
                                 }}
                                 renderInput={(params) => (

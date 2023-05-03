@@ -1,7 +1,7 @@
 import styles from './buildingDetail.module.css';
 import {Box, Link, List, Modal, Typography} from '@mui/material';
 import {Building, GarbageCollectionSchedule, GarbageType, Issue, LocationGroup, User} from '@/api/models';
-import {PictureAsPdf} from '@mui/icons-material';
+import {PictureAsPdf, Edit} from '@mui/icons-material';
 import {
     getBuildingDetail, getBuildingDetailGarbageCollectionSchedules, getBuildingDetailIssues,
     getGarbageTypesList, getLocationGroupDetail, getUsersList, useAuthenticatedApi,
@@ -14,19 +14,21 @@ import React, {useEffect, useState} from 'react';
 import BuildingIssueListItem from '@/components/elements/BuildingDetailElement/BuildingIssueListItem';
 import ErrorPage from '@/containers/ErrorPage';
 import BuildingMap from '@/components/elements/BuildingDetailElement/BuildingMap';
+import EditBuildingPopup from '@/components/elements/BuildingDetailElement/EditBuildingPopup';
 
 interface IBuildingDetail {
-  id: number,
-  location_group: string,
-  name: string,
-  address: string,
-  pdf_guide: string | null,
-  image: string | null,
-  syndici: string,
-  schedules: GarbageCollectionSchedule[],
-  issues: Issue[],
-  longitude: number | null,
-  latitude: number | null
+    id: number,
+    location_group: string,
+    name: string,
+    address: string,
+    pdf_guide: string | null,
+    image: string | null,
+    syndici: string,
+    schedules: GarbageCollectionSchedule[],
+    issues: Issue[],
+    longitude: number | null,
+    latitude: number | null,
+    description: string
 }
 
 // TODO in case there is an error, detail.status is undefined, and not a proper status code. This needs to be fixed.
@@ -65,12 +67,18 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
     const [syndici, setSyndici] = useAuthenticatedApi<User[]>();
     const [sessionError, setSessionError] = React.useState(0);
 
+    const [editPopupOpen, setEditPopupOpen] = useState(false);
+
+    function onOpenEditPopup() {
+        setEditPopupOpen(true);
+    }
+
     // Get building data
     useEffect(()=>{
         if (id !== null) {
             getBuildingDetail(session, setBuilding, id);
         }
-    }, [id, session]);
+    }, [id, session, editPopupOpen]);
 
     // Get location group
     useEffect(()=> {
@@ -139,6 +147,7 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
                     issues: issues.data.filter((issue)=> !issue.resolved ),
                     longitude: building.data.longitude,
                     latitude: building.data.latitude,
+                    description: building.data.description,
                 };
                 setBuildingDetail(detail);
             }
@@ -154,7 +163,7 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
         return <p>None selected</p>;
     }
 
-    if (!buildingDetail) {
+    if (!buildingDetail||!syndici) {
         return <p>Loading...</p>;
     }
 
@@ -165,7 +174,6 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
         issuesModalButtonText = `${buildingDetail.issues.length} issue remaining`;
     }
 
-
     return (
         <Box className={styles.full}>
             {/* Top row */}
@@ -173,6 +181,9 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
                 sx={{background: 'var(--secondary-light)'}}>
                 {/* Building data container */}
                 <Box className={styles.building_data_container}>
+                    <Button startIcon={<Edit/>} onClick={onOpenEditPopup}>
+                            Gebouw aanpassen
+                    </Button>
                     <h1>
                         {buildingDetail.name}
                     </h1>
@@ -192,6 +203,17 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
                         {/* Button to open the issue modal*/}
                         <Button onClick={handleIssueModalOpen}>{issuesModalButtonText}</Button>
                     </Box>
+                    <EditBuildingPopup
+                        buildingId={buildingDetail.id}
+                        open={editPopupOpen}
+                        setOpen={setEditPopupOpen}
+                        prevName={buildingDetail.name}
+                        prevAddress={buildingDetail.address}
+                        prevLongitude={buildingDetail.longitude}
+                        prevLatitude={buildingDetail.latitude}
+                        prevSyndici={syndici.data}
+                        prevDescription={buildingDetail.description}>
+                    </EditBuildingPopup>
                 </Box>
 
                 {/* Building description container */}
@@ -220,7 +242,7 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
                     <Typography
                         variant="h1"
                         className={styles.garbage_schedule_list_header}>
-            Planning
+                            Planning
                     </Typography>
                     <List>
                         {buildingDetail.schedules.map((schedule) =>
@@ -234,7 +256,7 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
 
                 {/* Garbage schedule calendar */}
                 <Box className={styles.garbage_calendar}>
-          Calendar here
+                        Calendar here
                 </Box>
             </Box>
 
