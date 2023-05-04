@@ -1,6 +1,6 @@
 import React from 'react';
 import {ClickAwayListener} from '@mui/base';
-import styles from '@/styles/listView.module.css';
+import styles from '@/styles/forms.module.css';
 import {
     Autocomplete,
     Box,

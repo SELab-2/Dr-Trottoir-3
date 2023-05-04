@@ -212,8 +212,8 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
                         prevLongitude={buildingDetail.longitude}
                         prevLatitude={buildingDetail.latitude}
                         prevSyndici={syndici.data}
-                        prevDescription={buildingDetail.description}>
-                    </EditBuildingPopup>
+                        prevDescription={buildingDetail.description}
+                    />
                 </Box>
 
                 {/* Building description container */}

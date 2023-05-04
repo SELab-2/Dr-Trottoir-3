@@ -1,4 +1,4 @@
-import styles from '@/styles/listView.module.css';
+import styles from '@/styles/forms.module.css';
 import {User} from '@/api/models';
 import {
     Autocomplete,
