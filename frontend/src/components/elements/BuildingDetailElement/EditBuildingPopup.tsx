@@ -71,88 +71,91 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
     return (
         <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Gebouw aanpassen</DialogTitle>
-            <div className={styles.form}>
-                <div className={styles.formFields}>
-                    <div className={styles.field}>
-                        <TextField fullWidth
-                            required
-                            label='naam'
-                            value={formName}
-                            onChange={(e) => setFormName(e.target.value as string)
-                            }
-                        />
-                    </div>
-                    <div className={styles.field}>
-                        <TextField error={formAddressError}
-                            required
-                            label='adres'
-                            value={formAddress}
-                            onChange={(e) => setFormAddress(e.target.value as string)}
-                        />
-                        <IconButton onClick={() => {
-                            axios
-                                .get(`https://nominatim.openstreetmap.org/search?format=json&q=${formAddress}`)
-                                .then(({data}) => {
-                                    if (data[0]) {
-                                        setFormCoordinate(new LatLng(data[0].lat, data[0].lon));
-                                        setFormAddressError(false);
-                                    } else setFormAddressError(true);
-                                })
-                                .catch((error) => {
-                                    console.error(error);
-                                });
-                        }}>
-                            <PinDrop/>
-                        </IconButton>
-                    </div>
-                    <Box width={'100%'} height={150}>
-                        <BuildingMapSelector coordinate={formCoordinate} setCoordinate={setFormCoordinate}/>
-                    </Box>
-                    <div className={styles.field}>
-                        <TextField
-                            fullWidth
-                            required
-                            multiline
-                            rows={4}
-                            label='beschrijving'
-                            value={formDescription}
-                            onChange={(e) => setFormDescription(e.target.value as string)}
-                        />
-                    </div>
-                    <FormControl sx={{m: 1, width: 200}}>
-                        <Autocomplete
-                            id="tags-standard"
-                            multiple
-                            options={allSyndici.data}
-                            getOptionLabel={(option) => option.first_name[0] + '. ' + option.last_name}
-                            value={formSyndici}
-                            defaultValue={[]}
-                            onChange={(e, v) => {
-                                if (v !== null) {
-                                    setFormSyndici(v);
+            <div className={styles.formCenter}>
+                <div className={styles.form}>
+                    <div className={styles.formFields}>
+                        <div className={styles.field}>
+                            <TextField fullWidth
+                                required
+                                label='naam'
+                                value={formName}
+                                onChange={(e) => setFormName(e.target.value as string)
                                 }
-                            }}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    variant="standard"
-                                    label="syndicus"
-                                    placeholder="syndicus"
-                                />
-                            )}
-                        />
-                    </FormControl>
-                </div>
-                <div className={styles.formButtons}>
-                    <Button variant='contained' className={styles.button} onClick={handleClose}>
-                    Cancel
-                    </Button>
-                    <Button variant='contained' className={styles.button} onClick={handleSubmit}
-                        style={{backgroundColor: '#E6E600'}}>
-                    Submit
-                    </Button>
+                            />
+                        </div>
+                        <div className={styles.field}>
+                            <TextField error={formAddressError}
+                                required
+                                label='adres'
+                                value={formAddress}
+                                onChange={(e) => setFormAddress(e.target.value as string)}
+                            />
+                            <IconButton onClick={() => {
+                                axios
+                                    .get(`https://nominatim.openstreetmap.org/search?format=json&q=${formAddress}`)
+                                    .then(({data}) => {
+                                        if (data[0]) {
+                                            setFormCoordinate(new LatLng(data[0].lat, data[0].lon));
+                                            setFormAddressError(false);
+                                        } else setFormAddressError(true);
+                                    })
+                                    .catch((error) => {
+                                        console.error(error);
+                                    });
+                            }}>
+                                <PinDrop/>
+                            </IconButton>
+                        </div>
+                        <Box width={'100%'} height={150}>
+                            <BuildingMapSelector coordinate={formCoordinate} setCoordinate={setFormCoordinate}/>
+                        </Box>
+                        <div className={styles.field}>
+                            <TextField
+                                fullWidth
+                                required
+                                multiline
+                                rows={4}
+                                label='beschrijving'
+                                value={formDescription}
+                                onChange={(e) => setFormDescription(e.target.value as string)}
+                            />
+                        </div>
+                        <FormControl sx={{m: 1, width: 200}}>
+                            <Autocomplete
+                                id="tags-standard"
+                                multiple
+                                options={allSyndici.data}
+                                getOptionLabel={(option) => option.first_name[0] + '. ' + option.last_name}
+                                value={formSyndici}
+                                defaultValue={[]}
+                                onChange={(e, v) => {
+                                    if (v !== null) {
+                                        setFormSyndici(v);
+                                    }
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        variant="standard"
+                                        label="syndicus"
+                                        placeholder="syndicus"
+                                    />
+                                )}
+                            />
+                        </FormControl>
+                    </div>
+                    <div className={styles.formButtons}>
+                        <Button variant='contained' className={styles.button} onClick={handleClose}>
+                            Cancel
+                        </Button>
+                        <Button variant='contained' className={styles.button} onClick={handleSubmit}
+                            style={{backgroundColor: '#E6E600'}}>
+                            Submit
+                        </Button>
+                    </div>
                 </div>
             </div>
+
         </Dialog>
     );
 }

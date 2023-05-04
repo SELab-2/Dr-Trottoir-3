@@ -184,6 +184,17 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
                     <Button startIcon={<Edit/>} onClick={onOpenEditPopup}>
                             Gebouw aanpassen
                     </Button>
+                    <EditBuildingPopup
+                        buildingId={buildingDetail.id}
+                        open={editPopupOpen}
+                        setOpen={setEditPopupOpen}
+                        prevName={buildingDetail.name}
+                        prevAddress={buildingDetail.address}
+                        prevLongitude={buildingDetail.longitude}
+                        prevLatitude={buildingDetail.latitude}
+                        prevSyndici={syndici.data}
+                        prevDescription={buildingDetail.description}
+                    />
                     <h1>
                         {buildingDetail.name}
                     </h1>
@@ -203,17 +214,6 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
                         {/* Button to open the issue modal*/}
                         <Button onClick={handleIssueModalOpen}>{issuesModalButtonText}</Button>
                     </Box>
-                    <EditBuildingPopup
-                        buildingId={buildingDetail.id}
-                        open={editPopupOpen}
-                        setOpen={setEditPopupOpen}
-                        prevName={buildingDetail.name}
-                        prevAddress={buildingDetail.address}
-                        prevLongitude={buildingDetail.longitude}
-                        prevLatitude={buildingDetail.latitude}
-                        prevSyndici={syndici.data}
-                        prevDescription={buildingDetail.description}
-                    />
                 </Box>
 
                 {/* Building description container */}
