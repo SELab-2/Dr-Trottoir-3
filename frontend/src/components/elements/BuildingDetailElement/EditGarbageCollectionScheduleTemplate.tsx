@@ -41,14 +41,14 @@ export interface SimpleDialogProps {
 const filter = createFilterOptions<optionType>();
 
 export default function EditGarbageCollectionScheduleTemplate({
-                                                                  onClose,
-                                                                  updateList,
-                                                                  templates,
-                                                                  selectedTemplate,
-                                                                  setSelectedTemplate,
-                                                                  open,
-                                                                  buildingId,
-                                                              }: SimpleDialogProps) {
+    onClose,
+    updateList,
+    templates,
+    selectedTemplate,
+    setSelectedTemplate,
+    open,
+    buildingId,
+}: SimpleDialogProps) {
     const {data: session} = useSession();
     const [garbageTypes, setGarbageTypes] = useAuthenticatedApi<GarbageType[]>();
     const [originalEntries, setOriginalEntries] = useState<GarbageCollectionScheduleTemplateEntry[]>([]);
@@ -202,7 +202,9 @@ export default function EditGarbageCollectionScheduleTemplate({
                                                 setSubDialogOpen(true);
                                             }}>
                                             <Badge
-                                                badgeContent={getGarbageTypeEntries(week * 7 + dagnr).filter(({selected}) => selected).length}
+                                                badgeContent={getGarbageTypeEntries(week * 7 + dagnr)
+                                                    .filter(({selected}) => selected)
+                                                    .length}
                                                 color={'primary'}>
                                                 <Assignment/>
                                             </Badge>
@@ -215,8 +217,8 @@ export default function EditGarbageCollectionScheduleTemplate({
                 </Box>
             </Box>
             <GarbageTypeDialog open={subDialogOpen} onClose={() => setSubDialogOpen(false)}
-                               garbageTypeEntries={getGarbageTypeEntries(selectedDay)}
-                               setGarbageTypeEntry={(e) => setGarbageTypeEntry(selectedDay, e)}/>
+                garbageTypeEntries={getGarbageTypeEntries(selectedDay)}
+                setGarbageTypeEntry={(e) => setGarbageTypeEntry(selectedDay, e)}/>
         </Dialog>
     );
 }
@@ -235,16 +237,16 @@ function GarbageTypeDialog({open, onClose, garbageTypeEntries, setGarbageTypeEnt
                 <FormGroup>
                     {garbageTypeEntries.map(({name, selected, id}, index) => (
                         <FormControlLabel key={index}
-                                          control={
-                                              <Checkbox checked={selected}
-                                                        onChange={() => setGarbageTypeEntry({
-                                                            name,
-                                                            selected: !selected,
-                                                            id,
-                                                        })}
-                                                        name='jason'/>
-                                          }
-                                          label={name}
+                            control={
+                                <Checkbox checked={selected}
+                                    onChange={() => setGarbageTypeEntry({
+                                        name,
+                                        selected: !selected,
+                                        id,
+                                    })}
+                                    name='jason'/>
+                            }
+                            label={name}
                         />
                     ))}
                 </FormGroup>

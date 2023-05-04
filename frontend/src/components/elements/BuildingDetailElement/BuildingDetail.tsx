@@ -110,47 +110,47 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
     }, [id, session]);
 
     useEffect(() => {
-            if (session && building && location && schedules && garbageTypes && issues && syndici) {
-                // Check if every request managed to go through
-                if (!building.success) {
-                    setSessionError(building.status);
-                } else if (!location.success) {
-                    setSessionError(location.status);
-                } else if (!schedules.success) {
-                    setSessionError(schedules.status);
-                } else if (!garbageTypes.success) {
-                    setSessionError(garbageTypes.status);
-                } else if (!issues.success) {
-                    setSessionError(issues.status);
-                } else if (!syndici.success) {
-                    setSessionError(syndici.status);
-                } else {
-                    // If all checks have passed, continue with building page
-                    const garbageNames: { [id: number]: string } = {};
-                    for (const garbageType of garbageTypes.data) {
-                        garbageNames[garbageType.id] = garbageType.name;
-                    }
-
-                    const syndiciNames = syndici.data.map(
-                        (syndicus) => `${syndicus.last_name} ${syndicus.first_name}`).sort().join(', ');
-                    const detail: IBuildingDetail = {
-                        id: id ? id : 1,
-                        location_group: location.data.name,
-                        name: building.data.name ? building.data.name : building.data.address,
-                        address: building.data.address,
-                        pdf_guide: building.data.pdf_guide,
-                        image: building.data.image,
-                        syndici: syndiciNames,
-                        schedules: schedules.data,
-                        issues: issues.data.filter((issue) => !issue.resolved),
-                        longitude: building.data.longitude,
-                        latitude: building.data.latitude,
-                    };
-                    setBuildingDetail(detail);
+        if (session && building && location && schedules && garbageTypes && issues && syndici) {
+            // Check if every request managed to go through
+            if (!building.success) {
+                setSessionError(building.status);
+            } else if (!location.success) {
+                setSessionError(location.status);
+            } else if (!schedules.success) {
+                setSessionError(schedules.status);
+            } else if (!garbageTypes.success) {
+                setSessionError(garbageTypes.status);
+            } else if (!issues.success) {
+                setSessionError(issues.status);
+            } else if (!syndici.success) {
+                setSessionError(syndici.status);
+            } else {
+                // If all checks have passed, continue with building page
+                const garbageNames: { [id: number]: string } = {};
+                for (const garbageType of garbageTypes.data) {
+                    garbageNames[garbageType.id] = garbageType.name;
                 }
+
+                const syndiciNames = syndici.data.map(
+                    (syndicus) => `${syndicus.last_name} ${syndicus.first_name}`).sort().join(', ');
+                const detail: IBuildingDetail = {
+                    id: id ? id : 1,
+                    location_group: location.data.name,
+                    name: building.data.name ? building.data.name : building.data.address,
+                    address: building.data.address,
+                    pdf_guide: building.data.pdf_guide,
+                    image: building.data.image,
+                    syndici: syndiciNames,
+                    schedules: schedules.data,
+                    issues: issues.data.filter((issue) => !issue.resolved),
+                    longitude: building.data.longitude,
+                    latitude: building.data.latitude,
+                };
+                setBuildingDetail(detail);
             }
-        },
-        [id, session, building, location, schedules, garbageTypes, issues, syndici]);
+        }
+    },
+    [id, session, building, location, schedules, garbageTypes, issues, syndici]);
 
     if (sessionError !== 0) {
         return <ErrorPage status={sessionError}/>;
@@ -176,7 +176,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
         <Box className={styles.full}>
             {/* Top row */}
             <Box className={styles.top_row_container}
-                 sx={{background: 'var(--secondary-light)'}}>
+                sx={{background: 'var(--secondary-light)'}}>
                 {/* Building data container */}
                 <Box className={styles.building_data_container}>
                     <h1>
@@ -212,7 +212,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                             buildingDetail.image :
                             defaultBuildingImage
                     }
-                         alt={'Building'}/>
+                    alt={'Building'}/>
                 </Box>
             </Box>
 
@@ -252,11 +252,11 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                 onClose={handleIssueModalClose}
             >
                 <Box className={styles.issue_modal_box}
-                     sx={{
-                         background: 'var(--primary-light)',
-                         maxHeight: '400px',
-                         overflow: 'scroll',
-                     }}>
+                    sx={{
+                        background: 'var(--primary-light)',
+                        maxHeight: '400px',
+                        overflow: 'scroll',
+                    }}>
                     <List>
                         {
                             buildingDetail.issues.map((issue: Issue) =>
