@@ -9,15 +9,15 @@ import BuildingMap from '@/components/elements/BuildingDetailElement/BuildingMap
 export default function PublicBuildingPage(props: { id: string }) {
     const {id} = props;
 
-    const [data, setData] = useState<PublicBuilding | undefined>(undefined);
+    const [building, setBuilding] = useState<PublicBuilding | undefined>(undefined);
 
     useEffect(()=>{
         if (id !== null) {
-            getBuildingDetail(null, setData, id);
+            getBuildingDetail(null, setBuilding, id);
         }
     }, [id]);
 
-    return data ? (
+    return building ? (
         <Box className={styles.full}>
             {/* Top row */}
             <Box className={styles.top_row_container}
@@ -25,22 +25,22 @@ export default function PublicBuildingPage(props: { id: string }) {
                 {/* Building data container */}
                 <Box className={styles.building_data_container}>
                     <h1>
-                        {data.name}
+                        {building.data.name}
                     </h1>
                     <br/>
                     <Box className={styles.building_data_container_data}>
                         <Typography className={styles.building_data_data}>
-                            {data.address}
+                            {building.data.address}
                         </Typography>
                     </Box>
                 </Box>
                 <Box className={styles.building_desc_container}>
-                    <BuildingMap longitude={data.longitude} latitude={data.latitude}/>
+                    <BuildingMap longitude={building.data.longitude} latitude={building.data.latitude}/>
                 </Box>
                 <Box className={styles.building_imag_container}>
                     <img src={
-                        data.image ?
-                            data.image :
+                        building.data.image ?
+                            building.data.image :
                             defaultBuildingImage
                     }
                     alt={'Building'}/>
