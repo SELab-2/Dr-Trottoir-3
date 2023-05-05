@@ -25,7 +25,7 @@ const topButtonsAdmin = [
     {id: '1', text: 'Live Routes', href: '/live_routes', icon: SensorsRoundedIcon},
     {id: '2', text: 'Gebruikers', href: '/users', icon: PeopleAltRoundedIcon},
     {id: '3', text: 'Routes', href: '/routes', icon: RouteIcon},
-    {id: '4', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon},];
+    {id: '4', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon}];
 
 const includeRoutes = [
     '/scheduler',
@@ -67,7 +67,7 @@ export default function Navbar(props: any) {
         }
     }, [session]);
 
-    const showNavBar = includeRoutes.includes(router.asPath) || includeRoutes.includes(router.asPath.split("/")[1]);
+    const showNavBar = includeRoutes.includes(router.asPath) || includeRoutes.includes(router.asPath.split('/')[1]);
 
     const [topButtonsForUser, setTopButtonsForUser] =
         useState<Array<{id: string, text: string, href: string, icon: any}>>([]);
