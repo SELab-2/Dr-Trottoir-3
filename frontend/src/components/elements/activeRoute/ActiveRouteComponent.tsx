@@ -384,8 +384,7 @@ export default function ActiveRouteComponent(props: { scheduleAssignmentId: numb
 
 
     return (
-        // TODO remove the outer div when implementing this in the application
-        <div style={{height: '100%', width: '100%'}}>
+        <div style={{height: '100%', width: '100%', maxWidth: '450px'}}>
             <ActiveRouteItem
                 key={activeRoutes[activeRouteBuildingIndex].building_id}
                 route={activeRoutes[activeRouteBuildingIndex]}
