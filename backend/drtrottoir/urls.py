@@ -115,7 +115,9 @@ urlpatterns = [
         name="schema-swagger-ui",
     ),
     re_path(
-        r"^" + settings.BASE_PATH + r"redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
+        r"^" + settings.BASE_PATH + r"redoc/$",
+        schema_view.with_ui("redoc", cache_timeout=0),
+        name="schema-redoc",
     ),
 ]
 
