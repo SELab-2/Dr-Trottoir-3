@@ -96,5 +96,7 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: npm ci
+      - name: Run Jest
+        run: npm run test
       - name: Try building
         run: npm run build
