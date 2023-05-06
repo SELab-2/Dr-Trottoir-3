@@ -5,7 +5,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import {PlayArrow} from '@mui/icons-material';
 import {useSession} from 'next-auth/react';
 import {
-    getScheduleAssignmentsList, getScheduleDefinitionsAssignedToMeList, getScheduleDefinitionsList,
+    getScheduleAssignmentsList, getScheduleDefinitionsAssignedToMeList,
     getScheduleWorkEntriesList,
     useAuthenticatedApi,
 } from '@/api/api';

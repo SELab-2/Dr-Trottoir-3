@@ -2,7 +2,6 @@ import {Avatar} from '@mui/material';
 import styles from './meElement.module.css';
 import {
     getLocationGroupDetail, getMe, getScheduleAssignmentsList, getScheduleDefinitionsAssignedToMeList,
-    getScheduleDefinitionsList,
     useAuthenticatedApi,
 } from '@/api/api';
 import {useSession} from 'next-auth/react';

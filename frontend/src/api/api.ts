@@ -34,7 +34,7 @@ export enum Api {
     ScheduleDefinitionDetailOrder = 'schedule_definitions/:id/order/',
     ScheduleDefinitionDetailScheduleAssignments = 'schedule_definitions/:id/schedule_assignments/',
     ScheduleDefinitionDetailScheduleWorkEntries = 'schedule_definitions/:id/schedule_work_entries/',
-    ScheduleDefinitionAssignedToMe =  'schedule_definitions/assigned_to_me/',
+    ScheduleDefinitionAssignedToMe = 'schedule_definitions/assigned_to_me/',
     Users = 'users/',
     UserDetail = 'users/:id/',
     Issues = 'issues/',
