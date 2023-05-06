@@ -23,7 +23,7 @@ export default function DesktopNavbar({loading, nextPath, setNextPath, router, c
                         </div>
                         <div className={styles.side_bar_bot}>
                             <DesktopNavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
-                                href={'/users'}
+                                href={'/profile'}
                                 text={'Account'} Icon={PersonRoundedIcon}/>
                             <DesktopLogoutButton/>
                         </div>

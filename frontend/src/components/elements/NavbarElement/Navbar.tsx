@@ -29,6 +29,7 @@ const topButtonsAdmin = [
 ];
 
 const includeRoutes = [
+    '/profile',
     '/scheduler',
     '/live_routes',
     '/users',
