@@ -28,6 +28,7 @@ const topButtonsAdmin = [
     {id: '4', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon}];
 
 const includeRoutes = [
+    '/profile',
     '/scheduler',
     '/live_routes',
     '/users',
