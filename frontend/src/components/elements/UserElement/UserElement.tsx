@@ -49,27 +49,14 @@ export default function UserElement(props: userElementProps) {
         }
     }, [session, userData]);
 
-    if (!userData || !scheduleDefinitions || !scheduleAssignmentsData) {
+    if (!userData || !scheduleDefinitions || !scheduleAssignmentsData || !locationGroupData) {
         return (<div>Loading...</div>);
     } else {
-        if (userData.success && scheduleDefinitions.success && scheduleAssignmentsData.success) {
+        if (userData.success && scheduleDefinitions.success && scheduleAssignmentsData.success && locationGroupData.success) {
             return (
                 <div className={styles.userElement}>
                     <div className={styles.userHeader}>
                         <div className={styles.firstColumn}>
-                            <Button startIcon={<Edit/>} onClick={onOpenEditPopup}>
-                                Gebruiker aanpassen
-                            </Button>
-                            <EditUserPopup
-                                userId={userData.data.id}
-                                open={editPopupOpen}
-                                setOpen={setEditPopupOpen}
-                                prevFirstName={userData.data.first_name}
-                                prevLastName={userData.data.last_name}
-                                prevAdmin={userData.data.admin}
-                                prevStudent={userData.data.student}
-                                prevSyndic={userData.data.syndicus}
-                            />
                             <div className={styles.firstColumnRow}>
                                 <h1>{userData.data.first_name}</h1>
                                 <h1>{userData.data.last_name}</h1>
@@ -90,6 +77,18 @@ export default function UserElement(props: userElementProps) {
                             <div className={styles.firstColumnRow}>
                                 <p className={styles.createdDate}>Account aangemaakt op 25-02-2023</p>
                             </div>
+                            <Button startIcon={<Edit/>} onClick={onOpenEditPopup}>
+                                Gebruiker aanpassen
+                            </Button>
+                            <EditUserPopup
+                                userId={userData.data.id}
+                                open={editPopupOpen}
+                                setOpen={setEditPopupOpen}
+                                prevFirstName={userData.data.first_name}
+                                prevLastName={userData.data.last_name}
+                                prevStudent={userData.data.student}
+                                prevSyndic={userData.data.syndicus}
+                            />
                         </div>
                         <div className={styles.picture}>
                             <Avatar
