@@ -3,13 +3,11 @@ import styles from './meElement.module.css';
 import {
     getLocationGroupDetail, getMe, getScheduleAssignmentsList,
     getScheduleDefinitionsList,
-    getUserDetail,
     useAuthenticatedApi,
 } from '@/api/api';
 import {useSession} from 'next-auth/react';
 import React, {useEffect} from 'react';
 import {LocationGroup, ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
-
 
 
 export default function MeElement() {
