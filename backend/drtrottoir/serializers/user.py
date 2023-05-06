@@ -1,3 +1,4 @@
+import uuid
 from typing import List
 
 from rest_framework import serializers
@@ -26,6 +27,10 @@ class SyndicusSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "user"]
 
 
+class UserInviteSerializer(serializers.Serializer):
+    password = serializers.CharField(max_length=255)
+
+
 class UserSerializer(serializers.ModelSerializer):
     student = StudentSerializer(allow_null=True)
     admin = AdminSerializer(allow_null=True)
@@ -38,18 +43,19 @@ class UserSerializer(serializers.ModelSerializer):
             "username",
             "first_name",
             "last_name",
+            "invite_link",
             "student",
             "admin",
             "syndicus",
         ]
-        read_only_fields = ["id"]
+        read_only_fields = ["id", "invite_link"]
 
     def create(self, validated_data):
         student_data = validated_data.pop("student")
         admin_data = validated_data.pop("admin")
         syndicus_data = validated_data.pop("syndicus")
 
-        user = User.objects.create(**validated_data)
+        user = User.objects.create(invite_link=uuid.uuid4(), **validated_data)
 
         if student_data is not None:
             Student.objects.create(user=user, **student_data)
