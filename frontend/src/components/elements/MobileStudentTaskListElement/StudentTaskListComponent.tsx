@@ -5,7 +5,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import {PlayArrow} from '@mui/icons-material';
 import {useSession} from 'next-auth/react';
 import {
-    getScheduleAssignmentsList, getScheduleDefinitionsList,
+    getScheduleAssignmentsList, getScheduleDefinitionsAssignedToMeList, getScheduleDefinitionsList,
     getScheduleWorkEntriesList,
     useAuthenticatedApi,
 } from '@/api/api';
@@ -41,7 +41,7 @@ export default function StudentTaskList({userId}: StudentTaskListProps) {
         getScheduleAssignmentsList(session, setAssignments, {user: userId});
         // TODO: mockdata currently only has AR but would make more sense to be DE
         getScheduleWorkEntriesList(session, setWorkEntries, {entry_type: 'AR', schedule_assignment__user: userId});
-        getScheduleDefinitionsList(session, setDefinitions);
+        getScheduleDefinitionsAssignedToMeList(session, setDefinitions);
     }, [session]);
 
     if (assignments && workEntries && definitions) {
