@@ -10,12 +10,6 @@ const DynamicLiveRoutesComponent = dynamic(() =>
 export default function LiveRoutesPage() {
     const {data: session} = useSession();
 
-    /* TODO
-        To integrate the active route, add the following component (and replace with the schedule
-        assignment id with an appropriate one). Also, in ActiveRouteComponent, remove the TODO on line 368.
-
-        <ActiveRouteComponent id={1}></ActiveRouteComponent>
-     */
     if (session) {
         return (
             <DynamicLiveRoutesComponent/>
