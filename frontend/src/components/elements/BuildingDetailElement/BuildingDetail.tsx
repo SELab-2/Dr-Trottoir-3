@@ -21,6 +21,7 @@ import ErrorPage from '@/containers/ErrorPage';
 import BuildingMap from '@/components/elements/BuildingDetailElement/BuildingMap';
 import GarbageCollectionScheduleTemplateList
     from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleTemplateList';
+import EditBuildingPopup from '@/components/elements/BuildingDetailElement/EditBuildingPopup';
 
 interface IBuildingDetail {
     id: number,
@@ -152,6 +153,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                     issues: issues.data.filter((issue) => !issue.resolved),
                     longitude: building.data.longitude,
                     latitude: building.data.latitude,
+                    description: building.data.description,
                 };
                 setBuildingDetail(detail);
             }
