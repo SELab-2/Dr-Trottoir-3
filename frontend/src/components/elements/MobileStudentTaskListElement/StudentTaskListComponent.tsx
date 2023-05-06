@@ -76,13 +76,16 @@ export default function StudentTaskList({userId}: StudentTaskListProps) {
 
 
 const Day = ({date, assignments, definitions, workEntries}: RoutesByDay) => {
-    const mappedAssignments = assignments.map((e) => {
-        const definition = definitions.filter((def) => def.id === e.schedule_definition)[0];
+    const mappedAssignments = assignments.map((assignment) => {
+        const definition = definitions.filter((def) => def.id === assignment.schedule_definition)[0];
+        const entries = workEntries.filter((entry) => entry.schedule_assignment === assignment.id);
+        // Because a building can accept multiple schedule work entries of the same type, we need to remove duplicates
+        const buildingsWithEntries = new Set(entries.map((entry) => entry.building));
         return {
-            id: e.id,
+            id: assignment.id,
             name: definition.name,
             totalBuildings: definition.buildings.length,
-            buildingsDone: workEntries.filter((e) => e.schedule_assignment === e.id).length,
+            buildingsDone: buildingsWithEntries.size,
         };
     });
     return (
