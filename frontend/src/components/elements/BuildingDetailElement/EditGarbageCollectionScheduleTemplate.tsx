@@ -190,7 +190,7 @@ export default function EditGarbageCollectionScheduleTemplate({
                     <Button variant='outlined' color={'inherit'} onClick={onClose}>Annuleren</Button>
                 </Box>
                 <Box>
-                    {Array.from(Array(weeksCount())).map((_, week) => (
+                    {selectedTemplate ? Array.from(Array(weeksCount())).map((_, week) => (
                         <Box key={week}>
                             <Typography>Week {week + 1}</Typography>
                             <Box display={'flex'}>
@@ -213,7 +213,7 @@ export default function EditGarbageCollectionScheduleTemplate({
                                 ))}
                             </Box>
                         </Box>
-                    ))}
+                    )) : <></>}
                 </Box>
             </Box>
             <GarbageTypeDialog open={subDialogOpen} onClose={() => setSubDialogOpen(false)}
