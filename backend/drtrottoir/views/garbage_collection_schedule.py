@@ -13,6 +13,7 @@ class GarbageCollectionScheduleViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
     viewsets.GenericViewSet,
 ):
     """
