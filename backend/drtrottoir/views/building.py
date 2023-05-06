@@ -148,7 +148,8 @@ class BuildingViewSet(
     }
 
     filterset_fields = {"is_active": ("exact",), "location_group": ("exact", "in")}
-    search_fields = ["address", "description"]
+    search_fields = ["address", "description", "name"]
+    ordering_fields = ["name", "address", "location_group__name"]
 
     queryset = Building.objects.all()
     serializer_class = BuildingSerializer
