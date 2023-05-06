@@ -26,9 +26,6 @@ export default function DesktopNavbar({loading, nextPath, setNextPath, router, c
                             <DesktopNavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
                                 href={'/users'}
                                 text={'Account'} Icon={PersonRoundedIcon}/>
-                            <DesktopNavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
-                                href={'/settings'} text={'Instellingen'}
-                                Icon={TuneRoundedIcon}/>
                             <DesktopLogoutButton/>
                         </div>
                     </div>
