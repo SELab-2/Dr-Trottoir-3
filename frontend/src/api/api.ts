@@ -7,6 +7,8 @@ import {useState} from 'react';
 export enum Api {
     /* eslint-disable no-unused-vars */
     /* eslint-disable max-len */
+    GarbageCollectionScheduleTemplates = 'garbage_collection_schedule_templates/',
+    GarbageCollectionScheduleTemplateEntries = 'garbage_collection_schedule_template_entries/',
     GarbageCollectionScheduleTemplateDetail = 'garbage_collection_schedule_templates/:id/',
     GarbageCollectionScheduleTemplateDetailEntries = 'garbage_collection_schedule_templates/:id/entries/',
     GarbageCollectionScheduleTemplateEntryDetail = 'garbage_collection_schedule_template_entries/:id/',
@@ -532,6 +534,26 @@ const getIssueDetail = (session: Session | null, setter: ((e:any) => void), id: 
         });
 };
 
+const postGarbageCollectionScheduleTemplate = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
+    postDetailsToAPI(Api.GarbageCollectionScheduleTemplates, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
+const postGarbageCollectionScheduleTemplateEntry = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
+    postDetailsToAPI(Api.GarbageCollectionScheduleTemplateEntries, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
 const postGarbageType = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
     postDetailsToAPI(Api.GarbageTypes, session, data)
         .then((e) => {
@@ -910,6 +932,8 @@ export {
     getIssueDetail,
     getMe,
 
+    postGarbageCollectionScheduleTemplate,
+    postGarbageCollectionScheduleTemplateEntry,
     postGarbageType,
     postLocationGroup,
     postBuilding,
