@@ -134,7 +134,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allSyn
                                 onChange={(e) => setFormDescription(e.target.value as string)}
                             />
                         </div>
-                        <FormControl sx={{m: 1, width: 200}}>
+                        <FormControl sx={{marginBottom: 1,marginTop: 1,width: "100%"}}>
                             <Autocomplete
                                 id="tags-standard"
                                 options={allSyndici}
