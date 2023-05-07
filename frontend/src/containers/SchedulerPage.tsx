@@ -11,7 +11,6 @@ import {
 } from '@/api/api';
 import {Building, LocationGroup, ScheduleDefinition, User} from '@/api/models';
 
-
 export default function SchedulerPage() {
     const {data: session} = useSession();
 

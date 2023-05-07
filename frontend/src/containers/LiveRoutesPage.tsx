@@ -1,7 +1,8 @@
 import {useSession} from 'next-auth/react';
 import {
+    getLatestScheduleDefinitionsList,
     getLocationGroupsList, getScheduleAssignmentsList,
-    getScheduleDefinitionsList, getScheduleWorkEntriesList,
+    getScheduleWorkEntriesList,
     getUsersList,
     useAuthenticatedApi,
 } from '@/api/api';
@@ -15,6 +16,8 @@ import ActiveRouteListButtonComponent
 
 import styles from './containerStyles.module.css';
 import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
+import Head from 'next/head';
+import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
 
 // eslint-disable-next-line require-jsdoc
 export default function LiveRoutesPage() {
@@ -31,7 +34,7 @@ export default function LiveRoutesPage() {
     const [selectedRegions, setSelectedRegions] = React.useState<LocationGroup[]>([]);
 
     useEffect(() => {
-        getScheduleDefinitionsList(session, setDefinitions, {is_active: true});
+        getLatestScheduleDefinitionsList(session, setDefinitions);
         getLocationGroupsList(session, setLocationGroups);
         // TODO: mockdata currently only has AR but would make more sense to be DE
         getScheduleWorkEntriesList(session, setWorkEntries, {entry_type: 'AR'});
@@ -39,6 +42,16 @@ export default function LiveRoutesPage() {
     }, [session]);
 
     useEffect(() => {
+        handleSearch(false);
+    }, [session, sorttype, selectedRegions]);
+
+    const handleSearch = (clear: boolean = false) => {
+        let searchEntryOverwritten: string;
+        if (clear) {
+            searchEntryOverwritten = '';
+        } else {
+            searchEntryOverwritten = searchEntry;
+        }
         let regionsFilter = '';
         selectedRegions.map((r) => {
             regionsFilter+=r.id + ',';
@@ -46,12 +59,12 @@ export default function LiveRoutesPage() {
         const todayDate = new Date();
         const today = todayDate.toISOString().split('T')[0];
         getScheduleAssignmentsList(session, setAssignments, {
+            search: searchEntryOverwritten,
             ordering: sorttype,
             schedule_definition__location_group__in: regionsFilter,
             assigned_date: today,
         });
-    }, [session, sorttype, selectedRegions]);
-
+    };
 
     useEffect(() => {
         const element = document.getElementById(styles['scroll_style']);
@@ -59,15 +72,6 @@ export default function LiveRoutesPage() {
             element.scrollTo({top: 0, behavior: 'smooth'});
         }
     }, [sorttype, selectedRegions]);
-
-    const filterLiveRoutes = (data: any[], search: string) => {
-        if (!search) {
-            return data;
-        } else {
-            search = search.toLowerCase();
-            return data.filter((d) => d.toLowerCase().replace(/ /g, '').includes(search));
-        }
-    };
 
 
     if (assignments && definitions && students && workEntries && locationGroups) {
@@ -84,8 +88,8 @@ export default function LiveRoutesPage() {
             };
         });
 
-        const filteredLiveRoutes = {
-            data: filterLiveRoutes(mappedAssignments, searchEntry),
+        const liveRoutesMapped = {
+            data: mappedAssignments,
             status: 200,
             success: true,
         };
@@ -96,15 +100,19 @@ export default function LiveRoutesPage() {
             selectedRegions={selectedRegions}
             setSelectedRegions={setSelectedRegions}
             allRegions={locationGroups ? locationGroups.data : []}
-            amountOfResults={filteredLiveRoutes ? filteredLiveRoutes.data.length : 0}
+            amountOfResults={liveRoutesMapped ? liveRoutesMapped.data.length : 0}
             searchEntry={searchEntry}
             setSearchEntry={setSearchEntry}
+            handleSearch={handleSearch}
         />;
 
         return (
             <>
+                <Head>
+                    <title>Live Routes</title>
+                </Head>
                 <ListViewComponent
-                    listData={filteredLiveRoutes}
+                    listData={liveRoutesMapped}
                     setListData={setAssignments}
                     locationGroups={locationGroups}
                     selectedRegions={selectedRegions}
@@ -116,7 +124,7 @@ export default function LiveRoutesPage() {
                     title={'Live routes'}
                     Icon={SensorsRoundedIcon}
                 >
-                    {current ? <LiveRoutesElement id={current}/> : <div>None selected</div>}
+                    {current ? <LiveRoutesElement id={current}/> : <NoneSelected ElementName={'route'}/>}
                 </ListViewComponent>
             </>
         );

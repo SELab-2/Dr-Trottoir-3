@@ -9,6 +9,7 @@ from drtrottoir.models import (
 )
 from drtrottoir.permissions import (
     HasAssignmentForScheduleDefinition,
+    IsStudent,
     IsSuperstudentOrAdmin,
 )
 from drtrottoir.serializers import (
@@ -81,6 +82,7 @@ class ScheduleDefinitionViewSet(
         "buildings": ("exact",),
     }
     search_fields = ["name"]
+    ordering_fields = ["name", "location_group__name"]
 
     # This method allows more granular selection of permissions for any given
     # action
@@ -89,6 +91,7 @@ class ScheduleDefinitionViewSet(
         "retrieve": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
         "buildings": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
         "order": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
+        "assigned_to_me": [permissions.IsAuthenticated, IsStudent],
     }
 
     @action(detail=True)
@@ -171,7 +174,15 @@ SELECT t1.*
         ON t1.name = t2.name AND t1.version = t2.max_version
             """
         )
+        serializer = ScheduleDefinitionSerializer(schedule_definitions, many=True)
 
+        return Response(serializer.data)
+
+    @action(detail=False)
+    def assigned_to_me(self, request):
+        schedule_definitions = self.filter_queryset(
+            self.get_queryset().filter(assignments__user=request.user)
+        )
         serializer = ScheduleDefinitionSerializer(schedule_definitions, many=True)
 
         return Response(serializer.data)
