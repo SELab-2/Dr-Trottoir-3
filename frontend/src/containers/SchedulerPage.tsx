@@ -30,20 +30,20 @@ export default function SchedulerPage() {
     }, [session]);
 
     useEffect(() => {
-        if(locationGroups && selectedRegion == undefined) {
-            setSelectedRegion(locationGroups.data.at(0))
+        if (locationGroups && selectedRegion == undefined) {
+            setSelectedRegion(locationGroups.data.at(0));
         }
-    }, [setLocationGroups])
+    }, [setLocationGroups]);
 
     useEffect(() => {
         if (locationGroups) {
-            if(selectedRegion) {
+            if (selectedRegion) {
                 getScheduleDefinitionsList(session, setScheduleDefinitions, {location_group: selectedRegion?.id});
             }
         }
     }, [selectedRegion, session]);
 
-    console.log(scheduleDefinitions)
+    console.log(scheduleDefinitions);
 
     useEffect(() => {
         if (selectedRegion) {
@@ -69,7 +69,12 @@ export default function SchedulerPage() {
     if (locationGroups && selectedRegion) {
         return (
             <div className={styles.full_calendar_flex_container}>
-                <SchedulerTopBarComponent selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} allRegions={locationGroups.data} nextWeek={nextWeek} prevWeek={prevWeek}/>
+                <SchedulerTopBarComponent
+                    selectedRegion={selectedRegion}
+                    setSelectedRegion={setSelectedRegion}
+                    allRegions={locationGroups.data}
+                    nextWeek={nextWeek}
+                    prevWeek={prevWeek}/>
                 <SchedulerDetails
                     start={first}
                     scheduleDefinitions={scheduleDefinitions}

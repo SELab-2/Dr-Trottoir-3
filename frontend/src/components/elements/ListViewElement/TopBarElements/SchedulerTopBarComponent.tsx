@@ -1,10 +1,10 @@
 import styles from './topBar.module.css';
-import listStyles from '../../ListViewElement/listView.module.css'
+import listStyles from '../../ListViewElement/listView.module.css';
 import React from 'react';
 import Button from '@mui/material/Button';
-import {MenuItem, Select, SelectChangeEvent} from "@mui/material";
-import {LocationGroup} from "@/api/models";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import {MenuItem, Select, SelectChangeEvent} from '@mui/material';
+import {LocationGroup} from '@/api/models';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 type schedulerSelectProps = {
     nextWeek: any,
@@ -15,7 +15,6 @@ type schedulerSelectProps = {
 }
 
 export default function SchedulerTopBarComponent(props: schedulerSelectProps) {
-
     const handleChangeRegion = (event: SelectChangeEvent<number>) => {
         const value = props.allRegions.at(Number(event.target.value)) as LocationGroup;
         props.setSelectedRegion(value);
@@ -25,7 +24,7 @@ export default function SchedulerTopBarComponent(props: schedulerSelectProps) {
         <div className={styles.topBar}>
             <div className={listStyles.side_bar_top}>
                 <div className={listStyles.title}>
-                    {/*<props.Icon className={styles.icon}/>*/}
+                    {/* <props.Icon className={styles.icon}/>*/}
                     <p className={listStyles.title}>Planner</p>
                 </div>
             </div>
@@ -63,7 +62,7 @@ export default function SchedulerTopBarComponent(props: schedulerSelectProps) {
                     >
                         {Object.entries(props.allRegions).map(([option, value]) => (
                             <MenuItem key={option} value={option}
-                                      style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
+                                style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                 {value.name}
                             </MenuItem>
                         ))}

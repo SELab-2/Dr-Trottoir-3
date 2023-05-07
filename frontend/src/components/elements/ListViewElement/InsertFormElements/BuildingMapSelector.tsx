@@ -18,7 +18,7 @@ function BuildingMap({coordinate, setCoordinate}: Props) {
 
     return (
         <MapContainer style={{width: '100%', height: '100%'}} zoom={13}
-                      center={coordinate} ref={mapRef}>
+            center={coordinate} ref={mapRef}>
             <TileLayer
                 url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
                 attribution='&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
