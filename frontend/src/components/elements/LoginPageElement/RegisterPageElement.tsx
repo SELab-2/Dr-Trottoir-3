@@ -7,7 +7,7 @@ import {getUserInvite, postUserInvite} from '@/api/api';
 
 export default function RegisterPageElement(props: { uuid: string }) {
     const {uuid} = props;
-    const [user, setUser] = useState<User | undefined>(undefined);
+    const [user, setUser] = useState<{success: boolean, data: User} | undefined>(undefined);
     const [password, setPassword] = useState('');
         const router = useRouter();
 
@@ -18,7 +18,7 @@ export default function RegisterPageElement(props: { uuid: string }) {
     }, [uuid]);
 
     async function handleRegister() {
-        postUserInvite(null, uuid, {'password': password}, null);
+        postUserInvite(null, uuid, {'password': password}, undefined);
 
         router.replace('/login');
     }

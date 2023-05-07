@@ -5,14 +5,13 @@ import {useRouter} from 'next/router';
 
 export default function RegisterPage() {
     const router = useRouter();
-    const {uuid} = router.query;
 
     return (
         <>
             <Head>
                 <title>Register</title>
             </Head>
-            <RegisterPageElement uuid={uuid}/>
+            <RegisterPageElement uuid={router.query.uuid as string}/>
         </>
     );
 }
