@@ -69,7 +69,7 @@ class UserSerializer(serializers.ModelSerializer):
             sg = SendGridAPIClient(SENDGRID_API_KEY)
             sg.send(message)
         except Exception as e:
-            print("Sendgrid failed", e.message)
+            print("Sendgrid failed:", e)
 
     def create(self, validated_data):
         student_data = validated_data.pop("student")
