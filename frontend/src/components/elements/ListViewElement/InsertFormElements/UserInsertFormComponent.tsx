@@ -88,7 +88,7 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings, allR
                         label="superstudent" sx={{color: 'black'}}/>
                     </div>
                     <div className={styles.field}>
-                        <FormControl required sx={{minWidth: 150}}>
+                        <FormControl required sx={{width: "100%"}}>
                             <InputLabel>regio</InputLabel>
                             <Select
                                 value={formRegion?.name}
@@ -113,7 +113,7 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings, allR
         } else if (userType === 'syndicus') {
             return (
                 <div className={styles.field}>
-                    <FormControl sx={{m: 1, width: 200}}>
+                    <FormControl sx={{marginBottom: 1, marginTop: 1, width: "100%"}}>
                         <Autocomplete
                             multiple
                             id="tags-standard"
@@ -152,6 +152,7 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings, allR
                     <div className={styles.formFields}>
                         <div className={styles.field}>
                             <TextField
+                                fullWidth
                                 required
                                 label="gebruikersnaam"
                                 value={formUsername}
@@ -160,6 +161,7 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings, allR
                         </div>
                         <div className={styles.field}>
                             <TextField
+                                fullWidth
                                 required
                                 label="voornaam"
                                 value={formFirstName}
@@ -168,6 +170,7 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings, allR
                         </div>
                         <div className={styles.field}>
                             <TextField
+                                fullWidth
                                 required
                                 label="achternaam"
                                 value={formLastName}
@@ -175,7 +178,7 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings, allR
                             />
                         </div>
                         <div className={styles.field}>
-                            <FormControl sx={{minWidth: 220}} required>
+                            <FormControl sx={{width:"100%"}} required>
                                 <InputLabel>type</InputLabel>
                                 <Select
                                     value={formUserType}

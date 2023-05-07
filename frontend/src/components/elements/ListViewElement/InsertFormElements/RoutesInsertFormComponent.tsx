@@ -59,13 +59,14 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allRou
                     <div className={styles.formFields}>
                         <div className={styles.field}>
                             <TextField
+                                fullWidth
                                 required
                                 label="naam"
                                 value={formName}
                                 onChange={(e) => setFormName(e.target.value as string)}
                             />
                         </div>
-                        <FormControl required sx={{minWidth: 150}}>
+                        <FormControl required sx={{width: "100%"}}>
                             <InputLabel>regio</InputLabel>
                             <Select
                                 value={formRegion?.name}
