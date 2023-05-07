@@ -1,4 +1,4 @@
-import SchedulerSelect from '../components/elements/SchedulerElements/SchedulerSelect';
+import SchedulerTopBarComponent from '../components/elements/ListViewElement/TopBarElements/SchedulerTopBarComponent';
 import SchedulerDetails from '../components/elements/SchedulerElements/SchedulerDetails';
 import styles from './schedulerPage.module.css';
 import React, {useEffect, useState} from 'react';
@@ -15,8 +15,7 @@ import {Building, LocationGroup, ScheduleDefinition, User} from '@/api/models';
 export default function SchedulerPage() {
     const {data: session} = useSession();
 
-    const locationGroupName= 'Gent';
-
+    const [selectedRegion, setSelectedRegion] = React.useState<LocationGroup>();
     const [locationGroups, setLocationGroups] = useAuthenticatedApi<LocationGroup[]>();
     const [scheduleDefinitions, setScheduleDefinitions] = useAuthenticatedApi<ScheduleDefinition[]>();
     const [buildings, setBuildings] = useAuthenticatedApi<Building[]>();
@@ -27,26 +26,36 @@ export default function SchedulerPage() {
     const interval: number = 7;
 
     useEffect(() => {
-        getLocationGroupsList(session, setLocationGroups, {name: locationGroupName});
+        getLocationGroupsList(session, setLocationGroups);
     }, [session]);
 
     useEffect(() => {
-        if (locationGroups) {
-            getLatestScheduleDefinitionsList(session, setScheduleDefinitions, {name: locationGroups.data.at(0)?.id});
+        if(locationGroups && selectedRegion == undefined) {
+            setSelectedRegion(locationGroups.data.at(0))
         }
-    }, [locationGroups, session]);
+    }, [setLocationGroups])
 
     useEffect(() => {
         if (locationGroups) {
-            getBuildingsList(session, setBuildings, {name: locationGroups.data.at(0)?.id});
+            if(selectedRegion) {
+                getLatestScheduleDefinitionsList(session, setScheduleDefinitions, {location_group: selectedRegion?.id});
+            }
         }
-    }, [locationGroups, session]);
+    }, [selectedRegion, session]);
+
+    console.log(scheduleDefinitions)
+
+    useEffect(() => {
+        if (selectedRegion) {
+            getBuildingsList(session, setBuildings, {location_group: selectedRegion?.id});
+        }
+    }, [selectedRegion, session]);
 
     useEffect(() => {
         if (locationGroups) {
-            getUsersList(session, setUsers, {name: locationGroups.data.at(0)?.id});
+            getUsersList(session, setUsers, {location_group: selectedRegion?.id});
         }
-    }, [locationGroups, session]);
+    }, [selectedRegion, session]);
 
 
     const nextWeek = () => {
@@ -57,15 +66,19 @@ export default function SchedulerPage() {
         setFirst(first - interval);
     };
 
-    return (
-        <div className={styles.full_calendar_flex_container}>
-            <SchedulerSelect nextWeek={nextWeek} prevWeek={prevWeek}/>
-            <SchedulerDetails
-                start={first}
-                scheduleDefinitions={scheduleDefinitions}
-                users={users}
-                buildings={buildings}
-                interval={interval}/>
-        </div>
-    );
+    if (locationGroups && selectedRegion) {
+        return (
+            <div className={styles.full_calendar_flex_container}>
+                <SchedulerTopBarComponent selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} allRegions={locationGroups.data} nextWeek={nextWeek} prevWeek={prevWeek}/>
+                <SchedulerDetails
+                    start={first}
+                    scheduleDefinitions={scheduleDefinitions}
+                    users={users}
+                    buildings={buildings}
+                    interval={interval}/>
+            </div>
+        );
+    } else {
+        return (<div>error</div>);
+    }
 }
