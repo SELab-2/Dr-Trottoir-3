@@ -88,7 +88,7 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings, allR
                         label="superstudent" sx={{color: 'black'}}/>
                     </div>
                     <div className={styles.field}>
-                        <FormControl required sx={{width: "100%"}}>
+                        <FormControl required sx={{width: '100%'}}>
                             <InputLabel>regio</InputLabel>
                             <Select
                                 value={formRegion?.name}
@@ -113,7 +113,7 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings, allR
         } else if (userType === 'syndicus') {
             return (
                 <div className={styles.field}>
-                    <FormControl sx={{marginBottom: 1, marginTop: 1, width: "100%"}}>
+                    <FormControl sx={{marginBottom: 1, marginTop: 1, width: '100%'}}>
                         <Autocomplete
                             multiple
                             id="tags-standard"
@@ -178,7 +178,7 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings, allR
                             />
                         </div>
                         <div className={styles.field}>
-                            <FormControl sx={{width:"100%"}} required>
+                            <FormControl sx={{width: '100%'}} required>
                                 <InputLabel>type</InputLabel>
                                 <Select
                                     value={formUserType}

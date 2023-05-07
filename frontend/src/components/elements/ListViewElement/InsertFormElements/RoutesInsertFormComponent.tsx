@@ -66,7 +66,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allRou
                                 onChange={(e) => setFormName(e.target.value as string)}
                             />
                         </div>
-                        <FormControl required sx={{width: "100%"}}>
+                        <FormControl required sx={{width: '100'}}>
                             <InputLabel>regio</InputLabel>
                             <Select
                                 value={formRegion?.name}
