@@ -31,15 +31,6 @@ export default function SchedulerTopBarComponent(props: schedulerSelectProps) {
             </div>
 
             <div className={styles.filters_container}>
-                <Button className={styles.button_small} onClick={() => (props.prevWeek())}>
-                    vorige
-                </Button>
-                <Button className={styles.button_small} onClick={() => (props.nextWeek())}>
-                    volgende
-                </Button>
-            </div>
-
-            <div className={styles.filters_container}>
                 <Button className={styles.filter_button}>
                     <Select
                         className={styles.hide_select}
@@ -80,6 +71,12 @@ export default function SchedulerTopBarComponent(props: schedulerSelectProps) {
                     <FilterAltIcon/>
                 </Button>
             </div>
+            <Button className={styles.button_small} onClick={() => (props.prevWeek())}>
+                vorige
+            </Button>
+            <Button className={styles.button_small} onClick={() => (props.nextWeek())}>
+                volgende
+            </Button>
         </div>
     );
 }
