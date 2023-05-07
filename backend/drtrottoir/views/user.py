@@ -1,3 +1,5 @@
+from typing import Dict, List
+
 from rest_framework import permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -7,8 +9,10 @@ from drtrottoir.models import User
 from drtrottoir.permissions import IsSuperstudentOrAdmin
 from drtrottoir.serializers import UserInviteSerializer, UserSerializer
 
+from .mixins import PermissionsByActionMixin
 
-class UserViewSet(ModelViewSet):
+
+class UserViewSet(ModelViewSet, PermissionsByActionMixin):
     """
     Viewset that handles all routes related to listing users.
 
@@ -56,6 +60,10 @@ class UserViewSet(ModelViewSet):
     }
     search_fields = ["first_name", "last_name", "username"]
 
+    permission_classes_by_action: Dict[str, List[str]] = {
+        "invite_link": [],
+        "post_invite_link": [],
+    }
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
 
     @action(detail=False)

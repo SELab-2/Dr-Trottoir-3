@@ -43,6 +43,7 @@ export enum Api {
     IssueDetail = 'issues/:id/',
     IssueImages = 'issue_images/',
     Me = 'users/me/',
+    InviteLink = 'users/invite/:id/'
 }
 
 
@@ -523,6 +524,16 @@ const getUserDetail = (session: Session | null, setter: ((e:any) => void), id: n
         });
 };
 
+const getUserInvite = (session: Session | null, setter: ((e:any) => void), id: number) => {
+    getDetailsFromAPI(Api.InviteLink, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
+};
+
 
 const getIssueDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
     getDetailsFromAPI(Api.IssueDetail, session, id)
@@ -531,6 +542,16 @@ const getIssueDetail = (session: Session | null, setter: ((e:any) => void), id: 
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: e});
+        });
+};
+
+const postUserInvite = (session: Session | null, id: number, data: any, setter?: ((e:any) => void)) => {
+    postDetailsOnAPIWithId(Api.InviteLink, session, id, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
         });
 };
 
@@ -931,6 +952,7 @@ export {
     getUserDetail,
     getIssueDetail,
     getMe,
+    getUserInvite,
 
     postGarbageCollectionScheduleTemplate,
     postGarbageCollectionScheduleTemplateEntry,
@@ -944,6 +966,7 @@ export {
     postUser,
     postIssue,
     postIssueImage,
+    postUserInvite,
 
     deleteGarbageCollectionScheduleTemplate,
     deleteGarbageCollectionScheduleTemplateEntry,
