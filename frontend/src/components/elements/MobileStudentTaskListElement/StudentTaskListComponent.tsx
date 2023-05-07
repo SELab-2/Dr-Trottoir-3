@@ -11,7 +11,6 @@ import {
 } from '@/api/api';
 import {ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry} from '@/api/models';
 import Link from 'next/link';
-import {sort} from "next/dist/build/webpack/loaders/css-loader/src/utils";
 
 
 type StudentTaskListProps = {
@@ -54,7 +53,7 @@ export default function StudentTaskList({userId}: StudentTaskListProps) {
             return {...prev, [key]: group};
         }, {});
         const filteredAssignments = Object.entries(assignmentsByDate).slice(0).filter(
-            ([date,assignments])=>date>=new Date().toISOString().split('T')[0]).sort();
+            ([date, assignments])=>date>=new Date().toISOString().split('T')[0]).sort();
         return (
             <div className={styles.outerDiv}>
                 <h1 className={styles.title}>Toegekende Routes</h1>
