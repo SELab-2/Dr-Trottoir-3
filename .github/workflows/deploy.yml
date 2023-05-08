@@ -19,3 +19,5 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          SENDGRID_FROM_MAIL: ${{ secrets.SENDGRID_FROM_MAIL }}
