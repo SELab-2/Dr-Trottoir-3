@@ -49,10 +49,10 @@ export default function UserElement(props: userElementProps) {
         }
     }, [session, userData]);
 
-    if (!userData || !scheduleDefinitions || !scheduleAssignmentsData || !locationGroupData) {
+    if (!userData || !scheduleDefinitions || !scheduleAssignmentsData) {
         return (<div>Loading...</div>);
     } else {
-        if (userData.success && scheduleDefinitions.success && scheduleAssignmentsData.success && locationGroupData.success) {
+        if (userData.success && scheduleDefinitions.success && scheduleAssignmentsData.success) {
             return (
                 <div className={styles.userElement}>
                     <div className={styles.userHeader}>
