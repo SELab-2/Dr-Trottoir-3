@@ -84,21 +84,21 @@ export default function UserElement(props: userElementProps) {
                             </div>
                             <div className={styles.firstColumnRow}>
                                 <p>{userData.data.student ? locationGroupData?.data.name : ''}</p>
-                                {/*<p>Some random address</p>*/}
-                                {/*<p>+32 000 00 00 00</p>*/}
+                                {/* <p>Some random address</p>*/}
+                                {/* <p>+32 000 00 00 00</p>*/}
                             </div>
-                            {/*<div className={styles.firstColumnRow}>*/}
+                            {/* <div className={styles.firstColumnRow}>*/}
                             {/*    <p className={styles.createdDate}>Account aangemaakt op 25-02-2023</p>*/}
-                            {/*</div>*/}
+                            {/* </div>*/}
                         </div>
                         <div className={styles.picture}>
                             <Avatar
                                 alt="Avatar"
                                 src="/static/images/avatar/1.jpg"
-                                sx={{height: 128, width:128}}
+                                sx={{height: 128, width: 128}}
                             />
                         </div>
-                        {/*<div className={styles.stats}>*/}
+                        {/* <div className={styles.stats}>*/}
                         {/*    <div className={styles.statsRow}>*/}
                         {/*        <div className={styles.stat}>*/}
                         {/*            <h1>52</h1>*/}
@@ -119,7 +119,7 @@ export default function UserElement(props: userElementProps) {
                         {/*            <p>kilometers</p>*/}
                         {/*        </div>*/}
                         {/*    </div>*/}
-                        {/*</div>*/}
+                        {/* </div>*/}
                     </div>
                     <div className={styles.userContent}>
                         <div className={styles.userRoutes + ' ' + styles.userRoutesPadding}>
