@@ -1,7 +1,7 @@
 import styles from './buildingDetail.module.css';
 import {Box, Link, List, Modal, Typography} from '@mui/material';
 import {Building, GarbageCollectionSchedule, GarbageType, Issue, LocationGroup, User} from '@/api/models';
-import {PictureAsPdf} from '@mui/icons-material';
+import {PictureAsPdf, Edit} from '@mui/icons-material';
 import {
     getBuildingDetail,
     getBuildingDetailGarbageCollectionSchedules,
@@ -21,6 +21,7 @@ import ErrorPage from '@/containers/ErrorPage';
 import BuildingMap from '@/components/elements/BuildingDetailElement/BuildingMap';
 import GarbageCollectionScheduleTemplateList
     from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleTemplateList';
+import EditBuildingPopup from '@/components/elements/BuildingDetailElement/EditBuildingPopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 interface IBuildingDetail {
@@ -34,7 +35,8 @@ interface IBuildingDetail {
     schedules: GarbageCollectionSchedule[],
     issues: Issue[],
     longitude: number | null,
-    latitude: number | null
+    latitude: number | null,
+    description: string
 }
 
 // TODO in case there is an error, detail.status is undefined, and not a proper status code. This needs to be fixed.
@@ -72,6 +74,12 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
     const [issues, setIssues] = useAuthenticatedApi<Issue[]>();
     const [syndici, setSyndici] = useAuthenticatedApi<User[]>();
     const [sessionError, setSessionError] = React.useState(0);
+
+    const [editPopupOpen, setEditPopupOpen] = useState(false);
+
+    function onOpenEditPopup() {
+        setEditPopupOpen(true);
+    }
 
     // Get building data
     useEffect(() => {
@@ -146,6 +154,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                     issues: issues.data.filter((issue) => !issue.resolved),
                     longitude: building.data.longitude,
                     latitude: building.data.latitude,
+                    description: building.data.description,
                 };
                 setBuildingDetail(detail);
             }
@@ -161,23 +170,19 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
         return <p>None selected</p>;
     }
 
-    if (!buildingDetail) {
-        return <p>Loading...</p>;
-    }
+    if (building && location && schedules && garbageTypes && issues && syndici && buildingDetail) {
+        let issuesModalButtonText = `${buildingDetail.issues.length} issues remaining`;
+        if (buildingDetail.issues.length === 0) {
+            issuesModalButtonText = `No issues`;
+        } else if (buildingDetail.issues.length === 1) {
+            issuesModalButtonText = `${buildingDetail.issues.length} issue remaining`;
+        }
 
-    let issuesModalButtonText = `${buildingDetail.issues.length} issues remaining`;
-    if (buildingDetail.issues.length === 0) {
-        issuesModalButtonText = `No issues`;
-    } else if (buildingDetail.issues.length === 1) {
-        issuesModalButtonText = `${buildingDetail.issues.length} issue remaining`;
-    }
-
-    if (building && location && schedules && garbageTypes && issues && syndici) {
         return (
             <Box className={styles.full}>
                 {/* Top row */}
                 <Box className={styles.top_row_container}
-                    sx={{background: 'var(--secondary-light)'}}>
+                     sx={{background: 'var(--secondary-light)'}}>
                     {/* Building data container */}
                     <Box className={styles.building_data_container}>
                         <h1>
@@ -199,6 +204,20 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                             {/* Button to open the issue modal*/}
                             <Button onClick={handleIssueModalOpen}>{issuesModalButtonText}</Button>
                         </Box>
+                        <Button startIcon={<Edit/>} onClick={onOpenEditPopup}>
+                            Gebouw aanpassen
+                        </Button>
+                        <EditBuildingPopup
+                            buildingId={buildingDetail.id}
+                            open={editPopupOpen}
+                            setOpen={setEditPopupOpen}
+                            prevName={buildingDetail.name}
+                            prevAddress={buildingDetail.address}
+                            prevLongitude={buildingDetail.longitude}
+                            prevLatitude={buildingDetail.latitude}
+                            prevSyndici={syndici.data}
+                            prevDescription={buildingDetail.description}
+                        />
                     </Box>
 
                     {/* Building description container */}
