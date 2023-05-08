@@ -47,6 +47,16 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
         getUsersList(session, setAllSyndici, {syndicus__id__gt: 0});
     }, [session]);
 
+    useEffect(() => {
+        setFormName(prevName);
+        setFormAddress(prevAddress);
+        prevLongitude && prevLatitude ?
+            setFormCoordinate(new LatLng(prevLatitude, prevLongitude)) :
+            setFormCoordinate(new LatLng(51.1576985, 4.0807745));
+        setFormSyndici(prevSyndici);
+        setFormDescription(prevDescription);
+    }, [open]);
+
     const handleSubmit = () => {
         patchBuildingDetail(session, buildingId, {
             name: formName,

@@ -19,9 +19,9 @@ import React, {useEffect, useState} from 'react';
 import BuildingIssueListItem from '@/components/elements/BuildingDetailElement/BuildingIssueListItem';
 import ErrorPage from '@/containers/ErrorPage';
 import BuildingMap from '@/components/elements/BuildingDetailElement/BuildingMap';
-import EditBuildingPopup from '@/components/elements/BuildingDetailElement/EditBuildingPopup';
 import GarbageCollectionScheduleTemplateList
     from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleTemplateList';
+import EditBuildingPopup from '@/components/elements/BuildingDetailElement/EditBuildingPopup';
 
 interface IBuildingDetail {
     id: number,
@@ -85,7 +85,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
         if (id !== null) {
             getBuildingDetail(session, setBuilding, id);
         }
-    }, [id, session, editPopupOpen]);
+    }, [id, session]);
 
     // Get location group
     useEffect(() => {
@@ -180,7 +180,6 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
         issuesModalButtonText = `${buildingDetail.issues.length} issue remaining`;
     }
 
-
     return (
         <Box className={styles.full}>
             {/* Top row */}
@@ -188,20 +187,6 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                 sx={{background: 'var(--secondary-light)'}}>
                 {/* Building data container */}
                 <Box className={styles.building_data_container}>
-                    <Button startIcon={<Edit/>} onClick={onOpenEditPopup}>
-                            Gebouw aanpassen
-                    </Button>
-                    <EditBuildingPopup
-                        buildingId={buildingDetail.id}
-                        open={editPopupOpen}
-                        setOpen={setEditPopupOpen}
-                        prevName={buildingDetail.name}
-                        prevAddress={buildingDetail.address}
-                        prevLongitude={buildingDetail.longitude}
-                        prevLatitude={buildingDetail.latitude}
-                        prevSyndici={syndici.data}
-                        prevDescription={buildingDetail.description}
-                    />
                     <h1>
                         {buildingDetail.name}
                     </h1>
@@ -221,6 +206,20 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                         {/* Button to open the issue modal*/}
                         <Button onClick={handleIssueModalOpen}>{issuesModalButtonText}</Button>
                     </Box>
+                    <Button startIcon={<Edit/>} onClick={onOpenEditPopup}>
+                        Gebouw aanpassen
+                    </Button>
+                    <EditBuildingPopup
+                        buildingId={buildingDetail.id}
+                        open={editPopupOpen}
+                        setOpen={setEditPopupOpen}
+                        prevName={buildingDetail.name}
+                        prevAddress={buildingDetail.address}
+                        prevLongitude={buildingDetail.longitude}
+                        prevLatitude={buildingDetail.latitude}
+                        prevSyndici={syndici.data}
+                        prevDescription={buildingDetail.description}
+                    />
                 </Box>
 
                 {/* Building description container */}
@@ -246,11 +245,6 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
             <Box className={styles.bottom_row_container}>
                 {/* Garbage schedule list */}
                 <Box className={styles.garbage_schedule_list}>
-                    {/*<Typography*/}
-                    {/*    variant="h1"*/}
-                    {/*    className={styles.garbage_schedule_list_header}>*/}
-                    {/*    Planning*/}
-                    {/*</Typography>*/}
                     <Typography variant='h5'>
                         Templates
                     </Typography>
@@ -270,7 +264,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
 
                 {/* Garbage schedule calendar */}
                 <Box className={styles.garbage_calendar}>
-                        Calendar here
+                    Calendar here
                 </Box>
             </Box>
 
