@@ -10,7 +10,7 @@ import {
     TextField,
 } from '@mui/material';
 import {ClickAwayListener} from '@mui/base';
-import styles from '@/styles/listView.module.css';
+import styles from '@/styles/forms.module.css';
 import {Building, LocationGroup} from '@/api/models';
 import {postUser} from '@/api/api';
 import {useSession} from 'next-auth/react';

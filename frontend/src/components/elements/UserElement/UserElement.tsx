@@ -7,8 +7,11 @@ import {
     useAuthenticatedApi,
 } from '@/api/api';
 import {useSession} from 'next-auth/react';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {LocationGroup, ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
+import {Edit} from '@mui/icons-material';
+import Button from '@mui/material/Button';
+import EditUserPopup from '@/components/elements/UserElement/EditUserPopup';
 
 
 type userElementProps = {
@@ -23,9 +26,14 @@ export default function UserElement(props: userElementProps) {
     const [scheduleAssignmentsData, setScheduleAssignmentsData] = useAuthenticatedApi<Array<ScheduleAssignment>>();
     const [locationGroupData, setLocationGroupData] = useAuthenticatedApi<LocationGroup>();
 
+    const [editPopupOpen, setEditPopupOpen] = useState<boolean>(false);
+    function onOpenEditPopup() {
+        setEditPopupOpen(true);
+    }
+
     useEffect(() => {
         getUserDetail(session, setUserData, props.id);
-    }, [session, props.id]);
+    }, [session, props.id, editPopupOpen]);
 
     useEffect(() => {
         getScheduleDefinitionsList(session, setScheduleDefinitions);
@@ -41,10 +49,10 @@ export default function UserElement(props: userElementProps) {
         }
     }, [session, userData]);
 
-    if (!userData || !scheduleDefinitions || !scheduleAssignmentsData) {
+    if (!userData || !scheduleDefinitions || !scheduleAssignmentsData || !locationGroupData) {
         return (<div>Loading...</div>);
     } else {
-        if (userData.success && scheduleDefinitions.success && scheduleAssignmentsData.success) {
+        if (userData.success && scheduleDefinitions.success && scheduleAssignmentsData.success && locationGroupData.success) {
             return (
                 <div className={styles.userElement}>
                     <div className={styles.userHeader}>
@@ -69,6 +77,18 @@ export default function UserElement(props: userElementProps) {
                             <div className={styles.firstColumnRow}>
                                 <p className={styles.createdDate}>Account aangemaakt op 25-02-2023</p>
                             </div>
+                            <Button startIcon={<Edit/>} onClick={onOpenEditPopup}>
+                                Gebruiker aanpassen
+                            </Button>
+                            <EditUserPopup
+                                userId={userData.data.id}
+                                open={editPopupOpen}
+                                setOpen={setEditPopupOpen}
+                                prevFirstName={userData.data.first_name}
+                                prevLastName={userData.data.last_name}
+                                prevStudent={userData.data.student}
+                                prevSyndic={userData.data.syndicus}
+                            />
                         </div>
                         <div className={styles.picture}>
                             <Avatar
