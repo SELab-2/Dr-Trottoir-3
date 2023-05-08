@@ -52,7 +52,8 @@ export default function UserElement(props: userElementProps) {
     if (!userData || !scheduleDefinitions || !scheduleAssignmentsData || !locationGroupData) {
         return (<div>Loading...</div>);
     } else {
-        if (userData.success && scheduleDefinitions.success && scheduleAssignmentsData.success && locationGroupData.success) {
+        if (userData.success && scheduleDefinitions.success &&
+            scheduleAssignmentsData.success && locationGroupData.success) {
             return (
                 <div className={styles.userElement}>
                     <div className={styles.userHeader}>
