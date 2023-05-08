@@ -16,7 +16,7 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import {getMe, useAuthenticatedApi} from '@/api/api';
 import {User} from '@/api/models';
 import {useSession} from 'next-auth/react';
-import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 
 const topButtonsStudent = [

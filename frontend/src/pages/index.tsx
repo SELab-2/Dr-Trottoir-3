@@ -1,11 +1,9 @@
 import Head from 'next/head';
-import styles from '@/styles/home.module.css';
-import {useSession} from "next-auth/react";
-import ErrorPage from "@/containers/ErrorPage";
-import {getMe, useAuthenticatedApi} from "@/api/api";
-import {User} from "@/api/models";
-import {useRouter} from "next/router";
-import {useEffect} from "react";
+import {useSession} from 'next-auth/react';
+import {getMe, useAuthenticatedApi} from '@/api/api';
+import {User} from '@/api/models';
+import {useRouter} from 'next/router';
+import {useEffect} from 'react';
 
 export default function Home() {
     const [userData, setUserData] = useAuthenticatedApi<User>();
@@ -22,8 +20,8 @@ export default function Home() {
 
     useEffect(() => {
         // when session is null, failed to retrieve (caution: not the same as when undefined)
-        if(session === null) {
-            router.push("/login");
+        if (session === null) {
+            router.push('/login');
         }
     }, [session]);
 

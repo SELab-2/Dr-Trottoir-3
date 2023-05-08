@@ -6,7 +6,7 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import Button from '@mui/material/Button';
 import {navbarProps, buttonProps} from './NavbarComponentInterface';
 import {signOut} from 'next-auth/react';
-import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 export default function DesktopNavbar({loading, nextPath, setNextPath, router, children, topButtons}: navbarProps) {
     return (

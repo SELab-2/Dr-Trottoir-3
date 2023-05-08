@@ -8,10 +8,8 @@ import UserTopBarComponent from '@/components/elements/ListViewElement/TopBarEle
 import styles from './containerStyles.module.css';
 import UserListButtonComponent from '@/components/elements/ListViewElement/ListButtonElements/UserListButtonComponent';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
-import Head from 'next/head';
 import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
-import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
-import buildingList from "@/components/modules/routeDetail/BuildingList";
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 export default function UsersPage() {
     const {data: session} = useSession();
@@ -98,7 +96,7 @@ export default function UsersPage() {
 
     useEffect(() => {
         setUserElementWidget(<LoadingElement />);
-        if(current) {
+        if (current) {
             setUserElementWidget(<UserElement id={current}/>);
         }
     }, [current]);

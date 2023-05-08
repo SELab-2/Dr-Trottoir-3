@@ -1,11 +1,9 @@
 import dynamic from 'next/dynamic';
 import {useSession} from 'next-auth/react';
-import ErrorPage from '@/containers/ErrorPage';
-import React, {useEffect} from "react";
-import {getMe} from "@/api/api";
-import {useRouter} from "next/router";
-import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
-import Head from "next/head";
+import React, {useEffect} from 'react';
+import {useRouter} from 'next/router';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
+import Head from 'next/head';
 
 const DynamicLiveRoutesComponent = dynamic(() =>
     import('../containers/LiveRoutesPage'), {ssr: false}
@@ -18,8 +16,8 @@ export default function LiveRoutesPage() {
 
     useEffect(() => {
         // when session is null, failed to retrieve (caution: not the same as when undefined)
-        if(session === null) {
-            router.push("/login");
+        if (session === null) {
+            router.push('/login');
         }
     }, [session]);
 

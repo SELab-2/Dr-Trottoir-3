@@ -1,8 +1,8 @@
-import {useRouter} from "next/router";
-import {useSession} from "next-auth/react";
-import React, {useEffect} from "react";
-import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
-import Head from "next/head";
+import {useRouter} from 'next/router';
+import {useSession} from 'next-auth/react';
+import React, {useEffect} from 'react';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
+import Head from 'next/head';
 
 export default function MyBuildings() {
     const router = useRouter();
@@ -10,8 +10,8 @@ export default function MyBuildings() {
 
     useEffect(() => {
         // when session is null, failed to retrieve (caution: not the same as when undefined)
-        if(session === null) {
-            router.push("/login");
+        if (session === null) {
+            router.push('/login');
         }
     }, [session]);
 

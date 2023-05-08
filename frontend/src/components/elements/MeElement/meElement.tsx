@@ -7,7 +7,7 @@ import {
 import {useSession} from 'next-auth/react';
 import React, {useEffect} from 'react';
 import {LocationGroup, ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
-import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 
 export default function MeElement() {
@@ -37,7 +37,7 @@ export default function MeElement() {
         }
     }, [session, userData]);
 
-    if(userData && scheduleDefinitions && scheduleAssignmentsData && (!userData.data.student || locationGroupData)) {
+    if (userData && scheduleDefinitions && scheduleAssignmentsData && (!userData.data.student || locationGroupData)) {
         return (
             <div className={styles.userElement}>
                 <div className={styles.userHeader}>

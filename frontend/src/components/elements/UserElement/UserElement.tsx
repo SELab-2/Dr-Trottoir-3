@@ -9,7 +9,7 @@ import {
 import {useSession} from 'next-auth/react';
 import React, {useEffect, useState} from 'react';
 import {LocationGroup, ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
-import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 
 type userElementProps = {
@@ -28,16 +28,15 @@ export default function UserElement(props: userElementProps) {
 
     useEffect(() => {
         setIsLoading(true);
-        getUserDetail(session, e => {
+        getUserDetail(session, (e) => {
             setUserData(e);
             setIsLoading(false);
         }, props.id);
-
     }, [session, props.id]);
 
     useEffect(() => {
         setIsLoading(true);
-        getScheduleDefinitionsList(session, e => {
+        getScheduleDefinitionsList(session, (e) => {
             setScheduleDefinitions(e);
             setIsLoading(false);
         });
@@ -45,7 +44,7 @@ export default function UserElement(props: userElementProps) {
 
     useEffect(() => {
         setIsLoading(true);
-        getScheduleAssignmentsList(session, e => {
+        getScheduleAssignmentsList(session, (e) => {
             setScheduleAssignmentsData(e);
             setIsLoading(false);
         }, {user: props.id});
@@ -54,7 +53,7 @@ export default function UserElement(props: userElementProps) {
     useEffect(() => {
         if (userData && userData.data.student?.location_group) {
             setIsLoading(true);
-            getLocationGroupDetail(session, e => {
+            getLocationGroupDetail(session, (e) => {
                 setLocationGroupData(e);
                 setIsLoading(false);
             }, userData.data.student.location_group);

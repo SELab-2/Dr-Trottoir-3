@@ -8,10 +8,8 @@ import {useSession} from 'next-auth/react';
 import {getBuildingsList, getLocationGroupsList, getUsersList, useAuthenticatedApi} from '@/api/api';
 import {Building, LocationGroup, User} from '@/api/models';
 import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded';
-import Head from 'next/head';
 import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
-import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
-import RouteDetail from "@/components/modules/routeDetail/RouteDetail";
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 export default function BuildingsPage() {
     const {data: session} = useSession();
@@ -65,12 +63,12 @@ export default function BuildingsPage() {
 
     useEffect(() => {
         setBuildingWidget(<LoadingElement />);
-        if(current) {
+        if (current) {
             setBuildingWidget(<BuildingDetail id={current}/>);
         }
     }, [current]);
 
-    if(buildings && locationGroups && allSyndici) {
+    if (buildings && locationGroups && allSyndici) {
         return (
             <>
                 <ListViewComponent
@@ -93,6 +91,6 @@ export default function BuildingsPage() {
     } else {
         return (
             <LoadingElement />
-        )
+        );
     }
 }

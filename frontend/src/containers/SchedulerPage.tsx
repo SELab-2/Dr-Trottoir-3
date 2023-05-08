@@ -10,8 +10,7 @@ import {
     useAuthenticatedApi,
 } from '@/api/api';
 import {Building, LocationGroup, ScheduleDefinition, User} from '@/api/models';
-import Head from 'next/head';
-import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 
 export default function SchedulerPage() {
@@ -86,6 +85,6 @@ export default function SchedulerPage() {
     } else {
         return (
             <LoadingElement />
-        )
+        );
     }
 }

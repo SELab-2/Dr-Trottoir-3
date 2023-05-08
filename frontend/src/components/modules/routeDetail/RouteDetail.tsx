@@ -14,7 +14,7 @@ import {useSession} from 'next-auth/react';
 import {Building, ScheduleDefinition} from '@/api/models';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import AddBuildingPopup from '@/components/modules/routeDetail/AddBuildingPopup';
-import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 type routeDetailProps = {
     scheduleDefinitionId: ScheduleDefinition['id'] | null,
@@ -77,16 +77,16 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
         );
     }
 
-    if(scheduleDefinition && locationGroup && buildings && order) {
+    if (scheduleDefinition && locationGroup && buildings && order) {
         return (
             scheduleDefinitionId !== null ?
                 (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'} overflow={'auto'}>
                     <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
-                         borderRadius={'var(--small_corner)'}
-                         display={'flex'} flexDirection={mobileView ? 'column' : 'row'}>
+                        borderRadius={'var(--small_corner)'}
+                        display={'flex'} flexDirection={mobileView ? 'column' : 'row'}>
                         <Box>
                             <Typography variant={mobileView ? 'h5' : 'h4'} onClick={() => console.log(buildings?.data)}
-                                        noWrap>{scheduleDefinition?.data.name}</Typography>
+                                noWrap>{scheduleDefinition?.data.name}</Typography>
                             <Typography variant={'subtitle1'} noWrap>{locationGroup?.data.name}</Typography>
                         </Box>
                         <Box flexGrow={1}>
@@ -100,25 +100,25 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
                         <Box flexGrow={2} flexBasis={0}>
                             <Typography variant={'h5'}>Gebouwen</Typography>
                             <BuildingList list={(orderedBuildings())}
-                                          onReorder={onReorder} onRemove={onRemove}
-                                          onAdd={onAdd}
-                                          onHovering={setHovering} hovering={hovering}/>
+                                onReorder={onReorder} onRemove={onRemove}
+                                onAdd={onAdd}
+                                onHovering={setHovering} hovering={hovering}/>
                         </Box>
                         <Box flexGrow={5} minHeight={300}>
                             <RouteMap buildings={orderedBuildings()} onHovering={setHovering}
-                                      hovering={hovering}/>
+                                hovering={hovering}/>
                         </Box>
                     </Box>
                     {buildings && order ?
                         <AddBuildingPopup open={dialogOpen}
-                                          buildings={buildings.data
-                                              .filter(({id}) => !order.data.map(({building}) => building).includes(id))}
-                                          onClose={onAdding}/> : <></>}
+                            buildings={buildings.data
+                                .filter(({id}) => !order.data.map(({building}) => building).includes(id))}
+                            onClose={onAdding}/> : <></>}
                 </Box>) :
                 (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'}>
                     <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
-                         borderRadius={'var(--small_corner)'}
-                         display={'flex'}>
+                        borderRadius={'var(--small_corner)'}
+                        display={'flex'}>
                         <Box>
                             <Typography variant={mobileView ? 'h5' : 'h4'}>Geen route geselecteerd</Typography>
                             <Typography variant={'subtitle1'}>Selecteer een route om details weer te geven</Typography>
@@ -128,7 +128,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
     } else {
         return (
             <LoadingElement />
-        )
+        );
     }
 }
 

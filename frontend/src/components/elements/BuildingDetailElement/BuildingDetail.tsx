@@ -21,7 +21,7 @@ import ErrorPage from '@/containers/ErrorPage';
 import BuildingMap from '@/components/elements/BuildingDetailElement/BuildingMap';
 import GarbageCollectionScheduleTemplateList
     from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleTemplateList';
-import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 interface IBuildingDetail {
     id: number,
@@ -172,12 +172,12 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
         issuesModalButtonText = `${buildingDetail.issues.length} issue remaining`;
     }
 
-    if(building && location && schedules && garbageTypes && issues && syndici) {
+    if (building && location && schedules && garbageTypes && issues && syndici) {
         return (
             <Box className={styles.full}>
                 {/* Top row */}
                 <Box className={styles.top_row_container}
-                     sx={{background: 'var(--secondary-light)'}}>
+                    sx={{background: 'var(--secondary-light)'}}>
                     {/* Building data container */}
                     <Box className={styles.building_data_container}>
                         <h1>
@@ -213,7 +213,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                                 buildingDetail.image :
                                 defaultBuildingImage
                         }
-                             alt={'Building'}/>
+                        alt={'Building'}/>
                     </Box>
                 </Box>
 
@@ -253,11 +253,11 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                     onClose={handleIssueModalClose}
                 >
                     <Box className={styles.issue_modal_box}
-                         sx={{
-                             background: 'var(--primary-light)',
-                             maxHeight: '400px',
-                             overflow: 'scroll',
-                         }}>
+                        sx={{
+                            background: 'var(--primary-light)',
+                            maxHeight: '400px',
+                            overflow: 'scroll',
+                        }}>
                         <List>
                             {
                                 buildingDetail.issues.map((issue: Issue) =>
@@ -272,6 +272,6 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
     } else {
         return (
             <LoadingElement />
-        )
+        );
     }
 }

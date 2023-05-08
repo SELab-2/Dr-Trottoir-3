@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
-import Head from "next/head";
-import React from "react";
+import Head from 'next/head';
+import React from 'react';
 
 const DynamicLoginComponent = dynamic(() =>
     import('../containers/LoginPage'), {ssr: false}

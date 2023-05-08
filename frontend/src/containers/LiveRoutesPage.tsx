@@ -16,10 +16,8 @@ import ActiveRouteListButtonComponent
 
 import styles from './containerStyles.module.css';
 import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
-import Head from 'next/head';
 import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
-import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
-import UserElement from "@/components/elements/UserElement/UserElement";
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 // eslint-disable-next-line require-jsdoc
 export default function LiveRoutesPage() {
@@ -79,7 +77,7 @@ export default function LiveRoutesPage() {
 
     useEffect(() => {
         setLiveRouteWidget(<LoadingElement />);
-        if(current) {
+        if (current) {
             setLiveRouteWidget(<LiveRoutesElement id={current}/>);
         }
     }, [current]);

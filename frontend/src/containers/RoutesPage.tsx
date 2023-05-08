@@ -13,10 +13,8 @@ import RouteListButtonComponent
     from '@/components/elements/ListViewElement/ListButtonElements/RouteListButtonComponent';
 import RouteIcon from '@mui/icons-material/Route';
 import RouteDetail from '@/components/modules/routeDetail/RouteDetail';
-import Head from 'next/head';
 import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
-import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
-import LiveRoutesElement from "@/components/elements/LiveRoutesElement/LiveRoutesElement";
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 
 // eslint-disable-next-line require-jsdoc
@@ -89,12 +87,12 @@ export default function RoutesPage() {
 
     useEffect(() => {
         setRouteWidget(<LoadingElement />);
-        if(current) {
+        if (current) {
             setRouteWidget(<RouteDetail scheduleDefinitionId={current}/>);
         }
     }, [current]);
 
-    if(routes && allRoutes && locationGroups) {
+    if (routes && allRoutes && locationGroups) {
         return (
             <ListViewComponent
                 listData={routes}
