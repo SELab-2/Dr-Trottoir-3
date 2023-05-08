@@ -52,7 +52,7 @@ export default function UserElement(props: userElementProps) {
     if (!userData || !scheduleDefinitions || !scheduleAssignmentsData || (userData.data.student && !locationGroupData)) {
         return (<div>Loading...</div>);
     } else {
-        if (userData.success && scheduleDefinitions.success && scheduleAssignmentsData.success && (!userData.data.student || locationGroupData.success)) {
+        if (userData.success && scheduleDefinitions.success && scheduleAssignmentsData.success && (!userData.data.student || locationGroupData?.success)) {
             return (
                 <div className={styles.userElement}>
                     <div className={styles.userHeader}>
