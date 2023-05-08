@@ -15,7 +15,7 @@ import RouteIcon from '@mui/icons-material/Route';
 import RouteDetail from '@/components/modules/routeDetail/RouteDetail';
 import Head from 'next/head';
 import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
-import styles from "@/components/elements/ListViewElement/listView.module.css";
+import styles from '@/components/elements/ListViewElement/listView.module.css';
 
 
 // eslint-disable-next-line require-jsdoc
