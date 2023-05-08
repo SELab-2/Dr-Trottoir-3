@@ -3,8 +3,13 @@ import {Box, Link, List, Modal, Typography} from '@mui/material';
 import {Building, GarbageCollectionSchedule, GarbageType, Issue, LocationGroup, User} from '@/api/models';
 import {PictureAsPdf} from '@mui/icons-material';
 import {
-    getBuildingDetail, getBuildingDetailGarbageCollectionSchedules, getBuildingDetailIssues,
-    getGarbageTypesList, getLocationGroupDetail, getUsersList, useAuthenticatedApi,
+    getBuildingDetail,
+    getBuildingDetailGarbageCollectionSchedules,
+    getBuildingDetailIssues,
+    getGarbageTypesList,
+    getLocationGroupDetail,
+    getUsersList,
+    useAuthenticatedApi,
 } from '@/api/api';
 import {defaultBuildingImage} from '@/constants/images';
 import {useSession} from 'next-auth/react';
@@ -14,46 +19,48 @@ import React, {useEffect, useState} from 'react';
 import BuildingIssueListItem from '@/components/elements/BuildingDetailElement/BuildingIssueListItem';
 import ErrorPage from '@/containers/ErrorPage';
 import BuildingMap from '@/components/elements/BuildingDetailElement/BuildingMap';
+import GarbageCollectionScheduleTemplateList
+    from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleTemplateList';
 
 interface IBuildingDetail {
-  id: number,
-  location_group: string,
-  name: string,
-  address: string,
-  pdf_guide: string | null,
-  image: string | null,
-  syndici: string,
-  schedules: GarbageCollectionSchedule[],
-  issues: Issue[],
-  longitude: number | null,
-  latitude: number | null
+    id: number,
+    location_group: string,
+    name: string,
+    address: string,
+    pdf_guide: string | null,
+    image: string | null,
+    syndici: string,
+    schedules: GarbageCollectionSchedule[],
+    issues: Issue[],
+    longitude: number | null,
+    latitude: number | null
 }
 
 // TODO in case there is an error, detail.status is undefined, and not a proper status code. This needs to be fixed.
 
 // eslint-disable-next-line require-jsdoc
-function BuildingDetailManualLink(props:{path: string | null }):JSX.Element {
+function BuildingDetailManualLink(props: { path: string | null }): JSX.Element {
     if (!props.path || props.path.length === 0) {
         return (<></>);
     }
     return (
         <Link href={props.path} className={styles.building_data_manual}>
-          Manual
-            <PictureAsPdf fontSize="small"/>
+            Manual
+            <PictureAsPdf fontSize='small'/>
         </Link>
     );
 }
 
 // eslint-disable-next-line require-jsdoc
 
-export default function BuildingDetail(props: { id: number|null }): JSX.Element {
+export default function BuildingDetail(props: { id: number | null }): JSX.Element {
     const {id} = props;
 
     const [buildingDetail, setBuildingDetail] =
         useState<IBuildingDetail | undefined>(undefined);
     const [issuesModalOpen, setIssuesModalOpen] = useState(false);
-    const handleIssueModalOpen = ()=> setIssuesModalOpen(true);
-    const handleIssueModalClose = ()=> setIssuesModalOpen(false);
+    const handleIssueModalOpen = () => setIssuesModalOpen(true);
+    const handleIssueModalClose = () => setIssuesModalOpen(false);
 
     const {data: session} = useSession();
 
@@ -66,14 +73,14 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
     const [sessionError, setSessionError] = React.useState(0);
 
     // Get building data
-    useEffect(()=>{
+    useEffect(() => {
         if (id !== null) {
             getBuildingDetail(session, setBuilding, id);
         }
     }, [id, session]);
 
     // Get location group
-    useEffect(()=> {
+    useEffect(() => {
         if (building) {
             getLocationGroupDetail(session, setLocation, building.data.location_group);
         }
@@ -87,18 +94,18 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
     }, [id, session]);
 
     // Get garbage types
-    useEffect(()=> {
+    useEffect(() => {
         getGarbageTypesList(session, setGarbageTypes);
     }, [session]);
 
     // Get issues
-    useEffect(()=> {
+    useEffect(() => {
         if (id !== null) {
             getBuildingDetailIssues(session, setIssues, id);
         }
     }, [id, session]);
 
-    useEffect(()=> {
+    useEffect(() => {
         getUsersList(session, setSyndici, {'syndicus__buildings': id}, {});
     }, [id, session]);
 
@@ -113,20 +120,19 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
                 setSessionError(schedules.status);
             } else if (!garbageTypes.success) {
                 setSessionError(garbageTypes.status);
-            } else if ( !issues.success) {
+            } else if (!issues.success) {
                 setSessionError(issues.status);
             } else if (!syndici.success) {
                 setSessionError(syndici.status);
             } else {
                 // If all checks have passed, continue with building page
-                const garbageNames: {[id: number]: string} = {};
+                const garbageNames: { [id: number]: string } = {};
                 for (const garbageType of garbageTypes.data) {
                     garbageNames[garbageType.id] = garbageType.name;
                 }
 
-                const syndiciNames=syndici.data.map(
-                    (syndicus) => `${syndicus.last_name} ${syndicus.first_name}`).
-                    sort().join(', ');
+                const syndiciNames = syndici.data.map(
+                    (syndicus) => `${syndicus.last_name} ${syndicus.first_name}`).sort().join(', ');
                 const detail: IBuildingDetail = {
                     id: id ? id : 1,
                     location_group: location.data.name,
@@ -136,7 +142,7 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
                     image: building.data.image,
                     syndici: syndiciNames,
                     schedules: schedules.data,
-                    issues: issues.data.filter((issue)=> !issue.resolved ),
+                    issues: issues.data.filter((issue) => !issue.resolved),
                     longitude: building.data.longitude,
                     latitude: building.data.latitude,
                 };
@@ -217,10 +223,12 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
             <Box className={styles.bottom_row_container}>
                 {/* Garbage schedule list */}
                 <Box className={styles.garbage_schedule_list}>
-                    <Typography
-                        variant="h1"
-                        className={styles.garbage_schedule_list_header}>
-            Planning
+                    <Typography variant='h5'>
+                        Templates
+                    </Typography>
+                    {id ? <GarbageCollectionScheduleTemplateList id={id}/> : undefined}
+                    <Typography variant='h5'>
+                        Planning
                     </Typography>
                     <List>
                         {buildingDetail.schedules.map((schedule) =>
@@ -234,7 +242,7 @@ export default function BuildingDetail(props: { id: number|null }): JSX.Element 
 
                 {/* Garbage schedule calendar */}
                 <Box className={styles.garbage_calendar}>
-          Calendar here
+                    Calendar here
                 </Box>
             </Box>
 

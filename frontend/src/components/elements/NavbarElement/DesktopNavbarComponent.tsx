@@ -2,7 +2,6 @@ import React from 'react';
 import Router from 'next/router';
 import styles from './navbar.desktop.module.css';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import Button from '@mui/material/Button';
 import {navbarProps, buttonProps} from './NavbarComponentInterface';
@@ -24,11 +23,8 @@ export default function DesktopNavbar({loading, nextPath, setNextPath, router, c
                         </div>
                         <div className={styles.side_bar_bot}>
                             <DesktopNavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
-                                href={'/users'}
+                                href={'/profile'}
                                 text={'Account'} Icon={PersonRoundedIcon}/>
-                            <DesktopNavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
-                                href={'/settings'} text={'Instellingen'}
-                                Icon={TuneRoundedIcon}/>
                             <DesktopLogoutButton/>
                         </div>
                     </div>

@@ -1,15 +1,16 @@
 import styles from './studentTaskList.module.css';
-import {Button, Link} from '@mui/material';
+import {Button, Link as MuiLink} from '@mui/material';
 import React, {useEffect} from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import {PlayArrow} from '@mui/icons-material';
 import {useSession} from 'next-auth/react';
 import {
-    getScheduleAssignmentsList, getScheduleDefinitionsList,
+    getScheduleAssignmentsList, getScheduleDefinitionsAssignedToMeList,
     getScheduleWorkEntriesList,
     useAuthenticatedApi,
 } from '@/api/api';
 import {ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry} from '@/api/models';
+import Link from 'next/link';
 
 
 type StudentTaskListProps = {
@@ -41,7 +42,7 @@ export default function StudentTaskList({userId}: StudentTaskListProps) {
         getScheduleAssignmentsList(session, setAssignments, {user: userId});
         // TODO: mockdata currently only has AR but would make more sense to be DE
         getScheduleWorkEntriesList(session, setWorkEntries, {entry_type: 'AR', schedule_assignment__user: userId});
-        getScheduleDefinitionsList(session, setDefinitions);
+        getScheduleDefinitionsAssignedToMeList(session, setDefinitions);
     }, [session]);
 
     if (assignments && workEntries && definitions) {
@@ -76,21 +77,32 @@ export default function StudentTaskList({userId}: StudentTaskListProps) {
 
 
 const Day = ({date, assignments, definitions, workEntries}: RoutesByDay) => {
-    const mappedAssignments = assignments.map((e) => {
-        const definition = definitions.filter((def) => def.id === e.schedule_definition)[0];
+    const mappedAssignments = assignments.map((assignment) => {
+        const definition = definitions.filter((def) => def.id === assignment.schedule_definition)[0];
+        const entries = workEntries.filter((entry) => entry.schedule_assignment === assignment.id);
+        // Because a building can accept multiple schedule work entries of the same type, we need to remove duplicates
+        const buildingsWithEntries = new Set(entries.map((entry) => entry.building));
         return {
-            id: e.id,
+            id: assignment.id,
             name: definition.name,
             totalBuildings: definition.buildings.length,
-            buildingsDone: workEntries.filter((e) => e.schedule_assignment === e.id).length,
+            buildingsDone: buildingsWithEntries.size,
         };
     });
     return (
         <div className={styles.dayDiv}>
             {dateOrToday(date)}
             {
-                mappedAssignments.map((x) => <RouteEntry name={x.name} totalBuildings={x.totalBuildings}
-                    buildingsDone={x.buildingsDone} isToday={false}/>)
+                mappedAssignments.map((x) =>
+                    <Link href={`/active-route/${x.id}`}>
+                        <RouteEntry
+                            name={x.name}
+                            totalBuildings={x.totalBuildings}
+                            buildingsDone={x.buildingsDone}
+                            isToday={false}
+                        />
+                    </Link>
+                )
             }
         </div>
     );
@@ -102,8 +114,8 @@ const RouteEntry = ({name, totalBuildings, buildingsDone, isToday}: DisplayRoute
             <Button className={styles.button_default} >
                 <div className={styles.listItemLeftSide}>
                     <div className={styles.big_item_text}>
-                        <Link flexGrow={5} noWrap color={'inherit'}
-                            underline={'none'}>{name}</Link>
+                        <MuiLink flexGrow={5} noWrap color={'inherit'}
+                            underline={'none'}>{name}</MuiLink>
                     </div>
                 </div>
                 <div className={styles.listItemRightSide}>
