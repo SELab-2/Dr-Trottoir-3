@@ -52,7 +52,8 @@ export default function EditGarbageCollectionScheduleTemplate({
     const {data: session} = useSession();
     const [garbageTypes, setGarbageTypes] = useAuthenticatedApi<GarbageType[]>();
     const [originalEntries, setOriginalEntries] = useState<GarbageCollectionScheduleTemplateEntry[]>([]);
-    const [newEntries, setNewEntries] = useState<(Omit<GarbageCollectionScheduleTemplateEntry, 'id'> & { id?: number })[]>([]);
+    const [newEntries, setNewEntries] =
+        useState<(Omit<GarbageCollectionScheduleTemplateEntry, 'id'> & { id?: number })[]>([]);
     const [selectedDay, setSelectedDay] = useState<number>(0);
     const [subDialogOpen, setSubDialogOpen] = useState<boolean>(false);
 
