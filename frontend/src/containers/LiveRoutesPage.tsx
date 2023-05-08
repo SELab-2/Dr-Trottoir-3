@@ -45,6 +45,13 @@ export default function LiveRoutesPage() {
         handleSearch(false);
     }, [session, sorttype, selectedRegions]);
 
+    useEffect(() => {
+        const element = document.getElementById(styles.scrollable);
+        if (element !== null) {
+            element.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    }, [assignments]);
+
     const handleSearch = (clear: boolean = false) => {
         let searchEntryOverwritten: string;
         if (clear) {

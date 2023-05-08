@@ -15,6 +15,7 @@ import RouteIcon from '@mui/icons-material/Route';
 import RouteDetail from '@/components/modules/routeDetail/RouteDetail';
 import Head from 'next/head';
 import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
+import styles from "@/components/elements/ListViewElement/listView.module.css";
 
 
 // eslint-disable-next-line require-jsdoc
@@ -43,6 +44,13 @@ export default function RoutesPage() {
     useEffect(() => {
         handleSearch(false);
     }, [session, selectedRegions, sorttype, selectedActive]);
+
+    useEffect(() => {
+        const element = document.getElementById(styles.scrollable);
+        if (element !== null) {
+            element.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    }, [routes]);
 
     const handleSearch = (clear: boolean = false) => {
         let searchEntryOverwritten: string;
