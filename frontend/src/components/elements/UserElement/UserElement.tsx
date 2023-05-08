@@ -7,8 +7,9 @@ import {
     useAuthenticatedApi,
 } from '@/api/api';
 import {useSession} from 'next-auth/react';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {LocationGroup, ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
+import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
 
 
 type userElementProps = {
@@ -23,26 +24,47 @@ export default function UserElement(props: userElementProps) {
     const [scheduleAssignmentsData, setScheduleAssignmentsData] = useAuthenticatedApi<Array<ScheduleAssignment>>();
     const [locationGroupData, setLocationGroupData] = useAuthenticatedApi<LocationGroup>();
 
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
-        getUserDetail(session, setUserData, props.id);
+        setIsLoading(true);
+        getUserDetail(session, e => {
+            setUserData(e);
+            setIsLoading(false);
+        }, props.id);
+
     }, [session, props.id]);
 
     useEffect(() => {
-        getScheduleDefinitionsList(session, setScheduleDefinitions);
+        setIsLoading(true);
+        getScheduleDefinitionsList(session, e => {
+            setScheduleDefinitions(e);
+            setIsLoading(false);
+        });
     }, [session]);
 
     useEffect(() => {
-        getScheduleAssignmentsList(session, setScheduleAssignmentsData, {user: props.id});
+        setIsLoading(true);
+        getScheduleAssignmentsList(session, e => {
+            setScheduleAssignmentsData(e);
+            setIsLoading(false);
+        }, {user: props.id});
     }, [session, props.id]);
 
     useEffect(() => {
         if (userData && userData.data.student?.location_group) {
-            getLocationGroupDetail(session, setLocationGroupData, userData.data.student.location_group);
+            setIsLoading(true);
+            getLocationGroupDetail(session, e => {
+                setLocationGroupData(e);
+                setIsLoading(false);
+            }, userData.data.student.location_group);
         }
     }, [session, userData]);
 
-    if (!userData || !scheduleDefinitions || !scheduleAssignmentsData) {
-        return (<div>Loading...</div>);
+    if (!userData || !scheduleDefinitions || !scheduleAssignmentsData || isLoading) {
+        return (
+            <LoadingElement/>
+        );
     } else {
         if (userData.success && scheduleDefinitions.success && scheduleAssignmentsData.success) {
             return (

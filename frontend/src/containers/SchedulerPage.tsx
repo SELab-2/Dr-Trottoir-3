@@ -11,6 +11,7 @@ import {
 } from '@/api/api';
 import {Building, LocationGroup, ScheduleDefinition, User} from '@/api/models';
 import Head from 'next/head';
+import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
 
 
 export default function SchedulerPage() {
@@ -58,20 +59,26 @@ export default function SchedulerPage() {
         setFirst(first - interval);
     };
 
-    return (
-        <>
-            <Head>
-                <title>Planner</title>
-            </Head>
-            <div className={styles.full_calendar_flex_container}>
-                <SchedulerSelect nextWeek={nextWeek} prevWeek={prevWeek}/>
-                <SchedulerDetails
-                    start={first}
-                    scheduleDefinitions={scheduleDefinitions}
-                    users={users}
-                    buildings={buildings}
-                    interval={interval}/>
-            </div>
-        </>
-    );
+    if(locationGroups && scheduleDefinitions && buildings && users) {
+        return (
+            <>
+                <Head>
+                    <title>Planner</title>
+                </Head>
+                <div className={styles.full_calendar_flex_container}>
+                    <SchedulerSelect nextWeek={nextWeek} prevWeek={prevWeek}/>
+                    <SchedulerDetails
+                        start={first}
+                        scheduleDefinitions={scheduleDefinitions}
+                        users={users}
+                        buildings={buildings}
+                        interval={interval}/>
+                </div>
+            </>
+        );
+    } else {
+        return (
+            <LoadingElement />
+        )
+    }
 }

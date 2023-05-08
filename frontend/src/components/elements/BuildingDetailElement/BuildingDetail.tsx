@@ -21,6 +21,7 @@ import ErrorPage from '@/containers/ErrorPage';
 import BuildingMap from '@/components/elements/BuildingDetailElement/BuildingMap';
 import GarbageCollectionScheduleTemplateList
     from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleTemplateList';
+import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
 
 interface IBuildingDetail {
     id: number,
@@ -54,7 +55,7 @@ function BuildingDetailManualLink(props: { path: string | null }): JSX.Element {
 // eslint-disable-next-line require-jsdoc
 
 export default function BuildingDetail(props: { id: number | null }): JSX.Element {
-    const {id} = props;
+    const id = props.id;
 
     const [buildingDetail, setBuildingDetail] =
         useState<IBuildingDetail | undefined>(undefined);
@@ -171,101 +172,106 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
         issuesModalButtonText = `${buildingDetail.issues.length} issue remaining`;
     }
 
-
-    return (
-        <Box className={styles.full}>
-            {/* Top row */}
-            <Box className={styles.top_row_container}
-                sx={{background: 'var(--secondary-light)'}}>
-                {/* Building data container */}
-                <Box className={styles.building_data_container}>
-                    <h1>
-                        {buildingDetail.name}
-                    </h1>
-                    <br/>
-                    <Box className={styles.building_data_container_data}>
-                        <Typography className={styles.building_data_data}>
-                            {buildingDetail.location_group}
-                        </Typography>
-                        <Typography className={styles.building_data_data}>
-                            {buildingDetail.address}
-                        </Typography>
-                        <Typography className={styles.building_data_data}>
-                            {buildingDetail.syndici}
-                        </Typography>
+    if(building && location && schedules && garbageTypes && issues && syndici) {
+        return (
+            <Box className={styles.full}>
+                {/* Top row */}
+                <Box className={styles.top_row_container}
+                     sx={{background: 'var(--secondary-light)'}}>
+                    {/* Building data container */}
+                    <Box className={styles.building_data_container}>
+                        <h1>
+                            {buildingDetail.name}
+                        </h1>
                         <br/>
-                        <BuildingDetailManualLink path={buildingDetail.pdf_guide}/>
-                        {/* Button to open the issue modal*/}
-                        <Button onClick={handleIssueModalOpen}>{issuesModalButtonText}</Button>
+                        <Box className={styles.building_data_container_data}>
+                            <Typography className={styles.building_data_data}>
+                                {buildingDetail.location_group}
+                            </Typography>
+                            <Typography className={styles.building_data_data}>
+                                {buildingDetail.address}
+                            </Typography>
+                            <Typography className={styles.building_data_data}>
+                                {buildingDetail.syndici}
+                            </Typography>
+                            <br/>
+                            <BuildingDetailManualLink path={buildingDetail.pdf_guide}/>
+                            {/* Button to open the issue modal*/}
+                            <Button onClick={handleIssueModalOpen}>{issuesModalButtonText}</Button>
+                        </Box>
+                    </Box>
+
+                    {/* Building description container */}
+                    <Box className={styles.building_desc_container}>
+                        <BuildingMap longitude={buildingDetail.longitude} latitude={buildingDetail.latitude}/>
+                    </Box>
+
+                    {/* Building image container */}
+                    <Box className={styles.building_imag_container}>
+                        <img src={
+                            buildingDetail.image ?
+                                buildingDetail.image :
+                                defaultBuildingImage
+                        }
+                             alt={'Building'}/>
                     </Box>
                 </Box>
 
-                {/* Building description container */}
-                <Box className={styles.building_desc_container}>
-                    <BuildingMap longitude={buildingDetail.longitude} latitude={buildingDetail.latitude}/>
+                {/* Middle row for spacing */}
+                <Box className={styles.middle_row_divider}></Box>
+
+                {/* Bottom row */}
+                <Box className={styles.bottom_row_container}>
+                    {/* Garbage schedule list */}
+                    <Box className={styles.garbage_schedule_list}>
+                        <Typography variant='h5'>
+                            Templates
+                        </Typography>
+                        {id ? <GarbageCollectionScheduleTemplateList id={id}/> : undefined}
+                        <Typography variant='h5'>
+                            Planning
+                        </Typography>
+                        <List>
+                            {buildingDetail.schedules.map((schedule) =>
+                                <ScheduleGarbageListItem
+                                    key={schedule.id}
+                                    id={schedule.id}
+                                />
+                            )}
+                        </List>
+                    </Box>
+
+                    {/* Garbage schedule calendar */}
+                    <Box className={styles.garbage_calendar}>
+                        Calendar here
+                    </Box>
                 </Box>
 
-                {/* Building image container */}
-                <Box className={styles.building_imag_container}>
-                    <img src={
-                        buildingDetail.image ?
-                            buildingDetail.image :
-                            defaultBuildingImage
-                    }
-                    alt={'Building'}/>
-                </Box>
+                {/* Modal for the issues */}
+                <Modal
+                    open={issuesModalOpen}
+                    onClose={handleIssueModalClose}
+                >
+                    <Box className={styles.issue_modal_box}
+                         sx={{
+                             background: 'var(--primary-light)',
+                             maxHeight: '400px',
+                             overflow: 'scroll',
+                         }}>
+                        <List>
+                            {
+                                buildingDetail.issues.map((issue: Issue) =>
+                                    <BuildingIssueListItem issue={issue.id} key={issue.id}/>
+                                )
+                            }
+                        </List>
+                    </Box>
+                </Modal>
             </Box>
-
-            {/* Middle row for spacing */}
-            <Box className={styles.middle_row_divider}></Box>
-
-            {/* Bottom row */}
-            <Box className={styles.bottom_row_container}>
-                {/* Garbage schedule list */}
-                <Box className={styles.garbage_schedule_list}>
-                    <Typography variant='h5'>
-                        Templates
-                    </Typography>
-                    {id ? <GarbageCollectionScheduleTemplateList id={id}/> : undefined}
-                    <Typography variant='h5'>
-                        Planning
-                    </Typography>
-                    <List>
-                        {buildingDetail.schedules.map((schedule) =>
-                            <ScheduleGarbageListItem
-                                key={schedule.id}
-                                id={schedule.id}
-                            />
-                        )}
-                    </List>
-                </Box>
-
-                {/* Garbage schedule calendar */}
-                <Box className={styles.garbage_calendar}>
-                    Calendar here
-                </Box>
-            </Box>
-
-            {/* Modal for the issues */}
-            <Modal
-                open={issuesModalOpen}
-                onClose={handleIssueModalClose}
-            >
-                <Box className={styles.issue_modal_box}
-                    sx={{
-                        background: 'var(--primary-light)',
-                        maxHeight: '400px',
-                        overflow: 'scroll',
-                    }}>
-                    <List>
-                        {
-                            buildingDetail.issues.map((issue: Issue) =>
-                                <BuildingIssueListItem issue={issue.id} key={issue.id}/>
-                            )
-                        }
-                    </List>
-                </Box>
-            </Modal>
-        </Box>
-    );
+        );
+    } else {
+        return (
+            <LoadingElement />
+        )
+    }
 }

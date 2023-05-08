@@ -6,6 +6,7 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import Button from '@mui/material/Button';
 import {navbarProps, buttonProps} from './NavbarComponentInterface';
 import {signOut} from 'next-auth/react';
+import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
 
 export default function DesktopNavbar({loading, nextPath, setNextPath, router, children, topButtons}: navbarProps) {
     return (
@@ -32,10 +33,7 @@ export default function DesktopNavbar({loading, nextPath, setNextPath, router, c
                 <div className={styles.right_flex_container}>
                     <div className={styles.top_bar}></div>
                     <div className={styles.content_space}>
-                        {loading ? children :
-                            <h1 style={{color: 'black'}}>
-                                    LOADING
-                            </h1>}
+                        {loading ? children : <LoadingElement />}
                     </div>
                 </div>
             </div>

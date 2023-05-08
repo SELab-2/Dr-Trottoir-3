@@ -10,6 +10,8 @@ import UserListButtonComponent from '@/components/elements/ListViewElement/ListB
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import Head from 'next/head';
 import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
+import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
+import buildingList from "@/components/modules/routeDetail/BuildingList";
 
 export default function UsersPage() {
     const {data: session} = useSession();
@@ -92,7 +94,16 @@ export default function UsersPage() {
         handleSearch={handleSearch}
     />;
 
-    if (users) {
+    const [userElementWidget, setUserElementWidget] = useState(<LoadingElement />);
+
+    useEffect(() => {
+        setUserElementWidget(<LoadingElement />);
+        if(current) {
+            setUserElementWidget(<UserElement id={current}/>);
+        }
+    }, [current]);
+
+    if (users && locationGroups && allBuildings) {
         return (
 
             <>
@@ -112,11 +123,13 @@ export default function UsersPage() {
                     title={'Gebruikers'}
                     Icon={PeopleAltRoundedIcon}
                 >
-                    {current ? <UserElement id={current}/> : <NoneSelected ElementName={'gebruiker'}/>}
+                    {current ? userElementWidget : <NoneSelected ElementName={'gebruiker'}/>}
                 </ListViewComponent>
             </>
         );
     } else {
-        return (<div>error</div>);
+        return (
+            <LoadingElement/>
+        );
     }
 }

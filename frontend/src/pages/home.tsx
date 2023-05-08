@@ -3,31 +3,33 @@ import {useEffect} from 'react';
 import {getMe, useAuthenticatedApi} from '@/api/api';
 import {User} from '@/api/models';
 import {useRouter} from 'next/router';
+import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
 
+// TODO CAN BE REMOVED
 export default function Home() {
-    const {data: session} = useSession();
-
-    const [userData, setUserData] = useAuthenticatedApi<User>();
-
-    const router = useRouter();
-
-    useEffect(() => {
-        if (session) {
-            // @ts-ignore
-            getMe(session, setUserData);
-        }
-    }, [session]);
-
-    useEffect(() => {
-        if (userData && userData.data) {
-            if (userData.data.student && !userData.data.student.is_super_student) {
-                router.push('/my-schedule');
-            } else if (userData.data.syndicus) {
-                router.push('/my-buildings');
-            } else {
-                router.push('/live_routes');
-            }
-        }
-    }, [userData]);
-    return (<div></div>);
+    // const {data: session} = useSession();
+    //
+    // const [userData, setUserData] = useAuthenticatedApi<User>();
+    //
+    // const router = useRouter();
+    //
+    // useEffect(() => {
+    //     if (session) {
+    //         // @ts-ignore
+    //         getMe(session, setUserData);
+    //     }
+    // }, [session]);
+    //
+    // useEffect(() => {
+    //     if (userData && userData.data) {
+    //         if (userData.data.student && !userData.data.student.is_super_student) {
+    //             router.push('/my-schedule');
+    //         } else if (userData.data.syndicus) {
+    //             router.push('/my-buildings');
+    //         } else {
+    //             router.push('/live_routes');
+    //         }
+    //     }
+    // }, [userData]);
+    return (<LoadingElement/>);
 }

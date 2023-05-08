@@ -15,6 +15,8 @@ import RouteIcon from '@mui/icons-material/Route';
 import RouteDetail from '@/components/modules/routeDetail/RouteDetail';
 import Head from 'next/head';
 import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
+import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
+import LiveRoutesElement from "@/components/elements/LiveRoutesElement/LiveRoutesElement";
 
 
 // eslint-disable-next-line require-jsdoc
@@ -83,26 +85,41 @@ export default function RoutesPage() {
         handleSearch={handleSearch}
     />;
 
-    return (
-        <>
-            <Head>
-                <title>Routes</title>
-            </Head>
-            <ListViewComponent
-                listData={routes}
-                setListData={setRoutes}
-                locationGroups={locationGroups}
-                selectedRegions={selectedRegions}
-                setSelectedRegions={setSelectedRegions}
-                current={current}
-                setCurrent={setCurrent}
-                ListItem={RouteListButtonComponent}
-                TopBar={topBar}
-                title={'Routes'}
-                Icon={RouteIcon}
-            >
-                {current ? <RouteDetail scheduleDefinitionId={current}/> : <NoneSelected ElementName={'route'}/>}
-            </ListViewComponent>
-        </>
-    );
+    const [routeWidget, setRouteWidget] = useState(<LoadingElement />);
+
+    useEffect(() => {
+        setRouteWidget(<LoadingElement />);
+        if(current) {
+            setRouteWidget(<RouteDetail scheduleDefinitionId={current}/>);
+        }
+    }, [current]);
+
+    if(routes && allRoutes && locationGroups) {
+        return (
+            <>
+                <Head>
+                    <title>Routes</title>
+                </Head>
+                <ListViewComponent
+                    listData={routes}
+                    setListData={setRoutes}
+                    locationGroups={locationGroups}
+                    selectedRegions={selectedRegions}
+                    setSelectedRegions={setSelectedRegions}
+                    current={current}
+                    setCurrent={setCurrent}
+                    ListItem={RouteListButtonComponent}
+                    TopBar={topBar}
+                    title={'Routes'}
+                    Icon={RouteIcon}
+                >
+                    {current ? routeWidget : <NoneSelected ElementName={'route'}/>}
+                </ListViewComponent>
+            </>
+        );
+    } else {
+        return (
+            <LoadingElement />
+        );
+    }
 }
