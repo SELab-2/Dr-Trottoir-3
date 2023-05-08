@@ -187,3 +187,50 @@ display: flex;
     color: #808080;
     font-size: 75%;
 }
+
+.form{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px;
+}
+
+.formCenter{
+    background-color: white;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.formFields{
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+    padding: 1vh;
+}
+
+.field {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    color: black;
+}
+
+.formButtons{
+    justify-content: space-evenly;
+    position: relative;
+    bottom: 0;
+    width:100%;
+    padding: 1vh;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    color: black;
+}
+
+.formButtonsEnd{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}

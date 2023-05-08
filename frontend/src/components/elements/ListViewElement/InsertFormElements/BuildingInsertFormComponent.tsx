@@ -19,6 +19,7 @@ import {LatLng} from 'leaflet';
 import BuildingMapSelector from '@/components/elements/ListViewElement/InsertFormElements/BuildingMapSelector';
 import axios from 'axios';
 import {PinDrop} from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 type FormProps = {
@@ -39,17 +40,18 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allSyn
     };
 
     const handleSubmitForm = () => {
-        postBuilding(session, {
-            name: formName,
-            address: formAddress,
-            latitude: formCoordinate.lat,
-            longitude: formCoordinate.lng,
-            pdf_guide: null,
-            is_active: false,
-            description: formDescription,
-            image: null,
-            location_group: formRegion,
-        });
+        const formData = new FormData();
+        formData.append('name', formName);
+        formData.append('address', formAddress);
+        formData.append('latitude', formCoordinate.lat.toString());
+        formData.append('longitude', formCoordinate.lng.toString());
+        formData.append('description', formDescription);
+        formData.append('is_active', false.toString());
+        formData.append('location_group', formRegion ? formRegion.toString() : '');
+        if (formPDFGuide !== null) {
+            formData.append('pdf_guide', formPDFGuide, formPDFGuide.name);
+        }
+        postBuilding(session, formData);
         handleClose();
     };
 
@@ -60,7 +62,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allSyn
     const [formRegion, setFormRegion] = React.useState<LocationGroup>();
     const [formSyndici, setFormSyndici] = React.useState<User[]>([]);
     const [formDescription, setFormDescription] = React.useState('');
-
+    const [formPDFGuide, setFormPDFGuide] = React.useState<File | null>(null);
 
     React.useEffect(() => {
         setCanClose(true);
@@ -134,7 +136,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allSyn
                                 onChange={(e) => setFormDescription(e.target.value as string)}
                             />
                         </div>
-                        <FormControl sx={{m: 1, width: 200}}>
+                        <FormControl sx={{marginBottom: 1, marginTop: 1, width: '100%'}}>
                             <Autocomplete
                                 id="tags-standard"
                                 multiple
@@ -157,6 +159,37 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allSyn
                                 )}
                             />
                         </FormControl>
+                        <div className={styles.field}>
+                            <Button
+                                variant="contained"
+                                component="label"
+                                sx={{'width': 240, 'fontSize': 12, 'backgroundColor': 'var(--primary-dark)',
+                                    '&:hover': {
+                                        backgroundColor: 'var(--secondary-dark)',
+                                    }}}
+                            >
+                            Handleiding (PDF)
+                                <input
+                                    type="file"
+                                    onChange={(e) => setFormPDFGuide(e.target.files ? e.target.files[0] : null)}
+                                    accept="application/pdf"
+                                    hidden
+                                />
+                            </Button>
+                            <IconButton onClick={() => setFormPDFGuide(null)}>
+                                <CloseIcon/>
+                            </IconButton>
+                        </div>
+                        <p style={{fontSize: 14}} className={styles.field}>
+                            {
+                                formPDFGuide ?
+                                    (formPDFGuide.name.length > 40 ?
+                                        formPDFGuide.name.slice(0, 37) +'...' :
+                                        formPDFGuide.name
+                                    ) :
+                                    ''
+                            }
+                        </p>
                     </div>
                     <div className={styles.formButtons}>
                         <Button variant='contained' className={styles.button} onClick={handleClose}>

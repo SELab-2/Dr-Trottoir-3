@@ -52,14 +52,15 @@ export default function StudentTaskList({userId}: StudentTaskListProps) {
             group.push(curr);
             return {...prev, [key]: group};
         }, {});
-
+        const filteredAssignments = Object.entries(assignmentsByDate).slice(0).filter(
+            ([date, assignments])=>date>=new Date().toISOString().split('T')[0]).sort();
         return (
             <div className={styles.outerDiv}>
                 <h1 className={styles.title}>Toegekende Routes</h1>
                 <div>
 
                     {
-                        Object.entries(assignmentsByDate).slice(0).reverse().map(([date, assignments]) => (
+                        filteredAssignments.slice(0).map(([date, assignments]) => (
                             <Day date={date} assignments={assignments} definitions={definitions.data}
                                 workEntries={workEntries.data}/>
                         ))
