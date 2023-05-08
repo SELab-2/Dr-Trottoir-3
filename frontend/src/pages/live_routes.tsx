@@ -1,10 +1,11 @@
 import dynamic from 'next/dynamic';
 import {useSession} from 'next-auth/react';
 import ErrorPage from '@/containers/ErrorPage';
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import {getMe} from "@/api/api";
 import {useRouter} from "next/router";
 import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
+import Head from "next/head";
 
 const DynamicLiveRoutesComponent = dynamic(() =>
     import('../containers/LiveRoutesPage'), {ssr: false}
@@ -24,11 +25,21 @@ export default function LiveRoutesPage() {
 
     if (session) {
         return (
-            <DynamicLiveRoutesComponent/>
+            <>
+                <Head>
+                    <title>Live Routes</title>
+                </Head>
+                <DynamicLiveRoutesComponent/>
+            </>
         );
     } else {
         return (
-            <LoadingElement/>
+            <>
+                <Head>
+                    <title>Live Routes</title>
+                </Head>
+                <LoadingElement/>
+            </>
         );
     }
 }

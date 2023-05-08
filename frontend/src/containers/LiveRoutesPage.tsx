@@ -118,9 +118,6 @@ export default function LiveRoutesPage() {
 
         return (
             <>
-                <Head>
-                    <title>Live Routes</title>
-                </Head>
                 <ListViewComponent
                     listData={liveRoutesMapped}
                     setListData={setAssignments}

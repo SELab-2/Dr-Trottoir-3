@@ -1,14 +1,10 @@
 import dynamic from 'next/dynamic';
 import {useRouter} from "next/router";
-import {useSession} from "next-auth/react";
-import {useEffect} from "react";
+import {signOut, useSession} from "next-auth/react";
+import React, {useEffect} from "react";
 import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
+import Head from "next/head";
 
-const DynamicLogoutComponent = dynamic(() =>
-    import('../containers/LogoutPage'), {ssr: false}
-);
-
-// TODO CAN BE REMOVED?
 // eslint-disable-next-line require-jsdoc
 export default function LogoutPage() {
     const router = useRouter();
@@ -18,16 +14,17 @@ export default function LogoutPage() {
         // when session is null, failed to retrieve (caution: not the same as when undefined)
         if(session === null) {
             router.push("/login");
+        } else {
+            signOut({callbackUrl: "/login"});
         }
     }, [session]);
 
-    if (session) {
-        return (
-            <DynamicLogoutComponent/>
-        );
-    } else {
-        return (
+    return (
+        <>
+            <Head>
+                <title>Logout</title>
+            </Head>
             <LoadingElement/>
-        );
-    }
+        </>
+    );
 }

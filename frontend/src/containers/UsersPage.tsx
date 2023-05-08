@@ -105,27 +105,21 @@ export default function UsersPage() {
 
     if (users && locationGroups && allBuildings) {
         return (
-
-            <>
-                <Head>
-                    <title>Gebruikers</title>
-                </Head>
-                <ListViewComponent
-                    listData={users}
-                    setListData={setUsers}
-                    locationGroups={locationGroups}
-                    selectedRegions={selectedRegions}
-                    setSelectedRegions={setSelectedRegions}
-                    current={current}
-                    setCurrent={setCurrent}
-                    ListItem={UserListButtonComponent}
-                    TopBar={topBar}
-                    title={'Gebruikers'}
-                    Icon={PeopleAltRoundedIcon}
-                >
-                    {current ? userElementWidget : <NoneSelected ElementName={'gebruiker'}/>}
-                </ListViewComponent>
-            </>
+            <ListViewComponent
+                listData={users}
+                setListData={setUsers}
+                locationGroups={locationGroups}
+                selectedRegions={selectedRegions}
+                setSelectedRegions={setSelectedRegions}
+                current={current}
+                setCurrent={setCurrent}
+                ListItem={UserListButtonComponent}
+                TopBar={topBar}
+                title={'Gebruikers'}
+                Icon={PeopleAltRoundedIcon}
+            >
+                {current ? userElementWidget : <NoneSelected ElementName={'gebruiker'}/>}
+            </ListViewComponent>
         );
     } else {
         return (

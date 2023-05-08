@@ -96,26 +96,21 @@ export default function RoutesPage() {
 
     if(routes && allRoutes && locationGroups) {
         return (
-            <>
-                <Head>
-                    <title>Routes</title>
-                </Head>
-                <ListViewComponent
-                    listData={routes}
-                    setListData={setRoutes}
-                    locationGroups={locationGroups}
-                    selectedRegions={selectedRegions}
-                    setSelectedRegions={setSelectedRegions}
-                    current={current}
-                    setCurrent={setCurrent}
-                    ListItem={RouteListButtonComponent}
-                    TopBar={topBar}
-                    title={'Routes'}
-                    Icon={RouteIcon}
-                >
-                    {current ? routeWidget : <NoneSelected ElementName={'route'}/>}
-                </ListViewComponent>
-            </>
+            <ListViewComponent
+                listData={routes}
+                setListData={setRoutes}
+                locationGroups={locationGroups}
+                selectedRegions={selectedRegions}
+                setSelectedRegions={setSelectedRegions}
+                current={current}
+                setCurrent={setCurrent}
+                ListItem={RouteListButtonComponent}
+                TopBar={topBar}
+                title={'Routes'}
+                Icon={RouteIcon}
+            >
+                {current ? routeWidget : <NoneSelected ElementName={'route'}/>}
+            </ListViewComponent>
         );
     } else {
         return (

@@ -1,7 +1,9 @@
 import dynamic from 'next/dynamic';
 import {useRouter} from "next/router";
 import {useSession} from "next-auth/react";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
+import Head from "next/head";
+import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
 
 const StudentTaskListPage = dynamic(() =>
     import('../containers/StudentTaskListPage'), {ssr: false}
@@ -19,7 +21,23 @@ export default function MySchedule() {
         }
     }, [session]);
 
-    return (
-        <StudentTaskListPage />
-    );
+    if (session) {
+        return (
+            <>
+                <Head>
+                    <title>Mijn Planning</title>
+                </Head>
+                <StudentTaskListPage />
+            </>
+        );
+    } else {
+        return (
+            <>
+                <Head>
+                    <title>Mijn Planning</title>
+                </Head>
+                <LoadingElement/>
+            </>
+        );
+    }
 }

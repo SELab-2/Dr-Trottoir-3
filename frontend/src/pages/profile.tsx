@@ -2,8 +2,9 @@ import dynamic from 'next/dynamic';
 import {useSession} from 'next-auth/react';
 import ErrorPage from '@/containers/ErrorPage';
 import {useRouter} from "next/router";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
+import Head from "next/head";
 
 const ProfilePageComponent = dynamic(() =>
     import('../containers/ProfilePage'), {ssr: false}
@@ -23,11 +24,21 @@ export default function ProfilePage() {
 
     if (session) {
         return (
-            <ProfilePageComponent/>
+            <>
+                <Head>
+                    <title>Account</title>
+                </Head>
+                <ProfilePageComponent/>
+            </>
         );
     } else {
         return (
-            <LoadingElement/>
+            <>
+                <Head>
+                    <title>Account</title>
+                </Head>
+                <LoadingElement/>
+            </>
         );
     }
 }

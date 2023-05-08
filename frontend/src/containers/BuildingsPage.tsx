@@ -73,9 +73,6 @@ export default function BuildingsPage() {
     if(buildings && locationGroups && allSyndici) {
         return (
             <>
-                <Head>
-                    <title>Gebouwen</title>
-                </Head>
                 <ListViewComponent
                     listData={buildings}
                     setListData={setBuildings}

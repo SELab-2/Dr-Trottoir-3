@@ -1,7 +1,8 @@
 import {useRouter} from "next/router";
 import {useSession} from "next-auth/react";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
+import Head from "next/head";
 
 export default function MyBuildings() {
     const router = useRouter();
@@ -16,13 +17,23 @@ export default function MyBuildings() {
 
     if (session) {
         return (
-            <div>
-                TODO
-            </div>
+            <>
+                <Head>
+                    <title>Mijn Gebouwen</title>
+                </Head>
+                <div>
+                    TODO: Not implemented.
+                </div>
+            </>
         );
     } else {
         return (
-            <LoadingElement/>
+            <>
+                <Head>
+                    <title>Mijn Gebouwen</title>
+                </Head>
+                <LoadingElement/>
+            </>
         );
     }
 }

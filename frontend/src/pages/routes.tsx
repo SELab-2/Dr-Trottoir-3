@@ -2,8 +2,9 @@ import dynamic from 'next/dynamic';
 import {useSession} from 'next-auth/react';
 import ErrorPage from '@/containers/ErrorPage';
 import {useRouter} from "next/router";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
+import Head from "next/head";
 
 const DynamicRoutesComponent = dynamic(() =>
     import('../containers/RoutesPage'), {ssr: false}
@@ -23,11 +24,21 @@ export default function RoutesPage() {
 
     if (session) {
         return (
-            <DynamicRoutesComponent/>
+            <>
+                <Head>
+                    <title>Routes</title>
+                </Head>
+                <DynamicRoutesComponent/>
+            </>
         );
     } else {
         return (
-            <LoadingElement/>
+            <>
+                <Head>
+                    <title>Routes</title>
+                </Head>
+                <LoadingElement/>
+            </>
         );
     }
 }

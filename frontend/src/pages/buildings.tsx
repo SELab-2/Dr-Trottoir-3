@@ -2,8 +2,9 @@ import dynamic from 'next/dynamic';
 import {useSession} from 'next-auth/react';
 import ErrorPage from '@/containers/ErrorPage';
 import {useRouter} from "next/router";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
+import Head from "next/head";
 
 const DynamicBuildingsComponent = dynamic(() =>
     import('../containers/BuildingsPage'), {ssr: false}
@@ -22,11 +23,21 @@ export default function BuildingsPage() {
 
     if (session) {
         return (
-            <DynamicBuildingsComponent/>
+            <>
+                <Head>
+                    <title>Gebouwen</title>
+                </Head>
+                <DynamicBuildingsComponent/>
+            </>
         );
     } else {
         return (
-            <LoadingElement/>
+            <>
+                <Head>
+                    <title>Gebouwen</title>
+                </Head>
+                <LoadingElement/>
+            </>
         );
     }
 }

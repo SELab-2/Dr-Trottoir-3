@@ -2,8 +2,9 @@ import dynamic from 'next/dynamic';
 import {useSession} from 'next-auth/react';
 import ErrorPage from '@/containers/ErrorPage';
 import {useRouter} from "next/router";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
+import Head from "next/head";
 
 const DynamicSchedulerComponent = dynamic(() =>
     import('../containers/SchedulerPage'), {ssr: false}
@@ -23,11 +24,21 @@ export default function SchedulerPage() {
 
     if (session) {
         return (
-            <DynamicSchedulerComponent/>
+            <>
+                <Head>
+                    <title>Planner</title>
+                </Head>
+                <DynamicSchedulerComponent/>
+            </>
         );
     } else {
         return (
-            <LoadingElement/>
+            <>
+                <Head>
+                    <title>Planner</title>
+                </Head>
+                <LoadingElement/>
+            </>
         );
     }
 }
