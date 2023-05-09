@@ -28,11 +28,7 @@ def generate_email_from_name(first_name: str) -> str:
     return f"{first_name.lower()}@drtrottoir.be"
 
 
-location_group_data = [
-    "Gent",
-    "Leuven",
-    "Antwerpen"
-]
+location_group_data = ["Gent", "Leuven", "Antwerpen"]
 
 building_data = {
     "Gent": {
@@ -40,14 +36,14 @@ building_data = {
             ("Kouterhof", "Kouter 7"),
             ("B'eau Kouter", "Kouter 11"),
             ("Res. Kouter", "Universiteitsstraat 5"),
-            ("Kouterdreef", "Kouterdreef 10")
+            ("Kouterdreef", "Kouterdreef 10"),
         ],
         "Coupure": [
             ("Academie", "Sint-Margrietstraat 11"),
             ("Alencon", "Brugstraat 63"),
             ("Sint-Michiels", "Sint-Michielsplein 9"),
             ("Tu Casa", "Ingelandgat 29"),
-            ("KotCompany Coupure", "Theresianenstraat 14")
+            ("KotCompany Coupure", "Theresianenstraat 14"),
         ],
         "Haven": [
             ("Oslo", "Londenstraat 5"),
@@ -68,7 +64,7 @@ building_data = {
             ("Lamartine", "Brabantdam 147-171"),
             ("Oude Scheldestraat", "Oude Scheldestraat 10"),
             ("Frontenac", "Hubert Frère-Orbanlaan 130-143"),
-        ]
+        ],
     },
     "Antwerpen": {
         "Schelde": [
@@ -88,37 +84,36 @@ building_data = {
             ("Ter Vijvere", "Van Eycklei 29"),
             ("Residentie Van Eycklei", "Van Eycklei 28"),
             ("Primavera", "Van Eycklei 54"),
-            ("Perfect Flat", "Plantin en Moretuslei 12")
+            ("Perfect Flat", "Plantin en Moretuslei 12"),
         ],
         "Ter Zuid": [
             ("Van Hulsen Rachel", "Boomgaardstraat 39"),
             ("Short Rentals", "Belgiëlei 180"),
             ("The Banker", "Belgiëlei 153"),
             ("Residentie Amberes", "Gounodstraat 2"),
-            ("Antwerp Rentals", "Isabellalei 50")
-
-        ]
+            ("Antwerp Rentals", "Isabellalei 50"),
+        ],
     },
     "Leuven": {
         "Ring Zuid": {
             ("Kot del sol", "Schapenstraat 86"),
             ("TopkotLeuven", "Groenstraat 2"),
             ("Flavus Student Residence", "Hoveniersdreef 33"),
-            ("Waversbaan", "Waversbaan 6")
+            ("Waversbaan", "Waversbaan 6"),
         },
         "Leuven Centrum": {
             ("Getaway Studios", "Vital Decosterstraat 23"),
             ("Ambassador Suites", "Sint-Maartenstraat 21"),
-            ("Savoye Business Flat", "Savoyestraat 5")
+            ("Savoye Business Flat", "Savoyestraat 5"),
         },
         "Kruidtuin": {
             ("op kot bij de directeur", "Kapucijnenvoer 47"),
             ("Goede Herder", "Minderbroedersstraat 21"),
             ("Cohousing BotaniCo", "Kapucijnenvoer 47"),
             ("Residentie COPAL", "Tervuursestraat 56"),
-            ("Xior Student Housing - Regina Mundi", "Janseniusstraat 38")
-        }
-    }
+            ("Xior Student Housing - Regina Mundi", "Janseniusstraat 38"),
+        },
+    },
 }
 
 admin_data = [
@@ -138,7 +133,7 @@ student_data = [
     # Leuven
     ("Dennis", "D'Haese", "Leuven"),
     ("Daniel", "Dale", "Leuven"),
-    ("Doris", "Dekeyser", "Leuven")
+    ("Doris", "Dekeyser", "Leuven"),
 ]
 
 super_student_data = [
@@ -150,7 +145,7 @@ super_student_data = [
     ("Flora", "Fiermans", "Antwerpen"),
     # Leuven
     ("Goedele", "Gerards", "Leuven"),
-    ("Garcon", "Goedmans", "Leuven")
+    ("Garcon", "Goedmans", "Leuven"),
 ]
 
 syndici_data = [
@@ -159,7 +154,7 @@ syndici_data = [
     ("Sophie", "Schildermans"),
     ("Saartje", "Smets"),
     ("Stijn", "Schoonoven"),
-    ("Sandra", "Schoenmakers")
+    ("Sandra", "Schoenmakers"),
 ]
 
 garbage = [
@@ -182,10 +177,7 @@ class Command(BaseCommand):
 
         self.stdout.write("Adding location groups...")
 
-        lgs = [
-            LocationGroup(name=lg)
-            for lg in location_group_data
-        ]
+        lgs = [LocationGroup(name=lg) for lg in location_group_data]
         for lg in lgs:
             lg.save()
 
@@ -193,15 +185,21 @@ class Command(BaseCommand):
 
         buildings = []
         schedule_definitions = []
-        for (city, schedule_definition_data) in building_data.items():
+        for city, schedule_definition_data in building_data.items():
             location_group = LocationGroup.objects.get(name=city)
-            for (schedule_definition_name, schedule_definition_building_list) in schedule_definition_data.items():
+            for (
+                schedule_definition_name,
+                schedule_definition_building_list,
+            ) in schedule_definition_data.items():
                 schedule_definition_buildings = []
-                for (building_name, building_address) in schedule_definition_building_list:
+                for (
+                    building_name,
+                    building_address,
+                ) in schedule_definition_building_list:
                     building = Building(
                         address=building_address,
                         name=building_name,
-                        location_group=location_group
+                        location_group=location_group,
                     )
                     building.save()
                     buildings.append(building)
@@ -210,14 +208,14 @@ class Command(BaseCommand):
                     schedule_definition = ScheduleDefinition(
                         name=schedule_definition_name,
                         version=version,
-                        location_group=location_group
+                        location_group=location_group,
                     )
                     schedule_definition.save()
-                    for (i, building) in enumerate(schedule_definition_buildings):
+                    for i, building in enumerate(schedule_definition_buildings):
                         schedule_definition_building = ScheduleDefinitionBuilding(
                             building=building,
                             schedule_definition=schedule_definition,
-                            position=i
+                            position=i,
                         )
                         schedule_definition_building.save()
                     schedule_definitions.append(schedule_definition)
@@ -269,11 +267,11 @@ class Command(BaseCommand):
 
         self.stdout.write("Adding admins...")
 
-        for (first_name, last_name) in admin_data:
+        for first_name, last_name in admin_data:
             u = User(
                 username=generate_email_from_name(first_name),
                 first_name=first_name,
-                last_name=last_name
+                last_name=last_name,
             )
             u.save()
             admin = Admin(user=u)
@@ -281,41 +279,37 @@ class Command(BaseCommand):
 
         self.stdout.write("Adding students...")
 
-        for (first_name, last_name, city) in student_data:
+        for first_name, last_name, city in student_data:
             lg = LocationGroup.objects.get(name=city)
             u = User(
                 username=generate_email_from_name(first_name),
                 first_name=first_name,
-                last_name=last_name
+                last_name=last_name,
             )
             u.save()
 
-            student = Student(
-                user=u, is_super_student=False, location_group=lg
-            )
+            student = Student(user=u, is_super_student=False, location_group=lg)
             student.save()
             students.append(student)
 
         self.stdout.write("Adding super students...")
 
-        for (first_name, last_name, city) in super_student_data:
+        for first_name, last_name, city in super_student_data:
             lg = LocationGroup.objects.get(name=city)
             u = User(
                 username=generate_email_from_name(first_name),
                 first_name=first_name,
-                last_name=last_name
+                last_name=last_name,
             )
             u.save()
 
-            superstudent = Student(
-                user=u, is_super_student=True, location_group=lg
-            )
+            superstudent = Student(user=u, is_super_student=True, location_group=lg)
             superstudent.save()
             superstudents.append(superstudent)
 
         self.stdout.write("Adding syndici...")
 
-        for (first_name, last_name) in syndici_data:
+        for first_name, last_name in syndici_data:
             u = User(
                 username=generate_email_from_name(first_name),
                 first_name=first_name,
@@ -460,7 +454,7 @@ class Command(BaseCommand):
                     creator=schedule_assignment.user,
                     building=buildings_in_schedule_definition_of_0[
                         len(buildings_in_schedule_definition_of_0) - 2
-                        ],
+                    ],
                     schedule_assignment=schedule_assignment,
                     entry_type="AR",
                 )
@@ -472,7 +466,7 @@ class Command(BaseCommand):
                     creator=schedule_assignment.user,
                     building=buildings_in_schedule_definition_of_0[
                         len(buildings_in_schedule_definition_of_0) - 2
-                        ],
+                    ],
                     schedule_assignment=schedule_assignment,
                     entry_type="WO",
                 )
@@ -505,7 +499,5 @@ class Command(BaseCommand):
 
         self.stdout.write("Done!")
         self.stdout.write(
-            "You can use the provided password to log into student@drtrottoir.be, superstudent@drtrottoir.be, " +
-            "syndicus@drtrottoir.be and admin@drtrottoir.be"
-            # noqa
+            "You can use the provided password to log into student@drtrottoir.be, superstudent@drtrottoir.be, syndicus@drtrottoir.be and admin@drtrottoir.be"  # noqa
         )
