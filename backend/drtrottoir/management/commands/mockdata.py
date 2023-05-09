@@ -99,7 +99,7 @@ class Command(BaseCommand):
         u.save()
         syndicus = Syndicus(user=u)
         syndicus.save()
-        syndicus.buildings.set(buildings)
+        syndicus.buildings.set(buildings[:10])
 
         self.stdout.write("Adding students...")
 
