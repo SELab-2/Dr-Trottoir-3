@@ -337,16 +337,34 @@ class Command(BaseCommand):
 
         self.stdout.write("Adding schedule assignments...")
 
-        schedule_assignments = [
-            ScheduleAssignment(
-                assigned_date=f"2023-0{month}-{day}",
-                schedule_definition=schedule_definition,
-                user=random.choice(students).user,
-            )
-            for day in range(1, 30, 3)
-            for month in [4, 5, 6]
-            for schedule_definition in schedule_definitions[0:3]
+        # The schedule definition versions in the mock data range from 1 to 4, so the latest definitions are always v. 4
+        latest_schedule_definitions = [
+            definition for definition in schedule_definitions if definition.version == 4
         ]
+
+        schedule_assignments = []
+
+        # In order to generate the mock schedule assignments, for every day, for every (latest) schedule definition
+        # we roll a 50% chance to see if there will be a schedule assignment on that day. If yes, we assign a random
+        # student from that city
+        for month in [4, 5, 6]:
+            for day in range(1, 31):
+                for definition in latest_schedule_definitions:
+                    if random.random() > 0.5:  # 50% chance
+                        definition_lg = definition.location_group
+                        available_students = [
+                            student
+                            for student in students
+                            if student.location_group == definition_lg
+                        ]
+                        student = random.choice(available_students)
+                        schedule_assignments.append(
+                            ScheduleAssignment(
+                                assigned_date=f"2023-0{month}-{day}",
+                                schedule_definition=definition,
+                                user=student.user,
+                            )
+                        )
 
         for s in schedule_assignments:
             s.save()
