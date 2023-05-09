@@ -16,8 +16,8 @@ import ActiveRouteListButtonComponent
 
 import styles from './containerStyles.module.css';
 import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
-import Head from 'next/head';
 import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 // eslint-disable-next-line require-jsdoc
 export default function LiveRoutesPage() {
@@ -80,6 +80,14 @@ export default function LiveRoutesPage() {
         }
     }, [sorttype, selectedRegions]);
 
+    const [liveRouteWidget, setLiveRouteWidget] = useState(<LoadingElement />);
+
+    useEffect(() => {
+        setLiveRouteWidget(<LoadingElement />);
+        if (current) {
+            setLiveRouteWidget(<LiveRoutesElement id={current}/>);
+        }
+    }, [current]);
 
     if (assignments && definitions && students && workEntries && locationGroups) {
         const mappedAssignments = assignments.data.map((e) => {
@@ -115,9 +123,6 @@ export default function LiveRoutesPage() {
 
         return (
             <>
-                <Head>
-                    <title>Live Routes</title>
-                </Head>
                 <ListViewComponent
                     listData={liveRoutesMapped}
                     setListData={setAssignments}
@@ -131,11 +136,11 @@ export default function LiveRoutesPage() {
                     title={'Live routes'}
                     Icon={SensorsRoundedIcon}
                 >
-                    {current ? <LiveRoutesElement id={current}/> : <NoneSelected ElementName={'route'}/>}
+                    {current ? liveRouteWidget : <NoneSelected ElementName={'route'}/>}
                 </ListViewComponent>
             </>
         );
     } else {
-        return (<div>error</div>);
+        return (<LoadingElement />);
     }
 }

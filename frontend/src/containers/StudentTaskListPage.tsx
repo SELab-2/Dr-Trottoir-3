@@ -1,5 +1,6 @@
 import StudentTaskList from '@/components/elements/MobileStudentTaskListElement/StudentTaskListComponent';
 import {useSession} from 'next-auth/react';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 export default function StudentTaskListPage() {
     const {data: session} = useSession();
@@ -8,6 +9,8 @@ export default function StudentTaskListPage() {
         // @ts-ignore
         return <StudentTaskList userId={session.userid} />;
     } else {
-        return (<div>Loading...</div>);
+        return (
+            <LoadingElement/>
+        );
     }
 }

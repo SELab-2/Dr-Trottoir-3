@@ -13,8 +13,8 @@ import RouteListButtonComponent
     from '@/components/elements/ListViewElement/ListButtonElements/RouteListButtonComponent';
 import RouteIcon from '@mui/icons-material/Route';
 import RouteDetail from '@/components/modules/routeDetail/RouteDetail';
-import Head from 'next/head';
 import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 import styles from '@/components/elements/ListViewElement/listView.module.css';
 
 
@@ -91,11 +91,17 @@ export default function RoutesPage() {
         handleSearch={handleSearch}
     />;
 
-    return (
-        <>
-            <Head>
-                <title>Routes</title>
-            </Head>
+    const [routeWidget, setRouteWidget] = useState(<LoadingElement />);
+
+    useEffect(() => {
+        setRouteWidget(<LoadingElement />);
+        if (current) {
+            setRouteWidget(<RouteDetail scheduleDefinitionId={current}/>);
+        }
+    }, [current]);
+
+    if (routes && allRoutes && locationGroups) {
+        return (
             <ListViewComponent
                 listData={routes}
                 setListData={setRoutes}
@@ -109,8 +115,12 @@ export default function RoutesPage() {
                 title={'Routes'}
                 Icon={RouteIcon}
             >
-                {current ? <RouteDetail scheduleDefinitionId={current}/> : <NoneSelected ElementName={'route'}/>}
+                {current ? routeWidget : <NoneSelected ElementName={'route'}/>}
             </ListViewComponent>
-        </>
-    );
+        );
+    } else {
+        return (
+            <LoadingElement />
+        );
+    }
 }

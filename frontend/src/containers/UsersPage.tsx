@@ -8,8 +8,8 @@ import UserTopBarComponent from '@/components/elements/ListViewElement/TopBarEle
 import styles from '@/components/elements/ListViewElement/listView.module.css';
 import UserListButtonComponent from '@/components/elements/ListViewElement/ListButtonElements/UserListButtonComponent';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
-import Head from 'next/head';
 import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 export default function UsersPage() {
     const {data: session} = useSession();
@@ -92,31 +92,36 @@ export default function UsersPage() {
         handleSearch={handleSearch}
     />;
 
-    if (users) {
-        return (
+    const [userElementWidget, setUserElementWidget] = useState(<LoadingElement />);
 
-            <>
-                <Head>
-                    <title>Gebruikers</title>
-                </Head>
-                <ListViewComponent
-                    listData={users}
-                    setListData={setUsers}
-                    locationGroups={locationGroups}
-                    selectedRegions={selectedRegions}
-                    setSelectedRegions={setSelectedRegions}
-                    current={current}
-                    setCurrent={setCurrent}
-                    ListItem={UserListButtonComponent}
-                    TopBar={topBar}
-                    title={'Gebruikers'}
-                    Icon={PeopleAltRoundedIcon}
-                >
-                    {current ? <UserElement id={current}/> : <NoneSelected ElementName={'gebruiker'}/>}
-                </ListViewComponent>
-            </>
+    useEffect(() => {
+        setUserElementWidget(<LoadingElement />);
+        if (current) {
+            setUserElementWidget(<UserElement id={current}/>);
+        }
+    }, [current]);
+
+    if (users && locationGroups && allBuildings) {
+        return (
+            <ListViewComponent
+                listData={users}
+                setListData={setUsers}
+                locationGroups={locationGroups}
+                selectedRegions={selectedRegions}
+                setSelectedRegions={setSelectedRegions}
+                current={current}
+                setCurrent={setCurrent}
+                ListItem={UserListButtonComponent}
+                TopBar={topBar}
+                title={'Gebruikers'}
+                Icon={PeopleAltRoundedIcon}
+            >
+                {current ? userElementWidget : <NoneSelected ElementName={'gebruiker'}/>}
+            </ListViewComponent>
         );
     } else {
-        return (<div>error</div>);
+        return (
+            <LoadingElement/>
+        );
     }
 }
