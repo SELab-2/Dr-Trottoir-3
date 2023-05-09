@@ -24,6 +24,154 @@ from drtrottoir.models import (
 )
 
 
+def generate_email_from_name(first_name: str) -> str:
+    return f"{first_name.lower()}@drtrottoir.be"
+
+
+location_group_data = [
+    "Gent",
+    "Leuven",
+    "Antwerpen"
+]
+
+building_data = {
+    "Gent": {
+        "Kouter": [
+            ("Kouterhof", "Kouter 7"),
+            ("B'eau Kouter", "Kouter 11"),
+            ("Res. Kouter", "Universiteitsstraat 5"),
+            ("Kouterdreef", "Kouterdreef 10")
+        ],
+        "Coupure": [
+            ("Academie", "Sint-Margrietstraat 11"),
+            ("Alencon", "Brugstraat 63"),
+            ("Sint-Michiels", "Sint-Michielsplein 9"),
+            ("Tu Casa", "Ingelandgat 29"),
+            ("KotCompany Coupure", "Theresianenstraat 14")
+        ],
+        "Haven": [
+            ("Oslo", "Londenstraat 5"),
+            ("Kobenhavn", "Koperhagenstraat 2-12"),
+            ("Voorhaven", "Neusplein 2"),
+            ("Nieuwland Blok C", "Désiré Fiévéstraat 14"),
+        ],
+        "Station": [
+            ("Alberts House", "Floraliënlaan 11"),
+            ("Beaux-Arts", "Filips van Marnixlaan 9"),
+            ("Nassau", "Willem van Nassaustraat 1-21"),
+            ("Paulus", "Rijsenbergstraat 144-146"),
+            ("Ter Leie 1+2", "Eedverbondkaai 213-242"),
+            ("Maeterlinck", "Eedverbondkaai 185-200"),
+        ],
+        "Artevelde": [
+            ("Artevelde", "Brabantdam 205-241"),
+            ("Lamartine", "Brabantdam 147-171"),
+            ("Oude Scheldestraat", "Oude Scheldestraat 10"),
+            ("Frontenac", "Hubert Frère-Orbanlaan 130-143"),
+        ]
+    },
+    "Antwerpen": {
+        "Schelde": [
+            ("Zuiderzin", "Kromme-Elleboogstraat 11"),
+            ("Aplace", "Vrijdagmarkt 1"),
+            ("Cityhome", "Leeuwenstraat 11"),
+            ("Holiday Home Zalig", "Lange Riddersstraat 77"),
+            ("Maison Nationale", "Nationalestraat 49"),
+        ],
+        "Centrum Noord": [
+            ("Residentie Helmstraat", "Helmstraat 1"),
+            ("De Kroon", "Turnhoutsebaan 65"),
+            ("Kopergieterij", "Cronjestraat 12"),
+            ("Residentie Kistemaeckersstraat", "Kistemaeckersstraat"),
+        ],
+        "Park": [
+            ("Ter Vijvere", "Van Eycklei 29"),
+            ("Residentie Van Eycklei", "Van Eycklei 28"),
+            ("Primavera", "Van Eycklei 54"),
+            ("Perfect Flat", "Plantin en Moretuslei 12")
+        ],
+        "Ter Zuid": [
+            ("Van Hulsen Rachel", "Boomgaardstraat 39"),
+            ("Short Rentals", "Belgiëlei 180"),
+            ("The Banker", "Belgiëlei 153"),
+            ("Residentie Amberes", "Gounodstraat 2"),
+            ("Antwerp Rentals", "Isabellalei 50")
+
+        ]
+    },
+    "Leuven": {
+        "Ring Zuid": {
+            ("Kot del sol", "Schapenstraat 86"),
+            ("TopkotLeuven", "Groenstraat 2"),
+            ("Flavus Student Residence", "Hoveniersdreef 33"),
+            ("Waversbaan", "Waversbaan 6")
+        },
+        "Leuven Centrum": {
+            ("Getaway Studios", "Vital Decosterstraat 23"),
+            ("Ambassador Suites", "Sint-Maartenstraat 21"),
+            ("Savoye Business Flat", "Savoyestraat 5")
+        },
+        "Kruidtuin": {
+            ("op kot bij de directeur", "Kapucijnenvoer 47"),
+            ("Goede Herder", "Minderbroedersstraat 21"),
+            ("Cohousing BotaniCo", "Kapucijnenvoer 47"),
+            ("Residentie COPAL", "Tervuursestraat 56"),
+            ("Xior Student Housing - Regina Mundi", "Janseniusstraat 38")
+        }
+    }
+}
+
+admin_data = [
+    ("Alex", "Adriaansens"),
+    ("Aline", "Aerts"),
+]
+
+student_data = [
+    # Gent
+    ("Bart", "Berens", "Gent"),
+    ("Brecht", "Bouwers", "Gent"),
+    ("Bob", "Bowie", "Gent"),
+    # Antwerpen
+    ("Cecil", "Claes", "Antwerpen"),
+    ("Cedric", "Claermans", "Antwerpen"),
+    ("Caro", "Clauwens", "Antwerpen"),
+    # Leuven
+    ("Dennis", "D'Haese", "Leuven"),
+    ("Daniel", "Dale", "Leuven"),
+    ("Doris", "Dekeyser", "Leuven")
+]
+
+super_student_data = [
+    # Gent
+    ("Emil", "Evenaers", "Gent"),
+    ("Evelyn", "Eckers", "Gent"),
+    # Antwerpen
+    ("Frederick", "Ferrier", "Antwerpen"),
+    ("Flora", "Fiermans", "Antwerpen"),
+    # Leuven
+    ("Goedele", "Gerards", "Leuven"),
+    ("Garcon", "Goedmans", "Leuven")
+]
+
+syndici_data = [
+    ("Steven", "Siermans"),
+    ("Sven", "Sanders"),
+    ("Sophie", "Schildermans"),
+    ("Saartje", "Smets"),
+    ("Stijn", "Schoonoven"),
+    ("Sandra", "Schoenmakers")
+]
+
+garbage = [
+    "Rest",
+    "GFT",
+    "Glas",
+    "PMD",
+    "KGA",
+    "Nucleair",
+]
+
+
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("admin_pass", type=str, action="store")
@@ -35,27 +183,44 @@ class Command(BaseCommand):
         self.stdout.write("Adding location groups...")
 
         lgs = [
-            LocationGroup(name="Gent"),
-            LocationGroup(name="Antwerpen"),
-            LocationGroup(name="Leuven"),
+            LocationGroup(name=lg)
+            for lg in location_group_data
         ]
-
         for lg in lgs:
             lg.save()
 
-        self.stdout.write("Adding buildings...")
+        self.stdout.write("Adding schedule definitions and buildings...")
 
-        buildings = [
-            Building(
-                address=f"address {i}",
-                location_group=lgs[i % len(lgs)],
-            )
-            for i in range(50)
-        ]
-
-        for b in buildings:
-            b.save()
-
+        buildings = []
+        schedule_definitions = []
+        for (city, schedule_definition_data) in building_data.items():
+            location_group = LocationGroup.objects.get(name=city)
+            for (schedule_definition_name, schedule_definition_building_list) in schedule_definition_data.items():
+                schedule_definition_buildings = []
+                for (building_name, building_address) in schedule_definition_building_list:
+                    building = Building(
+                        address=building_address,
+                        name=building_name,
+                        location_group=location_group
+                    )
+                    building.save()
+                    buildings.append(building)
+                    schedule_definition_buildings.append(building)
+                for version in range(1, 5):
+                    schedule_definition = ScheduleDefinition(
+                        name=schedule_definition_name,
+                        version=version,
+                        location_group=location_group
+                    )
+                    schedule_definition.save()
+                    for (i, building) in enumerate(schedule_definition_buildings):
+                        schedule_definition_building = ScheduleDefinitionBuilding(
+                            building=building,
+                            schedule_definition=schedule_definition,
+                            position=i
+                        )
+                        schedule_definition_building.save()
+                    schedule_definitions.append(schedule_definition)
         self.stdout.write("Adding authenticated users...")
 
         u = User(
@@ -67,6 +232,7 @@ class Command(BaseCommand):
         admin.save()
 
         students = []
+        superstudents = []
 
         u = User(
             username="superstudent@drtrottoir.be",
@@ -101,59 +267,65 @@ class Command(BaseCommand):
         syndicus.save()
         syndicus.buildings.set(buildings)
 
+        self.stdout.write("Adding admins...")
+
+        for (first_name, last_name) in admin_data:
+            u = User(
+                username=generate_email_from_name(first_name),
+                first_name=first_name,
+                last_name=last_name
+            )
+            u.save()
+            admin = Admin(user=u)
+            admin.save()
+
         self.stdout.write("Adding students...")
 
-        for i in range(10):
+        for (first_name, last_name, city) in student_data:
+            lg = LocationGroup.objects.get(name=city)
             u = User(
-                username=f"student{i}@drtrottoir.be",
-                first_name=f"Student{i}",
-                last_name="DrTrottoir",
+                username=generate_email_from_name(first_name),
+                first_name=first_name,
+                last_name=last_name
             )
             u.save()
 
             student = Student(
-                user=u, is_super_student=False, location_group=lgs[i % len(lgs)]
+                user=u, is_super_student=False, location_group=lg
             )
             student.save()
-
             students.append(student)
+
+        self.stdout.write("Adding super students...")
+
+        for (first_name, last_name, city) in super_student_data:
+            lg = LocationGroup.objects.get(name=city)
+            u = User(
+                username=generate_email_from_name(first_name),
+                first_name=first_name,
+                last_name=last_name
+            )
+            u.save()
+
+            superstudent = Student(
+                user=u, is_super_student=True, location_group=lg
+            )
+            superstudent.save()
+            superstudents.append(superstudent)
 
         self.stdout.write("Adding syndici...")
 
-        for i in range(10):
+        for (first_name, last_name) in syndici_data:
             u = User(
-                username=f"syndicus{i}@drtrottoir.be",
-                first_name=f"Syndicus{i}",
-                last_name="DrTrottoir",
+                username=generate_email_from_name(first_name),
+                first_name=first_name,
+                last_name=last_name,
             )
             u.save()
 
             syndicus = Syndicus(user=u)
             syndicus.save()
             syndicus.buildings.set(random.choices(buildings, k=5))
-
-        self.stdout.write("Adding schedule definitions...")
-
-        schedule_definitions = []
-
-        for i in range(10):
-            lg = lgs[i % len(lgs)]
-            for version in range(1, 5):
-                sched = ScheduleDefinition(
-                    name=f"schedule definition {i}", version=version, location_group=lg
-                )
-                sched.save()
-                sched_buildings = [
-                    ScheduleDefinitionBuilding(
-                        building=b, schedule_definition=sched, position=j
-                    )
-                    for j, b in enumerate(random.choices(buildings, k=5))
-                ]
-
-                for sched_building in sched_buildings:
-                    sched_building.save()
-
-                schedule_definitions.append(sched)
 
         self.stdout.write("Adding issues...")
 
@@ -173,11 +345,12 @@ class Command(BaseCommand):
 
         schedule_assignments = [
             ScheduleAssignment(
-                assigned_date=f"2023-04-{i}",
+                assigned_date=f"2023-0{month}-{day}",
                 schedule_definition=schedule_definition,
                 user=random.choice(students).user,
             )
-            for i in range(10, 25, 2)
+            for day in range(1, 30, 3)
+            for month in [4, 5, 6]
             for schedule_definition in schedule_definitions[0:3]
         ]
 
@@ -185,15 +358,8 @@ class Command(BaseCommand):
             s.save()
 
         self.stdout.write("Adding garbage types...")
-        types = [
-            "Rest",
-            "GFT",
-            "Glas",
-            "PMD",
-            "Klein Gevaarlijk Afval",
-            "Nucleair Afval",
-        ]
-        garbage_types = [GarbageType(name=t) for t in types]
+
+        garbage_types = [GarbageType(name=t) for t in garbage]
 
         for x in garbage_types:
             x.save()
@@ -294,7 +460,7 @@ class Command(BaseCommand):
                     creator=schedule_assignment.user,
                     building=buildings_in_schedule_definition_of_0[
                         len(buildings_in_schedule_definition_of_0) - 2
-                    ],
+                        ],
                     schedule_assignment=schedule_assignment,
                     entry_type="AR",
                 )
@@ -306,7 +472,7 @@ class Command(BaseCommand):
                     creator=schedule_assignment.user,
                     building=buildings_in_schedule_definition_of_0[
                         len(buildings_in_schedule_definition_of_0) - 2
-                    ],
+                        ],
                     schedule_assignment=schedule_assignment,
                     entry_type="WO",
                 )
@@ -337,17 +503,9 @@ class Command(BaseCommand):
             for e in entries:
                 e.save()
 
-        self.stdout.write("Adding garbage collection schedules...")
-
-        for _ in range(25):
-            gcs = GarbageCollectionSchedule(
-                for_day="2023-02-17",
-                building=random.choice(buildings),
-                garbage_type=random.choice(garbage_types),
-            )
-            gcs.save()
-
         self.stdout.write("Done!")
         self.stdout.write(
-            "You can use the provided password to log into student@drtrottoir.be, superstudent@drtrottoir.be, syndicus@drtrottoir.be and admin@drtrottoir.be"  # noqa
+            "You can use the provided password to log into student@drtrottoir.be, superstudent@drtrottoir.be, " +
+            "syndicus@drtrottoir.be and admin@drtrottoir.be"
+            # noqa
         )
