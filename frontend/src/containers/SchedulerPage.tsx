@@ -10,6 +10,8 @@ import {
     useAuthenticatedApi,
 } from '@/api/api';
 import {Building, LocationGroup, ScheduleDefinition, User} from '@/api/models';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
+
 
 export default function SchedulerPage() {
     const {data: session} = useSession();
@@ -42,8 +44,6 @@ export default function SchedulerPage() {
         }
     }, [selectedRegion, session]);
 
-    console.log(scheduleDefinitions);
-
     useEffect(() => {
         if (selectedRegion) {
             getBuildingsList(session, setBuildings, {location_group: selectedRegion?.id});
@@ -65,7 +65,7 @@ export default function SchedulerPage() {
         setFirst(first - interval);
     };
 
-    if (locationGroups && selectedRegion) {
+    if (locationGroups && scheduleDefinitions && buildings && users && selectedRegion) {
         return (
             <div className={styles.full_calendar_flex_container}>
                 <SchedulerTopBarComponent
@@ -83,6 +83,8 @@ export default function SchedulerPage() {
             </div>
         );
     } else {
-        return (<div>error</div>);
+        return (
+            <LoadingElement />
+        );
     }
 }

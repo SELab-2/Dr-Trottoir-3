@@ -35,7 +35,7 @@ export default function ListViewComponent(props: ListViewComponentProps) {
                                     <p className={styles.subtext}>{props.listData.data.length} gevonden resultaten</p>
                                 </div>
                             </div>
-                            <div className={styles.scrollable}>
+                            <div id={styles.scrollable}>
                                 <div className={styles.side_bar_list}>
                                     {
                                         props.listData.data.map((x) => {

@@ -1,4 +1,6 @@
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
+import React from 'react';
 
 const DynamicLoginComponent = dynamic(() =>
     import('../containers/LoginPage'), {ssr: false}
@@ -7,6 +9,11 @@ const DynamicLoginComponent = dynamic(() =>
 // eslint-disable-next-line require-jsdoc
 export default function LoginPage() {
     return (
-        <DynamicLoginComponent/>
+        <>
+            <Head>
+                <title>Login</title>
+            </Head>
+            <DynamicLoginComponent/>
+        </>
     );
 }
