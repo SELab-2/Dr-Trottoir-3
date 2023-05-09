@@ -337,15 +337,17 @@ class Command(BaseCommand):
 
         self.stdout.write("Adding schedule assignments...")
 
-        # The schedule definition versions in the mock data range from 1 to 4, so the latest definitions are always v. 4
+        # The schedule definition versions in the mock data range from 1 to 4
+        # , so the latest definitions are always v. 4
         latest_schedule_definitions = [
             definition for definition in schedule_definitions if definition.version == 4
         ]
 
         schedule_assignments = []
 
-        # In order to generate the mock schedule assignments, for every day, for every (latest) schedule definition
-        # we roll a 50% chance to see if there will be a schedule assignment on that day. If yes, we assign a random
+        # In order to generate the mock schedule assignments, for every day, for
+        # every (latest) schedule definition we roll a 50% chance to see if there
+        # will be a schedule assignment on that day. If yes, we assign a random
         # student from that city
         for month in [4, 5, 6]:
             for day in range(1, 31):
