@@ -1,6 +1,6 @@
 import React from 'react';
 import {ClickAwayListener} from '@mui/base';
-import styles from '@/styles/listView.module.css';
+import styles from '@/styles/forms.module.css';
 import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from '@mui/material';
 import {LocationGroup, ScheduleDefinition} from '@/api/models';
 import {postScheduleDefinition} from '@/api/api';
@@ -59,13 +59,14 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allRou
                     <div className={styles.formFields}>
                         <div className={styles.field}>
                             <TextField
+                                fullWidth
                                 required
                                 label="naam"
                                 value={formName}
                                 onChange={(e) => setFormName(e.target.value as string)}
                             />
                         </div>
-                        <FormControl required sx={{minWidth: 150}}>
+                        <FormControl required sx={{width: '100'}}>
                             <InputLabel>regio</InputLabel>
                             <Select
                                 value={formRegion?.name}

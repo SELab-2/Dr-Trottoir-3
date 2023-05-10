@@ -124,7 +124,6 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
                         value={sorttype}
                         onChange={(e) => setSorttype(e.target.value as string)}
                         label="Sorteer op"
-                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>{sorttype}</p>}
                     >
                         {Object.entries(sorttypes).map(([option, value]) => (
                             <MenuItem key={option} value={option}

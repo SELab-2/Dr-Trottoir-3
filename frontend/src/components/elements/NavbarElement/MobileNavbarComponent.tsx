@@ -7,6 +7,7 @@ import {Backdrop, SvgIcon, Tooltip} from '@mui/material';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import RouteIcon from '@mui/icons-material/Route';
 import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
@@ -15,16 +16,19 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import {getMe, useAuthenticatedApi} from '@/api/api';
 import {User} from '@/api/models';
 import {useSession} from 'next-auth/react';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 
 const topButtonsStudent = [
     {id: '0', text: 'Mijn Planning', href: '/my-schedule', icon: DateRangeIcon},
-    {id: '1', text: 'Logout', href: '/logout', icon: LogoutRoundedIcon},
+    {id: '1', text: 'Account', href: '/profile', icon: PersonRoundedIcon},
+    {id: '2', text: 'Logout', href: '/logout', icon: LogoutRoundedIcon},
 ];
 
 const topButtonsSyndicus = [
     {id: '0', text: 'Mijn Gebouwen', href: '/my-buildings', icon: DateRangeIcon},
-    {id: '1', text: 'Logout', href: '/logout', icon: LogoutRoundedIcon},
+    {id: '1', text: 'Account', href: '/profile', icon: PersonRoundedIcon},
+    {id: '2', text: 'Logout', href: '/logout', icon: LogoutRoundedIcon},
 ];
 
 const topButtonsAdmin = [
@@ -33,15 +37,19 @@ const topButtonsAdmin = [
     {id: '2', text: 'Gebruikers', href: '/users', icon: PeopleAltRoundedIcon},
     {id: '3', text: 'Routes', href: '/routes', icon: RouteIcon},
     {id: '4', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon},
-    {id: '5', text: 'Logout', href: '/logout', icon: LogoutRoundedIcon},
+    {id: '5', text: 'Account', href: '/profile', icon: PersonRoundedIcon},
+    {id: '6', text: 'Logout', href: '/logout', icon: LogoutRoundedIcon},
 ];
 
 const botButtonsStudent = [
     {id: '0', text: 'Mijn Planning', href: '/my-schedule', icon: DateRangeIcon},
+    {id: '1', text: 'Account', href: '/profile', icon: PersonRoundedIcon},
+
 ];
 
 const botButtonsSyndicus = [
     {id: '0', text: 'Mijn Gebouwen', href: '/my-buildings', icon: DateRangeIcon},
+    {id: '1', text: 'Account', href: '/profile', icon: PersonRoundedIcon},
 ];
 
 const botButtonsAdmin = [
@@ -105,7 +113,7 @@ export default function MobileNavbar(props: navbarProps) {
             </div>
 
             <div className={styles.content_container}>
-                {props.loading ? props.children : <h1 style={{color: 'black'}}>LOADING</h1>}
+                {props.loading ? props.children : <LoadingElement />}
             </div>
 
             <div className={styles.bot_bar_container}>

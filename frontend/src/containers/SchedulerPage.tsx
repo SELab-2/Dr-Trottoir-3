@@ -1,23 +1,22 @@
-import SchedulerSelect from '../components/elements/SchedulerElements/SchedulerSelect';
+import SchedulerTopBarComponent from '../components/elements/ListViewElement/TopBarElements/SchedulerTopBarComponent';
 import SchedulerDetails from '../components/elements/SchedulerElements/SchedulerDetails';
 import styles from './schedulerPage.module.css';
 import React, {useEffect, useState} from 'react';
 import {useSession} from 'next-auth/react';
 import {
-    getBuildingsList, getLatestScheduleDefinitionsList,
-    getLocationGroupsList,
+    getBuildingsList,
+    getLocationGroupsList, getScheduleDefinitionsList,
     getUsersList,
     useAuthenticatedApi,
 } from '@/api/api';
 import {Building, LocationGroup, ScheduleDefinition, User} from '@/api/models';
-import Head from 'next/head';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 
 export default function SchedulerPage() {
     const {data: session} = useSession();
 
-    const locationGroupName= 'Gent';
-
+    const [selectedRegion, setSelectedRegion] = React.useState<LocationGroup>();
     const [locationGroups, setLocationGroups] = useAuthenticatedApi<LocationGroup[]>();
     const [scheduleDefinitions, setScheduleDefinitions] = useAuthenticatedApi<ScheduleDefinition[]>();
     const [buildings, setBuildings] = useAuthenticatedApi<Building[]>();
@@ -28,26 +27,34 @@ export default function SchedulerPage() {
     const interval: number = 7;
 
     useEffect(() => {
-        getLocationGroupsList(session, setLocationGroups, {name: locationGroupName});
+        getLocationGroupsList(session, setLocationGroups);
     }, [session]);
 
     useEffect(() => {
-        if (locationGroups) {
-            getLatestScheduleDefinitionsList(session, setScheduleDefinitions, {name: locationGroups.data.at(0)?.id});
+        if (locationGroups && selectedRegion == undefined) {
+            setSelectedRegion(locationGroups.data.at(0));
         }
-    }, [locationGroups, session]);
+    }, [setLocationGroups]);
 
     useEffect(() => {
         if (locationGroups) {
-            getBuildingsList(session, setBuildings, {name: locationGroups.data.at(0)?.id});
+            if (selectedRegion) {
+                getScheduleDefinitionsList(session, setScheduleDefinitions, {location_group: selectedRegion?.id});
+            }
         }
-    }, [locationGroups, session]);
+    }, [selectedRegion, session]);
+
+    useEffect(() => {
+        if (selectedRegion) {
+            getBuildingsList(session, setBuildings, {location_group: selectedRegion?.id});
+        }
+    }, [selectedRegion, session]);
 
     useEffect(() => {
         if (locationGroups) {
-            getUsersList(session, setUsers, {name: locationGroups.data.at(0)?.id});
+            getUsersList(session, setUsers, {location_group: selectedRegion?.id});
         }
-    }, [locationGroups, session]);
+    }, [selectedRegion, session]);
 
 
     const nextWeek = () => {
@@ -58,13 +65,15 @@ export default function SchedulerPage() {
         setFirst(first - interval);
     };
 
-    return (
-        <>
-            <Head>
-                <title>Planner</title>
-            </Head>
+    if (locationGroups && scheduleDefinitions && buildings && users && selectedRegion) {
+        return (
             <div className={styles.full_calendar_flex_container}>
-                <SchedulerSelect nextWeek={nextWeek} prevWeek={prevWeek}/>
+                <SchedulerTopBarComponent
+                    selectedRegion={selectedRegion}
+                    setSelectedRegion={setSelectedRegion}
+                    allRegions={locationGroups.data}
+                    nextWeek={nextWeek}
+                    prevWeek={prevWeek}/>
                 <SchedulerDetails
                     start={first}
                     scheduleDefinitions={scheduleDefinitions}
@@ -72,6 +81,10 @@ export default function SchedulerPage() {
                     buildings={buildings}
                     interval={interval}/>
             </div>
-        </>
-    );
+        );
+    } else {
+        return (
+            <LoadingElement />
+        );
+    }
 }

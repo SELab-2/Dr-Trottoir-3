@@ -5,11 +5,12 @@ import React, {useEffect} from 'react';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 import Head from 'next/head';
 
-const DynamicBuildingsComponent = dynamic(() =>
-    import('../containers/BuildingsPage'), {ssr: false}
+const ProfilePageComponent = dynamic(() =>
+    import('../containers/ProfilePage'), {ssr: false}
 );
 
-export default function BuildingsPage() {
+// eslint-disable-next-line require-jsdoc
+export default function ProfilePage() {
     const router = useRouter();
     const {data: session} = useSession();
 
@@ -24,16 +25,16 @@ export default function BuildingsPage() {
         return (
             <>
                 <Head>
-                    <title>Gebouwen</title>
+                    <title>Account</title>
                 </Head>
-                <DynamicBuildingsComponent/>
+                <ProfilePageComponent/>
             </>
         );
     } else {
         return (
             <>
                 <Head>
-                    <title>Gebouwen</title>
+                    <title>Account</title>
                 </Head>
                 <LoadingElement/>
             </>
