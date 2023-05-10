@@ -1,7 +1,6 @@
 import {MapContainer, Marker, TileLayer, Tooltip} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import {latLngBounds, LatLngTuple, Map} from 'leaflet';
-import {useRouter} from 'next/router';
 import {Building} from '@/api/models';
 import {createRef, useEffect} from 'react';
 

@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import {Building} from '@/api/models';
-import {Autocomplete, Box, Button, TextField} from "@mui/material";
+import {Autocomplete, Box, Button, TextField} from '@mui/material';
 
 export interface SimpleDialogProps {
     open: boolean;
@@ -15,7 +15,7 @@ export default function AddBuildingPopup({onClose, buildings, open}: SimpleDialo
     const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null);
 
     useEffect(() => {
-        if(open){
+        if (open) {
             setSelectedBuilding(null);
         }
     }, [open]);
@@ -27,7 +27,7 @@ export default function AddBuildingPopup({onClose, buildings, open}: SimpleDialo
                 <Autocomplete
                     id="cbx-gebruiker"
                     options={buildings}
-                    getOptionLabel={building => `${building.name} (${building.address})`}
+                    getOptionLabel={(building) => `${building.name} (${building.address})`}
                     renderInput={(params) => <TextField {...params} label="Gebouw"/>}
                     onChange={(e, val) => setSelectedBuilding(val)}
                 />
