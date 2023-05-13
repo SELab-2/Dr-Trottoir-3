@@ -50,7 +50,6 @@ export default function BuildingIssueListItem(props: { issue: number }): JSX.Ele
             <Card
                 sx={{
                     width: '100%',
-                    border: 'solid 1px red',
                     height: 'max(40px, fit-content)',
                     display: 'flex',
                     alignItems: 'center',
