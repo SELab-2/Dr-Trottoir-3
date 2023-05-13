@@ -8,8 +8,9 @@ import {useSession} from 'next-auth/react';
 import {getBuildingsList, getLocationGroupsList, getUsersList, useAuthenticatedApi} from '@/api/api';
 import {Building, LocationGroup, User} from '@/api/models';
 import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded';
-import Head from 'next/head';
 import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
+import styles from '@/components/elements/ListViewElement/listView.module.css';
 
 export default function BuildingsPage() {
     const {data: session} = useSession();
@@ -32,6 +33,12 @@ export default function BuildingsPage() {
         handleSearch(false);
     }, [session, selectedRegions, sorttype]);
 
+    useEffect(() => {
+        const element = document.getElementById(styles.scrollable);
+        if (element !== null) {
+            element.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    }, [buildings]);
 
     const handleSearch = (clear: boolean = false) => {
         let searchEntryOverwritten: string;
@@ -59,27 +66,38 @@ export default function BuildingsPage() {
         allSyndici={allSyndici ? allSyndici.data: []}
     />;
 
+    const [buildingWidget, setBuildingWidget] = useState(<LoadingElement />);
 
-    return (
-        <>
-            <Head>
-                <title>Gebouwen</title>
-            </Head>
-            <ListViewComponent
-                listData={buildings}
-                setListData={setBuildings}
-                locationGroups={locationGroups}
-                selectedRegions={selectedRegions}
-                setSelectedRegions={setSelectedRegions}
-                current={current}
-                setCurrent={setCurrent}
-                ListItem={BuildingListButtonComponent}
-                TopBar={topBar}
-                title={'Gebouwen'}
-                Icon={ApartmentRoundedIcon}
-            >
-                {current ? <BuildingDetail id={current}/> : <NoneSelected ElementName={'gebouw'}/>}
-            </ListViewComponent>
-        </>
-    );
+    useEffect(() => {
+        setBuildingWidget(<LoadingElement />);
+        if (current) {
+            setBuildingWidget(<BuildingDetail id={current}/>);
+        }
+    }, [current]);
+
+    if (buildings && locationGroups && allSyndici) {
+        return (
+            <>
+                <ListViewComponent
+                    listData={buildings}
+                    setListData={setBuildings}
+                    locationGroups={locationGroups}
+                    selectedRegions={selectedRegions}
+                    setSelectedRegions={setSelectedRegions}
+                    current={current}
+                    setCurrent={setCurrent}
+                    ListItem={BuildingListButtonComponent}
+                    TopBar={topBar}
+                    title={'Gebouwen'}
+                    Icon={ApartmentRoundedIcon}
+                >
+                    {current ? buildingWidget : <NoneSelected ElementName={'gebouw'}/>}
+                </ListViewComponent>
+            </>
+        );
+    } else {
+        return (
+            <LoadingElement />
+        );
+    }
 }

@@ -12,6 +12,7 @@ import {LocationGroup, ScheduleAssignment, ScheduleDefinition, User} from '@/api
 import {Edit} from '@mui/icons-material';
 import Button from '@mui/material/Button';
 import EditUserPopup from '@/components/elements/UserElement/EditUserPopup';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 
 type userElementProps = {
@@ -35,6 +36,7 @@ export default function UserElement(props: userElementProps) {
         getUserDetail(session, setUserData, props.id);
     }, [session, props.id, editPopupOpen]);
 
+
     useEffect(() => {
         getScheduleDefinitionsList(session, setScheduleDefinitions);
     }, [session]);
@@ -49,10 +51,12 @@ export default function UserElement(props: userElementProps) {
         }
     }, [session, userData]);
 
-    if (!userData || !scheduleDefinitions || !scheduleAssignmentsData || !locationGroupData) {
-        return (<div>Loading...</div>);
+    if (!userData || !scheduleDefinitions || !scheduleAssignmentsData || (userData.data.student && !locationGroupData)) {
+        return (
+            <LoadingElement/>
+        );
     } else {
-        if (userData.success && scheduleDefinitions.success && scheduleAssignmentsData.success && locationGroupData.success) {
+        if (userData.success && scheduleDefinitions.success && scheduleAssignmentsData.success && (!userData.data.student || locationGroupData?.success)) {
             return (
                 <div className={styles.userElement}>
                     <div className={styles.userHeader}>

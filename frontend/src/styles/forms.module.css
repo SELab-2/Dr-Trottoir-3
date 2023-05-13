@@ -28,6 +28,7 @@
 }
 
 .formButtons{
+    justify-content: space-evenly;
     position: relative;
     bottom: 0;
     width:100%;
@@ -49,4 +50,8 @@
     background-color: #F3F5F9;
     color: var(--primary-dark);
     bottom: 0;
+}
+
+.button:hover{
+    background-color: #bbbec4;
 }

@@ -116,7 +116,7 @@ export default function EditUserPopup({userId, open, setOpen, prevFirstName, pre
             return (
                 <>
                     <div className={styles.field}>
-                        <FormControl sx={{m: 1, width: 200}}>
+                        <FormControl sx={{marginBottom: 1, marginTop: 1, width: 200}}>
                             <Autocomplete
                                 multiple
                                 id="tags-standard"

@@ -130,7 +130,7 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                                 onChange={(e) => setFormDescription(e.target.value as string)}
                             />
                         </div>
-                        <FormControl sx={{m: 1, width: 200}}>
+                        <FormControl sx={{marginBottom: 1, marginTop: 1, width: 200}}>
                             <Autocomplete
                                 id="tags-standard"
                                 multiple

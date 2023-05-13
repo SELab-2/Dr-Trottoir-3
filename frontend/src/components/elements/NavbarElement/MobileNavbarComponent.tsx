@@ -16,6 +16,7 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import {getMe, useAuthenticatedApi} from '@/api/api';
 import {User} from '@/api/models';
 import {useSession} from 'next-auth/react';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 
 const topButtonsStudent = [
@@ -112,7 +113,7 @@ export default function MobileNavbar(props: navbarProps) {
             </div>
 
             <div className={styles.content_container}>
-                {props.loading ? props.children : <h1 style={{color: 'black'}}>LOADING</h1>}
+                {props.loading ? props.children : <LoadingElement />}
             </div>
 
             <div className={styles.bot_bar_container}>
