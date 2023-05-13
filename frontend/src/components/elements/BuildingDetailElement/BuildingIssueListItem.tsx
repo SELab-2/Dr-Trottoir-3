@@ -15,7 +15,7 @@ export default function BuildingIssueListItem(props: { issue: number }): JSX.Ele
     const [resolved, setResolved]= useState(false);
     useEffect(() => {
         getIssueDetail(session, setIssue, id);
-    });
+    }, []);
 
     useEffect(() => {
         if (issue) {
@@ -49,7 +49,9 @@ export default function BuildingIssueListItem(props: { issue: number }): JSX.Ele
         <ListItem key={issue.data.id}>
             <Card
                 sx={{
-                    width: '100%', height: '40px',
+                    width: '100%',
+                    border: 'solid 1px red',
+                    height: 'max(40px, fit-content)',
                     display: 'flex',
                     alignItems: 'center',
                     background: 'var(--secondary-light)',

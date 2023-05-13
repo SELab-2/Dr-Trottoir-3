@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './listView.module.css';
 import {ApiData} from '@/api/api';
 import {LocationGroup} from '@/api/models';
+import ErrorPage from '@/containers/ErrorPage';
 
 
 type ListViewComponentProps = {
@@ -68,7 +69,7 @@ export default function ListViewComponent(props: ListViewComponentProps) {
         } else {
             return (
                 <>
-                    TODO: ERROR SCREEN
+                    <ErrorPage status={400}/>
                 </>
             );
         }
