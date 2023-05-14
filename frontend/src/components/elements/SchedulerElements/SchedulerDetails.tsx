@@ -44,23 +44,33 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
                     assigned_date__lt: lastDay.toISOString().split('T')[0],
                 });
         }
+    }
+
+    const clearAssignments = () => {
+        console.log("here")
+        const emptyScheduleAssignment: ApiData<ScheduleAssignment[]> = {
+            status: 0,
+            success: true,
+            data: []
+        }
+        setScheduleAssignments(emptyScheduleAssignment);
     };
 
     useEffect(() => {
         if (triggerReload) {
             setTriggerReload(false);
         }
+        clearAssignments();
         loadAssignments();
     }, [props.scheduleDefinitions, props.start, session, triggerReload]);
 
     // repeat every second
     useEffect(() => {
         const intervalId = setInterval(() => {
-            loadAssignments();
+            // loadAssignments();
         }, 1000);
         return () => clearInterval(intervalId);
     }, []);
-
 
     if (props.users?.data && props.scheduleDefinitions?.data && props.buildings?.data) {
         let filteredAssignments: ApiData<ScheduleAssignment[]> | undefined = undefined;

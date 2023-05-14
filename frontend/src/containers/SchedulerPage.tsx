@@ -4,7 +4,7 @@ import styles from './schedulerPage.module.css';
 import React, {useEffect, useState} from 'react';
 import {useSession} from 'next-auth/react';
 import {
-    getBuildingsList,
+    getBuildingsList, getLatestScheduleDefinitionsList,
     getLocationGroupsList, getScheduleDefinitionsList,
     getUsersList,
     useAuthenticatedApi,
@@ -39,7 +39,7 @@ export default function SchedulerPage() {
     useEffect(() => {
         if (locationGroups) {
             if (selectedRegion) {
-                getScheduleDefinitionsList(session, setScheduleDefinitions, {location_group: selectedRegion?.id});
+                getLatestScheduleDefinitionsList(session, setScheduleDefinitions);
             }
         }
     }, [selectedRegion, session]);
@@ -76,7 +76,11 @@ export default function SchedulerPage() {
                     prevWeek={prevWeek}/>
                 <SchedulerDetails
                     start={first}
-                    scheduleDefinitions={scheduleDefinitions}
+                    scheduleDefinitions={{
+                        data: scheduleDefinitions.data.filter((e) => e.location_group == selectedRegion?.id),
+                        status: 200,
+                        success: true
+                    }}
                     users={users}
                     buildings={buildings}
                     interval={interval}/>
