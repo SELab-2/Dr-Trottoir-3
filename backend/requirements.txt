@@ -17,3 +17,4 @@ ruamel.yaml==0.17.21
 ruamel.yaml.clib==0.2.7
 uritemplate==4.1.1
 django-cors-headers==3.14.0
+sendgrid==6.10.0
