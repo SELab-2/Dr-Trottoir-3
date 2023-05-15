@@ -226,7 +226,7 @@ def test_garbage_collection_schedules_detail_api_view_get_syndicus_fail():
     user = insert_dummy_syndicus(user=dummy_user)
     response = _test_garbage_collection_schedules_detail_api_view_get(user=user.user)
 
-    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 @pytest.mark.django_db

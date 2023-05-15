@@ -2,8 +2,12 @@ from rest_framework import mixins, permissions, viewsets
 
 from drtrottoir.models import GarbageCollectionSchedule
 from drtrottoir.permissions import (
-    IsSafeMethodAndUserIsStudentOrHigher,
+    IsSafeMethod,
+    IsStudent,
     IsSuperstudentOrAdmin,
+    IsSyndicus,
+    user_is_student,
+    user_is_superstudent_or_admin,
 )
 from drtrottoir.serializers import GarbageCollectionScheduleSerializer
 
@@ -44,10 +48,9 @@ class GarbageCollectionScheduleViewSet(
 
     permission_classes = [
         permissions.IsAuthenticated,
-        (IsSuperstudentOrAdmin | IsSafeMethodAndUserIsStudentOrHigher),
+        IsSuperstudentOrAdmin | (IsSafeMethod & (IsStudent | IsSyndicus)),
     ]
 
-    queryset = GarbageCollectionSchedule.objects.all()
     serializer_class = GarbageCollectionScheduleSerializer
 
     filterset_fields = {
@@ -56,3 +59,14 @@ class GarbageCollectionScheduleViewSet(
         "garbage_type": ("exact", "in"),
     }
     search_fields = ["note"]
+
+    def get_queryset(self):
+        if user_is_superstudent_or_admin(self.request.user) or user_is_student(
+            self.request.user
+        ):
+            return GarbageCollectionSchedule.objects.all()
+
+        # Only other option is they're a syndicus
+        return GarbageCollectionSchedule.objects.filter(
+            building__syndici=self.request.user.syndicus
+        )
