@@ -11,8 +11,11 @@ from drtrottoir.models import (
 from drtrottoir.permissions import (
     IsStudent,
     IsSuperstudentOrAdmin,
+    IsSyndicus,
     IsSyndicusWithBuilding,
     IsSyndicusWithUserID,
+    user_is_student,
+    user_is_superstudent_or_admin,
 )
 from drtrottoir.serializers import (
     BuildingSerializer,
@@ -111,8 +114,8 @@ class BuildingViewSet(
 
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
     permission_classes_by_action = {
-        "retrieve": [permissions.IsAuthenticated],
-        "list": [permissions.IsAuthenticated, IsStudent],
+        "retrieve": [permissions.IsAuthenticated, IsSyndicus | IsStudent],
+        "list": [permissions.IsAuthenticated, IsSyndicus | IsStudent],
         "syndicus_buildings": [
             permissions.IsAuthenticated,
             IsSyndicusWithUserID | IsSuperstudentOrAdmin,
@@ -123,9 +126,12 @@ class BuildingViewSet(
         ],
         "garbage_collection_schedule_templates": [
             permissions.IsAuthenticated,
-            IsStudent,
+            IsStudent | IsSyndicus,
         ],
-        "garbage_collection_schedules": [permissions.IsAuthenticated, IsStudent],
+        "garbage_collection_schedules": [
+            permissions.IsAuthenticated,
+            IsStudent | IsSyndicus,
+        ],
         "retrieve_garbage_collection_schedule_list_by_building_and_date": [
             permissions.IsAuthenticated,
             IsStudent,
@@ -136,8 +142,16 @@ class BuildingViewSet(
     search_fields = ["address", "description", "name"]
     ordering_fields = ["name", "address", "location_group__name"]
 
-    queryset = Building.objects.all()
     serializer_class = BuildingSerializer
+
+    def get_queryset(self):
+        if user_is_superstudent_or_admin(self.request.user) or user_is_student(
+            self.request.user
+        ):
+            return Building.objects.all()
+
+        # Only other option is that they're a syndicus
+        return Building.objects.filter(syndici=self.request.user.syndicus)
 
     @action(detail=True)
     def schedule_definitions(self, request, pk=None) -> Response:

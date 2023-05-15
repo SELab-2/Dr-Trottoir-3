@@ -5,6 +5,7 @@ import React, {useEffect, useState} from 'react';
 import {ApiData, getScheduleAssignmentsList, useAuthenticatedApi} from '@/api/api';
 import {useSession} from 'next-auth/react';
 import {Building, ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 
 type schedulerDetailsProps = {
@@ -86,9 +87,7 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
         );
     } else {
         return (
-            <div>
-                <p>Loading ...</p>
-            </div>
+            <LoadingElement />
         );
     }
 }

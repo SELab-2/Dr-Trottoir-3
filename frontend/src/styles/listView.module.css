@@ -15,7 +15,6 @@
 
 }
 
-
 .generic_wrapper {
     overflow: hidden;
     display: flex;
@@ -219,6 +218,7 @@ display: flex;
 }
 
 .formButtons{
+    justify-content: space-evenly;
     position: relative;
     bottom: 0;
     width:100%;

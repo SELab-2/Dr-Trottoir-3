@@ -82,6 +82,7 @@ export type Admin = {
 export type Syndicus = {
     id: number,
     user: number,
+    buildings: number[],
 }
 
 export type User = {

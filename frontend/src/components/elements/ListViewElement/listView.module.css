@@ -24,7 +24,7 @@
     background-color: var(--primary-light);
 }
 
-.scrollable {
+#scrollable {
     display: flex;
     overflow-y: auto;
     flex-direction: column;

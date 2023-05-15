@@ -37,6 +37,7 @@ export enum Api {
     ScheduleDefinitionDetailOrder = 'schedule_definitions/:id/order/',
     ScheduleDefinitionDetailScheduleAssignments = 'schedule_definitions/:id/schedule_assignments/',
     ScheduleDefinitionDetailScheduleWorkEntries = 'schedule_definitions/:id/schedule_work_entries/',
+    ScheduleDefinitionAssignedToMe = 'schedule_definitions/assigned_to_me/',
     Users = 'users/',
     UserDetail = 'users/:id/',
     Issues = 'issues/',
@@ -253,6 +254,16 @@ const getBuildingsList = (session: Session | null, setter: ((e:any) => void), qu
 
 const getScheduleDefinitionsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.ScheduleDefinitions, session, params ? params : {}, query ? query : {})
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: []});
+        });
+};
+
+const getScheduleDefinitionsAssignedToMeList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
+    getListFromApi(Api.ScheduleDefinitionAssignedToMe, session, params ? params : {}, query ? query : {})
         .then((e) => {
             setter({success: true, status: e.status, data: e.data});
         })
@@ -938,6 +949,7 @@ export {
     getBuildingDetailIssues,
     getBuildingDetailScheduleDefinitions,
     getScheduleAssignmentsList,
+    getScheduleDefinitionsAssignedToMeList,
     getScheduleAssignmentDetail,
     getScheduleWorkEntriesList,
     getScheduleWorkEntryDetail,

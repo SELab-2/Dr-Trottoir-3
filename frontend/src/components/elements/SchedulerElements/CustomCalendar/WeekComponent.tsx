@@ -264,7 +264,6 @@ export default function WeekComponent(props: schedulerProps) {
         <div className={styles.full_week}>
             <div className={styles.calendar_header_container}>
                 <div className={styles.calendar_header_task}>
-                    TODO: route settings button
                 </div>
                 <div className={styles.calendar_header_days}>
                     {Array.from(Array(props.interval).keys()).map((dayId) => {

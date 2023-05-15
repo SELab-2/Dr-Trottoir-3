@@ -6,7 +6,11 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from drtrottoir.models import User
-from drtrottoir.permissions import IsSuperstudentOrAdmin
+from drtrottoir.permissions import (
+    IsSuperstudentOrAdmin,
+    IsSyndicus,
+    user_is_superstudent_or_admin,
+)
 from drtrottoir.serializers import UserInviteSerializer, UserSerializer
 
 from .mixins import PermissionsByActionMixin
@@ -64,7 +68,18 @@ class UserViewSet(ModelViewSet, PermissionsByActionMixin):
         "invite_link": [],
         "post_invite_link": [],
     }
-    permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        IsSuperstudentOrAdmin | IsSyndicus,
+    ]
+
+    def get_queryset(self):
+        if user_is_superstudent_or_admin(self.request.user):
+            return User.objects.all()
+
+        return User.objects.filter(
+            syndicus__buildings__syndici=self.request.user.syndicus
+        ).distinct()
 
     @action(detail=False)
     def students(self, request):

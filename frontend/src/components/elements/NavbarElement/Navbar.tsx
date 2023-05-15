@@ -17,7 +17,7 @@ const topButtonsStudent = [
 ];
 
 const topButtonsSyndicus = [
-    {id: '0', text: 'Mijn Gebouwen', href: '/my-buildings', icon: DateRangeIcon},
+    {id: '0', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon},
 ];
 
 const topButtonsAdmin = [
@@ -28,13 +28,13 @@ const topButtonsAdmin = [
     {id: '4', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon}];
 
 const includeRoutes = [
+    '/profile',
     '/scheduler',
     '/live_routes',
     '/users',
     '/buildings',
     '/routes',
     '/my-schedule',
-    '/my-buildings',
     '/active_route',
     'active-route',
 ];
