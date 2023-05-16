@@ -44,6 +44,7 @@ export enum Api {
     IssueDetail = 'issues/:id/',
     IssueImages = 'issue_images/',
     Me = 'users/me/',
+    InviteLink = 'users/invite/:id/'
 }
 
 
@@ -159,7 +160,7 @@ async function getListFromApi(route: Api, session: any, params: any, query: any)
     return data;
 }
 
-async function getDetailsFromAPI(route: Api, session: any, id: number) {
+async function getDetailsFromAPI(route: Api, session: any, id: number | string) {
     const routeStr = route.replace(':id', id.toString());
 
     const data = await axios.get(process.env.NEXT_API_URL + routeStr, {headers: getAuthHeader(session)});
@@ -195,7 +196,7 @@ async function postDetailsToAPI(route: Api, session: any, postData: any) {
     return data;
 }
 
-async function postDetailsOnAPIWithId(route: Api, session: any, id: number, patchData: any) {
+async function postDetailsOnAPIWithId(route: Api, session: any, id: number | string, patchData: any) {
     const routeStr = route.replace(':id', id.toString());
 
     const data = await axios.post(process.env.NEXT_API_URL + routeStr, patchData, {headers: getAuthHeader(session)});
@@ -534,6 +535,16 @@ const getUserDetail = (session: Session | null, setter: ((e:any) => void), id: n
         });
 };
 
+const getUserInvite = (session: Session | null, setter: ((e:any) => void), uuid: string) => {
+    getDetailsFromAPI(Api.InviteLink, session, uuid)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
+};
+
 
 const getIssueDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
     getDetailsFromAPI(Api.IssueDetail, session, id)
@@ -542,6 +553,16 @@ const getIssueDetail = (session: Session | null, setter: ((e:any) => void), id: 
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: e});
+        });
+};
+
+const postUserInvite = (session: Session | null, uuid: string, data: any, setter?: ((e:any) => void)) => {
+    postDetailsOnAPIWithId(Api.InviteLink, session, uuid, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
         });
 };
 
@@ -953,6 +974,7 @@ export {
     getUserDetail,
     getIssueDetail,
     getMe,
+    getUserInvite,
 
     postGarbageCollectionScheduleTemplate,
     postGarbageCollectionScheduleTemplateEntry,
@@ -967,6 +989,7 @@ export {
     postUser,
     postIssue,
     postIssueImage,
+    postUserInvite,
 
     deleteGarbageCollectionScheduleTemplate,
     deleteGarbageCollectionScheduleTemplateEntry,
