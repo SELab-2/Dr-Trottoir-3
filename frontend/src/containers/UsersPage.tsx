@@ -5,11 +5,11 @@ import {getBuildingsList, getLocationGroupsList, getUsersList, useAuthenticatedA
 import {Building, LocationGroup, User} from '@/api/models';
 import React, {useEffect, useState} from 'react';
 import UserTopBarComponent from '@/components/elements/ListViewElement/TopBarElements/UserTopBarComponent';
-import styles from './containerStyles.module.css';
+import styles from '@/components/elements/ListViewElement/listView.module.css';
 import UserListButtonComponent from '@/components/elements/ListViewElement/ListButtonElements/UserListButtonComponent';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
-import Head from 'next/head';
 import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 export default function UsersPage() {
     const {data: session} = useSession();
@@ -38,11 +38,11 @@ export default function UsersPage() {
 
 
     useEffect(() => {
-        const element = document.getElementById(styles.scroll_style);
+        const element = document.getElementById(styles.scrollable);
         if (element !== null) {
             element.scrollTo({top: 0, behavior: 'smooth'});
         }
-    }, [sorttype, selectedRegions]);
+    }, [users]);
 
     const handleSearch = (clear: boolean = false) => {
         let searchEntryOverwritten: string;
@@ -92,31 +92,36 @@ export default function UsersPage() {
         handleSearch={handleSearch}
     />;
 
-    if (users) {
-        return (
+    const [userElementWidget, setUserElementWidget] = useState(<LoadingElement />);
 
-            <>
-                <Head>
-                    <title>Gebruikers</title>
-                </Head>
-                <ListViewComponent
-                    listData={users}
-                    setListData={setUsers}
-                    locationGroups={locationGroups}
-                    selectedRegions={selectedRegions}
-                    setSelectedRegions={setSelectedRegions}
-                    current={current}
-                    setCurrent={setCurrent}
-                    ListItem={UserListButtonComponent}
-                    TopBar={topBar}
-                    title={'Gebruikers'}
-                    Icon={PeopleAltRoundedIcon}
-                >
-                    {current ? <UserElement id={current}/> : <NoneSelected ElementName={'gebruiker'}/>}
-                </ListViewComponent>
-            </>
+    useEffect(() => {
+        setUserElementWidget(<LoadingElement />);
+        if (current) {
+            setUserElementWidget(<UserElement id={current}/>);
+        }
+    }, [current]);
+
+    if (users && locationGroups && allBuildings) {
+        return (
+            <ListViewComponent
+                listData={users}
+                setListData={setUsers}
+                locationGroups={locationGroups}
+                selectedRegions={selectedRegions}
+                setSelectedRegions={setSelectedRegions}
+                current={current}
+                setCurrent={setCurrent}
+                ListItem={UserListButtonComponent}
+                TopBar={topBar}
+                title={'Gebruikers'}
+                Icon={PeopleAltRoundedIcon}
+            >
+                {current ? userElementWidget : <NoneSelected ElementName={'gebruiker'}/>}
+            </ListViewComponent>
         );
     } else {
-        return (<div>error</div>);
+        return (
+            <LoadingElement/>
+        );
     }
 }

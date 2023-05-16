@@ -1,8 +1,12 @@
+import uuid
 from typing import List
 
 from rest_framework import serializers
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 from drtrottoir.models import Admin, Student, Syndicus, User
+from drtrottoir.settings import DOMAIN, SENDGRID_API_KEY, SENDGRID_FROM_MAIL
 
 
 class AdminSerializer(serializers.ModelSerializer):
@@ -26,6 +30,10 @@ class SyndicusSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "user"]
 
 
+class UserInviteSerializer(serializers.Serializer):
+    password = serializers.CharField(max_length=255)
+
+
 class UserSerializer(serializers.ModelSerializer):
     student = StudentSerializer(allow_null=True)
     admin = AdminSerializer(allow_null=True)
@@ -38,18 +46,38 @@ class UserSerializer(serializers.ModelSerializer):
             "username",
             "first_name",
             "last_name",
+            "invite_link",
             "student",
             "admin",
             "syndicus",
         ]
-        read_only_fields = ["id"]
+        read_only_fields = ["id", "invite_link"]
+
+    @staticmethod
+    def send_user_mail(uuid, user_email):
+        if SENDGRID_API_KEY == "disabled":
+            return
+
+        message = Mail(
+            from_email=SENDGRID_FROM_MAIL,
+            to_emails=user_email,
+            subject="Dr. Trottoir Registration",
+            html_content=f"{DOMAIN}/invite/{uuid}",
+        )
+
+        try:
+            sg = SendGridAPIClient(SENDGRID_API_KEY)
+            sg.send(message)
+        except Exception as e:
+            print("Sendgrid failed:", e)
 
     def create(self, validated_data):
         student_data = validated_data.pop("student")
         admin_data = validated_data.pop("admin")
         syndicus_data = validated_data.pop("syndicus")
 
-        user = User.objects.create(**validated_data)
+        invite_link = uuid.uuid4()
+        user = User.objects.create(invite_link=invite_link, **validated_data)
 
         if student_data is not None:
             Student.objects.create(user=user, **student_data)
@@ -61,6 +89,8 @@ class UserSerializer(serializers.ModelSerializer):
             buildings = syndicus_data.pop("buildings")
             syndicus = Syndicus.objects.create(user=user, **syndicus_data)
             syndicus.buildings.set(buildings)
+
+        UserSerializer.send_user_mail(invite_link, user.username)
 
         return user
 

@@ -83,6 +83,7 @@ export type Admin = {
 export type Syndicus = {
     id: number,
     user: number,
+    buildings: number[],
 }
 
 export type User = {
@@ -92,6 +93,7 @@ export type User = {
     student: undefined | Student,
     admin: undefined | Admin,
     syndicus: undefined | Syndicus,
+    invite_link: string
 }
 
 export type Issue = {

@@ -1,13 +1,15 @@
-import StudentTaskList from '@/components/elements/MobileStudentTaskListElement/StudentTaskListComponent';
 import {useSession} from 'next-auth/react';
+import React from 'react';
+import MeElement from '@/components/elements/MeElement/meElement';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
-export default function StudentTaskListPage() {
+export default function UsersPage() {
     const {data: session} = useSession();
 
     if (session) {
-        // @ts-ignore
-        return <StudentTaskList userId={session.userid} />;
+        return (
+            <MeElement/>
+        );
     } else {
         return (
             <LoadingElement/>
