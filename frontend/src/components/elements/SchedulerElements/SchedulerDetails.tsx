@@ -44,15 +44,15 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
                     assigned_date__lt: lastDay.toISOString().split('T')[0],
                 });
         }
-    }
+    };
 
     const clearAssignments = () => {
-        console.log("here")
+        console.log('here');
         const emptyScheduleAssignment: ApiData<ScheduleAssignment[]> = {
             status: 0,
             success: true,
-            data: []
-        }
+            data: [],
+        };
         setScheduleAssignments(emptyScheduleAssignment);
     };
 

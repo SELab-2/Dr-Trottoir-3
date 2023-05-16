@@ -5,7 +5,7 @@ import React, {useEffect, useState} from 'react';
 import {useSession} from 'next-auth/react';
 import {
     getBuildingsList, getLatestScheduleDefinitionsList,
-    getLocationGroupsList, getScheduleDefinitionsList,
+    getLocationGroupsList,
     getUsersList,
     useAuthenticatedApi,
 } from '@/api/api';
@@ -79,7 +79,7 @@ export default function SchedulerPage() {
                     scheduleDefinitions={{
                         data: scheduleDefinitions.data.filter((e) => e.location_group == selectedRegion?.id),
                         status: 200,
-                        success: true
+                        success: true,
                     }}
                     users={users}
                     buildings={buildings}
