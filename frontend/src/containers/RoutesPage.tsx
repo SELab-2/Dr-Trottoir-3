@@ -1,13 +1,21 @@
 import ListViewComponent from '@/components/elements/ListViewElement/ListViewComponent';
 import React, {useEffect, useState} from 'react';
 import {useSession} from 'next-auth/react';
-import {getLocationGroupsList, getScheduleDefinitionsList, useAuthenticatedApi} from '@/api/api';
+import {
+    getLatestScheduleDefinitionsList,
+    getLocationGroupsList,
+    getScheduleDefinitionsList,
+    useAuthenticatedApi,
+} from '@/api/api';
 import {LocationGroup, ScheduleDefinition} from '@/api/models';
 import RouteTopBarComponent from '@/components/elements/ListViewElement/TopBarElements/RouteTopBarComponent';
 import RouteListButtonComponent
     from '@/components/elements/ListViewElement/ListButtonElements/RouteListButtonComponent';
 import RouteIcon from '@mui/icons-material/Route';
 import RouteDetail from '@/components/modules/routeDetail/RouteDetail';
+import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
+import styles from '@/components/elements/ListViewElement/listView.module.css';
 
 
 // eslint-disable-next-line require-jsdoc
@@ -22,28 +30,51 @@ export default function RoutesPage() {
     const [selectedRegions, setSelectedRegions] = useState<LocationGroup[]>([]);
     const [searchEntry, setSearchEntry] = useState('');
     const [sorttype, setSorttype] = useState('name');
-    const [selectedActive, setSelectedActive] = useState<number | null>(null);
+    const [selectedActive, setSelectedActive] = useState<string>('all');
 
     useEffect(() => {
         getLocationGroupsList(session, setLocationGroups);
     }, [session]);
 
     useEffect(() => {
-        getLocationGroupsList(session, setAllRoutes);
+        getLatestScheduleDefinitionsList(session, setAllRoutes);
     }, [session]);
 
 
     useEffect(() => {
+        handleSearch(false);
+    }, [session, selectedRegions, sorttype, selectedActive]);
+
+    useEffect(() => {
+        const element = document.getElementById(styles.scrollable);
+        if (element !== null) {
+            element.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    }, [routes]);
+
+    const handleSearch = (clear: boolean = false) => {
+        let searchEntryOverwritten: string;
+        if (clear) {
+            searchEntryOverwritten = '';
+        } else {
+            searchEntryOverwritten = searchEntry;
+        }
         let regionsFilter = '';
         selectedRegions.map((r) => {
             regionsFilter += r.id + ',';
         });
-        getScheduleDefinitionsList(session, setRoutes, {
-            search: searchEntry, ordering: sorttype,
-            location_group__in: regionsFilter, is_active: selectedActive,
-        });
-    }, [session, searchEntry, selectedRegions, sorttype, selectedActive]);
-
+        if (selectedActive === 'newest') {
+            getLatestScheduleDefinitionsList(session, setRoutes, {
+                search: searchEntryOverwritten, ordering: sorttype,
+                location_group__in: regionsFilter,
+            });
+        } else {
+            getScheduleDefinitionsList(session, setRoutes, {
+                search: searchEntryOverwritten, ordering: sorttype,
+                location_group__in: regionsFilter,
+            });
+        }
+    };
 
     const topBar = <RouteTopBarComponent
         sorttype={sorttype}
@@ -57,10 +88,20 @@ export default function RoutesPage() {
         selectedActive={selectedActive}
         setSelectedActive={setSelectedActive}
         allRoutes={allRoutes ? allRoutes.data : []}
+        handleSearch={handleSearch}
     />;
 
-    return (
-        <>
+    const [routeWidget, setRouteWidget] = useState(<LoadingElement />);
+
+    useEffect(() => {
+        setRouteWidget(<LoadingElement />);
+        if (current) {
+            setRouteWidget(<RouteDetail scheduleDefinitionId={current}/>);
+        }
+    }, [current]);
+
+    if (routes && allRoutes && locationGroups) {
+        return (
             <ListViewComponent
                 listData={routes}
                 setListData={setRoutes}
@@ -74,8 +115,12 @@ export default function RoutesPage() {
                 title={'Routes'}
                 Icon={RouteIcon}
             >
-                <RouteDetail scheduleDefinitionId={current}/>
+                {current ? routeWidget : <NoneSelected ElementName={'route'}/>}
             </ListViewComponent>
-        </>
-    );
+        );
+    } else {
+        return (
+            <LoadingElement />
+        );
+    }
 }

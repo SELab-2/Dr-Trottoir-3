@@ -2,14 +2,20 @@ from rest_framework import mixins, permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from drtrottoir.models import ScheduleDefinition, ScheduleWorkEntry
+from drtrottoir.models import (
+    ScheduleDefinition,
+    ScheduleDefinitionBuilding,
+    ScheduleWorkEntry,
+)
 from drtrottoir.permissions import (
     HasAssignmentForScheduleDefinition,
+    IsStudent,
     IsSuperstudentOrAdmin,
 )
 from drtrottoir.serializers import (
     BuildingSerializer,
     ScheduleAssignmentSerializer,
+    ScheduleDefinitionBuildingSerializer,
     ScheduleDefinitionSerializer,
     ScheduleWorkEntrySerializer,
 )
@@ -76,6 +82,7 @@ class ScheduleDefinitionViewSet(
         "buildings": ("exact",),
     }
     search_fields = ["name"]
+    ordering_fields = ["name", "location_group__name"]
 
     # This method allows more granular selection of permissions for any given
     # action
@@ -83,6 +90,8 @@ class ScheduleDefinitionViewSet(
     permission_classes_by_action = {
         "retrieve": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
         "buildings": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
+        "order": [permissions.IsAuthenticated, HasAssignmentForScheduleDefinition],
+        "assigned_to_me": [permissions.IsAuthenticated, IsStudent],
     }
 
     @action(detail=True)
@@ -92,6 +101,43 @@ class ScheduleDefinitionViewSet(
         serializer = BuildingSerializer(buildings, many=True)
 
         return Response(serializer.data)
+
+    @action(detail=True)
+    def order(self, request, pk=None):
+        schedule_definition = self.get_object()
+        buildings = ScheduleDefinitionBuilding.objects.filter(
+            schedule_definition=schedule_definition
+        ).order_by("position")
+        serializer = ScheduleDefinitionBuildingSerializer(buildings, many=True)
+
+        return Response(serializer.data)
+
+    # This counts as a different action than 'buildings', and therefore falls
+    # under the default permission_classes
+    @order.mapping.post
+    def set_order(self, request, pk=None):
+        serializer = ScheduleDefinitionBuildingSerializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+
+        schedule_definition = self.get_object()
+
+        # Remove old order & replace with new order
+        ScheduleDefinitionBuilding.objects.filter(
+            schedule_definition=schedule_definition
+        ).delete()
+        ScheduleDefinitionBuilding.objects.bulk_create(
+            (
+                ScheduleDefinitionBuilding(
+                    schedule_definition=schedule_definition,
+                    building=building["building"],
+                    position=building["position"],
+                )
+                for building in serializer.validated_data
+            )
+        )
+
+        # Return ordered list of buildings
+        return self.order(request, pk)
 
     @action(detail=True)
     def schedule_assignments(self, request, pk=None):
@@ -108,5 +154,35 @@ class ScheduleDefinitionViewSet(
             schedule_assignment__schedule_definition=schedule_definition
         )
         serializer = ScheduleWorkEntrySerializer(schedule_work_entries, many=True)
+
+        return Response(serializer.data)
+
+    @action(detail=False)
+    def newest(self, request):
+        # This proved to be an incredibly difficult query to perform using just
+        # ORM instructions, so I've written an SQL query instead
+        schedule_definitions = ScheduleDefinition.objects.raw(
+            """
+SELECT t1.*
+    FROM drtrottoir_scheduledefinition t1
+    INNER JOIN
+    (
+        SELECT name, MAX(version) AS max_version
+        FROM drtrottoir_scheduledefinition
+        GROUP BY name
+    ) t2
+        ON t1.name = t2.name AND t1.version = t2.max_version
+            """
+        )
+        serializer = ScheduleDefinitionSerializer(schedule_definitions, many=True)
+
+        return Response(serializer.data)
+
+    @action(detail=False)
+    def assigned_to_me(self, request):
+        schedule_definitions = self.filter_queryset(
+            self.get_queryset().filter(assignments__user=request.user)
+        )
+        serializer = ScheduleDefinitionSerializer(schedule_definitions, many=True)
 
         return Response(serializer.data)

@@ -16,6 +16,7 @@ import {LocationGroup, ScheduleDefinition} from '@/api/models';
 import Form from '../InsertFormElements/RoutesInsertFormComponent';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
+import {Clear} from '@mui/icons-material';
 
 type TopBarProps = {
     sorttype: string,
@@ -26,13 +27,14 @@ type TopBarProps = {
     amountOfResults: number,
     searchEntry: string,
     setSearchEntry: React.Dispatch<React.SetStateAction<string>>,
-    selectedActive: number | null,
-    setSelectedActive: React.Dispatch<React.SetStateAction<number | null>>,
+    selectedActive: string,
+    setSelectedActive: React.Dispatch<React.SetStateAction<string>>,
     allRoutes: ScheduleDefinition[],
+    handleSearch: (b: boolean) => void,
 };
 
 export default function RouteTopBarComponent({sorttype, setSorttype, selectedRegions, setRegion, allRegions,
-    searchEntry, setSearchEntry, selectedActive, setSelectedActive, allRoutes}:TopBarProps) {
+    searchEntry, setSearchEntry, selectedActive, setSelectedActive, allRoutes, handleSearch}:TopBarProps) {
     const AllesSelected = selectedRegions.length>=allRegions.length;
 
     const handleChangeRegion = (event: SelectChangeEvent<LocationGroup[]>) => {
@@ -46,15 +48,15 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
                 value );
     };
 
-    const activeTypes = {
-        false: 'niet actief',
-        true: 'actief',
+    const newestOnly = {
+        all: 'Alle',
+        newest: 'Actief',
     };
 
     const sorttypes = {
         name: 'naam',
         location_group__name: 'regio',
-        buildings: 'aantal gebouwen',
+        // buildings: 'aantal gebouwen',
     };
 
     const [open, setOpen] = React.useState(false);
@@ -69,7 +71,7 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
     return (
         <div className={styles.topBar}>
             <div className={styles.search_container}>
-                <IconButton type="button" sx={{p: '10px'}} aria-label="search">
+                <IconButton type="button" sx={{p: '10px'}} aria-label="search" onClick={() => handleSearch(false)}>
                     <SearchIcon />
                 </IconButton>
                 <InputBase
@@ -78,7 +80,20 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
                     fullWidth={true}
                     value={searchEntry}
                     onChange={(e) => setSearchEntry(e.target.value as string)}
+                    onKeyDown={(e) => {
+                        if (e.key == 'Enter') {
+                            handleSearch(false);
+                        }
+                    }}
                 />
+                <IconButton type="button" sx={{p: '10px'}} aria-label="clear" onClick={
+                    (e) => {
+                        setSearchEntry('');
+                        handleSearch(true);
+                    }
+                }>
+                    <Clear />
+                </IconButton>
             </div>
             <div className={styles.filters_container}>
                 <Button className={styles.filter_button}>
@@ -185,17 +200,13 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
                         }}
                         IconComponent={() => null}
                         value={selectedActive}
-                        onChange={(e) => setSelectedActive(e.target.value as number)}
+                        onChange={(e) => setSelectedActive(e.target.value as string)}
                         label="Type"
-                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>
-                            {selectedActive === null ? 'alles' :
-                                selectedActive.toString() === 'true' ? 'actief' : 'niet actief'}
-                        </p>}
+                        // renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>
+                        //     {selectedActive.toString() === 'true' ? 'Actief' : 'Alle'}
+                        // </p>}
                     >
-                        <MenuItem value={''}>
-                            <em>Alle</em>
-                        </MenuItem>
-                        {Object.entries(activeTypes).map(([option, value]) => (
+                        {Object.entries(newestOnly).map(([option, value]) => (
                             <MenuItem key={option} value={option}
                                 style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                 {value}

@@ -8,7 +8,7 @@ export default function LoginPageElement() {
     const [password, setPassword] = useState('');
 
     async function handleLogin() {
-        signIn('credentials', {callbackUrl: '/live_routes', password: password, username: email});
+        signIn('credentials', {callbackUrl: '/', password: password, username: email});
     }
 
     return (

@@ -20,6 +20,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY", "insecure")
+SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY", "disabled")
+SENDGRID_FROM_MAIL = os.environ.get("SENDGRID_FROM_MAIL", "disabled")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get("DEBUG", 1)))
@@ -149,6 +151,7 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
+DOMAIN = os.environ.get("DOMAIN", "http://localhost")
 BASE_PATH = os.environ.get("BASE_PATH", "")
 
 STATIC_URL = BASE_PATH + "static/static/"

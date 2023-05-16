@@ -4,7 +4,7 @@
     flex-direction: column;
     background: var(--primary-dark);
     color: var(--primary-light);
-    margin: 5px;
+    margin: 5px 2px;
     padding: 5px;
     border-radius: var(--small_corner);
 }

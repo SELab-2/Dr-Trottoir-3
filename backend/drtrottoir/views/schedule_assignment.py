@@ -2,6 +2,7 @@ from typing import List
 
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from drtrottoir.models import ScheduleAssignment
 from drtrottoir.permissions import (
@@ -55,8 +56,20 @@ class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet)
         "assigned_date": ("exact", "in", "gt", "lt"),
         "schedule_definition": ("exact", "in"),
         "user": ("exact", "in"),
+        "schedule_definition__location_group": ("exact", "in"),
     }
-    search_fields: List[str] = []
+    search_fields: List[str] = [
+        "schedule_definition__name",
+        "user__username",
+        "user__first_name",
+        "user__last_name",
+    ]
+
+    ordering_fields: List[str] = [
+        "schedule_definition__name",
+        "schedule_definition__location_group__name",
+        "user__username",
+    ]
 
     def get_queryset(self):
         """
@@ -67,3 +80,36 @@ class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet)
             return ScheduleAssignment.objects.all()
 
         return ScheduleAssignment.objects.filter(user=self.request.user.id)
+
+    def update(self, *args, **kwargs):
+        schedule_assignment = self.get_object()
+
+        if schedule_assignment.work_entries.count() > 0:
+            return Response(
+                "You cannot edit schedule assignments with related work entries.",
+                status=400,
+            )
+
+        return super().update(*args, **kwargs)
+
+    def partial_update(self, *args, **kwargs):
+        schedule_assignment = self.get_object()
+
+        if schedule_assignment.work_entries.count() > 0:
+            return Response(
+                "You cannot edit schedule assignments with related work entries.",
+                status=400,
+            )
+
+        return super().partial_update(*args, **kwargs)
+
+    def destroy(self, *args, **kwargs):
+        schedule_assignment = self.get_object()
+
+        if schedule_assignment.work_entries.count() > 0:
+            return Response(
+                "You cannot schedule assignments with related work entries.",
+                status=400,
+            )
+
+        return super().destroy(*args, **kwargs)

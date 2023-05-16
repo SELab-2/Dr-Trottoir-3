@@ -13,7 +13,7 @@ import SortIcon from '@mui/icons-material/Sort';
 import AddIcon from '@mui/icons-material/Add';
 import {Building, LocationGroup} from '@/api/models';
 import Form from '../InsertFormElements/UserInsertFormComponent';
-import {Person} from '@mui/icons-material';
+import {Clear, Person} from '@mui/icons-material';
 import styles from './topBar.module.css';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
@@ -29,11 +29,12 @@ type TopBarProps = {
     selectedUserType: string,
     setSelectedUserType: React.Dispatch<React.SetStateAction<string>>,
     allBuildings: Building[],
+    handleSearch: (b: boolean) => void,
 }
 
 export default function UserTopBarComponent({sorttype, setSorttype, selectedRegions, setSelectedRegions, allRegions,
     searchEntry, setSearchEntry, selectedUserType, setSelectedUserType,
-    allBuildings}:TopBarProps) {
+    allBuildings, handleSearch}:TopBarProps) {
     const AllesSelectedRegions = selectedRegions.length>=allRegions.length;
 
     const handleChangeRegion = (event: SelectChangeEvent<LocationGroup[]>) => {
@@ -73,7 +74,7 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
     return (
         <div className={styles.topBar}>
             <div className={styles.search_container}>
-                <IconButton type="button" sx={{p: '10px'}} aria-label="search">
+                <IconButton type="button" sx={{p: '10px'}} aria-label="search" onClick={() => handleSearch(false)}>
                     <SearchIcon />
                 </IconButton>
                 <InputBase
@@ -82,7 +83,20 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
                     fullWidth={true}
                     value={searchEntry}
                     onChange={(e) => setSearchEntry(e.target.value as string)}
+                    onKeyDown={(e) => {
+                        if (e.key == 'Enter') {
+                            handleSearch(false);
+                        }
+                    }}
                 />
+                <IconButton type="button" sx={{p: '10px'}} aria-label="clear" onClick={
+                    (e) => {
+                        setSearchEntry('');
+                        handleSearch(true);
+                    }
+                }>
+                    <Clear />
+                </IconButton>
             </div>
             <div className={styles.filters_container}>
                 <Button className={styles.filter_button}>
@@ -110,7 +124,6 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
                         value={sorttype}
                         onChange={(e) => setSorttype(e.target.value as string)}
                         label="Sorteer op"
-                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>{sorttype}</p>}
                     >
                         {Object.entries(sorttypes).map(([option, value]) => (
                             <MenuItem key={option} value={option}
@@ -225,7 +238,7 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
                 invisible={false}
             >
                 <Form setCanClose={setCanClose} canClose={canClose} setOpen={setOpen}
-                    allBuildings={allBuildings}></Form>
+                    allBuildings={allBuildings} allRegions={allRegions}></Form>
             </Backdrop>
         </div>
 
