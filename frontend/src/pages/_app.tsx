@@ -6,6 +6,8 @@ import {SessionProvider} from 'next-auth/react';
 import {useEffect} from 'react';
 import Navbar from '../components/elements/NavbarElement/Navbar';
 import Head from 'next/head';
+import {CacheProvider} from "@emotion/react";
+import createCache from "@emotion/cache";
 
 export default function App({Component, pageProps: {session, ...pageProps}}: AppProps) {
     useEffect(() => {
@@ -15,15 +17,17 @@ export default function App({Component, pageProps: {session, ...pageProps}}: App
     }, []);
 
     const getLayout = (props: any) => <Navbar>{props}</Navbar>;
+    const cache = createCache({ key: 'css', prepend: true})
 
     return (
         <>
             <Head>
                 <title>DrTrottoir</title>
             </Head>
-            {/* eslint-disable-next-line no-undef*/}
             <SessionProvider session={session} basePath={process.env.NEXT_API_AUTH_URL}>
-                {getLayout(<Component {...pageProps} />)}
+                <CacheProvider value={cache}>
+                    {getLayout(<Component {...pageProps} />)}
+                </CacheProvider>
             </SessionProvider>
         </>
     );

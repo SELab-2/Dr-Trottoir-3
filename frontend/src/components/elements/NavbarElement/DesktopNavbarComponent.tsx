@@ -9,6 +9,7 @@ import {signOut} from 'next-auth/react';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 export default function DesktopNavbar({loading, nextPath, setNextPath, router, children, topButtons}: navbarProps) {
+
     return (
         <div className={styles.full}>
             <div className={styles.row_flex_container}>
@@ -18,14 +19,14 @@ export default function DesktopNavbar({loading, nextPath, setNextPath, router, c
                         <div className={styles.side_bar_mid}>
                             { topButtons.map((term) =>
                                 <DesktopNavButton key={term.id} router={router} nextPath={nextPath}
-                                    setNextPath={setNextPath} href={term.href} text={term.text}
-                                    Icon={term.icon} />
+                                                  setNextPath={setNextPath} href={term.href} text={term.text}
+                                                  Icon={term.icon} />
                             )}
                         </div>
                         <div className={styles.side_bar_bot}>
                             <DesktopNavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
-                                href={'/profile'}
-                                text={'Account'} Icon={PersonRoundedIcon}/>
+                                              href={'/profile'}
+                                              text={'Account'} Icon={PersonRoundedIcon}/>
                             <DesktopLogoutButton/>
                         </div>
                     </div>
