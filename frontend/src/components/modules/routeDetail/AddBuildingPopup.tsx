@@ -31,7 +31,9 @@ export default function AddBuildingPopup({onClose, buildings, open}: SimpleDialo
                     renderInput={(params) => <TextField {...params} label="Gebouw"/>}
                     onChange={(e, val) => setSelectedBuilding(val)}
                 />
-                <Button variant={'contained'} onClick={() => selectedBuilding ? onClose(selectedBuilding.id) : undefined}>
+                <Button variant={'contained'}
+                    onClick={() => selectedBuilding ? onClose(selectedBuilding.id) : undefined}
+                >
                     Toevoegen
                 </Button>
             </Box>
