@@ -40,6 +40,7 @@ export default function TemplateToSchedulePopup({open, onClose, buildingId, defa
     useEffect(() => {
         getBuildingDetailGarbageCollectionScheduleTemplates(session, setTemplates, buildingId);
         getGarbageTypesList(session, setGarbageTypes);
+        setSelectedTemplate(null);
     }, [buildingId]);
 
     useEffect(() => {
