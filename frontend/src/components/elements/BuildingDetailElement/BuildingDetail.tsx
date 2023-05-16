@@ -1,19 +1,10 @@
 import styles from './buildingDetail.module.css';
-import {Box, Link, List, Typography} from '@mui/material';
-import {Building, GarbageCollectionSchedule, GarbageType, Issue, LocationGroup, User} from '@/api/models';
+import {Box, Link, Typography} from '@mui/material';
+import {Building, LocationGroup, User} from '@/api/models';
 import {Edit, PictureAsPdf} from '@mui/icons-material';
-import {
-    getBuildingDetail,
-    getBuildingDetailGarbageCollectionSchedules,
-    getBuildingDetailIssues,
-    getGarbageTypesList,
-    getLocationGroupDetail,
-    getUsersList,
-    useAuthenticatedApi,
-} from '@/api/api';
+import {getBuildingDetail, getLocationGroupDetail, getUsersList, useAuthenticatedApi} from '@/api/api';
 import {defaultBuildingImage} from '@/constants/images';
 import {useSession} from 'next-auth/react';
-import ScheduleGarbageListItem from './ScheduleGarbageListItem';
 import Button from '@mui/material/Button';
 import React, {useEffect, useState} from 'react';
 import ErrorPage from '@/containers/ErrorPage';
@@ -22,9 +13,9 @@ import GarbageCollectionScheduleTemplateList
     from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleTemplateList';
 import EditBuildingPopup from '@/components/elements/BuildingDetailElement/EditBuildingPopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
-import useMediaQuery from "@mui/material/useMediaQuery";
-import IssueList from "@/components/elements/BuildingDetailElement/IssueList";
-import GarbageCollectionScheduleList from "@/components/elements/BuildingDetailElement/GarbageCollectionScheduleList";
+import useMediaQuery from '@mui/material/useMediaQuery';
+import IssueList from '@/components/elements/BuildingDetailElement/IssueList';
+import GarbageCollectionScheduleList from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleList';
 
 interface IBuildingDetail {
     id: number,
@@ -92,36 +83,36 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
     }, [building, session]);
 
     useEffect(() => {
-            if (session && building && location && syndici) {
-                // Check if every request managed to go through
-                if (!building.success) {
-                    setSessionError(building.status);
-                } else if (!location.success) {
-                    setSessionError(location.status);
-                } else if (!syndici.success) {
-                    setSessionError(syndici.status);
-                } else {
-                    // If all checks have passed, continue with building page
+        if (session && building && location && syndici) {
+            // Check if every request managed to go through
+            if (!building.success) {
+                setSessionError(building.status);
+            } else if (!location.success) {
+                setSessionError(location.status);
+            } else if (!syndici.success) {
+                setSessionError(syndici.status);
+            } else {
+                // If all checks have passed, continue with building page
 
-                    const syndiciNames = syndici.data.map(
-                        (syndicus) => `${syndicus.last_name} ${syndicus.first_name}`).sort().join(', ');
-                    const detail: IBuildingDetail = {
-                        id: id ? id : 1,
-                        location_group: location.data.name,
-                        name: building.data.name ? building.data.name : building.data.address,
-                        address: building.data.address,
-                        pdf_guide: building.data.pdf_guide,
-                        image: building.data.image,
-                        syndici: syndiciNames,
-                        longitude: building.data.longitude,
-                        latitude: building.data.latitude,
-                        description: building.data.description,
-                    };
-                    setBuildingDetail(detail);
-                }
+                const syndiciNames = syndici.data.map(
+                    (syndicus) => `${syndicus.last_name} ${syndicus.first_name}`).sort().join(', ');
+                const detail: IBuildingDetail = {
+                    id: id ? id : 1,
+                    location_group: location.data.name,
+                    name: building.data.name ? building.data.name : building.data.address,
+                    address: building.data.address,
+                    pdf_guide: building.data.pdf_guide,
+                    image: building.data.image,
+                    syndici: syndiciNames,
+                    longitude: building.data.longitude,
+                    latitude: building.data.latitude,
+                    description: building.data.description,
+                };
+                setBuildingDetail(detail);
             }
-        },
-        [id, session, building, location, syndici]);
+        }
+    },
+    [id, session, building, location, syndici]);
 
     if (sessionError !== 0) {
         return <ErrorPage status={sessionError}/>;
@@ -133,15 +124,15 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
 
     if (building && location && syndici && buildingDetail) {
         return (
-            <Box padding={1} display={'flex'} flexDirection={'column'} width={'min-content'} flexGrow={1}>
+            <Box padding={1} width={'min-content'} flexGrow={1} overflow={'scroll'}>
                 {/* Top row */}
                 <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
-                     borderRadius={'var(--small_corner)'}
-                     display={'flex'} gap={1}>
+                    borderRadius={'var(--small_corner)'}
+                    display={'flex'} gap={1}>
                     {/* Building data container */}
                     <Box flexGrow={1} flexBasis={0}>
                         <Typography variant={mobileView ? 'h5' : 'h4'}
-                                    noWrap>{buildingDetail.name}</Typography>
+                            noWrap>{buildingDetail.name}</Typography>
                         <Typography variant={'subtitle1'} noWrap>{buildingDetail.location_group}</Typography>
                         <Typography>{buildingDetail.address}</Typography>
                         <Typography>{buildingDetail.syndici}</Typography>
@@ -174,12 +165,12 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                                 buildingDetail.image :
                                 defaultBuildingImage
                         }
-                             alt={'Building'}/>
+                        alt={'Building'}/>
                     </Box>
                 </Box>
 
                 {/* Bottom row */}
-                <Box display={'flex'} gap={1}>
+                <Box display={'flex'} gap={1} minHeight={'min-content'}>
                     {/* Templates */}
                     <Box flexGrow={2} flexBasis={0}>
                         <GarbageCollectionScheduleTemplateList buildingId={id}/>

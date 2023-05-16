@@ -59,7 +59,7 @@ export default function GarbageCollectionScheduleTemplateList({buildingId}: { bu
                     )}
                     <Box paddingBottom={1}>
                         <Box bgcolor={'var(--secondary-light)'} borderRadius={'var(--small_corner)'}
-                             paddingY={0.2} paddingX={'3%'} display={'flex'} alignItems={'center'}>
+                            paddingY={0.2} paddingX={'3%'} display={'flex'} alignItems={'center'}>
                             <Box flexGrow={1}/>
                             <IconButton onClick={() => {
                                 setSelectedTemplate(null);

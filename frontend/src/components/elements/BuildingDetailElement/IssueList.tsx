@@ -1,24 +1,19 @@
-import {Issue} from "@/api/models";
-import {Box, FormControlLabel, IconButton, Tooltip, Typography} from "@mui/material";
-import {Add, Clear, Done, Edit, ErrorOutline, FilterAlt, FilterAltOff, Label} from "@mui/icons-material";
-import {
-    deleteGarbageCollectionScheduleTemplate,
-    deleteIssue,
-    getBuildingDetailIssues,
-    patchIssueDetail, useAuthenticatedApi
-} from "@/api/api";
-import React, {useEffect, useState} from "react";
-import CloseIcon from "@mui/icons-material/Close";
-import {useSession} from "next-auth/react";
+import {Issue} from '@/api/models';
+import {Box, IconButton, Tooltip, Typography} from '@mui/material';
+import {Done, ErrorOutline, FilterAlt, FilterAltOff} from '@mui/icons-material';
+import {deleteIssue, getBuildingDetailIssues, patchIssueDetail, useAuthenticatedApi} from '@/api/api';
+import React, {useEffect, useState} from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import {useSession} from 'next-auth/react';
 
-export default function IssueList({buildingId}: { buildingId: number}) {
+export default function IssueList({buildingId}: { buildingId: number }) {
     const {data: session} = useSession();
     const [filter, setFilter] = useState(true);
     const [issues, setIssues] = useAuthenticatedApi<Issue[]>();
 
 
-    function updateIssues(){
-        getBuildingDetailIssues(session, setIssues, buildingId)
+    function updateIssues() {
+        getBuildingDetailIssues(session, setIssues, buildingId);
     }
 
     useEffect(updateIssues, [buildingId]);
@@ -40,11 +35,11 @@ export default function IssueList({buildingId}: { buildingId: number}) {
         <Box display={'flex'} alignItems={'center'}>
             <Typography variant='h5'>Problemen</Typography>
             <Box marginY={-2}>
-                <IconButton onClick={() => setFilter(!filter)}>
-                    {filter ?
-                        <Tooltip title={'Toon opgeloste problemen'}><FilterAlt/></Tooltip> :
-                        <Tooltip title={'Verberg opgeloste problemen'}><FilterAltOff/></Tooltip>}
-                </IconButton>
+                <Tooltip title={filter ? 'Toon opgeloste problemen' : 'Verberg opgeloste problemen'}>
+                    <IconButton onClick={() => setFilter(!filter)}>
+                        {filter ? <FilterAlt/> : <FilterAltOff/>}
+                    </IconButton>
+                </Tooltip>
             </Box>
         </Box>
         {issuesFiltered().length ?
@@ -79,12 +74,12 @@ export default function IssueList({buildingId}: { buildingId: number}) {
                 </Box>)}
             </Box>) :
             (<Box paddingBottom={1}>
-                    <Box bgcolor={'var(--secondary-light)'} borderRadius={'var(--small_corner)'}
-                         paddingY={0.2} paddingX={'3%'} textAlign={'center'}>
-                        <Done/>
-                        <Typography>Geen problemen</Typography>
-                    </Box>
+                <Box bgcolor={'var(--secondary-light)'} borderRadius={'var(--small_corner)'}
+                    paddingY={0.2} paddingX={'3%'} textAlign={'center'}>
+                    <Done/>
+                    <Typography>Geen problemen</Typography>
                 </Box>
+            </Box>
             )}
     </>);
 }

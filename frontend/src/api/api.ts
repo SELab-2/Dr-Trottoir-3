@@ -575,6 +575,16 @@ const postGarbageType = (session: Session | null, data: any, setter?: ((e:any) =
         });
 };
 
+const postGarbageCollectionSchedule = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
+    postDetailsToAPI(Api.GarbageCollectionSchedules, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
 const postLocationGroup = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
     postDetailsToAPI(Api.LocationGroups, session, data)
         .then((e) => {
@@ -947,6 +957,7 @@ export {
     postGarbageCollectionScheduleTemplate,
     postGarbageCollectionScheduleTemplateEntry,
     postGarbageType,
+    postGarbageCollectionSchedule,
     postLocationGroup,
     postBuilding,
     postScheduleAssignment,

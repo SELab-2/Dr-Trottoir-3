@@ -82,11 +82,11 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
             scheduleDefinitionId !== null ?
                 (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'} overflow={'auto'}>
                     <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
-                         borderRadius={'var(--small_corner)'}
-                         display={'flex'} flexDirection={mobileView ? 'column' : 'row'}>
+                        borderRadius={'var(--small_corner)'}
+                        display={'flex'} flexDirection={mobileView ? 'column' : 'row'}>
                         <Box>
                             <Typography variant={mobileView ? 'h5' : 'h4'}
-                                        noWrap>{scheduleDefinition?.data.name}</Typography>
+                                noWrap>{scheduleDefinition?.data.name}</Typography>
                             <Typography variant={'subtitle1'} noWrap>{locationGroup?.data.name}</Typography>
                         </Box>
                         <Box flexGrow={1}>
@@ -100,25 +100,25 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
                         <Box flexGrow={2} flexBasis={0}>
                             <Typography variant={'h5'}>Gebouwen</Typography>
                             <BuildingList list={(orderedBuildings())}
-                                          onReorder={onReorder} onRemove={onRemove}
-                                          onAdd={onAdd}
-                                          onHovering={setHovering} hovering={hovering}/>
+                                onReorder={onReorder} onRemove={onRemove}
+                                onAdd={onAdd}
+                                onHovering={setHovering} hovering={hovering}/>
                         </Box>
                         <Box flexGrow={5} minHeight={300}>
                             <RouteMap buildings={orderedBuildings()} onHovering={setHovering}
-                                      hovering={hovering}/>
+                                hovering={hovering}/>
                         </Box>
                     </Box>
                     {buildings && order ?
                         <AddBuildingPopup open={dialogOpen}
-                                          buildings={buildings.data
-                                              .filter(({id}) => !order.data.map(({building}) => building).includes(id))}
-                                          onClose={onAdding}/> : <></>}
+                            buildings={buildings.data
+                                .filter(({id}) => !order.data.map(({building}) => building).includes(id))}
+                            onClose={onAdding}/> : <></>}
                 </Box>) :
                 (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'}>
                     <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
-                         borderRadius={'var(--small_corner)'}
-                         display={'flex'}>
+                        borderRadius={'var(--small_corner)'}
+                        display={'flex'}>
                         <Box>
                             <Typography variant={mobileView ? 'h5' : 'h4'}>Geen route geselecteerd</Typography>
                             <Typography variant={'subtitle1'}>Selecteer een route om details weer te geven</Typography>
