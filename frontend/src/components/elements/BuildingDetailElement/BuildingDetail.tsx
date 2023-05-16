@@ -182,7 +182,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
             <Box className={styles.full}>
                 {/* Top row */}
                 <Box className={styles.top_row_container}
-                     sx={{background: 'var(--secondary-light)'}}>
+                    sx={{background: 'var(--secondary-light)'}}>
                     {/* Building data container */}
                     <Box className={styles.building_data_container}>
                         <h1>
