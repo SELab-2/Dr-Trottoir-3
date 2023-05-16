@@ -1,11 +1,9 @@
 import * as React from 'react';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
+import {useEffect, useState} from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import {Building} from '@/api/models';
+import {Autocomplete, Box, Button, TextField} from '@mui/material';
 
 export interface SimpleDialogProps {
     open: boolean;
@@ -14,18 +12,29 @@ export interface SimpleDialogProps {
 }
 
 export default function AddBuildingPopup({onClose, buildings, open}: SimpleDialogProps) {
+    const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null);
+
+    useEffect(() => {
+        if (open) {
+            setSelectedBuilding(null);
+        }
+    }, [open]);
+
     return (
         <Dialog onClose={() => onClose(undefined)} open={open}>
             <DialogTitle>Voeg een gebouw toe</DialogTitle>
-            <List sx={{pt: 0}}>
-                {buildings.map(({id, name, address}) => (
-                    <ListItem disableGutters>
-                        <ListItemButton onClick={() => onClose(id)} key={id}>
-                            <ListItemText primary={name} secondary={address}/>
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
+            <Box padding={2} display={'flex'} flexDirection={'column'} justifyContent={'center'} gap={2}>
+                <Autocomplete
+                    id="cbx-gebruiker"
+                    options={buildings}
+                    getOptionLabel={(building) => `${building.name} (${building.address})`}
+                    renderInput={(params) => <TextField {...params} label="Gebouw"/>}
+                    onChange={(e, val) => setSelectedBuilding(val)}
+                />
+                <Button variant={'contained'} onClick={() => selectedBuilding ? onClose(selectedBuilding.id) : undefined}>
+                    Toevoegen
+                </Button>
+            </Box>
         </Dialog>
     );
 }
