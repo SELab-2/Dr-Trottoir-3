@@ -45,13 +45,30 @@
     justify-content: flex-end;
 }
 
-.button{
-    height: 5vh;
-    background-color: #F3F5F9;
-    color: var(--primary-dark);
-    bottom: 0;
+.cancel_button {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    color: var(--primary-light) !important;
+    text-transform: none;
+    background-color: var(--primary-dark) !important;
+    border-radius: 8px;
+    width: 100%;
 }
 
-.button:hover{
-    background-color: #bbbec4;
+.cancel_button:hover {
+    color: var(--primary-yellow) !important;
+}
+
+.submit_button {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    color: var(--primary-dark) !important;
+    text-transform: none;
+    background-color: var(--primary-yellow) !important;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.submit_button:hover {
+    color: var(--secondary-dark) !important;
 }

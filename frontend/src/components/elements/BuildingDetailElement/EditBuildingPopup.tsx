@@ -155,11 +155,10 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                         </FormControl>
                     </div>
                     <div className={styles.formButtons}>
-                        <Button variant='contained' className={styles.button} onClick={handleClose}>
+                        <Button className={styles.cancel_button} onClick={handleClose}>
                             Cancel
                         </Button>
-                        <Button variant='contained' className={styles.button} onClick={handleSubmit}
-                            style={{backgroundColor: '#E6E600'}}>
+                        <Button className={styles.submit_button} onClick={handleSubmit}>
                             Submit
                         </Button>
                     </div>

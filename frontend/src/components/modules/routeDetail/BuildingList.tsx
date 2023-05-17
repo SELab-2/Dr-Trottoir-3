@@ -1,7 +1,7 @@
-import {DragDropContext, Droppable, Draggable, DropResult} from 'react-beautiful-dnd';
+import {DragDropContext, Draggable, Droppable, DropResult} from 'react-beautiful-dnd';
 import React from 'react';
-import {Box, IconButton, Link} from '@mui/material';
-import {DragHandle, Clear, Add} from '@mui/icons-material';
+import {Box, IconButton, Typography} from '@mui/material';
+import {Add, Clear, DragHandle} from '@mui/icons-material';
 import {Building} from '@/api/models';
 
 interface Props {
@@ -56,8 +56,7 @@ function BuildingList({list, onReorder, onRemove, onAdd, onHovering, hovering}: 
                                             <Box marginRight={'3%'} textAlign={'center'} color={'grey'}>
                                                 {index + 1}
                                             </Box>
-                                            <Link flexGrow={5} noWrap href={`/building/${id}`} color={'inherit'}
-                                                underline={'none'}>{name}</Link>
+                                            <Typography flexGrow={5} noWrap>{name}</Typography>
                                             <IconButton onClick={() => {
                                                 onHovering(null);
                                                 onRemove(id);

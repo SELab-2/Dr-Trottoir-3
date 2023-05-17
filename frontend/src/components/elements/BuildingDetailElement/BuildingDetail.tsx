@@ -1,5 +1,5 @@
 import styles from './buildingDetail.module.css';
-import {Box, Link, List, Modal, Typography} from '@mui/material';
+import {IconButton, Link, List, Modal, Tooltip, Typography} from '@mui/material';
 import {Building, GarbageCollectionSchedule, GarbageType, Issue, LocationGroup, User} from '@/api/models';
 import {PictureAsPdf, Edit} from '@mui/icons-material';
 import {
@@ -41,20 +41,24 @@ interface IBuildingDetail {
 
 // TODO in case there is an error, detail.status is undefined, and not a proper status code. This needs to be fixed.
 
-// eslint-disable-next-line require-jsdoc
+
 function BuildingDetailManualLink(props: { path: string | null }): JSX.Element {
     if (!props.path || props.path.length === 0) {
-        return (<></>);
+        return (
+            <div className={styles.pdf_container}>
+                <PictureAsPdf fontSize='small'/>
+                <p>geen handleiding</p>
+            </div>
+        );
     }
     return (
-        <Link href={props.path} className={styles.building_data_manual}>
+        <Link href={props.path} className={styles.pdf_container}>
             Manual
             <PictureAsPdf fontSize='small'/>
         </Link>
     );
 }
 
-// eslint-disable-next-line require-jsdoc
 
 export default function BuildingDetail(props: { id: number | null }): JSX.Element {
     const id = props.id;
@@ -179,34 +183,43 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
         }
 
         return (
-            <Box className={styles.full}>
+            <div className={styles.full}>
                 {/* Top row */}
-                <Box className={styles.top_row_container}
-                    sx={{background: 'var(--secondary-light)'}}>
+                <div className={styles.top_row_container}>
                     {/* Building data container */}
-                    <Box className={styles.building_data_container}>
-                        <h1>
-                            {buildingDetail.name}
-                        </h1>
-                        <br/>
-                        <Box className={styles.building_data_container_data}>
-                            <Typography className={styles.building_data_data}>
-                                {buildingDetail.location_group}
-                            </Typography>
-                            <Typography className={styles.building_data_data}>
-                                {buildingDetail.address}
-                            </Typography>
-                            <Typography className={styles.building_data_data}>
-                                {buildingDetail.syndici}
-                            </Typography>
-                            <br/>
-                            <BuildingDetailManualLink path={buildingDetail.pdf_guide}/>
+                    <div className={styles.building_general_container}>
+                        <div className={styles.building_title_container}>
+                            <Tooltip title={buildingDetail.name} placement="top">
+                                <h1 className={styles.building_data_title}>
+                                    {buildingDetail.name}
+                                </h1>
+                            </Tooltip>
+                            <div style={{margin: 'auto'}}>
+                                <IconButton onClick={onOpenEditPopup}>
+                                    <Edit fontSize="small"/>
+                                </IconButton>
+                            </div>
+                        </div>
+                        <div className={styles.building_data_container}>
+                            <Tooltip title={buildingDetail.location_group} placement="right">
+                                <p>{buildingDetail.location_group}</p>
+                            </Tooltip>
+                            <Tooltip title={buildingDetail.address} placement="right">
+                                <p>{buildingDetail.address}</p>
+                            </Tooltip>
+                            <Tooltip title={buildingDetail.syndici} placement="right">
+                                <p>{buildingDetail.syndici}</p>
+                            </Tooltip>
                             {/* Button to open the issue modal*/}
-                            <Button onClick={handleIssueModalOpen}>{issuesModalButtonText}</Button>
-                        </Box>
-                        <Button startIcon={<Edit/>} onClick={onOpenEditPopup}>
-                            Gebouw aanpassen
-                        </Button>
+                        </div>
+                        <div className={styles.building_issues_container}>
+                            <BuildingDetailManualLink path={buildingDetail.pdf_guide}/>
+                            <div style={{flex: '1'}}></div>
+                            <Button onClick={handleIssueModalOpen} className={styles.issue_button}>
+                                {issuesModalButtonText}
+                            </Button>
+                        </div>
+
                         <EditBuildingPopup
                             buildingId={buildingDetail.id}
                             open={editPopupOpen}
@@ -218,31 +231,31 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                             prevSyndici={syndici.data}
                             prevDescription={buildingDetail.description}
                         />
-                    </Box>
+                    </div>
 
                     {/* Building description container */}
-                    <Box className={styles.building_desc_container}>
+                    <div className={styles.building_desc_container}>
                         <BuildingMap longitude={buildingDetail.longitude} latitude={buildingDetail.latitude}/>
-                    </Box>
+                    </div>
 
                     {/* Building image container */}
-                    <Box className={styles.building_imag_container}>
+                    <div className={styles.building_imag_container}>
                         <img src={
                             buildingDetail.image ?
                                 buildingDetail.image :
                                 defaultBuildingImage
                         }
                         alt={'Building'}/>
-                    </Box>
-                </Box>
+                    </div>
+                </div>
 
                 {/* Middle row for spacing */}
-                <Box className={styles.middle_row_divider}></Box>
+                <div className={styles.middle_row_divider}></div>
 
                 {/* Bottom row */}
-                <Box className={styles.bottom_row_container}>
+                <div className={styles.bottom_row_container}>
                     {/* Garbage schedule list */}
-                    <Box className={styles.garbage_schedule_list}>
+                    <div className={styles.garbage_schedule_list}>
                         <Typography variant='h5'>
                             Templates
                         </Typography>
@@ -258,21 +271,21 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                                 />
                             )}
                         </List>
-                    </Box>
+                    </div>
 
                     {/* Garbage schedule calendar */}
-                    <Box className={styles.garbage_calendar}>
+                    <div className={styles.garbage_calendar}>
                         Calendar here
-                    </Box>
-                </Box>
+                    </div>
+                </div>
 
                 {/* Modal for the issues */}
                 <Modal
                     open={issuesModalOpen}
                     onClose={handleIssueModalClose}
                 >
-                    <Box className={styles.issue_modal_box}
-                        sx={{
+                    <div className={styles.issue_modal_box}
+                        style={{
                             background: 'var(--primary-light)',
                             maxHeight: '400px',
                             overflow: 'scroll',
@@ -284,9 +297,9 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                                 )
                             }
                         </List>
-                    </Box>
+                    </div>
                 </Modal>
-            </Box>
+            </div>
         );
     } else {
         return (
