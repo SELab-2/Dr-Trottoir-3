@@ -1,8 +1,15 @@
 import styles from './buildingDetail.module.css';
-import {Box, Link, Typography} from '@mui/material';
+import {Box, Link} from '@mui/material';
 import {Building, LocationGroup, User} from '@/api/models';
 import {Edit, PictureAsPdf} from '@mui/icons-material';
 import {getBuildingDetail, getLocationGroupDetail, getUsersList, useAuthenticatedApi} from '@/api/api';
+import {IconButton, Tooltip} from '@mui/material';
+import {GarbageCollectionSchedule, GarbageType, Issue} from '@/api/models';
+import {
+    getBuildingDetailGarbageCollectionSchedules,
+    getBuildingDetailIssues,
+    getGarbageTypesList,
+} from '@/api/api';
 import {defaultBuildingImage} from '@/constants/images';
 import {useSession} from 'next-auth/react';
 import Button from '@mui/material/Button';
@@ -25,6 +32,8 @@ interface IBuildingDetail {
     pdf_guide: string | null,
     image: string | null,
     syndici: string,
+    schedules: GarbageCollectionSchedule[],
+    issues: Issue[],
     longitude: number | null,
     latitude: number | null,
     description: string
@@ -32,13 +41,17 @@ interface IBuildingDetail {
 
 // TODO in case there is an error, detail.status is undefined, and not a proper status code. This needs to be fixed.
 
-// eslint-disable-next-line require-jsdoc
 function BuildingDetailManualLink(props: { path: string | null }): JSX.Element {
     if (!props.path || props.path.length === 0) {
-        return (<></>);
+        return (
+            <div className={styles.pdf_container}>
+                <PictureAsPdf fontSize='small'/>
+                <p>geen handleiding</p>
+            </div>
+        );
     }
     return (
-        <Link href={props.path} className={styles.building_data_manual}>
+        <Link href={props.path} className={styles.pdf_container}>
             Manual
             <PictureAsPdf fontSize='small'/>
         </Link>
@@ -48,16 +61,21 @@ function BuildingDetailManualLink(props: { path: string | null }): JSX.Element {
 // eslint-disable-next-line require-jsdoc
 
 export default function BuildingDetail(props: { id: number | null }): JSX.Element {
-    const mobileView = useMediaQuery('(max-width:1000px)');
     const id = props.id;
 
     const [buildingDetail, setBuildingDetail] =
         useState<IBuildingDetail | undefined>(undefined);
+    const [issuesModalOpen, setIssuesModalOpen] = useState(false);
+    const handleIssueModalOpen = () => setIssuesModalOpen(true);
+    const handleIssueModalClose = () => setIssuesModalOpen(false);
 
     const {data: session} = useSession();
 
     const [building, setBuilding] = useAuthenticatedApi<Building>();
     const [location, setLocation] = useAuthenticatedApi<LocationGroup>();
+    const [schedules, setSchedules] = useAuthenticatedApi<GarbageCollectionSchedule[]>();
+    const [garbageTypes, setGarbageTypes] = useAuthenticatedApi<GarbageType[]>();
+    const [issues, setIssues] = useAuthenticatedApi<Issue[]>();
     const [syndici, setSyndici] = useAuthenticatedApi<User[]>();
     const [sessionError, setSessionError] = React.useState(0);
 
@@ -67,11 +85,10 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
         setEditPopupOpen(true);
     }
 
-    // Get building data and issues and schedules
+    // Get building data
     useEffect(() => {
         if (id !== null) {
             getBuildingDetail(session, setBuilding, id);
-            getUsersList(session, setSyndici, {'syndicus__buildings': id}, {});
         }
     }, [id, session]);
 
@@ -82,17 +99,50 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
         }
     }, [building, session]);
 
+    // Get schedules
     useEffect(() => {
-        if (session && building && location && syndici) {
+        if (id !== null) {
+            getBuildingDetailGarbageCollectionSchedules(session, setSchedules, id);
+        }
+    }, [id, session]);
+
+    // Get garbage types
+    useEffect(() => {
+        getGarbageTypesList(session, setGarbageTypes);
+    }, [session]);
+
+    // Get issues
+    useEffect(() => {
+        if (id !== null) {
+            getBuildingDetailIssues(session, setIssues, id);
+        }
+    }, [id, session]);
+
+    useEffect(() => {
+        getUsersList(session, setSyndici, {'syndicus__buildings': id}, {});
+    }, [id, session]);
+
+    useEffect(() => {
+        if (session && building && location && schedules && garbageTypes && issues && syndici) {
             // Check if every request managed to go through
             if (!building.success) {
                 setSessionError(building.status);
             } else if (!location.success) {
                 setSessionError(location.status);
+            } else if (!schedules.success) {
+                setSessionError(schedules.status);
+            } else if (!garbageTypes.success) {
+                setSessionError(garbageTypes.status);
+            } else if (!issues.success) {
+                setSessionError(issues.status);
             } else if (!syndici.success) {
                 setSessionError(syndici.status);
             } else {
                 // If all checks have passed, continue with building page
+                const garbageNames: { [id: number]: string } = {};
+                for (const garbageType of garbageTypes.data) {
+                    garbageNames[garbageType.id] = garbageType.name;
+                }
 
                 const syndiciNames = syndici.data.map(
                     (syndicus) => `${syndicus.last_name} ${syndicus.first_name}`).sort().join(', ');
@@ -104,6 +154,8 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                     pdf_guide: building.data.pdf_guide,
                     image: building.data.image,
                     syndici: syndiciNames,
+                    schedules: schedules.data,
+                    issues: issues.data.filter((issue) => !issue.resolved),
                     longitude: building.data.longitude,
                     latitude: building.data.latitude,
                     description: building.data.description,
@@ -112,7 +164,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
             }
         }
     },
-    [id, session, building, location, syndici]);
+    [id, session, building, location, schedules, garbageTypes, issues, syndici]);
 
     if (sessionError !== 0) {
         return <ErrorPage status={sessionError}/>;
@@ -122,24 +174,49 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
         return <p>None selected</p>;
     }
 
-    if (building && location && syndici && buildingDetail) {
+    if (building && location && schedules && garbageTypes && issues && syndici && buildingDetail) {
+        let issuesModalButtonText = `${buildingDetail.issues.length} issues remaining`;
+        if (buildingDetail.issues.length === 0) {
+            issuesModalButtonText = `No issues`;
+        } else if (buildingDetail.issues.length === 1) {
+            issuesModalButtonText = `${buildingDetail.issues.length} issue remaining`;
+        }
+
         return (
-            <Box padding={1} width={'min-content'} flexGrow={1} overflow={'scroll'}>
+            <div className={styles.full}>
                 {/* Top row */}
-                <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
-                    borderRadius={'var(--small_corner)'}
-                    display={'flex'} gap={1}>
+                <div className={styles.top_row_container}>
                     {/* Building data container */}
-                    <Box flexGrow={1} flexBasis={0}>
-                        <Typography variant={mobileView ? 'h5' : 'h4'}
-                            noWrap>{buildingDetail.name}</Typography>
-                        <Typography variant={'subtitle1'} noWrap>{buildingDetail.location_group}</Typography>
-                        <Typography>{buildingDetail.address}</Typography>
-                        <Typography>{buildingDetail.syndici}</Typography>
-                        <BuildingDetailManualLink path={buildingDetail.pdf_guide}/>
-                        <Button startIcon={<Edit/>} onClick={onOpenEditPopup}>
-                            Gebouw aanpassen
-                        </Button>
+                    <div className={styles.building_general_container}>
+                        <div className={styles.building_title_container}>
+                            <Tooltip title={buildingDetail.name} placement="top">
+                                <h1 className={styles.building_data_title}>
+                                    {buildingDetail.name}
+                                </h1>
+                            </Tooltip>
+                            <div style={{margin: 'auto'}}>
+                                <IconButton onClick={onOpenEditPopup}>
+                                    <Edit fontSize="small"/>
+                                </IconButton>
+                            </div>
+                        </div>
+                        <div className={styles.building_data_container}>
+                            <Tooltip title={buildingDetail.location_group} placement="right">
+                                <p>{buildingDetail.location_group}</p>
+                            </Tooltip>
+                            <Tooltip title={buildingDetail.address} placement="right">
+                                <p>{buildingDetail.address}</p>
+                            </Tooltip>
+                            <Tooltip title={buildingDetail.syndici} placement="right">
+                                <p>{buildingDetail.syndici}</p>
+                            </Tooltip>
+                            {/* Button to open the issue modal*/}
+                        </div>
+                        <div className={styles.building_issues_container}>
+                            <BuildingDetailManualLink path={buildingDetail.pdf_guide}/>
+                            <div style={{flex: '1'}}></div>
+                        </div>
+
                         <EditBuildingPopup
                             buildingId={buildingDetail.id}
                             open={editPopupOpen}
@@ -151,26 +228,26 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                             prevSyndici={syndici.data}
                             prevDescription={buildingDetail.description}
                         />
-                    </Box>
+                    </div>
 
                     {/* Building description container */}
-                    { mobileView ? <></> : <Box flexGrow={1} flexBasis={0}>
+                    <div className={styles.building_desc_container}>
                         <BuildingMap longitude={buildingDetail.longitude} latitude={buildingDetail.latitude}/>
-                    </Box>}
+                    </div>
 
                     {/* Building image container */}
-                    <Box flexGrow={1} flexBasis={0}>
-                        <img width={'100%'} src={
+                    <div className={styles.building_imag_container}>
+                        <img src={
                             buildingDetail.image ?
                                 buildingDetail.image :
                                 defaultBuildingImage
                         }
                         alt={'Building'}/>
-                    </Box>
-                </Box>
+                    </div>
+                </div>
 
                 {/* Bottom row */}
-                <Box display={'flex'} gap={1} minHeight={'min-content'}>
+                <div className={styles.bottom_row_container}>
                     {/* Templates */}
                     <Box flexGrow={2} flexBasis={0}>
                         <GarbageCollectionScheduleTemplateList buildingId={id}/>
@@ -183,8 +260,8 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                     <Box flexGrow={2} flexBasis={0}>
                         <IssueList buildingId={id}/>
                     </Box>
-                </Box>
-            </Box>
+                </div>
+            </div>
         );
     } else {
         return (

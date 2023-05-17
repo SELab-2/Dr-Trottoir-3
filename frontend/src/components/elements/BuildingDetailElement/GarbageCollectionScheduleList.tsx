@@ -1,4 +1,5 @@
 import {Box, IconButton, Tooltip, Typography} from '@mui/material';
+import styles from './buildingEditLists.module.css'
 import React, {useEffect, useState} from 'react';
 import {GarbageCollectionSchedule, GarbageType} from '@/api/models';
 import {useSession} from 'next-auth/react';
@@ -108,92 +109,95 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
         setEditSchedulePopup(true);
     }
 
-    return (<Box>
-        <Typography variant='h5' onClick={() => console.log(schedules)}>Planning</Typography>
-        <Box paddingBottom={1}>
-            <Box
-                bgcolor={'var(--secondary-light)'}
-                borderRadius={'var(--small_corner)'} gap={1}
-                paddingY={0.2} paddingX={'3%'} alignItems={'center'} justifyContent={'center'} display={'flex'}
-            >
-                <IconButton size={'small'}
-                    onClick={() => setSchedulesFilterDate(schedulesFilterDate.subtract(1, 'week'))}>
-                    <ArrowUpward/>
-                </IconButton>
-                <Typography noWrap>
-                    Vanaf {schedulesFilterDate.format('DD/MM/YYYY')}
-                </Typography>
-                <IconButton size={'small'}
-                    onClick={() => setSchedulesFilterDate(schedulesFilterDate.add(1, 'week'))}>
-                    <ArrowDownward/>
-                </IconButton>
+    return (
+        <Box className={styles.full_container}>
+            <Typography variant='h5' onClick={() => console.log(schedules)}>Planning</Typography>
+            <Box paddingBottom={1}>
+                <Box
+                    bgcolor={'var(--secondary-light)'}
+                    borderRadius={'var(--small_corner)'} gap={1}
+                    paddingY={0.2} paddingX={'3%'} alignItems={'center'} justifyContent={'center'} display={'flex'}
+                >
+                    <IconButton size={'small'}
+                        onClick={() => setSchedulesFilterDate(schedulesFilterDate.subtract(1, 'week'))}>
+                        <ArrowUpward/>
+                    </IconButton>
+                    <Typography noWrap>
+                        Vanaf {schedulesFilterDate.format('DD/MM/YYYY')}
+                    </Typography>
+                    <IconButton size={'small'}
+                        onClick={() => setSchedulesFilterDate(schedulesFilterDate.add(1, 'week'))}>
+                        <ArrowDownward/>
+                    </IconButton>
+                </Box>
             </Box>
-        </Box>
         {schedules?.data && garbageTypes?.data ?
-            <div>
-                {schedulesPerWeek().map(({monday, sunday, schedules}, index) =>
-                    <Box key={index}>
-                        <Box display={'flex'} alignItems={'center'}>
-                            <Typography noWrap
-                                variant={'subtitle2'}>{dateFmt(monday)} tot {dateFmt(sunday)}</Typography>
+            <div className={styles.scrollable_container}>
+                {/*<div className={styles.scroll_list}>*/}
+                    {schedulesPerWeek().map(({monday, sunday, schedules}, index) =>
+                        <Box key={index}>
+                            <Box display={'flex'} alignItems={'center'}>
+                                <Typography noWrap
+                                    variant={'subtitle2'}>{dateFmt(monday)} tot {dateFmt(sunday)}</Typography>
 
-                            <Box flexGrow={1}/>
-                            <IconButton onClick={() => openTemplateToSchedulePopup(monday)} size={'small'}>
-                                <Tooltip title={'Template plannen'}>
-                                    <PlaylistAdd/>
-                                </Tooltip>
-                            </IconButton>
-                            <IconButton onClick={() => openNewSchedulePopup(monday)} size={'small'}>
-                                <Tooltip title={'Afzonderlijke ophaling plannen'}>
-                                    <Add/>
-                                </Tooltip>
-                            </IconButton>
-                        </Box>
-                        {schedules.length ? schedules.map((schedule, index) =>
-                            <Box paddingBottom={1} key={index}>
-                                <Box
-                                    bgcolor={'var(--secondary-light)'}
-                                    borderRadius={'var(--small_corner)'} gap={1}
-                                    paddingY={0.2} paddingX={'3%'} alignItems={'center'} display={'flex'}
-                                >
-                                    <Typography noWrap flexShrink={0}>
-                                        {dateFmt(schedule.for_day)}
-                                    </Typography>
-                                    <Typography noWrap flexGrow={1} variant={'button'}>
-                                        {schedule.garbage_type?.name}
-                                    </Typography>
-                                    <Box flexShrink={0}>
-                                        <IconButton size={'small'} onClick={() => openEditSchedulePopup(schedule.id)}>
-                                            <Edit/>
+                                <Box flexGrow={1}/>
+                                <IconButton onClick={() => openTemplateToSchedulePopup(monday)} size={'small'}>
+                                    <Tooltip title={'Template plannen'}>
+                                        <PlaylistAdd/>
+                                    </Tooltip>
+                                </IconButton>
+                                <IconButton onClick={() => openNewSchedulePopup(monday)} size={'small'}>
+                                    <Tooltip title={'Afzonderlijke ophaling plannen'}>
+                                        <Add/>
+                                    </Tooltip>
+                                </IconButton>
+                            </Box>
+                            {schedules.length ? schedules.map((schedule, index) =>
+                                <Box paddingBottom={1} key={index}>
+                                    <Box
+                                        bgcolor={'var(--secondary-light)'}
+                                        borderRadius={'var(--small_corner)'} gap={1}
+                                        paddingY={0.2} paddingX={'3%'} alignItems={'center'} display={'flex'}
+                                    >
+                                        <Typography noWrap flexShrink={0}>
+                                            {dateFmt(schedule.for_day)}
+                                        </Typography>
+                                        <Typography noWrap flexGrow={1} variant={'button'}>
+                                            {schedule.garbage_type?.name}
+                                        </Typography>
+                                        <Box flexShrink={0}>
+                                            <IconButton size={'small'} onClick={() => openEditSchedulePopup(schedule.id)}>
+                                                <Edit/>
+                                            </IconButton>
+                                            <IconButton size={'small'}
+                                                onClick={() => deleteGarbageCollectionSchedule(session, schedule.id, updateSchedules)}>
+                                                <Clear/>
+                                            </IconButton>
+                                        </Box>
+                                    </Box>
+                                </Box>) :
+                                <Box paddingBottom={1}>
+                                    <Box bgcolor={'var(--secondary-light)'} borderRadius={'var(--small_corner)'}
+                                        paddingY={0.2} paddingX={'3%'} display={'flex'}>
+                                        <Box flexGrow={1}/>
+                                        <IconButton onClick={() => openTemplateToSchedulePopup(monday)} size={'small'}>
+                                            <Tooltip title={'Template plannen'}>
+                                                <PlaylistAdd/>
+                                            </Tooltip>
                                         </IconButton>
-                                        <IconButton size={'small'}
-                                            onClick={() => deleteGarbageCollectionSchedule(session, schedule.id, updateSchedules)}>
-                                            <Clear/>
+                                        <Box flexGrow={1}/>
+                                        <IconButton onClick={() => openNewSchedulePopup(monday)} size={'small'}>
+                                            <Tooltip title={'Afzonderlijke ophaling plannen'}>
+                                                <Add/>
+                                            </Tooltip>
                                         </IconButton>
+                                        <Box flexGrow={1}/>
                                     </Box>
                                 </Box>
-                            </Box>) :
-                            <Box paddingBottom={1}>
-                                <Box bgcolor={'var(--secondary-light)'} borderRadius={'var(--small_corner)'}
-                                    paddingY={0.2} paddingX={'3%'} display={'flex'}>
-                                    <Box flexGrow={1}/>
-                                    <IconButton onClick={() => openTemplateToSchedulePopup(monday)} size={'small'}>
-                                        <Tooltip title={'Template plannen'}>
-                                            <PlaylistAdd/>
-                                        </Tooltip>
-                                    </IconButton>
-                                    <Box flexGrow={1}/>
-                                    <IconButton onClick={() => openNewSchedulePopup(monday)} size={'small'}>
-                                        <Tooltip title={'Afzonderlijke ophaling plannen'}>
-                                            <Add/>
-                                        </Tooltip>
-                                    </IconButton>
-                                    <Box flexGrow={1}/>
-                                </Box>
-                            </Box>
-                        }
-                    </Box>
-                )}
+                            }
+                        </Box>
+                    )}
+                {/*</div>*/}
                 <TemplateToSchedulePopup open={templateToSchedulePopup}
                     onClose={(refresh) => {
                         setTemplateToSchedulePopup(false);

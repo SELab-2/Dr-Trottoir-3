@@ -10,6 +10,7 @@ import {useSession} from 'next-auth/react';
 import {GarbageCollectionScheduleTemplate} from '@/api/models';
 import EditTemplatePopup from '@/components/elements/BuildingDetailElement/EditTemplatePopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
+import styles from "@/components/elements/BuildingDetailElement/buildingEditLists.module.css";
 
 export default function GarbageCollectionScheduleTemplateList({buildingId}: { buildingId: number }) {
     const {data: session} = useSession();
@@ -30,10 +31,10 @@ export default function GarbageCollectionScheduleTemplateList({buildingId}: { bu
     useEffect(updateTemplates, [buildingId]);
 
     return (
-        <Box>
+        <Box className={styles.full_container}>
             <Typography variant='h5'>Templates</Typography>
             {templateList?.data ?
-                <Box>
+                <div className={styles.scrollable_container}>
                     {templateList.data.map((template, index) =>
                         <Box paddingBottom={1} key={index}>
                             <Box
@@ -74,7 +75,7 @@ export default function GarbageCollectionScheduleTemplateList({buildingId}: { bu
                         selectedTemplate={selectedTemplate} buildingId={buildingId}
                         setSelectedTemplate={setSelectedTemplate} onClose={onDialogClose} updateList={updateTemplates}
                     />
-                </Box> :
+                </div> :
                 <LoadingElement/>
             }
         </Box>);

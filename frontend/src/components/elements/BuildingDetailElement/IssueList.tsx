@@ -5,6 +5,7 @@ import {deleteIssue, getBuildingDetailIssues, patchIssueDetail, useAuthenticated
 import React, {useEffect, useState} from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import {useSession} from 'next-auth/react';
+import styles from "@/components/elements/BuildingDetailElement/buildingEditLists.module.css";
 
 export default function IssueList({buildingId}: { buildingId: number }) {
     const {data: session} = useSession();
@@ -31,7 +32,7 @@ export default function IssueList({buildingId}: { buildingId: number }) {
 
     const issuesFiltered = () => issues?.data ? filter ? issues.data.filter(({resolved}) => !resolved) : issues.data : [];
 
-    return (<>
+    return (<Box className={styles.full_container}>
         <Box display={'flex'} alignItems={'center'}>
             <Typography variant='h5'>Problemen</Typography>
             <Box marginY={-2}>
@@ -43,7 +44,8 @@ export default function IssueList({buildingId}: { buildingId: number }) {
             </Box>
         </Box>
         {issuesFiltered().length ?
-            (<Box> {issuesFiltered().map((issue, index) =>
+            (<Box className={styles.scrollable_container}>
+                {issuesFiltered().map((issue, index) =>
                 <Box paddingBottom={1} key={index}>
                     <Box
                         bgcolor={'var(--secondary-light)'}
@@ -81,5 +83,5 @@ export default function IssueList({buildingId}: { buildingId: number }) {
                 </Box>
             </Box>
             )}
-    </>);
+    </Box>);
 }
