@@ -4,12 +4,12 @@ import {GarbageCollectionSchedule, GarbageType} from '@/api/models';
 import {useSession} from 'next-auth/react';
 import {
     deleteGarbageCollectionSchedule,
-    getBuildingDetailGarbageCollectionSchedules,
+    getGarbageCollectionsSchedulesList,
     getGarbageTypesList,
     useAuthenticatedApi,
 } from '@/api/api';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
-import {Add, Clear, Edit, PlaylistAdd} from '@mui/icons-material';
+import {Add, ArrowDownward, ArrowUpward, Clear, Edit, PlaylistAdd} from '@mui/icons-material';
 import dayjs, {Dayjs} from 'dayjs';
 import minMax from 'dayjs/plugin/minMax';
 import 'dayjs/locale/nl-be';
@@ -21,6 +21,7 @@ dayjs.extend(minMax);
 export default function GarbageCollectionScheduleList({buildingId}: { buildingId: number }) {
     const {data: session} = useSession();
 
+    const [schedulesFilterDate, setSchedulesFilterDate] = useState<Dayjs>(dayjs(undefined, {locale: 'nl-be'}).startOf('week'));
     const [schedules, setSchedules] = useAuthenticatedApi<GarbageCollectionSchedule[]>();
     const [garbageTypes, setGarbageTypes] = useAuthenticatedApi<GarbageType[]>();
 
@@ -30,13 +31,17 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
     const [editSchedulePopup, setEditSchedulePopup] = useState(false);
     const [selectedSchedule, setSelectedSchedule] = useState<number | undefined>();
 
-    // TODO filter to only get future schedules
-    const updateSchedules = () => getBuildingDetailGarbageCollectionSchedules(session, setSchedules, buildingId);
+    const updateSchedules = () => getGarbageCollectionsSchedulesList(session, setSchedules, {
+        building: buildingId,
+        for_day__gt: schedulesFilterDate.format('YYYY-MM-DD'),
+    });
 
     useEffect(() => {
         getGarbageTypesList(session, setGarbageTypes);
         updateSchedules();
     }, [buildingId]);
+
+    useEffect(updateSchedules, [schedulesFilterDate]);
 
     function schedulesPerWeek() {
         const fancySchedules = schedules?.data.map((schedule) => ({
@@ -104,7 +109,26 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
     }
 
     return (<Box>
-        <Typography variant='h5'>Planning</Typography>
+        <Typography variant='h5' onClick={() => console.log(schedules)}>Planning</Typography>
+        <Box paddingBottom={1}>
+            <Box
+                bgcolor={'var(--secondary-light)'}
+                borderRadius={'var(--small_corner)'} gap={1}
+                paddingY={0.2} paddingX={'3%'} alignItems={'center'} justifyContent={'center'} display={'flex'}
+            >
+                <IconButton size={'small'}
+                    onClick={() => setSchedulesFilterDate(schedulesFilterDate.subtract(1, 'week'))}>
+                    <ArrowUpward/>
+                </IconButton>
+                <Typography noWrap>
+                    Vanaf {schedulesFilterDate.format('DD/MM/YYYY')}
+                </Typography>
+                <IconButton size={'small'}
+                    onClick={() => setSchedulesFilterDate(schedulesFilterDate.add(1, 'week'))}>
+                    <ArrowDownward/>
+                </IconButton>
+            </Box>
+        </Box>
         {schedules?.data && garbageTypes?.data ?
             <div>
                 {schedulesPerWeek().map(({monday, sunday, schedules}, index) =>
