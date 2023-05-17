@@ -1,5 +1,5 @@
 import styles from './buildingDetail.module.css';
-import {Box, IconButton, Link, List, Modal, Tooltip, Typography} from '@mui/material';
+import {IconButton, Link, List, Modal, Tooltip, Typography} from '@mui/material';
 import {Building, GarbageCollectionSchedule, GarbageType, Issue, LocationGroup, User} from '@/api/models';
 import {PictureAsPdf, Edit} from '@mui/icons-material';
 import {
@@ -215,7 +215,9 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                         <div className={styles.building_issues_container}>
                             <BuildingDetailManualLink path={buildingDetail.pdf_guide}/>
                             <div style={{flex: '1'}}></div>
-                            <Button onClick={handleIssueModalOpen} className={styles.issue_button}>{issuesModalButtonText}</Button>
+                            <Button onClick={handleIssueModalOpen} className={styles.issue_button}>
+                                {issuesModalButtonText}
+                            </Button>
                         </div>
 
                         <EditBuildingPopup

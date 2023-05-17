@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import {navbarProps, buttonProps} from './NavbarComponentInterface';
 import {signOut} from 'next-auth/react';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
-import {Tooltip} from "@mui/material";
+import {Tooltip} from '@mui/material';
 
 export default function DesktopNavbar({loading, nextPath, setNextPath, router, children, topButtons}: navbarProps) {
     return (
