@@ -114,6 +114,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     invite_link = models.UUIDField(null=True, unique=True)
+    reset_password_link = models.UUIDField(null=True, unique=True)
 
     # email is explicitly *not* allowed to be in REQUIRED_FIELDS
     REQUIRED_FIELDS = ["first_name", "last_name"]
