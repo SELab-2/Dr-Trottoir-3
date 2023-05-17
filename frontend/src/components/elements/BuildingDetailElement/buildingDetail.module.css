@@ -25,7 +25,7 @@
     width: 100%;
     border-radius: var(--large-corner) var(--large-corner) var(--small_corner) var(--small_corner);
     padding: 30px 20px;
-    gap: 10px;
+    gap: 15px;
     overflow: hidden;
     background-color: var(--secondary-light);
 }

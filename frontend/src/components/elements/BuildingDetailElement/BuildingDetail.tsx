@@ -194,9 +194,11 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                                     {buildingDetail.name}
                                 </h1>
                             </Tooltip>
-                            <IconButton onClick={onOpenEditPopup}>
-                                <Edit fontSize="small"/>
-                            </IconButton>
+                            <div style={{margin: 'auto'}}>
+                                <IconButton onClick={onOpenEditPopup}>
+                                    <Edit fontSize="small"/>
+                                </IconButton>
+                            </div>
                         </div>
                         <div className={styles.building_data_container}>
                             <Tooltip title={buildingDetail.location_group} placement="right">
@@ -281,7 +283,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                     onClose={handleIssueModalClose}
                 >
                     <div className={styles.issue_modal_box}
-                        sx={{
+                        style={{
                             background: 'var(--primary-light)',
                             maxHeight: '400px',
                             overflow: 'scroll',
