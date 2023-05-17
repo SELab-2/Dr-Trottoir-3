@@ -99,12 +99,15 @@ export default function UserElement(props: userElementProps) {
                 data.push(Math.round(seconds / 3600));
             }
 
+            var style = getComputedStyle(document.body);
+            var yellow = style.getPropertyValue('--primary-yellow');
+
             setChartData({
                 labels: labels,
                 datasets: [{
                     label: "",
                     data: data,
-                    backgroundColor: 'var(--primary-yellow)'
+                    backgroundColor: yellow
                 }]
             });
         }
@@ -262,7 +265,7 @@ export default function UserElement(props: userElementProps) {
                             </div>
                         </div>
                         <div className={styles.userAnalytics}>
-                           <Bar data={chartData} options={options} /> 
+                           <Bar data={chartData} options={options} />
                         </div>
                     </div>
                 </div>
