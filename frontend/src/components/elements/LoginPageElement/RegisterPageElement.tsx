@@ -9,7 +9,7 @@ export default function RegisterPageElement(props: { uuid: string }) {
     const {uuid} = props;
     const [user, setUser] = useState<{success: boolean, data: User} | undefined>(undefined);
     const [password, setPassword] = useState('');
-        const router = useRouter();
+    const router = useRouter();
 
     useEffect(()=>{
         if (uuid !== null) {

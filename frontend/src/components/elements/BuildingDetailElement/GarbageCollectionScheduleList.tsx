@@ -14,6 +14,7 @@ import dayjs, {Dayjs} from 'dayjs';
 import minMax from 'dayjs/plugin/minMax';
 import 'dayjs/locale/nl-be';
 import TemplateToSchedulePopup from '@/components/elements/BuildingDetailElement/TemplateToSchedulePopup';
+import EditSchedulePopup from '@/components/elements/BuildingDetailElement/EditSchedulePopup';
 
 dayjs.extend(minMax);
 
@@ -26,6 +27,10 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
     const [templateToSchedulePopup, setTemplateToSchedulePopup] = useState(false);
     const [defaultDate, setDefaultDate] = useState<Dayjs | undefined>();
 
+    const [editSchedulePopup, setEditSchedulePopup] = useState(false);
+    const [selectedSchedule, setSelectedSchedule] = useState<number | undefined>();
+
+    // TODO filter to only get future schedules
     const updateSchedules = () => getBuildingDetailGarbageCollectionSchedules(session, setSchedules, buildingId);
 
     useEffect(() => {
@@ -51,6 +56,8 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
         }
         const firstDay = dayjs.min(fancySchedules.map((s) => s.for_day)).startOf('week');
         const lastDay = dayjs.max(fancySchedules.map((s) => s.for_day)).startOf('week').add(1, 'week');
+
+        // Groups schedules per week and saves the monday and sunday of that week
         const perWeek = [];
         for (let monday = firstDay; monday <= lastDay;) {
             const nextMonday = monday.add(1, 'week');
@@ -65,6 +72,16 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
             monday = nextMonday;
         }
         return (perWeek);
+
+        // Groups the schedules on the same day together
+        // const perWeekPerDay = perWeek.map(({schedules, ...rest}) => ({
+        //     ...rest, schedulesPerDay: Object.values(schedules.reduce((storage, item) => {
+        //         storage[item.for_day.valueOf()] = (storage[item.for_day.valueOf()] || []).concat(item);
+        //         return storage;
+        //     }, {} as { [key: number]: { id: number, note: string, garbage_type: GarbageType | undefined, for_day: dayjs.Dayjs }[] }))
+        // }));
+        //
+        // return (perWeekPerDay);
     }
 
     function dateFmt(date: Dayjs) {
@@ -74,6 +91,16 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
     function openTemplateToSchedulePopup(date?: Dayjs) {
         setDefaultDate(date);
         setTemplateToSchedulePopup(true);
+    }
+
+    function openNewSchedulePopup(date?: Dayjs) {
+        setDefaultDate(date);
+        setEditSchedulePopup(true);
+    }
+
+    function openEditSchedulePopup(scheduleId?: number) {
+        setSelectedSchedule(scheduleId);
+        setEditSchedulePopup(true);
     }
 
     return (<Box>
@@ -92,8 +119,7 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
                                     <PlaylistAdd/>
                                 </Tooltip>
                             </IconButton>
-                            <IconButton onClick={() => {
-                            }} size={'small'}>
+                            <IconButton onClick={() => openNewSchedulePopup(monday)} size={'small'}>
                                 <Tooltip title={'Afzonderlijke ophaling plannen'}>
                                     <Add/>
                                 </Tooltip>
@@ -113,8 +139,7 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
                                         {schedule.garbage_type?.name}
                                     </Typography>
                                     <Box flexShrink={0}>
-                                        <IconButton size={'small'} onClick={() => {
-                                        }}>
+                                        <IconButton size={'small'} onClick={() => openEditSchedulePopup(schedule.id)}>
                                             <Edit/>
                                         </IconButton>
                                         <IconButton size={'small'}
@@ -134,8 +159,7 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
                                         </Tooltip>
                                     </IconButton>
                                     <Box flexGrow={1}/>
-                                    <IconButton onClick={() => {
-                                    }} size={'small'}>
+                                    <IconButton onClick={() => openNewSchedulePopup(monday)} size={'small'}>
                                         <Tooltip title={'Afzonderlijke ophaling plannen'}>
                                             <Add/>
                                         </Tooltip>
@@ -147,12 +171,17 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
                     </Box>
                 )}
                 <TemplateToSchedulePopup open={templateToSchedulePopup}
-                    onClose={() => {
+                    onClose={(refresh) => {
                         setTemplateToSchedulePopup(false);
-                        updateSchedules();
+                        if (refresh) updateSchedules();
                     }}
                     defaultDate={defaultDate}
                     buildingId={buildingId}/>
+                <EditSchedulePopup open={editSchedulePopup} onClose={(refresh) => {
+                    setEditSchedulePopup(false);
+                    setSelectedSchedule(undefined);
+                    if (refresh) updateSchedules();
+                }} buildingId={buildingId} scheduleId={selectedSchedule} defaultDate={defaultDate}/>
             </div> :
             <LoadingElement/>
         }

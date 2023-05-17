@@ -40,7 +40,7 @@ export interface SimpleDialogProps {
 
 const filter = createFilterOptions<optionType>();
 
-export default function EditGarbageCollectionScheduleTemplate({
+export default function EditTemplatePopup({
     onClose,
     updateList,
     templates,

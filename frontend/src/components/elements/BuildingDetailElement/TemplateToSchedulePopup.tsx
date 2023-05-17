@@ -17,7 +17,7 @@ import LoadingElement from '@/components/elements/LoadingElement/LoadingElement'
 
 interface propsType {
     open: boolean,
-    onClose: () => void,
+    onClose: (refresh: boolean) => void,
     buildingId: number,
     defaultDate?: Dayjs,
 }
@@ -81,7 +81,7 @@ export default function TemplateToSchedulePopup({open, onClose, buildingId, defa
 
     function saveSchedules() {
         if (!schedulesPerWeek?.length) {
-            onClose();
+            onClose(false);
             return;
         }
         Promise.all(
@@ -94,7 +94,7 @@ export default function TemplateToSchedulePopup({open, onClose, buildingId, defa
                     building: buildingId,
                 }))
                 .map((schedule) => new Promise((resolve) => postGarbageCollectionSchedule(session, schedule, resolve)))
-        ).then(onClose);
+        ).then(() => onClose(true));
     }
 
     useEffect(updateSchedules, [selectedDate, templateEntries]);
@@ -124,7 +124,7 @@ export default function TemplateToSchedulePopup({open, onClose, buildingId, defa
                         <Button disabled={!(selectedTemplate && selectedDate && templateEntries?.data)}
                             onClick={saveSchedules}
                             variant={'contained'}>Opslaan</Button>
-                        <Button onClick={onClose} variant={'outlined'} color={'inherit'}>Annuleren</Button>
+                        <Button onClick={() => onClose(false)} variant={'outlined'} color={'inherit'}>Annuleren</Button>
                     </Box>
                     {schedulesPerWeek?.length ?
                         <Box>

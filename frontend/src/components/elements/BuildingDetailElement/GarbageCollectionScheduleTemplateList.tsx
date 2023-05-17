@@ -8,8 +8,7 @@ import {
 } from '@/api/api';
 import {useSession} from 'next-auth/react';
 import {GarbageCollectionScheduleTemplate} from '@/api/models';
-import EditGarbageCollectionScheduleTemplate
-    from '@/components/elements/BuildingDetailElement/EditGarbageCollectionScheduleTemplate';
+import EditTemplatePopup from '@/components/elements/BuildingDetailElement/EditTemplatePopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 export default function GarbageCollectionScheduleTemplateList({buildingId}: { buildingId: number }) {
@@ -70,7 +69,7 @@ export default function GarbageCollectionScheduleTemplateList({buildingId}: { bu
                             <Box flexGrow={1}/>
                         </Box>
                     </Box>
-                    <EditGarbageCollectionScheduleTemplate
+                    <EditTemplatePopup
                         open={dialogOpen} templates={templateList.data || []}
                         selectedTemplate={selectedTemplate} buildingId={buildingId}
                         setSelectedTemplate={setSelectedTemplate} onClose={onDialogClose} updateList={updateTemplates}
