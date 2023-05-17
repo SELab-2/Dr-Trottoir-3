@@ -62,6 +62,7 @@ router.register(r"garbage_types", GarbageTypeViewSet)
 router.register(
     r"garbage_collection_schedules",
     GarbageCollectionScheduleViewSet,
+    basename="garbage-collection-schedules",
 )
 
 router.register(
@@ -72,6 +73,7 @@ router.register(
 router.register(
     r"buildings",
     BuildingViewSet,
+    basename="buildings",
 )
 
 
@@ -105,17 +107,19 @@ urlpatterns = [
         name="token_refresh",
     ),
     re_path(
-        r"^swagger(?P<format>\.json|\.yaml)$",
+        r"^" + settings.BASE_PATH + r"swagger(?P<format>\.json|\.yaml)$",
         schema_view.without_ui(cache_timeout=0),
         name="schema-json",
     ),
     re_path(
-        r"^swagger/$",
+        r"^" + settings.BASE_PATH + r"swagger/$",
         schema_view.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
     ),
     re_path(
-        r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
+        r"^" + settings.BASE_PATH + r"redoc/$",
+        schema_view.with_ui("redoc", cache_timeout=0),
+        name="schema-redoc",
     ),
 ]
 

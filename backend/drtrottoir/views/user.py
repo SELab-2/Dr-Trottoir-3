@@ -1,14 +1,22 @@
-from rest_framework import permissions
+from typing import Dict, List
+
+from rest_framework import permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from drtrottoir.models import User
-from drtrottoir.permissions import IsSuperstudentOrAdmin
-from drtrottoir.serializers import UserSerializer
+from drtrottoir.permissions import (
+    IsSuperstudentOrAdmin,
+    IsSyndicus,
+    user_is_superstudent_or_admin,
+)
+from drtrottoir.serializers import UserInviteSerializer, UserSerializer
+
+from .mixins import PermissionsByActionMixin
 
 
-class UserViewSet(ModelViewSet):
+class UserViewSet(ModelViewSet, PermissionsByActionMixin):
     """
     Viewset that handles all routes related to listing users.
 
@@ -56,7 +64,22 @@ class UserViewSet(ModelViewSet):
     }
     search_fields = ["first_name", "last_name", "username"]
 
-    permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
+    permission_classes_by_action: Dict[str, List[str]] = {
+        "invite_link": [],
+        "post_invite_link": [],
+    }
+    permission_classes = [
+        permissions.IsAuthenticated,
+        IsSuperstudentOrAdmin | IsSyndicus,
+    ]
+
+    def get_queryset(self):
+        if user_is_superstudent_or_admin(self.request.user):
+            return User.objects.all()
+
+        return User.objects.filter(
+            syndicus__buildings__syndici=self.request.user.syndicus
+        ).distinct()
 
     @action(detail=False)
     def students(self, request):
@@ -84,3 +107,45 @@ class UserViewSet(ModelViewSet):
         serializer = UserSerializer(request.user)
 
         return Response(serializer.data)
+
+    @action(
+        detail=False,
+        # https://ihateregex.io/expr/uuid/
+        url_path=r"invite/(?P<uuid>[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})",  # noqa
+        permission_classes=[],
+    )
+    def invite_link(self, request, uuid):
+        try:
+            user = User.objects.get(invite_link=uuid)
+
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserSerializer(user)
+
+        return Response(serializer.data)
+
+    @invite_link.mapping.post
+    def post_invite_link(self, request, uuid):
+        try:
+            user = User.objects.get(invite_link=uuid)
+
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserInviteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user.set_password(serializer.validated_data["password"])
+        user.invite_link = None
+        user.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=["POST"])
+    def revoke_invite(self, request, pk=None):
+        user = self.get_object()
+        user.invite_link = None
+        user.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

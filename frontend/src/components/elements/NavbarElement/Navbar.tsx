@@ -17,7 +17,7 @@ const topButtonsStudent = [
 ];
 
 const topButtonsSyndicus = [
-    {id: '0', text: 'Mijn Gebouwen', href: '/my-buildings', icon: DateRangeIcon},
+    {id: '0', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon},
 ];
 
 const topButtonsAdmin = [
@@ -25,17 +25,18 @@ const topButtonsAdmin = [
     {id: '1', text: 'Live Routes', href: '/live_routes', icon: SensorsRoundedIcon},
     {id: '2', text: 'Gebruikers', href: '/users', icon: PeopleAltRoundedIcon},
     {id: '3', text: 'Routes', href: '/routes', icon: RouteIcon},
-    {id: '4', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon},
-];
+    {id: '4', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon}];
 
 const includeRoutes = [
+    '/profile',
     '/scheduler',
     '/live_routes',
     '/users',
     '/buildings',
     '/routes',
     '/my-schedule',
-    '/my-buildings',
+    '/active_route',
+    'active-route',
 ];
 
 export default function Navbar(props: any) {
@@ -66,7 +67,7 @@ export default function Navbar(props: any) {
         }
     }, [session]);
 
-    const showNavBar = includeRoutes.includes(router.asPath);
+    const showNavBar = includeRoutes.includes(router.asPath) || includeRoutes.includes(router.asPath.split('/')[1]);
 
     const [topButtonsForUser, setTopButtonsForUser] =
         useState<Array<{id: string, text: string, href: string, icon: any}>>([]);

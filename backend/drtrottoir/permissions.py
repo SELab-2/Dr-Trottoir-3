@@ -125,6 +125,11 @@ class IsSuperstudentOrAdminOrSafe(permissions.BasePermission):
         return request.method in SAFE_METHODS
 
 
+class IsSafeMethod(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS
+
+
 class IsSafeMethodAndUserIsStudentOrHigher(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
         safe = request.method in SAFE_METHODS

@@ -7,11 +7,14 @@ import {useState} from 'react';
 export enum Api {
     /* eslint-disable no-unused-vars */
     /* eslint-disable max-len */
+    GarbageCollectionScheduleTemplates = 'garbage_collection_schedule_templates/',
+    GarbageCollectionScheduleTemplateEntries = 'garbage_collection_schedule_template_entries/',
     GarbageCollectionScheduleTemplateDetail = 'garbage_collection_schedule_templates/:id/',
     GarbageCollectionScheduleTemplateDetailEntries = 'garbage_collection_schedule_templates/:id/entries/',
     GarbageCollectionScheduleTemplateEntryDetail = 'garbage_collection_schedule_template_entries/:id/',
     GarbageTypes = 'garbage_types/',
     GarbageTypeDetail = 'garbage_types/:id/',
+    GarbageCollectionSchedules = 'garbage_collection_schedules/',
     GarbageCollectionScheduleDetail = 'garbage_collection_schedules/:id/',
     LocationGroups = 'location_groups/',
     LocationGroupDetail = 'location_groups/:id/',
@@ -34,11 +37,14 @@ export enum Api {
     ScheduleDefinitionDetailOrder = 'schedule_definitions/:id/order/',
     ScheduleDefinitionDetailScheduleAssignments = 'schedule_definitions/:id/schedule_assignments/',
     ScheduleDefinitionDetailScheduleWorkEntries = 'schedule_definitions/:id/schedule_work_entries/',
+    ScheduleDefinitionAssignedToMe = 'schedule_definitions/assigned_to_me/',
     Users = 'users/',
     UserDetail = 'users/:id/',
     Issues = 'issues/',
     IssueDetail = 'issues/:id/',
-    Me = 'users/me/'
+    IssueImages = 'issue_images/',
+    Me = 'users/me/',
+    InviteLink = 'users/invite/:id/'
 }
 
 
@@ -135,7 +141,7 @@ function getDetail<T>(route: Api, id: number): SWRResponse<T, any> {
 }
 
 
-const getAuthHeader = (session: any) => (session ? {Authorization: `Bearer ${session.accessToken}`} : {});
+export const getAuthHeader = (session: any) => (session ? {Authorization: `Bearer ${session.accessToken}`} : {});
 
 async function getListFromApi(route: Api, session: any, params: any, query: any) {
     let routeStr = route.toString();
@@ -154,7 +160,7 @@ async function getListFromApi(route: Api, session: any, params: any, query: any)
     return data;
 }
 
-async function getDetailsFromAPI(route: Api, session: any, id: number) {
+async function getDetailsFromAPI(route: Api, session: any, id: number | string) {
     const routeStr = route.replace(':id', id.toString());
 
     const data = await axios.get(process.env.NEXT_API_URL + routeStr, {headers: getAuthHeader(session)});
@@ -190,7 +196,7 @@ async function postDetailsToAPI(route: Api, session: any, postData: any) {
     return data;
 }
 
-async function postDetailsOnAPIWithId(route: Api, session: any, id: number, patchData: any) {
+async function postDetailsOnAPIWithId(route: Api, session: any, id: number | string, patchData: any) {
     const routeStr = route.replace(':id', id.toString());
 
     const data = await axios.post(process.env.NEXT_API_URL + routeStr, patchData, {headers: getAuthHeader(session)});
@@ -256,6 +262,16 @@ const getScheduleDefinitionsList = (session: Session | null, setter: ((e:any) =>
         });
 };
 
+const getScheduleDefinitionsAssignedToMeList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
+    getListFromApi(Api.ScheduleDefinitionAssignedToMe, session, params ? params : {}, query ? query : {})
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: []});
+        });
+};
+
 const getLatestScheduleDefinitionsList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.LatestScheduleDefinitions, session, params ? params : {}, query ? query : {})
         .then((e) => {
@@ -275,6 +291,17 @@ const getScheduleAssignmentsList = (session: Session | null, setter: ((e:any) =>
             setter({success: false, status: e.status, data: []});
         });
 };
+
+const getGarbageCollectionsSchedulesList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
+    getListFromApi(Api.GarbageCollectionSchedules, session, params ? params : {}, query ? query : {})
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: []});
+        });
+};
+
 
 const getScheduleWorkEntriesList = (session: Session | null, setter: ((e:any) => void), query?: any, params?: any) => {
     getListFromApi(Api.ScheduleWorkEntries, session, params ? params : {}, query ? query : {})
@@ -508,6 +535,16 @@ const getUserDetail = (session: Session | null, setter: ((e:any) => void), id: n
         });
 };
 
+const getUserInvite = (session: Session | null, setter: ((e:any) => void), uuid: string) => {
+    getDetailsFromAPI(Api.InviteLink, session, uuid)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
+};
+
 
 const getIssueDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
     getDetailsFromAPI(Api.IssueDetail, session, id)
@@ -516,6 +553,36 @@ const getIssueDetail = (session: Session | null, setter: ((e:any) => void), id: 
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: e});
+        });
+};
+
+const postUserInvite = (session: Session | null, uuid: string, data: any, setter?: ((e:any) => void)) => {
+    postDetailsOnAPIWithId(Api.InviteLink, session, uuid, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
+const postGarbageCollectionScheduleTemplate = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
+    postDetailsToAPI(Api.GarbageCollectionScheduleTemplates, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
+const postGarbageCollectionScheduleTemplateEntry = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
+    postDetailsToAPI(Api.GarbageCollectionScheduleTemplateEntries, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
         });
 };
 
@@ -559,7 +626,7 @@ const postScheduleAssignment = (session: Session | null, data: any, setter?: ((e
         });
 };
 
-const postScheduleWorkEntrie = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
+const postScheduleWorkEntry = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
     postDetailsToAPI(Api.ScheduleWorkEntries, session, data)
         .then((e) => {
             setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
@@ -602,6 +669,16 @@ const postUser = (session: Session | null, data: any, setter?: ((e:any) => void)
 
 const postIssue = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
     postDetailsToAPI(Api.Issues, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
+const postIssueImage = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
+    postDetailsToAPI(Api.IssueImages, session, data)
         .then((e) => {
             setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
         })
@@ -859,6 +936,7 @@ export {
     getGarbageCollectionScheduleTemplateEntryDetail,
     getGarbageTypesList,
     getGarbageTypeDetail,
+    getGarbageCollectionsSchedulesList,
     getGarbageCollectionScheduleDetail,
     getLocationGroupsList,
     getLocationGroupDetail,
@@ -871,6 +949,7 @@ export {
     getBuildingDetailIssues,
     getBuildingDetailScheduleDefinitions,
     getScheduleAssignmentsList,
+    getScheduleDefinitionsAssignedToMeList,
     getScheduleAssignmentDetail,
     getScheduleWorkEntriesList,
     getScheduleWorkEntryDetail,
@@ -885,16 +964,21 @@ export {
     getUserDetail,
     getIssueDetail,
     getMe,
+    getUserInvite,
 
+    postGarbageCollectionScheduleTemplate,
+    postGarbageCollectionScheduleTemplateEntry,
     postGarbageType,
     postLocationGroup,
     postBuilding,
     postScheduleAssignment,
-    postScheduleWorkEntrie,
+    postScheduleWorkEntry,
     postScheduleDefinition,
     postScheduleDefinitionDetailOrder,
     postUser,
     postIssue,
+    postIssueImage,
+    postUserInvite,
 
     deleteGarbageCollectionScheduleTemplate,
     deleteGarbageCollectionScheduleTemplateEntry,

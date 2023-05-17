@@ -1,0 +1,74 @@
+.form{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px;
+}
+
+.formCenter{
+    background-color: white;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.formFields{
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+    padding: 1vh;
+}
+
+.field {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    color: black;
+}
+
+.formButtons{
+    justify-content: space-evenly;
+    position: relative;
+    bottom: 0;
+    width:100%;
+    padding: 1vh;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    color: black;
+}
+
+.formButtonsEnd{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.cancel_button {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    color: var(--primary-light) !important;
+    text-transform: none;
+    background-color: var(--primary-dark) !important;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.cancel_button:hover {
+    color: var(--primary-yellow) !important;
+}
+
+.submit_button {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    color: var(--primary-dark) !important;
+    text-transform: none;
+    background-color: var(--primary-yellow) !important;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.submit_button:hover {
+    color: var(--secondary-dark) !important;
+}

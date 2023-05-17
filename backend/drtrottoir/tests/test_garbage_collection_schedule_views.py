@@ -60,6 +60,21 @@ def test_garbage_collection_schedule_get_detail():
 
 
 @pytest.mark.django_db
+def test_garbage_collection_schedule_get_list():
+    entry1 = insert_dummy_garbage_collection_schedule()
+    entry2 = insert_dummy_garbage_collection_schedule()
+
+    user = insert_dummy_student()
+
+    client = APIClient()
+    client.force_login(user.user)
+    response = client.get("/garbage_collection_schedules/")
+
+    ids = [entry["id"] for entry in response.data]
+    assert sorted(ids) == sorted([entry1.id, entry2.id])
+
+
+@pytest.mark.django_db
 def test_garbage_collection_schedule_patch():
     entry = insert_dummy_garbage_collection_schedule()
     old_day = entry.for_day
@@ -98,7 +113,6 @@ def test_garbage_collection_schedule_forbidden_methods():
     user = insert_dummy_admin()
     client = APIClient()
     client.force_login(user.user)
-    assert client.get("/garbage_collection_schedules/").status_code == 405
     assert client.patch("/garbage_collection_schedules/").status_code == 405
     assert client.delete("/garbage_collection_schedules/").status_code == 405
     assert client.put("/garbage_collection_schedules/").status_code == 405
@@ -212,7 +226,7 @@ def test_garbage_collection_schedules_detail_api_view_get_syndicus_fail():
     user = insert_dummy_syndicus(user=dummy_user)
     response = _test_garbage_collection_schedules_detail_api_view_get(user=user.user)
 
-    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 @pytest.mark.django_db

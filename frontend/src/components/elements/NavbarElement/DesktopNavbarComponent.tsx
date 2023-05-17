@@ -2,11 +2,12 @@ import React from 'react';
 import Router from 'next/router';
 import styles from './navbar.desktop.module.css';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import Button from '@mui/material/Button';
 import {navbarProps, buttonProps} from './NavbarComponentInterface';
 import {signOut} from 'next-auth/react';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
+import {Tooltip} from '@mui/material';
 
 export default function DesktopNavbar({loading, nextPath, setNextPath, router, children, topButtons}: navbarProps) {
     return (
@@ -24,11 +25,8 @@ export default function DesktopNavbar({loading, nextPath, setNextPath, router, c
                         </div>
                         <div className={styles.side_bar_bot}>
                             <DesktopNavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
-                                href={'/users'}
+                                href={'/profile'}
                                 text={'Account'} Icon={PersonRoundedIcon}/>
-                            <DesktopNavButton router={router} nextPath={nextPath} setNextPath={setNextPath}
-                                href={'/settings'} text={'Instellingen'}
-                                Icon={TuneRoundedIcon}/>
                             <DesktopLogoutButton/>
                         </div>
                     </div>
@@ -36,10 +34,7 @@ export default function DesktopNavbar({loading, nextPath, setNextPath, router, c
                 <div className={styles.right_flex_container}>
                     <div className={styles.top_bar}></div>
                     <div className={styles.content_space}>
-                        {loading ? children :
-                            <h1 style={{color: 'black'}}>
-                                    LOADING
-                            </h1>}
+                        {loading ? children : <LoadingElement />}
                     </div>
                 </div>
             </div>
@@ -48,38 +43,42 @@ export default function DesktopNavbar({loading, nextPath, setNextPath, router, c
 }
 
 
-const DesktopNavButton = ({href, text, router, Icon, nextPath, setNextPath, buttonAction}: buttonProps) => {
-    const isActive: boolean = router.asPath === href;
-    const isLoading: boolean = href === nextPath;
+const DesktopNavButton = (props: buttonProps) => {
+    const isActive: boolean = props.router.asPath === props.href;
+    const isLoading: boolean = props.href === props.nextPath;
 
     return (
-        <Button id={styles.button}
-            onClick={() => {
-                Router.push(href, undefined, {shallow: true}).then(); setNextPath(href);
-            }}
-            className={((isActive && nextPath === null) || isLoading) ?
-                styles.button_selected : styles.button_default
-            }
-        >
-            <>
-                <Icon className={styles.icon}/>
-                <p className={styles.text}>{text}</p>
-            </>
-        </Button>
+        <Tooltip title={props.text} placement="right">
+            <Button id={styles.button}
+                onClick={() => {
+                    Router.push(props.href, undefined, {shallow: true}).then(); props.setNextPath(props.href);
+                }}
+                className={((isActive && props.nextPath === null) || isLoading) ?
+                    styles.button_selected : styles.button_default
+                }
+            >
+                <>
+                    <props.Icon className={styles.icon}/>
+                    <p className={styles.text}>{props.text}</p>
+                </>
+            </Button>
+        </Tooltip>
     );
 };
 
 
 const DesktopLogoutButton = () => {
     return (
-        <Button id={styles.button}
-            onClick={() => signOut({callbackUrl: '/login'})}
-            className={styles.button_default}
-        >
-            <>
-                <LogoutRoundedIcon className={styles.icon}/>
-                <p className={styles.text}>Logout</p>
-            </>
-        </Button>
+        <Tooltip title={'logout'} placement="right">
+            <Button id={styles.button}
+                onClick={() => signOut({callbackUrl: '/login'})}
+                className={styles.button_default}
+            >
+                <>
+                    <LogoutRoundedIcon className={styles.icon}/>
+                    <p className={styles.text}>Logout</p>
+                </>
+            </Button>
+        </Tooltip>
     );
 };
