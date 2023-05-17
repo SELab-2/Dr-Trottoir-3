@@ -976,6 +976,7 @@ export {
     getIssueDetail,
     getMe,
     getUserInvite,
+    getUserAnalytics,
 
     postGarbageCollectionScheduleTemplate,
     postGarbageCollectionScheduleTemplateEntry,
