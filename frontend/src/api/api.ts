@@ -44,7 +44,8 @@ export enum Api {
     IssueDetail = 'issues/:id/',
     IssueImages = 'issue_images/',
     Me = 'users/me/',
-    InviteLink = 'users/invite/:id/'
+    InviteLink = 'users/invite/:id/',
+    UserAnalytics = 'users/:id/analytics/'
 }
 
 
@@ -527,6 +528,16 @@ const getScheduleDefinitionDetailScheduleWorkEntries = (session: Session | null,
 
 const getUserDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
     getDetailsFromAPI(Api.UserDetail, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
+};
+
+const getUserAnalytics = (session: Session | null, setter: ((e:any) => void), id: number) => {
+    getDetailsFromAPI(Api.UserAnalytics, session, id)
         .then((e) => {
             setter({success: true, status: e.status, data: e.data});
         })

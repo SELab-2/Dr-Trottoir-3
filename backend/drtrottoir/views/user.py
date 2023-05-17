@@ -166,7 +166,7 @@ class UserViewSet(ModelViewSet, PermissionsByActionMixin):
         else:
             next_month = cur_month.replace(month=cur_month.month + 1)
 
-        total_work_durations = {}
+        total_work_durations = []
 
         for _ in range(6):
             work_durations = (
@@ -179,9 +179,10 @@ class UserViewSet(ModelViewSet, PermissionsByActionMixin):
                 .filter(work_entries__creation_timestamp__lt=next_month)
             )
 
-            total_work_durations[cur_month.strftime("%Y-%m-%d")] = sum(
-                [x.work_duration for x in work_durations], timedelta(0)
-            )
+            total_work_durations.append({
+                'date': cur_month,
+                'seconds': sum([x.work_duration for x in work_durations], timedelta(0)).seconds
+            })
 
             next_month = cur_month
             # Subtract 1 day from next_month to retrieve the last day of the
