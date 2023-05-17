@@ -37,85 +37,229 @@ location_group_data = ["Gent", "Leuven", "Antwerpen"]
 building_data = {
     "Gent": {
         "Kouter": [
-            ("Kouterhof", "Kouter 7"),
-            ("B'eau Kouter", "Kouter 11"),
-            ("Res. Kouter", "Universiteitsstraat 5"),
-            ("Kouterdreef", "Kouterdreef 10"),
+            ("Kouterhof", "Kouter 7", (51.05002183545168, 3.72482490152841)),
+            ("B'eau Kouter", "Kouter 11", (51.05616023494771, 3.7274010884909328)),
+            (
+                "Res. Kouter",
+                "Universiteitstraat 5",
+                (51.05103492743229, 3.7238064129742763),
+            ),
+            ("Kouterdreef", "Kouterdreef 10", (51.05185433791377, 3.7254856165766546)),
         ],
         "Coupure": [
-            ("Academie", "Sint-Margrietstraat 11"),
-            ("Alencon", "Brugstraat 63"),
-            ("Sint-Michiels", "Sint-Michielsplein 9"),
-            ("Tu Casa", "Ingelandgat 29"),
-            ("KotCompany Coupure", "Theresianenstraat 14"),
+            (
+                "Academie",
+                "Sint-Margrietstraat 11",
+                (51.05913274788998, 3.7207073420098227),
+            ),
+            ("Alencon", "Brugstraat 63", (51.05631402697834, 3.716799239960074)),
+            (
+                "Sint-Michiels",
+                "Sint-Michielsplein 9",
+                (51.05360506515851, 3.7185491534526887),
+            ),
+            ("Tu Casa", "Ingelandgat 29", (51.053103781864266, 3.7180647978291033)),
+            (
+                "KotCompany Coupure",
+                "Theresianenstraat 14",
+                (51.05375710547887, 3.7134100418101443),
+            ),
         ],
         "Haven": [
-            ("Oslo", "Londenstraat 5"),
-            ("Kobenhavn", "Koperhagenstraat 2-12"),
-            ("Voorhaven", "Neusplein 2"),
-            ("Nieuwland Blok C", "Désiré Fiévéstraat 14"),
+            ("Oslo", "Londenstraat 5", (51.07416735234764, 3.72952063996095)),
+            (
+                "Kobenhavn",
+                "Koperhagenstraat 2-12",
+                (51.07430073953218, 3.728330011125224),
+            ),
+            ("Voorhaven", "Neusplein 2", (51.06813808508884, 3.72884308413937)),
+            (
+                "Nieuwland Blok C",
+                "Désiré Fiévéstraat 14",
+                (51.06330039611453, 3.7316075131754873),
+            ),
         ],
         "Station": [
-            ("Alberts House", "Floraliënlaan 11"),
-            ("Beaux-Arts", "Filips van Marnixlaan 9"),
-            ("Nassau", "Willem van Nassaustraat 1-21"),
-            ("Paulus", "Rijsenbergstraat 144-146"),
-            ("Ter Leie 1+2", "Eedverbondkaai 213-242"),
-            ("Maeterlinck", "Eedverbondkaai 185-200"),
+            (
+                "Alberts House",
+                "Floraliënlaan 11",
+                (51.04093294430653, 3.719588439959294),
+            ),
+            (
+                "Beaux-Arts",
+                "Filips van Marnixstraat 9",
+                (51.040723692050804, 3.718420979187942),
+            ),
+            (
+                "Nassau",
+                "Willem van Nassaustraat 1-21",
+                (51.04014979252297, 3.7171643129737157),
+            ),
+            (
+                "Paulus",
+                "Rijsenbergstraat 144-146",
+                (51.041782096146235, 3.7032817669448934),
+            ),
+            (
+                "Ter Leie 1+2",
+                "Eedverbondkaai 213-242",
+                (51.04126155162434, 3.713626599480992),
+            ),
+            (
+                "Maeterlinck",
+                "Eedverbondkaai 185-200",
+                (51.04121424352853, 3.7142471706452698),
+            ),
         ],
         "Artevelde": [
-            ("Artevelde", "Brabantdam 205-241"),
-            ("Lamartine", "Brabantdam 147-171"),
-            ("Oude Scheldestraat", "Oude Scheldestraat 10"),
-            ("Frontenac", "Hubert Frère-Orbanlaan 130-143"),
+            (
+                "Artevelde",
+                "Brabantdam 205-241",
+                (51.049617775609676, 3.7335141129742215),
+            ),
+            (
+                "Lamartine",
+                "Brabantdam 147-171",
+                (51.04979558585772, 3.7327494994814248),
+            ),
+            (
+                "Oudescheldestraat",
+                "Oudescheldestraat 10",
+                (51.04904367993461, 3.7304564976311934),
+            ),
+            (
+                "Frontenac",
+                "Hubert Frère-Orbanlaan 130-143",
+                (51.04472602788511, 3.7337050194379766),
+            ),
         ],
     },
     "Antwerpen": {
         "Schelde": [
-            ("Zuiderzin", "Kromme-Elleboogstraat 11"),
-            ("Aplace", "Vrijdagmarkt 1"),
-            ("Cityhome", "Leeuwenstraat 11"),
-            ("Holiday Home Zalig", "Lange Riddersstraat 77"),
-            ("Maison Nationale", "Nationalestraat 49"),
+            (
+                "Zuiderzin",
+                "Kromme-Elleboogstraat 11",
+                (51.21713222269407, 4.395024299734358),
+            ),
+            ("Aplace", "Vrijdagmarkt 1", (51.21870469186559, 4.398660239968136)),
+            ("Cityhome", "Leeuwenstraat 11", (51.218908431282934, 4.399428197639618)),
+            (
+                "Holiday Home Zalig",
+                "Lange Riddersstraat 77",
+                (51.21567896261722, 4.396385868803705),
+            ),
+            (
+                "Maison Nationale",
+                "Nationalestraat 49",
+                (51.21612407750074, 4.399306539968008),
+            ),
         ],
         "Centrum Noord": [
-            ("Residentie Helmstraat", "Helmstraat 1"),
-            ("De Kroon", "Turnhoutsebaan 65"),
-            ("Kopergieterij", "Cronjestraat 12"),
-            ("Residentie Kistemaeckersstraat", "Kistemaeckersstraat"),
+            (
+                "Residentie Helmstraat",
+                "Helmstraat 1",
+                (51.21667171850207, 4.430484997639523),
+            ),
+            ("De Kroon", "Turnhoutsebaan 65", (51.21645102097294, 4.431078168803776)),
+            (
+                "Kopergieterij",
+                "Cronjestraat 12",
+                (51.216561417199244, 4.437714811132286),
+            ),
+            (
+                "Residentie Kistemaeckersstraat",
+                "Kistemaeckersstraat 1",
+                (51.219697748539055, 4.4374782264753945),
+            ),
         ],
         "Park": [
-            ("Ter Vijvere", "Van Eycklei 29"),
-            ("Residentie Van Eycklei", "Van Eycklei 28"),
-            ("Primavera", "Van Eycklei 54"),
-            ("Perfect Flat", "Plantin en Moretuslei 12"),
+            ("Ter Vijvere", "Van Eycklei 29", (51.210376696243806, 4.414793382296232)),
+            (
+                "Residentie Van Eycklei",
+                "Van Eycklei 28",
+                (51.21033411141256, 4.414720726474949),
+            ),
+            ("Primavera", "Van Eycklei 54", (51.20986810428488, 4.417578451610241)),
+            (
+                "Perfect Flat",
+                "Plantin en Moretuslei 12",
+                (51.210433987152776, 4.419427428325112),
+            ),
         ],
         "Ter Zuid": [
-            ("Van Hulsen Rachel", "Boomgaardstraat 39"),
-            ("Short Rentals", "Belgiëlei 180"),
-            ("The Banker", "Belgiëlei 153"),
-            ("Residentie Amberes", "Gounodstraat 2"),
-            ("Antwerp Rentals", "Isabellalei 50"),
+            (
+                "Van Hulsen Rachel",
+                "Boomgaardstraat 39",
+                (51.20041230263825, 4.420054568802977),
+            ),
+            ("Short Rentals", "Belgiëlei 180", (51.203207917167575, 4.413868555310323)),
+            ("The Banker", "Belgiëlei 153", (51.203958114978086, 4.415757282295899)),
+            (
+                "Residentie Amberes",
+                "Gounodstraat 2",
+                (51.20619448660627, 4.409555684146244),
+            ),
+            (
+                "Antwerp Rentals",
+                "Isabellalei 50",
+                (51.205327720850526, 4.416209497638955),
+            ),
         ],
     },
     "Leuven": {
         "Ring Zuid": {
-            ("Kot del sol", "Schapenstraat 86"),
-            ("TopkotLeuven", "Groenstraat 2"),
-            ("Flavus Student Residence", "Hoveniersdreef 33"),
-            ("Waversbaan", "Waversbaan 6"),
+            ("Kot del sol", "Schapenstraat 86", (50.87100200738777, 4.697850968786639)),
+            ("TopkotLeuven", "Groenstraat 2", (50.860008744163686, 4.696560066935868)),
+            (
+                "Flavus Student Residence",
+                "Hoveniersdreef 33",
+                (50.86394533504286, 4.699414999472231),
+            ),
+            ("Waversbaan", "Waversbaan 6", (50.86592519922484, 4.695886528308088)),
         },
         "Leuven Centrum": {
-            ("Getaway Studios", "Vital Decosterstraat 23"),
-            ("Ambassador Suites", "Sint-Maartenstraat 21"),
-            ("Savoye Business Flat", "Savoyestraat 5"),
+            (
+                "Getaway Studios",
+                "Vital Decosterstraat 23",
+                (50.88022461906615, 4.705236282279895),
+            ),
+            (
+                "Ambassador Suites",
+                "Sint-Maartenstraat 21",
+                (50.881789776813754, 4.705164055294403),
+            ),
+            (
+                "Savoye Business Flat",
+                "Savoyestraat 5",
+                (50.87903439165979, 4.7035141841299986),
+            ),
         },
         "Kruidtuin": {
-            ("op kot bij de directeur", "Kapucijnenvoer 47"),
-            ("Goede Herder", "Minderbroedersstraat 21"),
-            ("Cohousing BotaniCo", "Kapucijnenvoer 47"),
-            ("Residentie COPAL", "Tervuursestraat 56"),
-            ("Xior Student Housing - Regina Mundi", "Janseniusstraat 38"),
+            (
+                "op kot bij de directeur",
+                "Kapucijnenvoer 47",
+                (50.87869623165756, 4.692394795772537),
+            ),
+            (
+                "Goede Herder",
+                "Minderbroedersstraat 21",
+                (50.877545668523055, 4.692826453443984),
+            ),
+            (
+                "Cohousing BotaniCo",
+                "Kapucijnenvoer 47",
+                (50.878709770680686, 4.692566457144436),
+            ),
+            (
+                "Residentie COPAL",
+                "Tervuursestraat 56",
+                (50.87856334939567, 4.687689226458512),
+            ),
+            (
+                "Xior Student Housing - Regina Mundi",
+                "Janseniusstraat 38",
+                (50.87570521074992, 4.692543926458334),
+            ),
         },
     },
 }
@@ -199,11 +343,15 @@ class Command(BaseCommand):
                 for (
                     building_name,
                     building_address,
+                    building_coordinates,
                 ) in schedule_definition_building_list:
+                    latitude, longitude = building_coordinates
                     building = Building(
                         address=building_address,
                         name=building_name,
                         location_group=location_group,
+                        latitude=latitude,
+                        longitude=longitude,
                     )
                     building.save()
                     buildings.append(building)
