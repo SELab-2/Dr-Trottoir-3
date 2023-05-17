@@ -5,7 +5,7 @@ import {
     getScheduleDefinitionsList,
     getUserDetail,
     useAuthenticatedApi,
-    getUserAnalytics
+    getUserAnalytics,
 } from '@/api/api';
 import {useSession} from 'next-auth/react';
 import React, {useEffect, useState} from 'react';
@@ -14,15 +14,15 @@ import {Edit} from '@mui/icons-material';
 import Button from '@mui/material/Button';
 import EditUserPopup from '@/components/elements/UserElement/EditUserPopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
-import { Bar } from 'react-chartjs-2';
+import {Bar} from 'react-chartjs-2';
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
 } from 'chart.js';
 
 
@@ -33,30 +33,30 @@ type userElementProps = {
 type ChartData = {
     labels: string[],
     datasets: {
-        id: number,
         label: string,
         data: number[],
+        backgroundColor: string
     }[]
 }
 
 export default function UserElement(props: userElementProps) {
     ChartJS.register(
-      CategoryScale,
-      LinearScale,
-      BarElement,
-      Title,
-      Tooltip,
-      Legend
+        CategoryScale,
+        LinearScale,
+        BarElement,
+        Title,
+        Tooltip,
+        Legend
     );
     //
     const options = {
-      responsive: true,
-      plugins: {
-        title: {
-          display: true,
-          text: 'Uren gewerkt per maand',
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Uren gewerkt per maand',
+            },
         },
-      },
     };
 
     const {data: session} = useSession();
@@ -91,24 +91,24 @@ export default function UserElement(props: userElementProps) {
 
     useEffect(() => {
         if (userAnalytics !== undefined) {
-            let labels = [];
-            let data = [];
+            const labels = [];
+            const data = [];
 
-            for (var { date, seconds } of userAnalytics.data) {
+            for (const {date, seconds} of userAnalytics.data) {
                 labels.push(date);
                 data.push(Math.round(seconds / 3600));
             }
 
-            var style = getComputedStyle(document.body);
-            var yellow = style.getPropertyValue('--primary-yellow');
+            const style = getComputedStyle(document.body);
+            const yellow = style.getPropertyValue('--primary-yellow');
 
             setChartData({
                 labels: labels,
                 datasets: [{
-                    label: "",
+                    label: '',
                     data: data,
-                    backgroundColor: yellow
-                }]
+                    backgroundColor: yellow,
+                }],
             });
         }
     }, [userAnalytics]);
@@ -265,7 +265,7 @@ export default function UserElement(props: userElementProps) {
                             </div>
                         </div>
                         <div className={styles.userAnalytics}>
-                           <Bar data={chartData} options={options} />
+                            <Bar data={chartData} options={options} />
                         </div>
                     </div>
                 </div>
