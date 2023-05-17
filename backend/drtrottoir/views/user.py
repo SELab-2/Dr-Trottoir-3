@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from typing import Dict, List
 
 from django.db.models import F, Max, Min
@@ -179,10 +179,14 @@ class UserViewSet(ModelViewSet, PermissionsByActionMixin):
                 .filter(work_entries__creation_timestamp__lt=next_month)
             )
 
-            total_work_durations.append({
-                'date': cur_month,
-                'seconds': sum([x.work_duration for x in work_durations], timedelta(0)).seconds
-            })
+            total_work_durations.append(
+                {
+                    "date": cur_month,
+                    "seconds": sum(
+                        [x.work_duration for x in work_durations], timedelta(0)
+                    ).seconds,
+                }
+            )
 
             next_month = cur_month
             # Subtract 1 day from next_month to retrieve the last day of the
