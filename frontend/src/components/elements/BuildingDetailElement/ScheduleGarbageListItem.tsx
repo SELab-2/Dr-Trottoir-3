@@ -68,7 +68,7 @@ export default function ScheduleGarbageListItem(props: {id: number}): JSX.Elemen
                     verticalAlign: 'middle',
                 }}>
             <Card sx={{
-                width: '100%', height: '40px',
+                width: '100%', height: 'max(40px, fit-content)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
