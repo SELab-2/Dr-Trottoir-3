@@ -62,6 +62,7 @@ router.register(r"garbage_types", GarbageTypeViewSet)
 router.register(
     r"garbage_collection_schedules",
     GarbageCollectionScheduleViewSet,
+    basename="garbage-collection-schedules",
 )
 
 router.register(
@@ -72,6 +73,7 @@ router.register(
 router.register(
     r"buildings",
     BuildingViewSet,
+    basename="buildings",
 )
 
 

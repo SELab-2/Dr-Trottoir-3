@@ -92,6 +92,7 @@ export type User = {
     student: undefined | Student,
     admin: undefined | Admin,
     syndicus: undefined | Syndicus,
+    invite_link: string
 }
 
 export type Issue = {
