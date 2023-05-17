@@ -15,6 +15,15 @@ import Button from '@mui/material/Button';
 import EditUserPopup from '@/components/elements/UserElement/EditUserPopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 import { Bar } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 
 
 type userElementProps = {
@@ -31,6 +40,25 @@ type ChartData = {
 }
 
 export default function UserElement(props: userElementProps) {
+    ChartJS.register(
+      CategoryScale,
+      LinearScale,
+      BarElement,
+      Title,
+      Tooltip,
+      Legend
+    );
+    //
+    const options = {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Uren gewerkt per maand',
+        },
+      },
+    };
+
     const {data: session} = useSession();
 
     const [userData, setUserData] = useAuthenticatedApi<User>();
@@ -74,9 +102,9 @@ export default function UserElement(props: userElementProps) {
             setChartData({
                 labels: labels,
                 datasets: [{
-                    id: 1,
-                    label: "Uren gewerkt",
-                    data: data
+                    label: "",
+                    data: data,
+                    backgroundColor: 'var(--primary-yellow)'
                 }]
             });
         }
@@ -234,7 +262,7 @@ export default function UserElement(props: userElementProps) {
                             </div>
                         </div>
                         <div className={styles.userAnalytics}>
-                           <Bar data={chartData} /> 
+                           <Bar data={chartData} options={options} /> 
                         </div>
                     </div>
                 </div>
