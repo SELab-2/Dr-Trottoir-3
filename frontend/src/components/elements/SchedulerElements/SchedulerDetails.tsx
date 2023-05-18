@@ -47,7 +47,6 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
     };
 
     const clearAssignments = () => {
-        console.log('here');
         const emptyScheduleAssignment: ApiData<ScheduleAssignment[]> = {
             status: 0,
             success: true,
@@ -63,14 +62,6 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
         clearAssignments();
         loadAssignments();
     }, [props.scheduleDefinitions, props.start, session, triggerReload]);
-
-    // repeat every second
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            // loadAssignments();
-        }, 1000);
-        return () => clearInterval(intervalId);
-    }, []);
 
     if (props.users?.data && props.scheduleDefinitions?.data && props.buildings?.data) {
         let filteredAssignments: ApiData<ScheduleAssignment[]> | undefined = undefined;
