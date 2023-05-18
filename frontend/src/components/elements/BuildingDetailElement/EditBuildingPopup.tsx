@@ -85,7 +85,40 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                 <div className={styles.form}>
                     <div className={styles.formFields}>
                         <div className={styles.field}>
-                            <TextField fullWidth
+                            <TextField
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
+                                className={styles.input}
+                                fullWidth
                                 required
                                 label='naam'
                                 value={formName}
@@ -94,7 +127,41 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                             />
                         </div>
                         <div className={styles.field}>
-                            <TextField error={formAddressError}
+                            <TextField
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
+                                className={styles.input}
+                                fullWidth
+                                error={formAddressError}
                                 required
                                 label='adres'
                                 value={formAddress}
@@ -121,6 +188,34 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                         </Box>
                         <div className={styles.field}>
                             <TextField
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                className={styles.input}
                                 fullWidth
                                 required
                                 multiline
@@ -132,9 +227,11 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                         </div>
                         <FormControl sx={{marginBottom: 1, marginTop: 1, width: 200}}>
                             <Autocomplete
-                                id="tags-standard"
+                                id="tags-outline"
                                 multiple
                                 options={allSyndici.data}
+                                freeSolo={false}
+                                popupIcon={""}
                                 getOptionLabel={(option) => option.first_name[0] + '. ' + option.last_name}
                                 value={formSyndici}
                                 defaultValue={[]}
@@ -145,8 +242,34 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                                 }}
                                 renderInput={(params) => (
                                     <TextField
+                                        sx={{
+                                            '& .MuiInputLabel-root': {
+                                                padding: '2px',
+                                            },
+                                            '& label.Mui-focused': {
+                                                color: 'var(--primary-yellow)',
+                                                borderRadius: '8px',
+                                            },
+                                            '& .MuiInput-underline:after': {
+                                                borderBottomColor: 'var(--primary-yellow)',
+                                                borderRadius: '8px',
+                                            },
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: 'var(--secondary-light)',
+                                                    borderRadius: '8px',
+                                                },
+                                                '&:hover fieldset': {
+                                                    borderColor: 'var(--secondary-light)',
+                                                    borderRadius: '8px',
+                                                },
+                                                '&.Mui-focused fieldset': {
+                                                    borderColor: 'var(--primary-yellow)',
+                                                    borderRadius: '8px',
+                                                },
+                                            },
+                                        }}
                                         {...params}
-                                        variant="standard"
                                         label="syndicus"
                                         placeholder="syndicus"
                                     />
@@ -156,15 +279,14 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                     </div>
                     <div className={styles.formButtons}>
                         <Button className={styles.cancel_button} onClick={handleClose}>
-                            Cancel
+                            Annuleer
                         </Button>
                         <Button className={styles.submit_button} onClick={handleSubmit}>
-                            Submit
+                            Accepteer
                         </Button>
                     </div>
                 </div>
             </div>
-
         </Dialog>
     );
 }

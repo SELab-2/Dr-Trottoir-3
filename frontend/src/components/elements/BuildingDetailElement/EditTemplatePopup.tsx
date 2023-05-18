@@ -25,6 +25,7 @@ import {
 } from '@/api/api';
 import {useSession} from 'next-auth/react';
 import {Assignment} from '@mui/icons-material';
+import styles from "@/styles/forms.module.css";
 
 type optionType = GarbageCollectionScheduleTemplate & { inputValue?: string };
 
@@ -127,7 +128,35 @@ export default function EditTemplatePopup({
                 <Box display={'flex'} gap={2} width={'100%'}>
                     <Box flexGrow={1}>
                         <Autocomplete
-                            id='cbx-template'
+                            sx={{
+                                '& .MuiInputLabel-root': {
+                                    padding: '2px',
+                                },
+                                '& label.Mui-focused': {
+                                    color: 'var(--primary-yellow)',
+                                    borderRadius: '8px',
+                                },
+                                '& .MuiInput-underline:after': {
+                                    borderBottomColor: 'var(--primary-yellow)',
+                                    borderRadius: '8px',
+                                },
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: 'var(--secondary-light)',
+                                        borderRadius: '8px',
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: 'var(--secondary-light)',
+                                        borderRadius: '8px',
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                },
+                            }}
+                            size="small"
+                            className={styles.input}
                             value={selectedTemplate}
                             onChange={(event, newValue) => {
                                 if (typeof newValue === 'string') {

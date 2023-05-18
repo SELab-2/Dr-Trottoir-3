@@ -4,6 +4,7 @@
     height: 100%;
     width: 100%;
     font-family: 'Inter', sans-serif;
+    gap: 30px;
 }
 
 .issue_modal_box {
@@ -43,7 +44,7 @@
     /*flex:1;*/
     flex:1;
     width: 100%;
-    gap: 10px;
+    gap: 20px;
     border-radius: 8px;
     overflow: hidden;
 }
@@ -65,7 +66,7 @@
 .building_title_container {
     display: flex;
     flex-grow: 0;
-    flex-basis: 70px;
+    flex-basis: 40px;
 }
 
 .building_data_container {
