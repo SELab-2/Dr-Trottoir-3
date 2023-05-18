@@ -158,7 +158,7 @@ class UserViewSet(ModelViewSet, PermissionsByActionMixin):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=False, methods=["POST"])
+    @action(detail=False, methods=["POST"], permission_classes=[])
     def reset_password(self, request):
         if SENDGRID_API_KEY == "disabled":
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -170,7 +170,10 @@ class UserViewSet(ModelViewSet, PermissionsByActionMixin):
             user = User.objects.get(username=serializer.validated_data["email"])
 
         except User.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            # For security, this endpoint should not advertise an account
+            # wasn't found. Otherwise, it could be used to scan for registered
+            # email addresses.
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
         link = uuid.uuid4()
         user.reset_password_link = link
@@ -194,10 +197,21 @@ class UserViewSet(ModelViewSet, PermissionsByActionMixin):
     @action(
         detail=False,
         # https://ihateregex.io/expr/uuid/
-        url_path=r"reset-password/(?P<uuid>[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})",  # noqa
+        url_path=r"reset_password/(?P<uuid>[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})",  # noqa
         permission_classes=[],
-        methods=["POST"],
     )
+    def reset_password_link(self, request, uuid):
+        try:
+            user = User.objects.get(reset_password_link=uuid)
+
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserSerializer(user)
+
+        return Response(serializer.data)
+
+    @reset_password_link.mapping.post
     def post_reset_password_link(self, request, uuid):
         try:
             user = User.objects.get(reset_password_link=uuid)
