@@ -2,8 +2,8 @@
 .userElement {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    height: 100%;
+    width: calc(100% - 50px);
+    height: calc(100% - 50px);
     padding: 25px;
     gap: 25px;
 }
@@ -16,6 +16,7 @@
     padding: 25px;
     justify-content: space-between;
     border-radius: var(--large-corner) var(--large-corner) 0 0;
+    flex-wrap: nowrap;
 }
 
 .firstColumn {
@@ -52,6 +53,11 @@
     justify-content: center;
 }
 
+@media all and (width <= 900px) {
+    .picture {
+        display: none;
+    }
+}
 
 .stats {
     display: flex;
@@ -86,9 +92,20 @@
 .userContent {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 25px;
+    width: 100%;
     height: 1%; /* needs a default height */
     flex-grow: 1;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+@media all and (width <= 1500px) {
+    .userContent {
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }
 }
 
 .userRoutes {
@@ -97,7 +114,6 @@
     gap: 50px;
     height: 100%;
     flex-wrap: nowrap;
-    overflow:scroll;
 }
 
 .userRoutesPadding {
@@ -119,10 +135,11 @@
 .routesItem {
     display: flex;
     flex-direction: row;
-    width: 100%;
+    flex-wrap: wrap;
+    width: calc(100% - 50px);
     justify-content: space-between;
     align-items: center;
-    gap: 50px;
+    gap: 10px 25px;
     background-color: var(--secondary-light);
     border-radius: var(--small_corner);
     padding: 10px 25px;
@@ -147,6 +164,7 @@
 
 .userAnalytics {
     flex-grow: 1;
+    min-height: 200px;
 }
 
 .graph {

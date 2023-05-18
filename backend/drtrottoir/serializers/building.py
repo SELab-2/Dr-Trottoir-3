@@ -6,7 +6,19 @@ from drtrottoir.models import Building, ScheduleDefinitionBuilding
 class BuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Building
-        fields = "__all__"
+        fields = [
+            "id",
+            "name",
+            "address",
+            "pdf_guide",
+            "location_group",
+            "is_active",
+            "description",
+            "image",
+            "longitude",
+            "latitude",
+            "syndici",
+        ]
 
 
 class ScheduleDefinitionBuildingSerializer(serializers.ModelSerializer):
