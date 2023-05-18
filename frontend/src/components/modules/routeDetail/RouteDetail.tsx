@@ -18,9 +18,10 @@ import LoadingElement from '@/components/elements/LoadingElement/LoadingElement'
 
 type routeDetailProps = {
     scheduleDefinitionId: ScheduleDefinition['id'] | null,
+    updateList: (newSelected: number) => void,
 }
 
-function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
+function RouteDetail({scheduleDefinitionId, updateList}: routeDetailProps) {
     const {data: session} = useSession();
     const mobileView = useMediaQuery('(max-width:1000px)');
     const [hovering, setHovering] = useState<Building['id'] | null>(null);
@@ -39,7 +40,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
     }, [session]);
 
     useEffect(() => {
-        if (scheduleDefinitionId !== null) {
+        if (scheduleDefinitionId !== null && scheduleDefinitionId !== scheduleDefinition?.data?.id) {
             setScheduleDefinition(undefined);
             setOrder(undefined);
             getScheduleDefinitionDetail(session, (res) => {
@@ -59,7 +60,10 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
                 location_group: scheduleDefinition.data.location_group,
             }, (res) => {
                 setScheduleDefinition(res);
-                if (res.data?.id) postScheduleDefinitionDetailOrder(session, res.data.id, newOrder, setOrder);
+                if (res.data?.id) {
+                    postScheduleDefinitionDetailOrder(session, res.data.id, newOrder, setOrder);
+                    updateList(res.data.id);
+                }
             });
         }
     }
