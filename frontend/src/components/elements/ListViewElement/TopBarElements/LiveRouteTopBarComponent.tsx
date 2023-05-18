@@ -46,15 +46,16 @@ export default function LiveRouteTopBarComponent(
     };
 
     const dummyTypes = [
-        'actief',
-        'compleet',
+        'Alle',
+        'Actief',
+        'Compleet',
     ];
 
     const sorttypes = {
-        schedule_definition__name: 'naam',
-        schedule_definition__location_group__name: 'regio',
-        schedule_definition__student__name: 'student',
-        progress: 'voortgang',
+        schedule_definition__name: 'Naam',
+        schedule_definition__location_group__name: 'Regio',
+        schedule_definition__student__name: 'Student',
+        progress: 'Voortgang',
     };
 
     const [active, setActive] = React.useState('');
@@ -153,7 +154,7 @@ export default function LiveRouteTopBarComponent(
                         multiple
                         value={selectedRegions}
                         onChange={handleChangeRegion}
-                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>regio</p>}
+                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>Regio</p>}
                     >
                         <MenuItem key={'Alles '+((AllesSelectedRegions)?'deselecteren':'selecteren')}
                             value={'Alles'}>
@@ -202,9 +203,6 @@ export default function LiveRouteTopBarComponent(
                             {active}
                         </p>}
                     >
-                        <MenuItem value="">
-                            <em>Alle</em>
-                        </MenuItem>
                         {dummyTypes.map((option) => (
                             <MenuItem key={option} value={option}
                                 style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
