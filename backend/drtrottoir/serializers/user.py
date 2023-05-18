@@ -26,7 +26,7 @@ class StudentSerializer(serializers.ModelSerializer):
 class SyndicusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Syndicus
-        fields = ["buildings"]
+        fields = ["id", "buildings"]
         read_only_fields = ["id", "user"]
 
 

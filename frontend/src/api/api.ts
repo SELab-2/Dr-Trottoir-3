@@ -46,7 +46,8 @@ export enum Api {
     Me = 'users/me/',
     InviteLink = 'users/invite/:id/',
     ResetPassword = 'users/reset_password/',
-    ResetPasswordLink = 'users/reset_password/:id/'
+    ResetPasswordLink = 'users/reset_password/:id/',
+    UserAnalytics = 'users/:id/analytics/'
 }
 
 
@@ -537,6 +538,16 @@ const getUserDetail = (session: Session | null, setter: ((e:any) => void), id: n
         });
 };
 
+const getUserAnalytics = (session: Session | null, setter: ((e:any) => void), id: number) => {
+    getDetailsFromAPI(Api.UserAnalytics, session, id)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
+};
+
 const getUserInvite = (session: Session | null, setter: ((e:any) => void), uuid: string) => {
     getDetailsFromAPI(Api.InviteLink, session, uuid)
         .then((e) => {
@@ -997,6 +1008,7 @@ export {
     getMe,
     getUserInvite,
     getUserResetPassword,
+    getUserAnalytics,
 
     postGarbageCollectionScheduleTemplate,
     postGarbageCollectionScheduleTemplateEntry,

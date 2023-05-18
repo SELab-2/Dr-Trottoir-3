@@ -1,6 +1,8 @@
 import uuid
+from datetime import date, timedelta
 from typing import Dict, List
 
+from django.db.models import F, Max, Min
 from rest_framework import permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -227,3 +229,46 @@ class UserViewSet(ModelViewSet, PermissionsByActionMixin):
         user.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True)
+    def analytics(self, request, pk=None):
+        user = self.get_object()
+
+        today = date.today()
+
+        cur_month = date(today.year, today.month, 1)
+
+        if cur_month.month == 12:
+            next_month = cur_month.replace(year=cur_month.year + 1, month=1)
+
+        else:
+            next_month = cur_month.replace(month=cur_month.month + 1)
+
+        total_work_durations = []
+
+        for _ in range(6):
+            work_durations = (
+                user.assignments.annotate(
+                    min_time=Min("work_entries__creation_timestamp"),
+                    max_time=Max("work_entries__creation_timestamp"),
+                )
+                .annotate(work_duration=F("max_time") - F("min_time"))
+                .filter(work_entries__creation_timestamp__gte=cur_month)
+                .filter(work_entries__creation_timestamp__lt=next_month)
+            )
+
+            total_work_durations.append(
+                {
+                    "date": cur_month,
+                    "seconds": sum(
+                        [x.work_duration for x in work_durations], timedelta(0)
+                    ).seconds,
+                }
+            )
+
+            next_month = cur_month
+            # Subtract 1 day from next_month to retrieve the last day of the
+            # previous month, and replace day
+            cur_month = (next_month - timedelta(days=1)).replace(day=1)
+
+        return Response(total_work_durations)

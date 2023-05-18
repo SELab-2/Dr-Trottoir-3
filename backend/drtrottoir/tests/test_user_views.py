@@ -305,6 +305,7 @@ def test_user_create_syndicus():
     res = _test_user_create(data, user=student.user)
     res.data.pop("id")
     res.data.pop("invite_link")
+    res.data["syndicus"].pop("id")
     assert res.status_code == 201 and res.data == data
 
 
