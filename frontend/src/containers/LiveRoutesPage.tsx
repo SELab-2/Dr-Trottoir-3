@@ -45,6 +45,13 @@ export default function LiveRoutesPage() {
         handleSearch(false);
     }, [session, sorttype, selectedRegions]);
 
+    useEffect(() => {
+        const element = document.getElementById(styles.scrollable);
+        if (element !== null) {
+            element.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    }, [assignments]);
+
     const handleSearch = (clear: boolean = false) => {
         let searchEntryOverwritten: string;
         if (clear) {
@@ -92,7 +99,7 @@ export default function LiveRoutesPage() {
                 totalBuildings: definition.buildings.length,
                 buildingsDone: workEntries.data.filter((e) => e.schedule_assignment === e.id).length,
                 location_group: locationGroups.data.filter((e) => e.id === definition.location_group)[0].name,
-                student: student.first_name + ' .' + student.last_name[0].toUpperCase(),
+                student: student ? student.first_name + ' .' + student.last_name[0].toUpperCase() : '',
             };
         });
 

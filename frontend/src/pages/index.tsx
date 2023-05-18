@@ -30,7 +30,7 @@ export default function Home() {
             if (userData.data.student && !userData.data.student.is_super_student) {
                 router.push('/my-schedule');
             } else if (userData.data.syndicus) {
-                router.push('/my-buildings');
+                router.push('/buildings');
             } else {
                 router.push('/live_routes');
             }

@@ -26,7 +26,7 @@ const topButtonsStudent = [
 ];
 
 const topButtonsSyndicus = [
-    {id: '0', text: 'Mijn Gebouwen', href: '/my-buildings', icon: DateRangeIcon},
+    {id: '0', text: 'Gebouwen', href: '/buildings', icon: DateRangeIcon},
     {id: '1', text: 'Account', href: '/profile', icon: PersonRoundedIcon},
     {id: '2', text: 'Logout', href: '/logout', icon: LogoutRoundedIcon},
 ];
@@ -48,7 +48,7 @@ const botButtonsStudent = [
 ];
 
 const botButtonsSyndicus = [
-    {id: '0', text: 'Mijn Gebouwen', href: '/my-buildings', icon: DateRangeIcon},
+    {id: '0', text: 'Gebouwen', href: '/buildings', icon: DateRangeIcon},
     {id: '1', text: 'Account', href: '/profile', icon: PersonRoundedIcon},
 ];
 

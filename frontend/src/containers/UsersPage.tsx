@@ -5,7 +5,7 @@ import {getBuildingsList, getLocationGroupsList, getUsersList, useAuthenticatedA
 import {Building, LocationGroup, User} from '@/api/models';
 import React, {useEffect, useState} from 'react';
 import UserTopBarComponent from '@/components/elements/ListViewElement/TopBarElements/UserTopBarComponent';
-import styles from './containerStyles.module.css';
+import styles from '@/components/elements/ListViewElement/listView.module.css';
 import UserListButtonComponent from '@/components/elements/ListViewElement/ListButtonElements/UserListButtonComponent';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import NoneSelected from '@/components/elements/ListViewElement/NoneSelectedComponent';
@@ -38,11 +38,11 @@ export default function UsersPage() {
 
 
     useEffect(() => {
-        const element = document.getElementById(styles.scroll_style);
+        const element = document.getElementById(styles.scrollable);
         if (element !== null) {
             element.scrollTo({top: 0, behavior: 'smooth'});
         }
-    }, [sorttype, selectedRegions]);
+    }, [users]);
 
     const handleSearch = (clear: boolean = false) => {
         let searchEntryOverwritten: string;

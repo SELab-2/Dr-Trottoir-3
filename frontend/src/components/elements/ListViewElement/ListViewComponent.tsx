@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './listView.module.css';
 import {ApiData} from '@/api/api';
 import {LocationGroup} from '@/api/models';
+import ErrorPage from '@/containers/ErrorPage';
 
 
 type ListViewComponentProps = {
@@ -35,7 +36,7 @@ export default function ListViewComponent(props: ListViewComponentProps) {
                                     <p className={styles.subtext}>{props.listData.data.length} gevonden resultaten</p>
                                 </div>
                             </div>
-                            <div className={styles.scrollable}>
+                            <div id={styles.scrollable}>
                                 <div className={styles.side_bar_list}>
                                     {
                                         props.listData.data.map((x) => {
@@ -68,7 +69,7 @@ export default function ListViewComponent(props: ListViewComponentProps) {
         } else {
             return (
                 <>
-                    TODO: ERROR SCREEN
+                    <ErrorPage status={400}/>
                 </>
             );
         }

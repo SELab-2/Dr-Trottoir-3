@@ -12,7 +12,7 @@ from .pdf_upload import PdfUploadSerializer
 from .schedule_assignment import ScheduleAssignmentSerializer
 from .schedule_definition import ScheduleDefinitionSerializer
 from .schedule_work_entry import ScheduleWorkEntrySerializer
-from .user import UserSerializer
+from .user import UserInviteSerializer, UserSerializer
 
 __all__ = [
     "GarbageCollectionScheduleTemplateEntrySerializer",
@@ -29,4 +29,5 @@ __all__ = [
     "ScheduleDefinitionBuildingSerializer",
     "PdfUploadSerializer",
     "UserSerializer",
+    "UserInviteSerializer",
 ]
