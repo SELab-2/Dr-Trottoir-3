@@ -6,7 +6,7 @@ import {
     getBuildingsList,
     getLocationGroupDetail,
     getScheduleDefinitionDetail,
-    getScheduleDefinitionDetailOrder,
+    getScheduleDefinitionDetailOrder, postScheduleDefinition,
     postScheduleDefinitionDetailOrder,
     useAuthenticatedApi,
 } from '@/api/api';
@@ -44,7 +44,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
             setOrder(undefined);
             getScheduleDefinitionDetail(session, (res) => {
                 setScheduleDefinition(res);
-                getLocationGroupDetail(session, setLocationGroup, res.data.location_group);
+                if (res.data) getLocationGroupDetail(session, setLocationGroup, res.data.location_group);
             }, scheduleDefinitionId);
             getScheduleDefinitionDetailOrder(session, setOrder, scheduleDefinitionId);
         }
@@ -52,8 +52,15 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
 
     function onReorder(newList: Building['id'][]) {
         const newOrder = newList.map((id, index) => ({building: id, position: index}));
-        if (scheduleDefinitionId !== null) {
-            postScheduleDefinitionDetailOrder(session, scheduleDefinitionId, newOrder, setOrder);
+        if (scheduleDefinition?.data) {
+            postScheduleDefinition(session, {
+                name: scheduleDefinition.data.name,
+                version: scheduleDefinition.data.version + 1,
+                location_group: scheduleDefinition.data.location_group,
+            }, (res) => {
+                setScheduleDefinition(res);
+                if (res.data?.id) postScheduleDefinitionDetailOrder(session, res.data.id, newOrder, setOrder);
+            });
         }
     }
 
@@ -65,7 +72,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
         setDialogOpen(false);
         if (id && scheduleDefinitionId && order) {
             const newOrder = order.data.concat({building: id, position: order.data.length});
-            postScheduleDefinitionDetailOrder(session, scheduleDefinitionId, newOrder, setOrder);
+            onReorder(newOrder.map(({building}) => building));
         }
     }
 
@@ -85,7 +92,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
                         borderRadius={'var(--small_corner)'}
                         display={'flex'} flexDirection={mobileView ? 'column' : 'row'}>
                         <Box>
-                            <Typography variant={mobileView ? 'h5' : 'h4'} onClick={() => console.log(buildings?.data)}
+                            <Typography variant={mobileView ? 'h5' : 'h4'}
                                 noWrap>{scheduleDefinition?.data.name}</Typography>
                             <Typography variant={'subtitle1'} noWrap>{locationGroup?.data.name}</Typography>
                         </Box>
