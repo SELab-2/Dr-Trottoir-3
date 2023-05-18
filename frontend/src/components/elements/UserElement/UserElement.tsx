@@ -5,27 +5,68 @@ import {
     getScheduleDefinitionsList,
     getUserDetail,
     useAuthenticatedApi,
+    getUserAnalytics,
 } from '@/api/api';
 import {useSession} from 'next-auth/react';
 import React, {useEffect, useState} from 'react';
-import {LocationGroup, ScheduleAssignment, ScheduleDefinition, User} from '@/api/models';
+import {LocationGroup, ScheduleAssignment, ScheduleDefinition, User, UserAnalytics} from '@/api/models';
 import {Edit} from '@mui/icons-material';
 import Button from '@mui/material/Button';
 import EditUserPopup from '@/components/elements/UserElement/EditUserPopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
+import {Bar} from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js';
 
 
 type userElementProps = {
     id: number,
 }
 
+type ChartData = {
+    labels: string[],
+    datasets: {
+        label: string,
+        data: number[],
+        backgroundColor: string
+    }[]
+}
+
 export default function UserElement(props: userElementProps) {
+    ChartJS.register(
+        CategoryScale,
+        LinearScale,
+        BarElement,
+        Title,
+        Tooltip,
+        Legend
+    );
+    //
+    const options = {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Uren gewerkt per maand',
+            },
+        },
+    };
+
     const {data: session} = useSession();
 
     const [userData, setUserData] = useAuthenticatedApi<User>();
     const [scheduleDefinitions, setScheduleDefinitions] = useAuthenticatedApi<Array<ScheduleDefinition>>();
     const [scheduleAssignmentsData, setScheduleAssignmentsData] = useAuthenticatedApi<Array<ScheduleAssignment>>();
     const [locationGroupData, setLocationGroupData] = useAuthenticatedApi<LocationGroup>();
+    const [userAnalytics, setUserAnalytics] = useAuthenticatedApi<UserAnalytics>();
+    const [chartData, setChartData] = useState<ChartData>({labels: [], datasets: []});
 
     const [editPopupOpen, setEditPopupOpen] = useState<boolean>(false);
     function onOpenEditPopup() {
@@ -36,6 +77,9 @@ export default function UserElement(props: userElementProps) {
         getUserDetail(session, setUserData, props.id);
     }, [session, props.id, editPopupOpen]);
 
+    useEffect(() => {
+        getUserAnalytics(session, setUserAnalytics, props.id);
+    }, [session, props.id]);
 
     useEffect(() => {
         getScheduleDefinitionsList(session, setScheduleDefinitions);
@@ -44,6 +88,30 @@ export default function UserElement(props: userElementProps) {
     useEffect(() => {
         getScheduleAssignmentsList(session, setScheduleAssignmentsData, {user: props.id});
     }, [session, props.id]);
+
+    useEffect(() => {
+        if (userAnalytics !== undefined) {
+            const labels = [];
+            const data = [];
+
+            for (const {date, seconds} of userAnalytics.data) {
+                labels.push(date);
+                data.push(Math.round(seconds / 3600));
+            }
+
+            const style = getComputedStyle(document.body);
+            const yellow = style.getPropertyValue('--primary-yellow');
+
+            setChartData({
+                labels: labels,
+                datasets: [{
+                    label: '',
+                    data: data,
+                    backgroundColor: yellow,
+                }],
+            });
+        }
+    }, [userAnalytics]);
 
     useEffect(() => {
         if (userData && userData.data.student?.location_group) {
@@ -173,7 +241,7 @@ export default function UserElement(props: userElementProps) {
                             </div>
                         </div>
                         <div className={styles.userAnalytics}>
-                            <div className={styles.graph}></div>
+                            <Bar data={chartData} options={options} />
                         </div>
                     </div>
                 </div>
