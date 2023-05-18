@@ -103,3 +103,8 @@ export type Issue = {
     from_user: number,
     approval_user: number | null | undefined
 }
+
+export type UserAnalytics = {
+    date: string,
+    seconds: number
+}[]
