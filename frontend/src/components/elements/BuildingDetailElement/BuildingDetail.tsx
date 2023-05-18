@@ -47,7 +47,7 @@ function BuildingDetailManualLink(props: { path: string | null }): JSX.Element {
         return (
             <div className={styles.pdf_container}>
                 <PictureAsPdf fontSize='small'/>
-                <p>geen handleiding</p>
+                <p>Geen handleiding</p>
             </div>
         );
     }
