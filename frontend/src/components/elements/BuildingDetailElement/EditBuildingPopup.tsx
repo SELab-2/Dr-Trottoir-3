@@ -16,6 +16,7 @@ import axios from 'axios';
 import {LatLng} from 'leaflet';
 import {PinDrop} from '@mui/icons-material';
 import BuildingMapSelector from '@/components/elements/ListViewElement/InsertFormElements/BuildingMapSelector';
+import CloseIcon from '@mui/icons-material/Close';
 
 type EditBuildingPopupProps = {
     buildingId: number,
@@ -42,6 +43,7 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
         React.useState<LatLng>(new LatLng(51.1576985, 4.0807745));
     const [formSyndici, setFormSyndici] = React.useState<User[]>(prevSyndici);
     const [formDescription, setFormDescription] = React.useState(prevDescription);
+    const [formPDFGuide, setFormPDFGuide] = React.useState<File | null>(null);
 
     useEffect(() => {
         getUsersList(session, setAllSyndici, {syndicus__id__gt: 0});
@@ -58,13 +60,22 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
     }, [open]);
 
     const handleSubmit = () => {
-        patchBuildingDetail(session, buildingId, {
-            name: formName,
-            address: formAddress,
-            latitude: formCoordinate.lat,
-            longitude: formCoordinate.lng,
-            description: formDescription,
+        const patchData = new FormData();
+        patchData.append('name', formName);
+        patchData.append('address', formAddress);
+        patchData.append('latitude', formCoordinate.lat.toString());
+        patchData.append('longitude', formCoordinate.lng.toString());
+        patchData.append('description', formDescription);
+        patchData.append('is_active', false.toString());
+        if (formPDFGuide !== null) {
+            patchData.append('pdf_guide', formPDFGuide, formPDFGuide.name);
+        }
+        formSyndici.map((s) => {
+            if (s.syndicus) {
+                patchData.append('syndici', s.syndicus.id.toString());
+            }
         });
+        patchBuildingDetail(session, buildingId, patchData);
         setOpen(false);
     };
 
@@ -153,6 +164,37 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                                 )}
                             />
                         </FormControl>
+                        <div className={styles.field}>
+                            <Button
+                                variant="contained"
+                                component="label"
+                                sx={{'width': 240, 'fontSize': 12, 'backgroundColor': 'var(--primary-dark)',
+                                    '&:hover': {
+                                        backgroundColor: 'var(--secondary-dark)',
+                                    }}}
+                            >
+                                Handleiding (PDF)
+                                <input
+                                    type="file"
+                                    onChange={(e) => setFormPDFGuide(e.target.files ? e.target.files[0] : null)}
+                                    accept="application/pdf"
+                                    hidden
+                                />
+                            </Button>
+                            <IconButton onClick={() => setFormPDFGuide(null)}>
+                                <CloseIcon/>
+                            </IconButton>
+                        </div>
+                        <p style={{fontSize: 14}} className={styles.field}>
+                            {
+                                formPDFGuide ?
+                                    (formPDFGuide.name.length > 40 ?
+                                        formPDFGuide.name.slice(0, 37) +'...' :
+                                        formPDFGuide.name
+                                    ) :
+                                    ''
+                            }
+                        </p>
                     </div>
                     <div className={styles.formButtons}>
                         <Button className={styles.cancel_button} onClick={handleClose}>
