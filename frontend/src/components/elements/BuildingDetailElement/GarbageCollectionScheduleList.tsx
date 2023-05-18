@@ -1,5 +1,5 @@
 import {Box, IconButton, Tooltip, Typography} from '@mui/material';
-import styles from './buildingEditLists.module.css'
+import styles from './buildingEditLists.module.css';
 import React, {useEffect, useState} from 'react';
 import {GarbageCollectionSchedule, GarbageType} from '@/api/models';
 import {useSession} from 'next-auth/react';
@@ -22,7 +22,8 @@ dayjs.extend(minMax);
 export default function GarbageCollectionScheduleList({buildingId}: { buildingId: number }) {
     const {data: session} = useSession();
 
-    const [schedulesFilterDate, setSchedulesFilterDate] = useState<Dayjs>(dayjs(undefined, {locale: 'nl-be'}).startOf('week'));
+    const [schedulesFilterDate, setSchedulesFilterDate] =
+        useState<Dayjs>(dayjs(undefined, {locale: 'nl-be'}).startOf('week'));
     const [schedules, setSchedules] = useAuthenticatedApi<GarbageCollectionSchedule[]>();
     const [garbageTypes, setGarbageTypes] = useAuthenticatedApi<GarbageType[]>();
 
@@ -73,21 +74,12 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
                 sunday,
                 schedules: fancySchedules
                     .filter((s) => s.for_day >= monday && s.for_day < nextMonday)
-                    .sort((a, b) => a.for_day.valueOf() - b.for_day.valueOf()),
+                    .sort((a, b) =>
+                        a.for_day.valueOf() - b.for_day.valueOf()),
             });
             monday = nextMonday;
         }
         return (perWeek);
-
-        // Groups the schedules on the same day together
-        // const perWeekPerDay = perWeek.map(({schedules, ...rest}) => ({
-        //     ...rest, schedulesPerDay: Object.values(schedules.reduce((storage, item) => {
-        //         storage[item.for_day.valueOf()] = (storage[item.for_day.valueOf()] || []).concat(item);
-        //         return storage;
-        //     }, {} as { [key: number]: { id: number, note: string, garbage_type: GarbageType | undefined, for_day: dayjs.Dayjs }[] }))
-        // }));
-        //
-        // return (perWeekPerDay);
     }
 
     function dateFmt(date: Dayjs) {
@@ -131,9 +123,9 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
                     </IconButton>
                 </Box>
             </Box>
-        {schedules?.data && garbageTypes?.data ?
-            <div className={styles.scrollable_container}>
-                {/*<div className={styles.scroll_list}>*/}
+            {schedules?.data && garbageTypes?.data ?
+                <div className={styles.scrollable_container}>
+                    {/* <div className={styles.scroll_list}>*/}
                     {schedulesPerWeek().map(({monday, sunday, schedules}, index) =>
                         <Box key={index}>
                             <Box display={'flex'} alignItems={'center'}>
@@ -166,11 +158,16 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
                                             {schedule.garbage_type?.name}
                                         </Typography>
                                         <Box flexShrink={0}>
-                                            <IconButton size={'small'} onClick={() => openEditSchedulePopup(schedule.id)}>
+                                            <IconButton size={'small'} onClick={() =>
+                                                openEditSchedulePopup(schedule.id)}>
                                                 <Edit/>
                                             </IconButton>
                                             <IconButton size={'small'}
-                                                onClick={() => deleteGarbageCollectionSchedule(session, schedule.id, updateSchedules)}>
+                                                onClick={() =>
+                                                    deleteGarbageCollectionSchedule(
+                                                        session,
+                                                        schedule.id,
+                                                        updateSchedules)}>
                                                 <Clear/>
                                             </IconButton>
                                         </Box>
@@ -197,21 +194,21 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
                             }
                         </Box>
                     )}
-                {/*</div>*/}
-                <TemplateToSchedulePopup open={templateToSchedulePopup}
-                    onClose={(refresh) => {
-                        setTemplateToSchedulePopup(false);
+                    {/* </div>*/}
+                    <TemplateToSchedulePopup open={templateToSchedulePopup}
+                        onClose={(refresh) => {
+                            setTemplateToSchedulePopup(false);
+                            if (refresh) updateSchedules();
+                        }}
+                        defaultDate={defaultDate}
+                        buildingId={buildingId}/>
+                    <EditSchedulePopup open={editSchedulePopup} onClose={(refresh) => {
+                        setEditSchedulePopup(false);
+                        setSelectedSchedule(undefined);
                         if (refresh) updateSchedules();
-                    }}
-                    defaultDate={defaultDate}
-                    buildingId={buildingId}/>
-                <EditSchedulePopup open={editSchedulePopup} onClose={(refresh) => {
-                    setEditSchedulePopup(false);
-                    setSelectedSchedule(undefined);
-                    if (refresh) updateSchedules();
-                }} buildingId={buildingId} scheduleId={selectedSchedule} defaultDate={defaultDate}/>
-            </div> :
-            <LoadingElement/>
-        }
-    </Box>);
+                    }} buildingId={buildingId} scheduleId={selectedSchedule} defaultDate={defaultDate}/>
+                </div> :
+                <LoadingElement/>
+            }
+        </Box>);
 }

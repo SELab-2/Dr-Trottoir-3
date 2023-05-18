@@ -14,6 +14,7 @@ import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import React, {useEffect, useState} from 'react';
 import 'dayjs/locale/nl-be';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
+import styles from '../../../styles/forms.module.css';
 
 interface propsType {
     open: boolean,
@@ -35,7 +36,12 @@ export default function TemplateToSchedulePopup({open, onClose, buildingId, defa
     const [selectedTemplate, setSelectedTemplate] = useState<GarbageCollectionScheduleTemplate | null>(null);
     const [selectedDate, setSelectedDate] = useState<Dayjs | null>(setDefaultDate());
 
-    const [schedulesPerWeek, setSchedulesPerWeek] = useState<{ monday: dayjs.Dayjs, sunday: dayjs.Dayjs, schedules: { garbage_type: GarbageType, for_day: dayjs.Dayjs }[] }[]>();
+    const [schedulesPerWeek, setSchedulesPerWeek] =
+        useState<{
+            monday: dayjs.Dayjs,
+            sunday: dayjs.Dayjs,
+            schedules: { garbage_type: GarbageType, for_day: dayjs.Dayjs
+            }[] }[]>();
 
     useEffect(() => {
         getBuildingDetailGarbageCollectionScheduleTemplates(session, setTemplates, buildingId);
@@ -44,8 +50,9 @@ export default function TemplateToSchedulePopup({open, onClose, buildingId, defa
     }, [buildingId]);
 
     useEffect(() => {
-        if (selectedTemplate) getGarbageCollectionScheduleTemplateDetailEntries(session, setTemplateEntries, selectedTemplate.id);
-        else setTemplateEntries(undefined);
+        if (selectedTemplate) {
+            getGarbageCollectionScheduleTemplateDetailEntries(session, setTemplateEntries, selectedTemplate.id);
+        } else setTemplateEntries(undefined);
     }, [selectedTemplate]);
 
     function updateSchedules() {
@@ -123,8 +130,13 @@ export default function TemplateToSchedulePopup({open, onClose, buildingId, defa
                         </LocalizationProvider>
                         <Button disabled={!(selectedTemplate && selectedDate && templateEntries?.data)}
                             onClick={saveSchedules}
-                            variant={'contained'}>Opslaan</Button>
-                        <Button onClick={() => onClose(false)} variant={'outlined'} color={'inherit'}>Annuleren</Button>
+                            className={styles.submit_button} style={{width: 'fit-content'}}>Opslaan</Button>
+                        <Button
+                            onClick={() => onClose(false)}
+                            className={styles.cancel_button}
+                            style={{width: 'fit-content'}}>
+                            Annuleren
+                        </Button>
                     </Box>
                     {schedulesPerWeek?.length ?
                         <Box>

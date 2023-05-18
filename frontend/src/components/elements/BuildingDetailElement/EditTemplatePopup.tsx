@@ -25,7 +25,7 @@ import {
 } from '@/api/api';
 import {useSession} from 'next-auth/react';
 import {Assignment} from '@mui/icons-material';
-import styles from "@/styles/forms.module.css";
+import styles from '@/styles/forms.module.css';
 
 type optionType = GarbageCollectionScheduleTemplate & { inputValue?: string };
 
@@ -216,8 +216,12 @@ export default function EditTemplatePopup({
                             renderInput={(params) => <TextField {...params} label='Template'/>}
                         />
                     </Box>
-                    <Button variant='contained' onClick={save}>Opslaan</Button>
-                    <Button variant='outlined' color={'inherit'} onClick={onClose}>Annuleren</Button>
+                    <Button className={styles.submit_button} style={{width: 'fit-content'}} onClick={save}>
+                        Opslaan
+                    </Button>
+                    <Button className={styles.cancel_button} style={{width: 'fit-content'}} onClick={onClose}>
+                        Annuleren
+                    </Button>
                 </Box>
                 <Box>
                     {selectedTemplate ? Array.from(Array(weeksCount())).map((_, week) => (
@@ -235,7 +239,15 @@ export default function EditTemplatePopup({
                                                 badgeContent={getGarbageTypeEntries(week * 7 + dagnr)
                                                     .filter(({selected}) => selected)
                                                     .length}
-                                                color={'primary'}>
+                                                sx={{
+                                                    '& .MuiBadge-badge': {
+                                                        color: 'var(--primary-dark)',
+                                                        backgroundColor: 'var(--primary-yellow)',
+                                                    },
+                                                    '.MuiBadge-root': {
+                                                        width: '100%',
+                                                    },
+                                                }}>
                                                 <Assignment/>
                                             </Badge>
                                         </IconButton>
@@ -269,6 +281,11 @@ function GarbageTypeDialog({open, onClose, garbageTypeEntries, setGarbageTypeEnt
                         <FormControlLabel key={index}
                             control={
                                 <Checkbox checked={selected}
+                                    sx={{
+                                        '&.Mui-checked': {
+                                            color: 'var(--primary-yellow)',
+                                        },
+                                    }}
                                     onChange={() => setGarbageTypeEntry({
                                         name,
                                         selected: !selected,
@@ -280,7 +297,7 @@ function GarbageTypeDialog({open, onClose, garbageTypeEntries, setGarbageTypeEnt
                         />
                     ))}
                 </FormGroup>
-                <Button fullWidth variant={'contained'} onClick={onClose}>Ok</Button>
+                <Button fullWidth className={styles.submit_button} onClick={onClose}>ok</Button>
             </Box>
         </Dialog>
     );

@@ -5,7 +5,7 @@ import {deleteIssue, getBuildingDetailIssues, patchIssueDetail, useAuthenticated
 import React, {useEffect, useState} from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import {useSession} from 'next-auth/react';
-import styles from "@/components/elements/BuildingDetailElement/buildingEditLists.module.css";
+import styles from '@/components/elements/BuildingDetailElement/buildingEditLists.module.css';
 
 export default function IssueList({buildingId}: { buildingId: number }) {
     const {data: session} = useSession();
@@ -30,7 +30,9 @@ export default function IssueList({buildingId}: { buildingId: number }) {
         deleteIssue(session, id, updateIssues);
     }
 
-    const issuesFiltered = () => issues?.data ? filter ? issues.data.filter(({resolved}) => !resolved) : issues.data : [];
+    const issuesFiltered = () =>
+        issues?.data ? filter ? issues.data.filter(({resolved}) =>
+            !resolved) : issues.data : [];
 
     return (<Box className={styles.full_container}>
         <Box display={'flex'} alignItems={'center'}>
@@ -46,34 +48,34 @@ export default function IssueList({buildingId}: { buildingId: number }) {
         {issuesFiltered().length ?
             (<Box className={styles.scrollable_container}>
                 {issuesFiltered().map((issue, index) =>
-                <Box paddingBottom={1} key={index}>
-                    <Box
-                        bgcolor={'var(--secondary-light)'}
-                        borderRadius={'var(--small_corner)'}
-                        paddingY={0.2} paddingX={'3%'} alignItems={'center'} display={'flex'}
-                    >
-                        <Typography flexGrow={5} noWrap>{issue.message}</Typography>
-                        {issue.resolved ?
-                            <IconButton size={'small'}>
-                                <Tooltip title={'Probleem is opgelost.'}>
-                                    <Done sx={{color: 'green'}}/>
-                                </Tooltip>
-                            </IconButton> :
-                            issue.approval_user !== null ?
-                                <IconButton onClick={() => approve(issue.id)} size={'small'}>
-                                    <Tooltip title={'Probleem is nog niet goedgekeurd. Klik om goed te keuren.'}>
-                                        <CloseIcon sx={{color: 'red'}}/>
+                    <Box paddingBottom={1} key={index}>
+                        <Box
+                            bgcolor={'var(--secondary-light)'}
+                            borderRadius={'var(--small_corner)'}
+                            paddingY={0.2} paddingX={'3%'} alignItems={'center'} display={'flex'}
+                        >
+                            <Typography flexGrow={5} noWrap>{issue.message}</Typography>
+                            {issue.resolved ?
+                                <IconButton size={'small'}>
+                                    <Tooltip title={'Probleem is opgelost.'}>
+                                        <Done sx={{color: 'green'}}/>
                                     </Tooltip>
                                 </IconButton> :
-                                <IconButton onClick={() => resolve(issue.id)} size={'small'}>
-                                    <Tooltip
-                                        title={'Probleem is goedgekeurd maar niet opgelost. Klik om op te lossen.'}>
-                                        <ErrorOutline sx={{color: 'orange'}}/>
-                                    </Tooltip>
-                                </IconButton>
-                        }
-                    </Box>
-                </Box>)}
+                                issue.approval_user !== null ?
+                                    <IconButton onClick={() => approve(issue.id)} size={'small'}>
+                                        <Tooltip title={'Probleem is nog niet goedgekeurd. Klik om goed te keuren.'}>
+                                            <CloseIcon sx={{color: 'red'}}/>
+                                        </Tooltip>
+                                    </IconButton> :
+                                    <IconButton onClick={() => resolve(issue.id)} size={'small'}>
+                                        <Tooltip
+                                            title={'Probleem is goedgekeurd maar niet opgelost. Klik om op te lossen.'}>
+                                            <ErrorOutline sx={{color: 'orange'}}/>
+                                        </Tooltip>
+                                    </IconButton>
+                            }
+                        </Box>
+                    </Box>)}
             </Box>) :
             (<Box paddingBottom={1}>
                 <Box bgcolor={'var(--secondary-light)'} borderRadius={'var(--small_corner)'}

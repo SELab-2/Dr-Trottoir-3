@@ -12,16 +12,14 @@ import {
 } from '@/api/api';
 import {defaultBuildingImage} from '@/constants/images';
 import {useSession} from 'next-auth/react';
-import Button from '@mui/material/Button';
 import React, {useEffect, useState} from 'react';
 import ErrorPage from '@/containers/ErrorPage';
 import BuildingMap from '@/components/elements/BuildingDetailElement/BuildingMap';
 import GarbageCollectionScheduleTemplateList
     from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleTemplateList';
-import EditBuildingPopup from '@/components/elements/BuildingDetailElement/EditBuildingPopup';
+import EditBuildingPopup from './EditBuildingPopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import IssueList from '@/components/elements/BuildingDetailElement/IssueList';
+import IssueList from './IssueList';
 import GarbageCollectionScheduleList from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleList';
 
 interface IBuildingDetail {
@@ -65,9 +63,6 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
 
     const [buildingDetail, setBuildingDetail] =
         useState<IBuildingDetail | undefined>(undefined);
-    const [issuesModalOpen, setIssuesModalOpen] = useState(false);
-    const handleIssueModalOpen = () => setIssuesModalOpen(true);
-    const handleIssueModalClose = () => setIssuesModalOpen(false);
 
     const {data: session} = useSession();
 
@@ -175,13 +170,6 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
     }
 
     if (building && location && schedules && garbageTypes && issues && syndici && buildingDetail) {
-        let issuesModalButtonText = `${buildingDetail.issues.length} issues remaining`;
-        if (buildingDetail.issues.length === 0) {
-            issuesModalButtonText = `No issues`;
-        } else if (buildingDetail.issues.length === 1) {
-            issuesModalButtonText = `${buildingDetail.issues.length} issue remaining`;
-        }
-
         return (
             <div className={styles.full}>
                 {/* Top row */}

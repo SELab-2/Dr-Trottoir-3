@@ -231,7 +231,7 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                                 multiple
                                 options={allSyndici.data}
                                 freeSolo={false}
-                                popupIcon={""}
+                                popupIcon={''}
                                 getOptionLabel={(option) => option.first_name[0] + '. ' + option.last_name}
                                 value={formSyndici}
                                 defaultValue={[]}

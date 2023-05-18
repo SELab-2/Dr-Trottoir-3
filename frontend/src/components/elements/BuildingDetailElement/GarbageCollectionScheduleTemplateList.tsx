@@ -10,7 +10,7 @@ import {useSession} from 'next-auth/react';
 import {GarbageCollectionScheduleTemplate} from '@/api/models';
 import EditTemplatePopup from '@/components/elements/BuildingDetailElement/EditTemplatePopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
-import styles from "@/components/elements/BuildingDetailElement/buildingEditLists.module.css";
+import styles from '@/components/elements/BuildingDetailElement/buildingEditLists.module.css';
 
 export default function GarbageCollectionScheduleTemplateList({buildingId}: { buildingId: number }) {
     const {data: session} = useSession();
@@ -50,7 +50,10 @@ export default function GarbageCollectionScheduleTemplateList({buildingId}: { bu
                                     <Edit style={{flexGrow: 1}}/>
                                 </IconButton>
                                 <IconButton size={'small'} onClick={() => {
-                                    deleteGarbageCollectionScheduleTemplate(session, template.id, (_) => updateTemplates());
+                                    deleteGarbageCollectionScheduleTemplate(
+                                        session,
+                                        template.id,
+                                        (_) => updateTemplates());
                                 }}>
                                     <Clear style={{flexGrow: 1}}/>
                                 </IconButton>

@@ -14,6 +14,7 @@ import {DatePicker, LocalizationProvider} from '@mui/x-date-pickers';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 import 'dayjs/locale/nl-be';
+import styles from '@/styles/forms.module.css';
 
 interface propsType {
     open: boolean,
@@ -29,7 +30,9 @@ export default function EditSchedulePopup({open, onClose, buildingId, scheduleId
     const [garbageTypes, setGarbageTypes] = useAuthenticatedApi<GarbageType[]>();
     const [originalSchedule, setOriginalSchedule] = useAuthenticatedApi<GarbageCollectionSchedule>();
 
-    type FancySchedule = { id: number, for_day: Dayjs | null, building: number, garbage_type: GarbageType | null, note: string }
+    type FancySchedule = {
+        id: number, for_day: Dayjs | null, building: number, garbage_type: GarbageType | null, note: string
+    }
     const [schedule, setSchedule] = useState<Partial<FancySchedule>>();
 
 
@@ -85,22 +88,113 @@ export default function EditSchedulePopup({open, onClose, buildingId, scheduleId
             {schedule && garbageTypes?.data ?
                 <Box padding={1} display={'flex'} flexDirection={'column'} gap={1}>
                     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'nl-be'}>
-                        <DatePicker value={schedule.for_day} onChange={(v) => setSchedule({...schedule, for_day: v})}/>
+                        <DatePicker
+                            sx={{
+                                '& .MuiInputLabel-root': {
+                                    padding: '2px',
+                                },
+                                '& label.Mui-focused': {
+                                    color: 'var(--primary-yellow)',
+                                    borderRadius: '8px',
+                                },
+                                '& .MuiInput-underline:after': {
+                                    borderBottomColor: 'var(--primary-yellow)',
+                                    borderRadius: '8px',
+                                },
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: 'var(--secondary-light)',
+                                        borderRadius: '8px',
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: 'var(--secondary-light)',
+                                        borderRadius: '8px',
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                },
+                            }}
+                            className={styles.input}
+                            value={schedule.for_day} onChange={(v) => setSchedule({...schedule, for_day: v})}/>
                     </LocalizationProvider>
                     <Autocomplete
-                        renderInput={(params) => <TextField {...params} label="Afval Type"/>}
+                        sx={{
+                            '& .MuiInputLabel-root': {
+                                padding: '2px',
+                            },
+                            '& label.Mui-focused': {
+                                color: 'var(--primary-yellow)',
+                                borderRadius: '8px',
+                            },
+                            '& .MuiInput-underline:after': {
+                                borderBottomColor: 'var(--primary-yellow)',
+                                borderRadius: '8px',
+                            },
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: 'var(--secondary-light)',
+                                    borderRadius: '8px',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: 'var(--secondary-light)',
+                                    borderRadius: '8px',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: 'var(--primary-yellow)',
+                                    borderRadius: '8px',
+                                },
+                            },
+                        }}
+                        size="small"
+                        renderInput={(params) =>
+                            <TextField {...params} label="Afval Type"/>}
                         options={garbageTypes.data}
                         getOptionLabel={({name}) => name}
                         value={schedule.garbage_type}
-                        onChange={(_, val) => setSchedule({...schedule, garbage_type: val})}
+                        onChange={(_, val) =>
+                            setSchedule({...schedule, garbage_type: val})}
                     />
                     <TextField multiline value={schedule.note}
+                        sx={{
+                            '& .MuiInputLabel-root': {
+                                padding: '2px',
+                            },
+                            '& label.Mui-focused': {
+                                color: 'var(--primary-yellow)',
+                                borderRadius: '8px',
+                            },
+                            '& .MuiInput-underline:after': {
+                                borderBottomColor: 'var(--primary-yellow)',
+                                borderRadius: '8px',
+                            },
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: 'var(--secondary-light)',
+                                    borderRadius: '8px',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: 'var(--secondary-light)',
+                                    borderRadius: '8px',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: 'var(--primary-yellow)',
+                                    borderRadius: '8px',
+                                },
+                            },
+                        }}
+                        size="small"
+                        InputProps={{
+                            style: {height: '45px'},
+                        }}
                         onChange={(e) => setSchedule({...schedule, note: e.target.value})}
                         label={'Opmerking'}/>
-                    <Button disabled={!(schedule.for_day && schedule.garbage_type)}
-                        onClick={onSave}
-                        variant={'contained'}>Opslaan</Button>
-                    <Button onClick={() => onClose(false)} variant={'outlined'} color={'inherit'}>Annuleren</Button>
+                    <Button
+                        className={styles.submit_button}
+                        disabled={!(schedule.for_day && schedule.garbage_type)}
+                        onClick={onSave}>Opslaan</Button>
+                    <Button className={styles.cancel_button} onClick={() => onClose(false)} >Annuleren</Button>
                 </Box> :
                 <LoadingElement/>}
         </Dialog>

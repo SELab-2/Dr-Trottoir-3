@@ -53,10 +53,12 @@
     background-color: var(--primary-dark) !important;
     border-radius: 8px;
     width: 100%;
+    border-width: 0;
 }
 
 .cancel_button:hover {
     color: var(--primary-yellow) !important;
+    border-width: 0;
 }
 
 .submit_button {
@@ -67,8 +69,10 @@
     background-color: var(--primary-yellow) !important;
     border-radius: 8px;
     width: 100%;
+    border-width: 0;
 }
 
 .submit_button:hover {
     color: var(--secondary-dark) !important;
+    border-width: 0;
 }
