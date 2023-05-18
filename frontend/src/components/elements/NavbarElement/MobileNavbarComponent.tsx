@@ -37,8 +37,9 @@ const topButtonsAdmin = [
     {id: '2', text: 'Gebruikers', href: '/users', icon: PeopleAltRoundedIcon},
     {id: '3', text: 'Routes', href: '/routes', icon: RouteIcon},
     {id: '4', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon},
-    {id: '5', text: 'Account', href: '/profile', icon: PersonRoundedIcon},
-    {id: '6', text: 'Logout', href: '/logout', icon: LogoutRoundedIcon},
+    {id: '5', text: 'Mijn Planning', href: '/my-schedule', icon: DateRangeIcon},
+    {id: '6', text: 'Account', href: '/profile', icon: PersonRoundedIcon},
+    {id: '7', text: 'Logout', href: '/logout', icon: LogoutRoundedIcon},
 ];
 
 const botButtonsStudent = [
