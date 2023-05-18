@@ -101,9 +101,17 @@ export default function RoutesPage() {
     }, [current]);
 
     if (routes && allRoutes && locationGroups) {
+        const mappedRoutes = filterHighestVersion(routes.data);
+
+        const routesMappedData = {
+            data: mappedRoutes,
+            status: 200,
+            success: true,
+        };
+
         return (
             <ListViewComponent
-                listData={routes}
+                listData={routesMappedData}
                 setListData={setRoutes}
                 locationGroups={locationGroups}
                 selectedRegions={selectedRegions}
@@ -123,4 +131,20 @@ export default function RoutesPage() {
             <LoadingElement />
         );
     }
+}
+
+
+export function filterHighestVersion(schedules: ScheduleDefinition[]): ScheduleDefinition[] {
+    const filteredSchedules: { [key: string]: ScheduleDefinition } = {};
+
+    schedules.forEach((schedule) => {
+        // If this name has not been seen before, or if this version is higher than the previous highest
+        if (!filteredSchedules[schedule.name] || filteredSchedules[schedule.name].version < schedule.version) {
+            // Store this schedule as the highest version for this name
+            filteredSchedules[schedule.name] = schedule;
+        }
+    });
+
+    // Convert the object back to an array
+    return Object.values(filteredSchedules);
 }

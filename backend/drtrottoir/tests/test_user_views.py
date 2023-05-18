@@ -243,6 +243,7 @@ def test_user_create_no_relations():
 
     res = _test_user_create(data, user=student.user)
     res.data.pop("id")
+    res.data.pop("invite_link")
     assert res.status_code == 201 and res.data == data
 
 
@@ -261,6 +262,7 @@ def test_user_create_admin():
 
     res = _test_user_create(data, user=student.user)
     res.data.pop("id")
+    res.data.pop("invite_link")
     assert res.status_code == 201 and res.data == data
 
 
@@ -281,6 +283,7 @@ def test_user_create_student():
 
     res = _test_user_create(data, user=student.user)
     res.data.pop("id")
+    res.data.pop("invite_link")
     assert res.status_code == 201 and res.data == data
 
 
@@ -301,6 +304,8 @@ def test_user_create_syndicus():
 
     res = _test_user_create(data, user=student.user)
     res.data.pop("id")
+    res.data.pop("invite_link")
+    res.data["syndicus"].pop("id")
     assert res.status_code == 201 and res.data == data
 
 

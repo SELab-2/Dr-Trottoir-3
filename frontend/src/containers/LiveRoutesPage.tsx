@@ -99,7 +99,7 @@ export default function LiveRoutesPage() {
                 totalBuildings: definition.buildings.length,
                 buildingsDone: workEntries.data.filter((e) => e.schedule_assignment === e.id).length,
                 location_group: locationGroups.data.filter((e) => e.id === definition.location_group)[0].name,
-                student: student.first_name + ' .' + student.last_name[0].toUpperCase(),
+                student: student ? student.first_name + ' .' + student.last_name[0].toUpperCase() : '',
             };
         });
 
