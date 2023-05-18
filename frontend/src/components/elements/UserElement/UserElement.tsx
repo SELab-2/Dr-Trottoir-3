@@ -75,12 +75,7 @@ export default function UserElement(props: userElementProps) {
                             </div>
                             <div className={styles.firstColumnRow}>
                                 <p>{userData.data.student ? locationGroupData?.data.name : ''}</p>
-                                {/* <p>Some random address</p>*/}
-                                {/* <p>+32 000 00 00 00</p>*/}
                             </div>
-                            {/* <div className={styles.firstColumnRow}>*/}
-                            {/*    <p className={styles.createdDate}>Account aangemaakt op 25-02-2023</p>*/}
-                            {/* </div>*/}
                             <Button startIcon={<Edit/>} onClick={onOpenEditPopup}>
                                 Gebruiker aanpassen
                             </Button>
@@ -101,28 +96,6 @@ export default function UserElement(props: userElementProps) {
                                 sx={{height: 128, width: 128}}
                             />
                         </div>
-                        {/* <div className={styles.stats}>*/}
-                        {/*    <div className={styles.statsRow}>*/}
-                        {/*        <div className={styles.stat}>*/}
-                        {/*            <h1>52</h1>*/}
-                        {/*            <p>uur</p>*/}
-                        {/*        </div>*/}
-                        {/*        <div className={styles.stat}>*/}
-                        {/*            <h1>13</h1>*/}
-                        {/*            <p>routes</p>*/}
-                        {/*        </div>*/}
-                        {/*    </div>*/}
-                        {/*    <div className={styles.statsRow}>*/}
-                        {/*        <div className={styles.stat}>*/}
-                        {/*            <h1>48</h1>*/}
-                        {/*            <p>gebouwen</p>*/}
-                        {/*        </div>*/}
-                        {/*        <div className={styles.stat}>*/}
-                        {/*            <h1>7</h1>*/}
-                        {/*            <p>kilometers</p>*/}
-                        {/*        </div>*/}
-                        {/*    </div>*/}
-                        {/* </div>*/}
                     </div>
                     <div className={styles.userContent}>
                         <div className={styles.userRoutes + ' ' + styles.userRoutesPadding}>
