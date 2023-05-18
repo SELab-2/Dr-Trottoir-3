@@ -8,7 +8,19 @@ from .schedule_work_entry import ScheduleWorkEntrySerializer
 class BuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Building
-        fields = "__all__"
+        fields = [
+            "id",
+            "name",
+            "address",
+            "pdf_guide",
+            "location_group",
+            "is_active",
+            "description",
+            "image",
+            "longitude",
+            "latitude",
+            "syndici",
+        ]
         read_only_fields = ["secret_link"]
 
 
