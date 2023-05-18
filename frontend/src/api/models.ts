@@ -40,6 +40,7 @@ export type Building = {
     description: string;
     longitude: number | null,
     latitude: number | null,
+    syndici: number[],
 };
 
 export type ScheduleAssignment = {
@@ -103,3 +104,8 @@ export type Issue = {
     from_user: number,
     approval_user: number | null | undefined
 }
+
+export type UserAnalytics = {
+    date: string,
+    seconds: number
+}[]

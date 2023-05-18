@@ -46,21 +46,22 @@ export default function SchedulerDetails(props: schedulerDetailsProps) {
         }
     };
 
+    const clearAssignments = () => {
+        const emptyScheduleAssignment: ApiData<ScheduleAssignment[]> = {
+            status: 0,
+            success: true,
+            data: [],
+        };
+        setScheduleAssignments(emptyScheduleAssignment);
+    };
+
     useEffect(() => {
         if (triggerReload) {
             setTriggerReload(false);
         }
+        clearAssignments();
         loadAssignments();
     }, [props.scheduleDefinitions, props.start, session, triggerReload]);
-
-    // repeat every second
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            loadAssignments();
-        }, 1000);
-        return () => clearInterval(intervalId);
-    }, []);
-
 
     if (props.users?.data && props.scheduleDefinitions?.data && props.buildings?.data) {
         let filteredAssignments: ApiData<ScheduleAssignment[]> | undefined = undefined;
