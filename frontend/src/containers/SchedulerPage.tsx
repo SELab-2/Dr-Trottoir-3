@@ -11,6 +11,7 @@ import {
 } from '@/api/api';
 import {Building, LocationGroup, ScheduleDefinition, User} from '@/api/models';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
+import {filterHighestVersion} from '@/containers/RoutesPage';
 
 
 export default function SchedulerPage() {
@@ -66,6 +67,14 @@ export default function SchedulerPage() {
     };
 
     if (locationGroups && scheduleDefinitions && buildings && users && selectedRegion) {
+        const mappedScheduleDefinitions = filterHighestVersion(scheduleDefinitions.data);
+
+        const mappedScheduleDefinitionsData = {
+            data: mappedScheduleDefinitions,
+            status: 200,
+            success: true,
+        };
+
         return (
             <div className={styles.full_calendar_flex_container}>
                 <SchedulerTopBarComponent
@@ -76,7 +85,7 @@ export default function SchedulerPage() {
                     prevWeek={prevWeek}/>
                 <SchedulerDetails
                     start={first}
-                    scheduleDefinitions={scheduleDefinitions}
+                    scheduleDefinitions={mappedScheduleDefinitionsData}
                     users={users}
                     buildings={buildings}
                     interval={interval}/>
