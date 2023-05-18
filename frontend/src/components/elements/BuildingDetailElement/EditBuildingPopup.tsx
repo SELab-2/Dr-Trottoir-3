@@ -60,22 +60,31 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
     }, [open]);
 
     const handleSubmit = () => {
-        const patchData = new FormData();
-        patchData.append('name', formName);
-        patchData.append('address', formAddress);
-        patchData.append('latitude', formCoordinate.lat.toString());
-        patchData.append('longitude', formCoordinate.lng.toString());
-        patchData.append('description', formDescription);
-        patchData.append('is_active', false.toString());
+        const formData = new FormData();
+        formData.append('name', formName);
+        formData.append('address', formAddress);
+        formData.append('latitude', formCoordinate.lat.toString());
+        formData.append('longitude', formCoordinate.lng.toString());
+        formData.append('description', formDescription);
+        formData.append('is_active', false.toString());
         if (formPDFGuide !== null) {
-            patchData.append('pdf_guide', formPDFGuide, formPDFGuide.name);
+            formData.append('pdf_guide', formPDFGuide, formPDFGuide.name);
+        } else {
+            patchBuildingDetail(session, buildingId, {
+                pdf_guide: null,
+            });
         }
+
+        patchBuildingDetail(session, buildingId, formData);
+        const syndics: number[] = [];
         formSyndici.map((s) => {
             if (s.syndicus) {
-                patchData.append('syndici', s.syndicus.id.toString());
+                syndics.push(s.syndicus.id);
             }
         });
-        patchBuildingDetail(session, buildingId, patchData);
+        patchBuildingDetail(session, buildingId, {
+            syndici: syndics,
+        });
         setOpen(false);
     };
 
