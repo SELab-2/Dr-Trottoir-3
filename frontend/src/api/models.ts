@@ -40,6 +40,7 @@ export type Building = {
     description: string;
     longitude: number | null,
     latitude: number | null,
+    syndici: number[],
 };
 
 export type ScheduleAssignment = {
