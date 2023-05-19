@@ -25,6 +25,7 @@ import GarbageCollectionScheduleList from '@/components/elements/BuildingDetailE
 import Button from "@mui/material/Button";
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
+import {useRouter} from "next/router";
 
 interface IBuildingDetail {
     id: number,
@@ -79,6 +80,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
     const [sessionError, setSessionError] = React.useState(0);
 
     const [editPopupOpen, setEditPopupOpen] = useState(false);
+    const [reload, setReload] = useState<boolean>(false);
 
     function onOpenEditPopup() {
         setEditPopupOpen(true);
@@ -91,12 +93,17 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
         }
     }
 
+    const router = useRouter();
+
     // Get building data
     useEffect(() => {
         if (id !== null) {
             getBuildingDetail(session, setBuilding, id);
+            if (reload) {
+                setReload(false)
+            }
         }
-    }, [id, session]);
+    }, [id, session, setReload]);
 
     // Get location group
     useEffect(() => {
@@ -243,9 +250,9 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                                 InputProps={{
                                     style: {height: '45px'},
                                 }}
-                                label='publieke link'
                                 disabled={true}
-                                value={building.data.secret_link}
+                                value={building.data.secret_link? window.location.hostname + '/building/' +
+                                    building.data.secret_link: 'geen actieve link'}
                             />
                         </div>
 

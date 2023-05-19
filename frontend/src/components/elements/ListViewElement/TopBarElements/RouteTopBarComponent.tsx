@@ -56,7 +56,7 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
     const sorttypes = {
         name: 'naam',
         location_group__name: 'regio',
-        // buildings: 'aantal gebouwen',
+        // building: 'aantal gebouwen',
     };
 
     const [open, setOpen] = React.useState(false);

@@ -30,6 +30,7 @@ export type GarbageCollectionSchedule = {
 };
 
 export type Building = {
+    secret_link: unknown;
     id: number;
     name: string,
     address: string;
