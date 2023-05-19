@@ -181,7 +181,6 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                         </div>
                         <div className={styles.userAnalytics}>
                             <RouteMap buildings={orderedBuildings()} onHovering={setHovering} hovering={hovering}/>
-                            {/*<div className={styles.graph}></div>*/}
                         </div>
                     </div>
                 </div>
