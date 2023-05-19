@@ -105,11 +105,18 @@ export default function UsersPage() {
 
     const [userElementWidget, setUserElementWidget] = useState(<LoadingElement />);
 
-    useEffect(() => {
+    const changeUserElementWidget = () => {
         setUserElementWidget(<LoadingElement />);
         if (current) {
-            setUserElementWidget(<UserElement id={current}/>);
+            setUserElementWidget(<UserElement id={current} onEdit={() => {
+                reloadPage();
+                changeUserElementWidget();
+            }} />);
         }
+    }
+
+    useEffect(() => {
+        changeUserElementWidget();
     }, [current]);
 
     if (users && locationGroups && allBuildings) {

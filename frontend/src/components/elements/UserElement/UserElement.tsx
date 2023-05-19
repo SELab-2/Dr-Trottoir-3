@@ -28,6 +28,7 @@ import {
 
 type userElementProps = {
     id: number,
+    onEdit: () => void,
 }
 
 type ChartData = {
@@ -152,6 +153,7 @@ export default function UserElement(props: userElementProps) {
                             </Button>
                             <EditUserPopup
                                 userId={userData.data.id}
+                                onSubmit={props.onEdit}
                                 open={editPopupOpen}
                                 setOpen={setEditPopupOpen}
                                 prevFirstName={userData.data.first_name}
