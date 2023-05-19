@@ -6,9 +6,16 @@ import {ListItemProps} from './ListButtonComponentInterface';
 
 const UserListButtonComponent = (props: ListItemProps) => {
     const isCurrent = props.data.id === props.current;
-    const userType = props.data.admin ?
-        'admin' : (props.data.student ? (props.data.student.is_super_student ?
-            'superstudent' : 'student') : 'syndicus');
+    let userType: string;
+    if (props.data.admin) {
+        userType = 'Admin';
+    } else if (props.data.student && props.data.student.is_super_student) {
+        userType = 'Super student';
+    } else if (props.data.student && !props.data.student.is_super_student) {
+        userType = 'Student';
+    } else {
+        userType = 'Syndicus';
+    }
     return (
         <Button id={(isCurrent)?styles['item_button_select'] : styles['item_button']}
             className={styles.button_default}
@@ -25,7 +32,7 @@ const UserListButtonComponent = (props: ListItemProps) => {
                 </div>
             </div>
             <div className={styles.icon_container}>
-                <Avatar src='public/media/img.png' alt="building" className={styles.image}/>
+                <Avatar src='public/media/img.png' alt={props.data.first_name} className={styles.image}/>
             </div>
         </Button>
     );
