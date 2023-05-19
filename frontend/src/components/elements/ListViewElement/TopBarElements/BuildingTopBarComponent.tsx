@@ -183,7 +183,7 @@ export default function BuildingTopBarComponent({sorttype, setSorttype, selected
                 open={open}
                 invisible={false}
             >
-                <Form setCanClose={setCanClose} canClose={canClose} setOpen={setOpen}
+                <Form setCanClose={setCanClose} canClose={canClose} setOpen={setOpen} open={open}
                     allRegions={allRegions} allSyndici={allSyndici}></Form>
             </Backdrop>
         </div>
