@@ -109,7 +109,7 @@ function RouteDetail({scheduleDefinitionId, updateList}: routeDetailProps) {
                             </Typography>
                         </Box>
                     </Box>
-                    <Box display={'flex'} gap={1} flex={1} overflow={'hidden'} flexDirection={mobileView ? 'column' : 'row'}>
+                    <Box display={'flex'} gap={3} flex={1} overflow={'hidden'} flexDirection={mobileView ? 'column' : 'row'}>
                         <Box flexGrow={2} flexBasis={0}>
                             <Typography variant={'h5'}>Gebouwen</Typography>
                             <BuildingList list={(orderedBuildings())}
