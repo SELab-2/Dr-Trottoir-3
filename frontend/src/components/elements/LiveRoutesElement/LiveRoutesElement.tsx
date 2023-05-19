@@ -14,7 +14,7 @@ import LinearProgress, {linearProgressClasses} from '@mui/material/LinearProgres
 import {styled} from '@mui/system';
 import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
 import DoneIcon from '@mui/icons-material/Done';
-import RouteMap from "@/components/modules/routeDetail/RouteMap";
+import RouteMap from '@/components/modules/routeDetail/RouteMap';
 
 const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
     height: 30,
