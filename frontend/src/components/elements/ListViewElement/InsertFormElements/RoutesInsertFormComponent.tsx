@@ -4,7 +4,6 @@ import {
     Autocomplete,
     Button, Dialog,
     DialogTitle,
-    SelectChangeEvent,
     TextField,
 } from '@mui/material';
 import {LocationGroup, ScheduleDefinition} from '@/api/models';
