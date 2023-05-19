@@ -14,8 +14,8 @@ import {Add, ArrowDownward, ArrowUpward, Clear, Edit, PlaylistAdd} from '@mui/ic
 import dayjs, {Dayjs} from 'dayjs';
 import minMax from 'dayjs/plugin/minMax';
 import 'dayjs/locale/nl-be';
-import TemplateToSchedulePopup from '@/components/elements/BuildingDetailElement/TemplateToSchedulePopup';
-import EditSchedulePopup from '@/components/elements/BuildingDetailElement/EditSchedulePopup';
+import TemplateToSchedulePopup from './TemplateToSchedulePopup';
+import EditSchedulePopup from './EditSchedulePopup';
 
 dayjs.extend(minMax);
 
@@ -196,13 +196,13 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
                     )}
                     {/* </div>*/}
                     <TemplateToSchedulePopup open={templateToSchedulePopup}
-                        onClose={(refresh) => {
+                        onClose={(refresh: any) => {
                             setTemplateToSchedulePopup(false);
                             if (refresh) updateSchedules();
                         }}
                         defaultDate={defaultDate}
                         buildingId={buildingId}/>
-                    <EditSchedulePopup open={editSchedulePopup} onClose={(refresh) => {
+                    <EditSchedulePopup open={editSchedulePopup} onClose={(refresh: any) => {
                         setEditSchedulePopup(false);
                         setSelectedSchedule(undefined);
                         if (refresh) updateSchedules();
