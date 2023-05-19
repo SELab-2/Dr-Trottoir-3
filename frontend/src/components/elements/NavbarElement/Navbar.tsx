@@ -17,7 +17,7 @@ const topButtonsStudent = [
 ];
 
 const topButtonsSyndicus = [
-    {id: '0', text: 'Gebouwen', href: '/building', icon: ApartmentRoundedIcon},
+    {id: '0', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon},
 ];
 
 const topButtonsAdmin = [
@@ -25,14 +25,14 @@ const topButtonsAdmin = [
     {id: '1', text: 'Live Routes', href: '/live_routes', icon: SensorsRoundedIcon},
     {id: '2', text: 'Gebruikers', href: '/users', icon: PeopleAltRoundedIcon},
     {id: '3', text: 'Routes', href: '/routes', icon: RouteIcon},
-    {id: '4', text: 'Gebouwen', href: '/building', icon: ApartmentRoundedIcon}];
+    {id: '4', text: 'Gebouwen', href: '/buildings', icon: ApartmentRoundedIcon}];
 
 const includeRoutes = [
     '/profile',
     '/scheduler',
     '/live_routes',
     '/users',
-    '/building',
+    '/buildings',
     '/routes',
     '/my-schedule',
     '/active_route',

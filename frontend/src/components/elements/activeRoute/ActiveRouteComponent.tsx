@@ -60,7 +60,7 @@ export default function ActiveRouteComponent(props: { scheduleAssignmentId: numb
         }
     }, [session, scheduleAssignment, scheduleDefinition]);
 
-    // Get building
+    // Get buildings
     useEffect(()=> {
         getBuildingsList(session, setBuildings, {}, {});
     }, [session]);

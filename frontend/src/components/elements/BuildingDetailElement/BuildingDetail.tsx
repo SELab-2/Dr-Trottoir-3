@@ -95,7 +95,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
 
     const router = useRouter();
 
-    // Get building data
+    // Get buildings data
     useEffect(() => {
         if (id !== null) {
             getBuildingDetail(session, setBuilding, id);
@@ -151,7 +151,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
             } else if (!syndici.success) {
                 setSessionError(syndici.status);
             } else {
-                // If all checks have passed, continue with building page
+                // If all checks have passed, continue with buildings page
                 const garbageNames: { [id: number]: string } = {};
                 for (const garbageType of garbageTypes.data) {
                     garbageNames[garbageType.id] = garbageType.name;
@@ -227,7 +227,8 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                                 <IconButton onClick={buildingGenerateLink}>
                                     <RefreshRoundedIcon/>
                                 </IconButton>
-                                <IconButton onClick={() => navigator.clipboard.writeText(building.data.secret_link)}>
+                                <IconButton onClick={() => navigator.clipboard.writeText(
+                                    window.location.hostname + '/buildings/' + building.data.secret_link)}>
                                     <ContentCopyRoundedIcon/>
                                 </IconButton>
                             </div>
@@ -251,7 +252,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                                     style: {height: '45px'},
                                 }}
                                 disabled={true}
-                                value={building.data.secret_link? window.location.hostname + '/building/' +
+                                value={building.data.secret_link? window.location.hostname + '/buildings/' +
                                     building.data.secret_link: 'geen actieve link'}
                             />
                         </div>
