@@ -63,7 +63,7 @@ export default function MeElement() {
                             alt="Avatar"
                             src="/static/images/avatar/1.jpg"
                             sx={{height: 128, width: 128}}
-                        />
+                        >{userData.data.first_name.at(0)}</Avatar>
                     </div>
                 </div>
                 <div className={styles.userContent}>
