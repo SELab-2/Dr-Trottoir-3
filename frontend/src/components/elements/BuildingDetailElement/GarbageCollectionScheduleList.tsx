@@ -103,7 +103,7 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
 
     return (
         <Box className={styles.full_container}>
-            <Typography variant='h5' onClick={() => console.log(schedules)}>Planning</Typography>
+            <Typography variant='h5'>Planning</Typography>
             <Box paddingBottom={1}>
                 <Box
                     bgcolor={'var(--secondary-light)'}
