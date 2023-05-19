@@ -18,6 +18,7 @@ import styles from './topBar.module.css';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 type TopBarProps = {
+    onAdd: () => void,
     sorttype: string,
     setSorttype: React.Dispatch<React.SetStateAction<string>>,
     selectedRegions: LocationGroup[],
@@ -32,7 +33,7 @@ type TopBarProps = {
     handleSearch: (b: boolean) => void,
 }
 
-export default function UserTopBarComponent({sorttype, setSorttype, selectedRegions, setSelectedRegions, allRegions,
+export default function UserTopBarComponent({onAdd, sorttype, setSorttype, selectedRegions, setSelectedRegions, allRegions,
     searchEntry, setSearchEntry, selectedUserType, setSelectedUserType,
     allBuildings, handleSearch}:TopBarProps) {
     const AllesSelectedRegions = selectedRegions.length>=allRegions.length;
@@ -237,7 +238,7 @@ export default function UserTopBarComponent({sorttype, setSorttype, selectedRegi
                 open={open}
                 invisible={false}
             >
-                <Form setCanClose={setCanClose} canClose={canClose} setOpen={setOpen}
+                <Form onSubmit={onAdd} setCanClose={setCanClose} canClose={canClose} setOpen={setOpen}
                     allBuildings={allBuildings} allRegions={allRegions}></Form>
             </Backdrop>
         </div>

@@ -16,6 +16,7 @@ import {postUser} from '@/api/api';
 import {useSession} from 'next-auth/react';
 
 type FormProps = {
+    onSubmit: () => void,
     setCanClose: React.Dispatch<React.SetStateAction<boolean>>,
     canClose: boolean,
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
@@ -23,7 +24,7 @@ type FormProps = {
     allRegions: LocationGroup[],
 }
 
-export default function Form({setCanClose, canClose, setOpen, allBuildings, allRegions}: FormProps) {
+export default function Form({onSubmit, setCanClose, canClose, setOpen, allBuildings, allRegions}: FormProps) {
     const {data: session} = useSession();
     const [formUsername, setFormUsername] = React.useState('');
     const [formFirstName, setFormFirstName] = React.useState('');
@@ -31,7 +32,7 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings, allR
     const [formUserType, setFormUserType] = React.useState('');
     const [formIsSuperStudent, setFormIsSuperStudent] = React.useState(false);
     const [selectedBuildings, setSelectedBuildings] = React.useState<Building[]>([]);
-    const [formRegion, setFormRegion] = React.useState<LocationGroup>();
+    const [formRegion, setFormRegion] = React.useState<LocationGroup|null>(null);
 
     const userTypes = {
         student: 'student',
@@ -63,7 +64,16 @@ export default function Form({setCanClose, canClose, setOpen, allBuildings, allR
                 buildings: blds,
             };
         }
-        postUser(session, postData);
+        postUser(session, postData,()=> {
+            setFormFirstName('');
+            setFormUsername('');
+            setFormRegion(null);
+            setFormIsSuperStudent(false);
+            setFormLastName('');
+            setFormUserType('');
+            setSelectedBuildings([]);
+            onSubmit();
+        });
         handleClose();
     };
 

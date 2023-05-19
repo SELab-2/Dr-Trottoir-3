@@ -33,18 +33,20 @@ export default function UsersPage() {
 
 
     useEffect(() => {
-        handleSearch(false);
-    }, [session, selectedRegions, sorttype, userType]);
-
+        handleSearch(false, false);
+    }, [session]);
 
     useEffect(() => {
-        const element = document.getElementById(styles.scrollable);
-        if (element !== null) {
-            element.scrollTo({top: 0, behavior: 'smooth'});
-        }
-    }, [users]);
+        handleSearch(false);
+    }, [selectedRegions, sorttype, userType]);
 
-    const handleSearch = (clear: boolean = false) => {
+    const reloadPage = ()=>{
+        getBuildingsList(session, setAllBuildings);
+        getLocationGroupsList(session, setLocationGroups);
+        handleSearch(false, false);
+    };
+
+    const handleSearch = (clear: boolean = false, scrollTop: boolean = true) => {
         let searchEntryOverwritten: string;
         if (clear) {
             searchEntryOverwritten = '';
@@ -69,7 +71,15 @@ export default function UsersPage() {
             syndicusFilter = '0';
         }
 
-        getUsersList(session, setUsers, {
+        const setUserList = (data:any)=>{
+            setUsers(data);
+            const element = document.getElementById(styles.scrollable);
+            if (scrollTop  && element !== null) {
+                element.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        };
+
+        getUsersList(session, setUserList, {
             search: searchEntryOverwritten,
             ordering: sorttype, student__location_group__in: regionsFilter,
             syndicus__id__gt: syndicusFilter, admin__id__gt: adminFilter, student__id__gt: studentFilter,
@@ -78,6 +88,7 @@ export default function UsersPage() {
 
 
     const topBar = <UserTopBarComponent
+        onAdd={reloadPage}
         sorttype={sorttype}
         setSorttype={setSorttype}
         selectedRegions={selectedRegions}
