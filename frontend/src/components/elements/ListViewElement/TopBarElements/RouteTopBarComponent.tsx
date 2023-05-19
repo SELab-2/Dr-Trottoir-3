@@ -225,7 +225,7 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
                 open={open}
                 invisible={false}
             >
-                <Form setCanClose={setCanClose} canClose={canClose} setOpen={setOpen}
+                <Form open={open} setCanClose={setCanClose} canClose={canClose} setOpen={setOpen}
                     allRegions={allRegions} allRoutes={allRoutes}></Form>
             </Backdrop>
         </div>

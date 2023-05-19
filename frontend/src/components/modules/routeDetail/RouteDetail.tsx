@@ -91,7 +91,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
                         </Box>
                         <Box flexGrow={1}>
                             <Typography textAlign={mobileView ? 'start' : 'end'}>
-                                Version: {scheduleDefinition?.data.version}
+                                versie: {scheduleDefinition?.data.version}
                             </Typography>
                         </Box>
                     </Box>
