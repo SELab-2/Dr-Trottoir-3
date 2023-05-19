@@ -85,7 +85,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
                         borderRadius={'var(--small_corner)'}
                         display={'flex'} flexDirection={mobileView ? 'column' : 'row'}>
                         <Box>
-                            <Typography variant={mobileView ? 'h5' : 'h4'} onClick={() => console.log(buildings?.data)}
+                            <Typography variant={mobileView ? 'h5' : 'h4'}
                                 noWrap>{scheduleDefinition?.data.name}</Typography>
                             <Typography variant={'subtitle1'} noWrap>{locationGroup?.data.name}</Typography>
                         </Box>
@@ -126,7 +126,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
                 </Box>));
     } else {
         return (
-            <LoadingElement />
+            <LoadingElement/>
         );
     }
 }
