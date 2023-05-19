@@ -80,7 +80,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
     if (scheduleDefinition && locationGroup && buildings && order) {
         return (
             scheduleDefinitionId !== null ?
-                (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'} overflow={'auto'}>
+                (<Box width={'100%'} display={'flex'} flexDirection={'column'} overflow={'auto'}>
                     <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
                         borderRadius={'var(--small_corner)'}
                         display={'flex'} flexDirection={mobileView ? 'column' : 'row'}>
