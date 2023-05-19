@@ -68,7 +68,6 @@ export default function MeElement() {
                 </div>
                 <div className={styles.userContent}>
                     <div className={styles.userRoutes + ' ' + styles.userRoutesPadding}>
-                        <h2 className={styles.routesTitle + ' ' + styles.extraTitlePadding}>Routes</h2>
                         <div className={styles.scrollList}>
                             <div className={styles.routesItems}>
                                 <h3 className={styles.routesSubtitle + ' ' + styles.extraTitlePadding}>Gepland</h3>
@@ -137,9 +136,6 @@ export default function MeElement() {
                                 }
                             </div>
                         </div>
-                    </div>
-                    <div className={styles.userAnalytics}>
-                        <div className={styles.graph}></div>
                     </div>
                 </div>
             </div>
