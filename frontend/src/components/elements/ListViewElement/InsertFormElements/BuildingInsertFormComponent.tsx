@@ -304,10 +304,10 @@ export default function Form({setCanClose, canClose, setOpen, open, allRegions, 
                     </div>
                     <div className={styles.formButtons}>
                         <Button className={styles.cancel_button} onClick={handleClose}>
-                            Annuleer
+                            Annuleren
                         </Button>
                         <Button className={styles.submit_button} onClick={handleSubmitForm}>
-                            Accepteer
+                            Toevoegen
                         </Button>
                     </div>
                 </div>

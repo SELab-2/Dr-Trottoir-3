@@ -1,7 +1,11 @@
 import React from 'react';
-import {ClickAwayListener} from '@mui/base';
 import styles from '@/styles/forms.module.css';
-import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from '@mui/material';
+import {
+    Autocomplete,
+    Button, Dialog,
+    DialogTitle,
+    TextField,
+} from '@mui/material';
 import {LocationGroup, ScheduleDefinition} from '@/api/models';
 import {postScheduleDefinition} from '@/api/api';
 import {useSession} from 'next-auth/react';
@@ -12,12 +16,13 @@ type FormProps = {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
     allRegions: LocationGroup[],
     allRoutes: ScheduleDefinition[],
+    open: boolean
 }
 
-export default function Form({setCanClose, canClose, setOpen, allRegions, allRoutes}: FormProps) {
+export default function Form(props: FormProps) {
     const {data: session} = useSession();
     const handleSubmitForm = () =>{
-        const prevVers = allRoutes.filter((e) => {
+        const prevVers = props.allRoutes.filter((e) => {
             return (e.name === formName);
         });
         let version = 1;
@@ -33,32 +38,57 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allRou
     };
 
     const handleClose = () => {
-        if (canClose) {
-            setOpen(false);
+        if (props.canClose) {
+            props.setOpen(false);
         }
     };
 
     const [formName, setFormName] = React.useState('');
-    // const handleChangeFormName = (event: SelectChangeEvent) => {
-    //     setFormName(event.target.value as string);
-    // };
 
     const [formRegion, setFormRegion] = React.useState<LocationGroup>();
-    const handleChangeFormRegion = (event: SelectChangeEvent) => {
-        setFormRegion(event.target.value as unknown as LocationGroup);
-    };
 
     React.useEffect(() =>{
-        setCanClose(true);
+        props.setCanClose(true);
     });
     return (
-        <ClickAwayListener onClickAway={handleClose}>
+        <Dialog open={props.open} onClose={handleClose}>
+            <DialogTitle>Route toevoegen</DialogTitle>
             <div className={styles.formCenter}>
                 <div className={styles.form}>
-                    <h2 style={{color: 'black'}}>Route Toevoegen</h2>
                     <div className={styles.formFields}>
                         <div className={styles.field}>
                             <TextField
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
                                 fullWidth
                                 required
                                 label="naam"
@@ -66,35 +96,57 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allRou
                                 onChange={(e) => setFormName(e.target.value as string)}
                             />
                         </div>
-                        <FormControl required sx={{width: '100'}}>
-                            <InputLabel>regio</InputLabel>
-                            <Select
-                                value={formRegion?.name}
-                                onChange={handleChangeFormRegion}
-                                label="regio"
-                                defaultValue=""
-                                MenuProps={{disablePortal: true}}
-                            >
-                                {allRegions.map((option) => (
-                                    <MenuItem id="menuitem" key={option.id} value={option.id}
-                                        style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
-                                        {option.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                        <div className={styles.field}>
+                            <Autocomplete
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
+                                fullWidth
+                                renderInput={(params) => <TextField {...params} label="Afval Type"/>}
+                                options={props.allRegions}
+                                getOptionLabel={({name}) => name}
+                                value={formRegion}
+                                // @ts-ignore
+                                onChange={(e) => setFormRegion(e.target.value as LocationGroup)}
+                            />
+                        </div>
                     </div>
                     <div className={styles.formButtons}>
-                        <Button variant="contained" className={styles.button} onClick={handleClose}>
-                            Cancel
+                        <Button className={styles.cancel_button} onClick={handleClose}>
+                            Annuleren
                         </Button>
-                        <Button variant="contained" className={styles.button} onClick={handleSubmitForm}
+                        <Button className={styles.submit_button} onClick={handleSubmitForm}
                             style={{backgroundColor: '#E6E600'}}>
-                            Submit
+                            Toevoegen
                         </Button>
                     </div>
                 </div>
             </div>
-        </ClickAwayListener>
+        </Dialog>
     );
 }

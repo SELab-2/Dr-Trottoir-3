@@ -1,5 +1,5 @@
 import React, {SyntheticEvent, useEffect, useState} from 'react';
-import styles from '@/styles/listView.module.css';
+import styles from '@/styles/forms.module.css';
 import {
     Autocomplete,
     Button,
@@ -82,6 +82,34 @@ export default function CreateAssignmentForm(props: createAssignmentFormProps) {
                     <FormControl required sx={{minWidth: 150}} variant="outlined">
                         <Stack spacing={2} sx={{width: 300}}>
                             <Autocomplete
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
                                 id="gebruiker"
                                 isOptionEqualToValue={(option, value) => true}
                                 onChange={handleChangeFormUser}
@@ -96,6 +124,34 @@ export default function CreateAssignmentForm(props: createAssignmentFormProps) {
                     <FormControl required sx={{minWidth: 150}} variant="outlined">
                         <Stack spacing={2} sx={{width: 300}}>
                             <Autocomplete
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
                                 id="route"
                                 isOptionEqualToValue={(option, value) => true}
                                 onChange={handleChangeFormScheduleDefinition}
@@ -112,6 +168,33 @@ export default function CreateAssignmentForm(props: createAssignmentFormProps) {
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DemoItem label="Responsive variant">
                                 <DatePicker
+                                    sx={{
+                                        '& .MuiInputLabel-root': {
+                                            padding: '2px',
+                                        },
+                                        '& label.Mui-focused': {
+                                            color: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                        '& .MuiInput-underline:after': {
+                                            borderBottomColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: 'var(--secondary-light)',
+                                                borderRadius: '8px',
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: 'var(--secondary-light)',
+                                                borderRadius: '8px',
+                                            },
+                                            '&.Mui-focused fieldset': {
+                                                borderColor: 'var(--primary-yellow)',
+                                                borderRadius: '8px',
+                                            },
+                                        },
+                                    }}
                                     value={dayjs(formDate)}
                                     onChange={handleChangeFormDate}
                                 />
@@ -120,12 +203,12 @@ export default function CreateAssignmentForm(props: createAssignmentFormProps) {
                     </FormControl>
                 </div>
                 <div className={styles.formButtons}>
-                    <Button variant="contained" className={styles.button} onClick={handleClose}>
-                            Cancel
+                    <Button className={styles.cancel_button} onClick={handleClose}>
+                            Annuleren
                     </Button>
-                    <Button variant="contained" className={styles.button} onClick={handleSubmitForm}
+                    <Button className={styles.submit_button} onClick={handleSubmitForm}
                         style={{backgroundColor: '#E6E600'}}>
-                            Submit
+                            Toevoegen
                     </Button>
                 </div>
             </div>
