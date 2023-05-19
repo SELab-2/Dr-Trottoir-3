@@ -9,7 +9,6 @@ import {
     Select,
     TextField,
 } from '@mui/material';
-import {ClickAwayListener} from '@mui/base';
 import styles from '@/styles/forms.module.css';
 import {Building, LocationGroup} from '@/api/models';
 import {postUser} from '@/api/api';
@@ -122,8 +121,8 @@ export default function Form(props: FormProps) {
                                 },
                             },
                         }}
-                                     size="small"
-                                     fullWidth
+                        size="small"
+                        fullWidth
                         >
                             <InputLabel>regio</InputLabel>
                             <Select
@@ -360,9 +359,9 @@ export default function Form(props: FormProps) {
                                     },
                                 },
                             }}
-                                         required
-                                         size="small"
-                                         fullWidth>
+                            required
+                            size="small"
+                            fullWidth>
                                 <InputLabel>type</InputLabel>
                                 <Select
                                     value={formUserType}

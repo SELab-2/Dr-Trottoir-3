@@ -1,16 +1,11 @@
 import React from 'react';
-import {ClickAwayListener} from '@mui/base';
 import styles from '@/styles/forms.module.css';
 import {
     Autocomplete,
     Button, Dialog,
     DialogTitle,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
     SelectChangeEvent,
-    TextField
+    TextField,
 } from '@mui/material';
 import {LocationGroup, ScheduleDefinition} from '@/api/models';
 import {postScheduleDefinition} from '@/api/api';
@@ -50,14 +45,8 @@ export default function Form(props: FormProps) {
     };
 
     const [formName, setFormName] = React.useState('');
-    // const handleChangeFormName = (event: SelectChangeEvent) => {
-    //     setFormName(event.target.value as string);
-    // };
 
     const [formRegion, setFormRegion] = React.useState<LocationGroup>();
-    const handleChangeFormRegion = (event: SelectChangeEvent) => {
-        setFormRegion(event.target.value as unknown as LocationGroup);
-    };
 
     React.useEffect(() =>{
         props.setCanClose(true);

@@ -4,7 +4,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import {Building} from '@/api/models';
 import {Autocomplete, Box, Button, TextField} from '@mui/material';
-import styles from '../../../styles/forms.module.css'
+import styles from '../../../styles/forms.module.css';
 
 export interface SimpleDialogProps {
     open: boolean;
