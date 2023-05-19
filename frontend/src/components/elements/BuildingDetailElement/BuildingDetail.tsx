@@ -22,7 +22,6 @@ import EditBuildingPopup from './EditBuildingPopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 import IssueList from './IssueList';
 import GarbageCollectionScheduleList from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleList';
-import Button from "@mui/material/Button";
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 import {useRouter} from "next/router";
