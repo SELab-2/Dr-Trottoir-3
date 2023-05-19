@@ -1,5 +1,5 @@
 import styles from './buildingDetail.module.css';
-import {Box, Link} from '@mui/material';
+import {Box, Link, TextField} from '@mui/material';
 import {Building, LocationGroup, User} from '@/api/models';
 import {Edit, PictureAsPdf} from '@mui/icons-material';
 import {getBuildingDetail, getLocationGroupDetail, getUsersList, useAuthenticatedApi} from '@/api/api';
@@ -21,6 +21,9 @@ import EditBuildingPopup from './EditBuildingPopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 import IssueList from './IssueList';
 import GarbageCollectionScheduleList from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleList';
+import Button from "@mui/material/Button";
+import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
+import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 
 interface IBuildingDetail {
     id: number,
@@ -203,6 +206,39 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                         <div className={styles.building_issues_container}>
                             <BuildingDetailManualLink path={buildingDetail.pdf_guide}/>
                             <div style={{flex: '1'}}></div>
+                        </div>
+                        <div className={styles.building_issues_container}>
+                            <div style={{margin:'auto', display:'flex', gap: '3px', paddingRight:'5px'}}>
+                                <IconButton>
+                                    <RefreshRoundedIcon/>
+                                </IconButton>
+                                <IconButton onClick={() => navigator.clipboard.writeText(building.data.secret_link)}>
+                                    <ContentCopyRoundedIcon/>
+                                </IconButton>
+                            </div>
+                            <TextField
+                                fullWidth
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
+                                label='publieke link'
+                                disabled={true}
+                                value={building.data.secret_link}
+                            />
                         </div>
 
                         <EditBuildingPopup

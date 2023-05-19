@@ -43,4 +43,5 @@ class PublicBuildingSerializer(serializers.ModelSerializer):
             "longitude",
             "latitude",
             "schedule_work_entries",
+            "secret_link"
         ]

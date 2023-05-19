@@ -11,7 +11,7 @@ export default function PublicBuildingPage() {
 
     return (
         <>
-            <DynamicBuildingDetailComponent id={uuid}/>
+            <DynamicBuildingDetailComponent id={Number(uuid)}/>
         </>
     );
 }

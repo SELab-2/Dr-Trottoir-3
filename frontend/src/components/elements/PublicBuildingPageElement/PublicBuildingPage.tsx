@@ -6,7 +6,7 @@ import styles from '../BuildingDetailElement/buildingDetail.module.css';
 import {defaultBuildingImage} from '@/constants/images';
 import BuildingMap from '@/components/elements/BuildingDetailElement/BuildingMap';
 
-export default function PublicBuildingPage(props: { id: string }) {
+export default function PublicBuildingPage(props: { id: number }) {
     const {id} = props;
 
     const [building, setBuilding] = useState<PublicBuilding | undefined>(undefined);
