@@ -20,6 +20,7 @@ class BuildingSerializer(serializers.ModelSerializer):
             "longitude",
             "latitude",
             "syndici",
+            "secret_link"
         ]
         read_only_fields = ["secret_link"]
 
@@ -42,6 +43,5 @@ class PublicBuildingSerializer(serializers.ModelSerializer):
             "image",
             "longitude",
             "latitude",
-            "schedule_work_entries",
-            "secret_link"
+            "schedule_work_entries"
         ]

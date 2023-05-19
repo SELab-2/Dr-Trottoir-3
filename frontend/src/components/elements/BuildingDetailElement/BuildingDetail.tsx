@@ -9,6 +9,7 @@ import {
     getBuildingDetailGarbageCollectionSchedules,
     getBuildingDetailIssues,
     getGarbageTypesList,
+    postBuildingGenerateLink
 } from '@/api/api';
 import {defaultBuildingImage} from '@/constants/images';
 import {useSession} from 'next-auth/react';
@@ -81,6 +82,13 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
 
     function onOpenEditPopup() {
         setEditPopupOpen(true);
+    }
+
+    function buildingGenerateLink() {
+        if (id !== null) {
+            postBuildingGenerateLink(session, id, undefined);
+            getBuildingDetail(session, setBuilding, id);
+        }
     }
 
     // Get building data
@@ -209,7 +217,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                         </div>
                         <div className={styles.building_issues_container}>
                             <div style={{margin:'auto', display:'flex', gap: '3px', paddingRight:'5px'}}>
-                                <IconButton>
+                                <IconButton onClick={buildingGenerateLink}>
                                     <RefreshRoundedIcon/>
                                 </IconButton>
                                 <IconButton onClick={() => navigator.clipboard.writeText(building.data.secret_link)}>
