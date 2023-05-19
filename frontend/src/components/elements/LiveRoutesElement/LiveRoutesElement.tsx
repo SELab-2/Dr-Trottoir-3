@@ -14,6 +14,7 @@ import LinearProgress, {linearProgressClasses} from '@mui/material/LinearProgres
 import {styled} from '@mui/system';
 import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
 import DoneIcon from '@mui/icons-material/Done';
+import {Carousel} from "react-responsive-carousel";
 
 const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
     height: 30,
@@ -78,6 +79,7 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
             );
         }
     }, [session, scheduleDefinitionData]);
+
 
     useEffect(() => {
         if (scheduleAssignmentData) {
@@ -144,37 +146,86 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                     </div>
                     <div className={styles.userContent}>
                         <div className={styles.userRoutes + ' ' + styles.userRoutesPadding}>
-                            <h2 className={styles.routesTitle + ' ' + styles.extraTitlePadding}>Gebouwen</h2>
+                            <h2 className={styles.routesTitle + ' ' + styles.extraTitlePadding}>Route opvolgen</h2>
                             <div className={styles.scrollList}>
                                 <div className={styles.routesItems}>
                                     {buildingsData.data.map((building) =>
-                                        <div className={styles.routesItem}>
-                                            <h4>{building.address}</h4>
-
-                                            {workEntriesData?.data.filter(
-                                                (workEntry) => workEntry.building === building.id &&
-                                                    workEntry.schedule_assignment === scheduleAssignmentData?.data.id
-                                            ).map(
-                                                (workEntry) => workEntry.entry_type).includes('DE') ? <DoneIcon /> :
-                                                workEntriesData?.data.filter(
-                                                    (workEntry) => workEntry.building === building.id &&
-                                                    workEntry.schedule_assignment === scheduleAssignmentData?.data.id
-                                                ).map(
-                                                    (workEntry) => workEntry.entry_type).includes('WO') ?
-                                                    <PersonPinCircleIcon /> :
-                                                    workEntriesData?.data.filter(
-                                                        (workEntry) => workEntry.building === building.id &&
-                                                    workEntry.schedule_assignment === scheduleAssignmentData?.data.id
-                                                    ).map((workEntry) => workEntry.entry_type).includes('AR') ?
-                                                        <PersonPinCircleIcon /> : <CloseIcon />
-                                            }
-                                        </div>
+                                            <div className={styles.route_container}>
+                                                <div className={styles.route_title}>
+                                                    <h4>{building.address}</h4>
+                                                    {workEntriesData?.data.filter(
+                                                                (workEntry) => workEntry.building === building.id &&
+                                                                    workEntry.schedule_assignment === scheduleAssignmentData?.data.id
+                                                            ).map(
+                                                                (workEntry) => workEntry.entry_type).includes('DE') ? <DoneIcon /> :
+                                                                workEntriesData?.data.filter(
+                                                                    (workEntry) => workEntry.building === building.id &&
+                                                                    workEntry.schedule_assignment === scheduleAssignmentData?.data.id
+                                                                ).map(
+                                                                    (workEntry) => workEntry.entry_type).includes('WO') ?
+                                                                    <PersonPinCircleIcon /> :
+                                                                    workEntriesData?.data.filter(
+                                                                        (workEntry) => workEntry.building === building.id &&
+                                                                    workEntry.schedule_assignment === scheduleAssignmentData?.data.id
+                                                                    ).map((workEntry) => workEntry.entry_type).includes('AR') ?
+                                                                        <PersonPinCircleIcon /> : <CloseIcon />
+                                                    }
+                                                </div>
+                                                <div className={styles.route_images_container}>
+                                                    <div className={styles.container}>
+                                                        <Carousel
+                                                            showArrows={true}
+                                                            showIndicators={false}
+                                                            infiniteLoop={true}
+                                                            dynamicHeight={false}
+                                                            className={styles.mySwiper}
+                                                        >
+                                                            {workEntriesData.data.filter(e => e.entry_type === 'AR').map((item) => (
+                                                                <div className={styles.imgBox}>
+                                                                    <img src={'https://res.cloudinary.com/kizmelvin/image/upload/v1586799813/kizmelvin/persons_pigeon_nurkq2.jpg'} alt={''}/>
+                                                                </div>
+                                                            ))}
+                                                        </Carousel>
+                                                    </div>
+                                                </div>
+                                                <div className={styles.route_images_container}>
+                                                    <div className={styles.container}>
+                                                        <Carousel
+                                                            showArrows={true}
+                                                            showIndicators={true}
+                                                            infiniteLoop={true}
+                                                            dynamicHeight={false}
+                                                            className={styles.mySwiper}
+                                                        >
+                                                            {workEntriesData.data.filter(e => e.entry_type === 'AR').map((item) => (
+                                                                <div className={styles.imgBox}>
+                                                                    <img src={'https://res.cloudinary.com/kizmelvin/image/upload/v1586799813/kizmelvin/persons_pigeon_nurkq2.jpg'} alt={''}/>
+                                                                </div>
+                                                            ))}
+                                                        </Carousel>
+                                                    </div>
+                                                </div>
+                                                <div className={styles.route_images_container}>
+                                                    <div className={styles.container}>
+                                                        <Carousel
+                                                            showArrows={true}
+                                                            showIndicators={true}
+                                                            infiniteLoop={true}
+                                                            dynamicHeight={false}
+                                                            className={styles.mySwiper}
+                                                        >
+                                                            {workEntriesData.data.filter(e => e.entry_type === 'AR').map((item) => (
+                                                                <div className={styles.imgBox}>
+                                                                    <img src={'https://res.cloudinary.com/kizmelvin/image/upload/v1586799813/kizmelvin/persons_pigeon_nurkq2.jpg'} alt={''}/>
+                                                                </div>
+                                                            ))}
+                                                        </Carousel>
+                                                    </div>
+                                                </div>
+                                            </div>
                                     )}
                                 </div>
                             </div>
-                        </div>
-                        <div className={styles.userAnalytics}>
-                            <div className={styles.graph}></div>
                         </div>
                     </div>
                 </div>
