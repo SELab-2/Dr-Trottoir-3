@@ -15,6 +15,7 @@ import {Building, ScheduleDefinition} from '@/api/models';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import AddBuildingPopup from '@/components/modules/routeDetail/AddBuildingPopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
+import ScheduleAssignmentList from "@/components/modules/routeDetail/ScheduleAssignmentList";
 
 type routeDetailProps = {
     scheduleDefinitionId: ScheduleDefinition['id'] | null,
@@ -91,28 +92,33 @@ function RouteDetail({scheduleDefinitionId, updateList}: routeDetailProps) {
     if (scheduleDefinition && locationGroup && buildings && order) {
         return (
             scheduleDefinitionId !== null ?
-                (<Box width={'100%'} display={'flex'} flexDirection={'column'} overflow={'auto'}>
+                (<Box width={'100%'} display={'flex'} flexDirection={'column'} overflow={'hidden'}>
                     <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
                         borderRadius={'var(--small_corner)'}
                         display={'flex'} flexDirection={mobileView ? 'column' : 'row'}>
                         <Box>
-                            <Typography variant={mobileView ? 'h5' : 'h4'}
-                                noWrap>{scheduleDefinition?.data.name}</Typography>
+                            <Typography variant={mobileView ? 'h5' : 'h4'} noWrap>
+                                {scheduleDefinition?.data.name}
+                            </Typography>
                             <Typography variant={'subtitle1'} noWrap>{locationGroup?.data.name}</Typography>
                         </Box>
                         <Box flexGrow={1}>
+                            <div style={{display:'flex', flex:1}}></div>
                             <Typography textAlign={mobileView ? 'start' : 'end'}>
-                                versie: {scheduleDefinition?.data.version}
+                                versie {scheduleDefinition?.data.version}
                             </Typography>
                         </Box>
                     </Box>
-                    <Box display={'flex'} gap={1} flexGrow={1} flexDirection={mobileView ? 'column' : 'row'}>
+                    <Box display={'flex'} gap={1} flex={1} overflow={'hidden'} flexDirection={mobileView ? 'column' : 'row'}>
                         <Box flexGrow={2} flexBasis={0}>
                             <Typography variant={'h5'}>Gebouwen</Typography>
                             <BuildingList list={(orderedBuildings())}
                                 onReorder={onReorder} onRemove={onRemove}
                                 onAdd={onAdd}
                                 onHovering={setHovering} hovering={hovering}/>
+                        </Box>
+                        <Box flexGrow={2} flexBasis={0}>
+                            <ScheduleAssignmentList buildingId={scheduleDefinitionId}/>
                         </Box>
                         <Box flexGrow={5} minHeight={300}>
                             <RouteMap buildings={orderedBuildings()} onHovering={setHovering}
