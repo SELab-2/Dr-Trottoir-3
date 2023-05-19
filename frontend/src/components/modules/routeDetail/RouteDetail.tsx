@@ -6,7 +6,7 @@ import {
     getBuildingsList,
     getLocationGroupDetail,
     getScheduleDefinitionDetail,
-    getScheduleDefinitionDetailOrder,
+    getScheduleDefinitionDetailOrder, postScheduleDefinition,
     postScheduleDefinitionDetailOrder,
     useAuthenticatedApi,
 } from '@/api/api';
@@ -18,9 +18,10 @@ import LoadingElement from '@/components/elements/LoadingElement/LoadingElement'
 
 type routeDetailProps = {
     scheduleDefinitionId: ScheduleDefinition['id'] | null,
+    updateList: (newSelected: number) => void,
 }
 
-function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
+function RouteDetail({scheduleDefinitionId, updateList}: routeDetailProps) {
     const {data: session} = useSession();
     const mobileView = useMediaQuery('(max-width:1000px)');
     const [hovering, setHovering] = useState<Building['id'] | null>(null);
@@ -39,12 +40,12 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
     }, [session]);
 
     useEffect(() => {
-        if (scheduleDefinitionId !== null) {
+        if (scheduleDefinitionId !== null && scheduleDefinitionId !== scheduleDefinition?.data?.id) {
             setScheduleDefinition(undefined);
             setOrder(undefined);
             getScheduleDefinitionDetail(session, (res) => {
                 setScheduleDefinition(res);
-                getLocationGroupDetail(session, setLocationGroup, res.data.location_group);
+                if (res.data) getLocationGroupDetail(session, setLocationGroup, res.data.location_group);
             }, scheduleDefinitionId);
             getScheduleDefinitionDetailOrder(session, setOrder, scheduleDefinitionId);
         }
@@ -52,8 +53,18 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
 
     function onReorder(newList: Building['id'][]) {
         const newOrder = newList.map((id, index) => ({building: id, position: index}));
-        if (scheduleDefinitionId !== null) {
-            postScheduleDefinitionDetailOrder(session, scheduleDefinitionId, newOrder, setOrder);
+        if (scheduleDefinition?.data) {
+            postScheduleDefinition(session, {
+                name: scheduleDefinition.data.name,
+                version: scheduleDefinition.data.version + 1,
+                location_group: scheduleDefinition.data.location_group,
+            }, (res) => {
+                setScheduleDefinition(res);
+                if (res.data?.id) {
+                    postScheduleDefinitionDetailOrder(session, res.data.id, newOrder, setOrder);
+                    updateList(res.data.id);
+                }
+            });
         }
     }
 
@@ -65,7 +76,7 @@ function RouteDetail({scheduleDefinitionId}: routeDetailProps) {
         setDialogOpen(false);
         if (id && scheduleDefinitionId && order) {
             const newOrder = order.data.concat({building: id, position: order.data.length});
-            postScheduleDefinitionDetailOrder(session, scheduleDefinitionId, newOrder, setOrder);
+            onReorder(newOrder.map(({building}) => building));
         }
     }
 

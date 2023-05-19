@@ -96,7 +96,10 @@ export default function RoutesPage() {
     useEffect(() => {
         setRouteWidget(<LoadingElement />);
         if (current) {
-            setRouteWidget(<RouteDetail scheduleDefinitionId={current}/>);
+            setRouteWidget(<RouteDetail scheduleDefinitionId={current} updateList={(newSelected) => {
+                handleSearch(false);
+                setCurrent(newSelected);
+            }}/>);
         }
     }, [current]);
 
