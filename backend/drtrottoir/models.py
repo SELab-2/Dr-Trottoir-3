@@ -50,6 +50,7 @@ class Building(models.Model):
     is_active = models.BooleanField(default=True)
     description = models.TextField(null=True)
     image = models.ImageField(upload_to=get_file_path_building_image, null=True)
+    secret_link = models.UUIDField(null=True, unique=True)
     longitude = models.DecimalField(max_digits=22, decimal_places=16, null=True)
     latitude = models.DecimalField(max_digits=22, decimal_places=16, null=True)
 

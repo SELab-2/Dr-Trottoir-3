@@ -26,6 +26,7 @@ export enum Api {
     BuildingDetailGarbageCollectionScheduleTemplates = 'buildings/:id/garbage_collection_schedule_templates/',
     BuildingDetailIssues = 'buildings/:id/issues/',
     BuildingDetailScheduleDefinitions = 'buildings/:id/schedule_definitions/',
+    BuildingGenerateLink = 'buildings/:id/generate_link/',
     ScheduleAssignments = 'schedule_assignments/',
     ScheduleAssignmentDetail = 'schedule_assignments/:id/',
     ScheduleWorkEntries = 'schedule_work_entries/',
@@ -412,6 +413,16 @@ const getBuildingDetail = (session: Session | null, setter: ((e:any) => void), i
         })
         .catch((e) => {
             setter({success: false, status: e.status, data: e});
+        });
+};
+
+const postBuildingGenerateLink = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
+    postDetailsOnAPIWithId(Api.BuildingGenerateLink, session, id, {})
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
         });
 };
 
@@ -994,6 +1005,7 @@ export {
     postGarbageCollectionSchedule,
     postLocationGroup,
     postBuilding,
+    postBuildingGenerateLink,
     postScheduleAssignment,
     postScheduleWorkEntry,
     postScheduleDefinition,
