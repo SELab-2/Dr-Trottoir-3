@@ -15,6 +15,7 @@ const RouteListButtonComponent = (props: ListItemProps) => {
 
     useEffect(() => {
         const firstDay = new Date();
+        // backend does not support timezones, so we have to manually set this correctly
         firstDay.setHours(firstDay.getHours() + 2);
 
         getScheduleAssignmentsList(

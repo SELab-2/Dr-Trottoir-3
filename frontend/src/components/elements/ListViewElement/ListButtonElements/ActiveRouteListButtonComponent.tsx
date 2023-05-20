@@ -14,8 +14,6 @@ const ActiveRouteListButtonComponent = (props: ListItemProps) => {
 
     const {data: session} = useSession();
 
-    console.log(scheduleAssignment?.data);
-
     const progress = (scheduleAssignment?.data.buildings_done ? scheduleAssignment?.data.buildings_done : 0) /
     // @ts-ignore
         (scheduleAssignment?.data.buildings_count ? scheduleAssignment?.data.buildings_count : 1);
