@@ -44,6 +44,7 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
     const [formSyndici, setFormSyndici] = React.useState<User[]>(prevSyndici);
     const [formDescription, setFormDescription] = React.useState(prevDescription);
     const [formPDFGuide, setFormPDFGuide] = React.useState<File | null>(null);
+    const [formImage, setFormImage] = useState<File | null>(null);
 
     useEffect(() => {
         getUsersList(session, setAllSyndici, {syndicus__id__gt: 0});
@@ -69,12 +70,10 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
         formData.append('is_active', false.toString());
         if (formPDFGuide !== null) {
             formData.append('pdf_guide', formPDFGuide, formPDFGuide.name);
-        } else {
-            patchBuildingDetail(session, buildingId, {
-                pdf_guide: null,
-            });
         }
-
+        if (formImage !== null) {
+            formData.append('image', formImage, formImage.name);
+        }
         patchBuildingDetail(session, buildingId, formData);
         const syndics: number[] = [];
         formSyndici.forEach((s) => {
@@ -332,6 +331,37 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                                     (formPDFGuide.name.length > 40 ?
                                         formPDFGuide.name.slice(0, 37) +'...' :
                                         formPDFGuide.name
+                                    ) :
+                                    ''
+                            }
+                        </p>
+                        <div className={styles.field}>
+                            <Button
+                                variant="contained"
+                                component="label"
+                                sx={{'width': 240, 'fontSize': 12, 'backgroundColor': 'var(--primary-dark)',
+                                    '&:hover': {
+                                        backgroundColor: 'var(--secondary-dark)',
+                                    }}}
+                            >
+                                Afbeelding
+                                <input
+                                    type="file"
+                                    onChange={(e) => setFormImage(e.target.files ? e.target.files[0] : null)}
+                                    accept="image/*"
+                                    hidden
+                                />
+                            </Button>
+                            <IconButton onClick={() => setFormImage(null)}>
+                                <CloseIcon/>
+                            </IconButton>
+                        </div>
+                        <p style={{fontSize: 14}} className={styles.field}>
+                            {
+                                formImage ?
+                                    (formImage.name.length > 40 ?
+                                        formImage.name.slice(0, 37) +'...' :
+                                        formImage.name
                                     ) :
                                     ''
                             }
