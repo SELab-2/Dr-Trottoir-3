@@ -5,16 +5,16 @@ import {ScheduleAssignment, ScheduleDefinition} from '@/api/models';
 import dayjs, {Dayjs} from 'dayjs';
 import minMax from 'dayjs/plugin/minMax';
 import 'dayjs/locale/nl-be';
-import React from "react";
+import React from 'react';
 
 dayjs.extend(minMax);
 
-export default function AssignmentList({title, schedules, definitions}: { title: string, schedules: ScheduleAssignment[], definitions: ScheduleDefinition[] }) {
-
+export default function AssignmentList({title, schedules, definitions}:
+{ title: string, schedules: ScheduleAssignment[], definitions: ScheduleDefinition[] }) {
     function futureSchedulesPerWeek() {
         const fancySchedules = schedules.map((schedule) => ({
             id: schedule.id,
-            route: definitions.filter(e => e.id === schedule.schedule_definition).at(0),
+            route: definitions.filter((e) => e.id === schedule.schedule_definition).at(0),
             for_day: dayjs(schedule.assigned_date, {locale: 'nl-be'}),
         })) || [];
 
@@ -67,29 +67,29 @@ export default function AssignmentList({title, schedules, definitions}: { title:
                     <Box key={index}>
                         <Box display={'flex'} alignItems={'center'}>
                             <Typography noWrap
-                                        variant={'subtitle2'}>{dateFmt(monday)} tot {dateFmt(sunday)}</Typography>
+                                variant={'subtitle2'}>{dateFmt(monday)} tot {dateFmt(sunday)}</Typography>
 
                             <Box flexGrow={1}/>
                         </Box>
                         {schedules.length ? schedules.map((schedule, index) =>
-                                <Box paddingBottom={1} key={index}>
-                                    <Box
-                                        bgcolor={'var(--secondary-light)'}
-                                        borderRadius={'var(--small_corner)'} gap={1}
-                                        paddingY={0.2} paddingX={'3%'} alignItems={'center'} display={'flex'}
-                                    >
-                                        <Typography noWrap flexShrink={0}>
-                                            {schedule.route?.name}
-                                        </Typography>
-                                        <Box flex={2}/>
-                                        <Typography noWrap variant={'button'}>
-                                            {dateFmt(schedule.for_day)}
-                                        </Typography>
-                                    </Box>
-                                </Box>) :
+                            <Box paddingBottom={1} key={index}>
+                                <Box
+                                    bgcolor={'var(--secondary-light)'}
+                                    borderRadius={'var(--small_corner)'} gap={1}
+                                    paddingY={0.2} paddingX={'3%'} alignItems={'center'} display={'flex'}
+                                >
+                                    <Typography noWrap flexShrink={0}>
+                                        {schedule.route?.name}
+                                    </Typography>
+                                    <Box flex={2}/>
+                                    <Typography noWrap variant={'button'}>
+                                        {dateFmt(schedule.for_day)}
+                                    </Typography>
+                                </Box>
+                            </Box>) :
                             <Box paddingBottom={1}>
                                 <Box bgcolor={'var(--secondary-light)'} borderRadius={'var(--small_corner)'}
-                                     paddingY={0.2} paddingX={'3%'} display={'flex'}>
+                                    paddingY={0.2} paddingX={'3%'} display={'flex'}>
                                     <Box flexGrow={1}/>
                                     <Box flexGrow={1}/>
                                 </Box>

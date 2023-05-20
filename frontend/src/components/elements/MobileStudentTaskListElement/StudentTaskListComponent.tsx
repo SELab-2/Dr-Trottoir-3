@@ -61,7 +61,7 @@ export default function StudentTaskList({userId}: StudentTaskListProps) {
                     {
                         filteredAssignments.slice(0).map(([date, assignments]) => (
                             <Day date={date} key={date} assignments={assignments} definitions={definitions.data}
-                                 workEntries={workEntries.data}/>
+                                workEntries={workEntries.data}/>
                         ))
                     }
                 </div>

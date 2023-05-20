@@ -16,10 +16,9 @@ import Button from '@mui/material/Button';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
 import {Clear} from '@mui/icons-material';
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {DemoItem} from "@mui/x-date-pickers/internals/demo";
-import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
-import dayjs from "dayjs";
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import {DatePicker, LocalizationProvider} from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
 
 type TopBarProps = {
     sorttype: string,

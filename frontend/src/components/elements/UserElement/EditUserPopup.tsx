@@ -156,37 +156,37 @@ export default function EditUserPopup({userId, open, setOpen, prevFirstName, pre
                     <div className={styles.formFields}>
                         <div className={styles.field}>
                             <TextField fullWidth
-                                       sx={{
-                                           '& .MuiInputLabel-root': {
-                                               padding: '2px',
-                                           },
-                                           '& label.Mui-focused': {
-                                               color: 'var(--primary-yellow)',
-                                               borderRadius: '8px',
-                                           },
-                                           '& .MuiInput-underline:after': {
-                                               borderBottomColor: 'var(--primary-yellow)',
-                                               borderRadius: '8px',
-                                           },
-                                           '& .MuiOutlinedInput-root': {
-                                               '& fieldset': {
-                                                   borderColor: 'var(--secondary-light)',
-                                                   borderRadius: '8px',
-                                               },
-                                               '&:hover fieldset': {
-                                                   borderColor: 'var(--secondary-light)',
-                                                   borderRadius: '8px',
-                                               },
-                                               '&.Mui-focused fieldset': {
-                                                   borderColor: 'var(--primary-yellow)',
-                                                   borderRadius: '8px',
-                                               },
-                                           },
-                                       }}
-                                       size="small"
-                                       InputProps={{
-                                           style: {height: '45px'},
-                                       }}
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
                                 required
                                 label='voornaam'
                                 value={formFirstName}
@@ -196,37 +196,37 @@ export default function EditUserPopup({userId, open, setOpen, prevFirstName, pre
                         </div>
                         <div className={styles.field}>
                             <TextField fullWidth
-                                       sx={{
-                                           '& .MuiInputLabel-root': {
-                                               padding: '2px',
-                                           },
-                                           '& label.Mui-focused': {
-                                               color: 'var(--primary-yellow)',
-                                               borderRadius: '8px',
-                                           },
-                                           '& .MuiInput-underline:after': {
-                                               borderBottomColor: 'var(--primary-yellow)',
-                                               borderRadius: '8px',
-                                           },
-                                           '& .MuiOutlinedInput-root': {
-                                               '& fieldset': {
-                                                   borderColor: 'var(--secondary-light)',
-                                                   borderRadius: '8px',
-                                               },
-                                               '&:hover fieldset': {
-                                                   borderColor: 'var(--secondary-light)',
-                                                   borderRadius: '8px',
-                                               },
-                                               '&.Mui-focused fieldset': {
-                                                   borderColor: 'var(--primary-yellow)',
-                                                   borderRadius: '8px',
-                                               },
-                                           },
-                                       }}
-                                       size="small"
-                                       InputProps={{
-                                           style: {height: '45px'},
-                                       }}
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
                                 required
                                 label='achternaam'
                                 value={formLastName}

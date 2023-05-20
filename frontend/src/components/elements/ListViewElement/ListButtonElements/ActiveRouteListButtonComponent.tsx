@@ -3,25 +3,25 @@ import styles from '@/components/elements/ListViewElement/ListButtonElements/but
 import {Button} from '@mui/material';
 import {ListItemProps} from './ListButtonComponentInterface';
 import CheckIcon from '@mui/icons-material/Check';
-import {getScheduleAssignmentDetail, useAuthenticatedApi} from "@/api/api";
-import {ScheduleAssignment} from "@/api/models";
-import {useSession} from "next-auth/react";
+import {getScheduleAssignmentDetail, useAuthenticatedApi} from '@/api/api';
+import {ScheduleAssignment} from '@/api/models';
+import {useSession} from 'next-auth/react';
 
 const ActiveRouteListButtonComponent = (props: ListItemProps) => {
     const isCurrent = props.data.id === props.current;
     const [scheduleAssignment, setScheduleAssignment] =
         useAuthenticatedApi<ScheduleAssignment>();
 
-    const {data: session} = useSession()
+    const {data: session} = useSession();
 
-    console.log(scheduleAssignment?.data)
+    console.log(scheduleAssignment?.data);
 
-    const progress = (scheduleAssignment?.data.buildings_done ? scheduleAssignment?.data.buildings_done : 0)
+    const progress = (scheduleAssignment?.data.buildings_done ? scheduleAssignment?.data.buildings_done : 0) /
     // @ts-ignore
-        / (scheduleAssignment?.data.buildings_count ? scheduleAssignment?.data.buildings_count : 1);
+        (scheduleAssignment?.data.buildings_count ? scheduleAssignment?.data.buildings_count : 1);
 
     useEffect(() => {
-        getScheduleAssignmentDetail(session, setScheduleAssignment, props.data.id)
+        getScheduleAssignmentDetail(session, setScheduleAssignment, props.data.id);
     }, [session]);
 
     return (

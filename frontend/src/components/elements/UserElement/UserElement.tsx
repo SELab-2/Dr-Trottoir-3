@@ -1,4 +1,4 @@
-import {Avatar, Box, IconButton, Tooltip} from '@mui/material';
+import {Avatar, IconButton, Tooltip} from '@mui/material';
 import styles from './userElement.module.css';
 import {
     getLocationGroupDetail, getScheduleAssignmentsList,
@@ -22,7 +22,7 @@ import {
     Title,
     Legend,
 } from 'chart.js';
-import AssignmentList from "@/components/elements/UserElement/AssignmentList";
+import AssignmentList from '@/components/elements/UserElement/AssignmentList';
 
 
 type userElementProps = {
@@ -131,8 +131,9 @@ export default function UserElement(props: userElementProps) {
                     <div className={styles.userHeader}>
                         <div className={styles.building_general_container}>
                             <div className={styles.building_title_container}>
-                                <Tooltip title={userData.data.first_name + " " + userData.data.last_name} placement="top">
-                                    <div style={{display:'flex', flex:1, flexFlow:'column'}}>
+                                <Tooltip
+                                    title={userData.data.first_name + ' ' + userData.data.last_name} placement="top">
+                                    <div style={{display: 'flex', flex: 1, flexFlow: 'column'}}>
                                         <h1 className={styles.building_data_title}>
                                             {userData.data.first_name}
                                         </h1>
@@ -168,7 +169,7 @@ export default function UserElement(props: userElementProps) {
                                 prevSyndic={userData.data.syndicus}
                             />
                         </div>
-                        <div style={{display:'flex', flex:7}}/>
+                        <div style={{display: 'flex', flex: 7}}/>
                         <div className={styles.picture}>
                             <Avatar
                                 alt="Avatar"
@@ -181,7 +182,7 @@ export default function UserElement(props: userElementProps) {
 
                     <div className={styles.userContent}>
                         <div className={styles.list_container}>
-                            <AssignmentList title={"Gepland"} schedules={scheduleAssignmentsData?.data
+                            <AssignmentList title={'Gepland'} schedules={scheduleAssignmentsData?.data
                                 .filter((e) => {
                                     const today = new Date();
                                     const date = new Date(e.assigned_date);
@@ -190,7 +191,7 @@ export default function UserElement(props: userElementProps) {
                         </div>
 
                         <div className={styles.list_container}>
-                            <AssignmentList title={"Geschiedenis"} schedules={scheduleAssignmentsData?.data
+                            <AssignmentList title={'Geschiedenis'} schedules={scheduleAssignmentsData?.data
                                 .filter((e) => {
                                     const today = new Date();
                                     const date = new Date(e.assigned_date);
