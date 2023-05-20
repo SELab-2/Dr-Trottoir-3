@@ -66,11 +66,14 @@ export default function EditTemplatePopup({
     useEffect(loadTemplate, [selectedTemplate, open]);
 
     function loadTemplate() {
-        if (selectedTemplate && selectedTemplate.id) {
+        if (open && selectedTemplate && selectedTemplate.id) {
             getGarbageCollectionScheduleTemplateDetailEntries(session, (res) => {
                 if (res?.data) {
                     setOriginalEntries(res.data);
                     setNewEntries(res.data);
+                } else {
+                    setOriginalEntries([]);
+                    setNewEntries([]);
                 }
             }, selectedTemplate.id);
         } else {
