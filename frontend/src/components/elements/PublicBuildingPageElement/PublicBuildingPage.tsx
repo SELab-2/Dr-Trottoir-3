@@ -59,6 +59,10 @@ export default function PublicBuildingPage(props: { id: number }) {
         return (
             <div className={styles.fullWrapper}>
                 <div className={styles.full}>
+                    <div className={styles.drtrottoirlogoWrapper}>
+                        <img src={'/media/logo_drtrottoir.svg'} className={styles.drtrottoirlogo}/>
+                    </div>
+
                     {/* Top row */}
                     <div className={styles.top_row_container}>
                         {/* Building data container */}
@@ -73,40 +77,15 @@ export default function PublicBuildingPage(props: { id: number }) {
                                 </div>
                             </div>
                             <div className={styles.building_data_container}>
-                                <Tooltip title={building.location_group} placement="right">
-                                    <p>{building.location_group}</p>
-                                </Tooltip>
                                 <Tooltip title={building.address} placement="right">
                                     <p>{building.address}</p>
                                 </Tooltip>
-                                <Tooltip title={building.syndici} placement="right">
-                                    <p>{building.syndici}</p>
-                                </Tooltip>
-                                {/* Button to open the issue modal*/}
                             </div>
-                            <div className={styles.building_issues_container}>
-                                <BuildingDetailManualLink path={building.pdf_guide}/>
-                                <div style={{flex: '1'}}></div>
-                            </div>
-                        </div>
-
-                        {/* Building description container */}
-                        <div className={styles.building_desc_container}>
-                            <BuildingMap longitude={building.longitude} latitude={building.latitude}/>
-                        </div>
-
-                        {/* Building image container */}
-                        <div className={styles.building_imag_container}>
-                            <img src={
-                                building.image ?
-                                    building.image :
-                                    defaultBuildingImage
-                            }
-                            alt={'Building'}/>
                         </div>
                     </div>
 
                     {/* Bottom row */}
+                    <div className={styles.bottom_row_containerWrapper}>
                     <div className={styles.bottom_row_container}>
                         {/* Planning */}
                         <Box flexGrow={3} flexBasis={0}>
@@ -118,6 +97,7 @@ export default function PublicBuildingPage(props: { id: number }) {
                                 }
                             />
                         </Box>
+                    </div>
                     </div>
                 </div>
             </div>

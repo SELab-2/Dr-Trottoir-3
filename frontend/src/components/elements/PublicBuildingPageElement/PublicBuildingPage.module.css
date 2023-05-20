@@ -1,17 +1,18 @@
-/*.fullWrapper {*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    align-items: center;*/
-/*    justify-content: center;*/
-/*    height: 100%;*/
-/*    width: 100%;*/
-/*}*/
+
+.drtrottoirlogoWrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+}
+.drtrottoirlogo {
+    width: min(350px, 100%);
+}
 
 .full {
     display: flex;
     flex-direction: column;
-    /*height: 80%;*/
-    /*width: 80%;*/
     height: 100%;
     width: 100%;
     padding: 7.5vh 5vw;
@@ -34,13 +35,12 @@
 
 .top_row_container {
     display: flex;
-    height: 280px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     border-radius: var(--large-corner) var(--large-corner) var(--small_corner) var(--small_corner);
     padding: 30px 20px;
-    gap: 15px;
-    overflow: hidden;
-    background-color: var(--secondary-light);
 }
 
 /* Bottom row */
@@ -50,12 +50,19 @@
     flex-grow: 4;
 }
 
+.bottom_row_containerWrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .bottom_row_container {
     display: flex;
     flex-direction: row;
     /*flex:1;*/
     flex:1;
-    width: 100%;
+    width: min(400px, 100%);
     gap: 20px;
     border-radius: 8px;
     overflow: hidden;
@@ -69,24 +76,17 @@
     display: flex;
     flex: 4;
     height: 100%;
-    /*text-align: left;*/
+    width: 100%;
+    text-align: center;
     flex-direction: column;
-    overflow: hidden;
     padding-right: 20px;
 }
 
 .building_title_container {
-    display: flex;
-    flex-grow: 0;
-    flex-basis: 40px;
 }
 
 .building_data_container {
-    display: flex;
-    flex-flow: column;
-    padding: 10px 0;
-    flex-grow: 1;
-    width: max(100%, 200px);
+
 }
 
 .building_issues_container {
@@ -99,18 +99,13 @@
     padding: 3px;
     font-weight: 400;
     font-size: 14px;
-    width: 90%;
-    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .building_data_title {
-    margin: auto;
-    margin-left: 0;
     font-weight: 400;
     font-size: 30px;
-    width: 80%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

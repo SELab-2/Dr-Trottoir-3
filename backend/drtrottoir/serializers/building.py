@@ -39,7 +39,6 @@ class PublicBuildingSerializer(serializers.ModelSerializer):
         fields = [
             "name",
             "address",
-            "description",
             "image",
             "longitude",
             "latitude",
