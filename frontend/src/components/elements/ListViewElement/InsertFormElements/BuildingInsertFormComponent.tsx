@@ -15,6 +15,7 @@ import {LatLng} from 'leaflet';
 import BuildingMapSelector from '@/components/elements/ListViewElement/InsertFormElements/BuildingMapSelector';
 import axios from 'axios';
 import {PinDrop} from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 type FormProps = {
@@ -43,10 +44,18 @@ export default function Form({setCanClose, canClose, setOpen, open, allRegions, 
         formData.append('longitude', formCoordinate.lng.toString());
         formData.append('description', formDescription);
         formData.append('is_active', false.toString());
-        formData.append('location_group', formRegion ? formRegion.toString() : '');
+        formData.append('location_group', formRegion ? formRegion.id.toString() : '');
         if (formPDFGuide !== null) {
             formData.append('pdf_guide', formPDFGuide, formPDFGuide.name);
         }
+        if (formImage !== null) {
+            formData.append('image', formImage, formImage.name);
+        }
+        formSyndici.forEach((s) => {
+            if (s.syndicus) {
+                formData.append('syndici', s.syndicus.id.toString());
+            }
+        });
         postBuilding(session, formData);
         handleClose();
     };
@@ -58,7 +67,8 @@ export default function Form({setCanClose, canClose, setOpen, open, allRegions, 
     const [formRegion, setFormRegion] = useState<LocationGroup>();
     const [formSyndici, setFormSyndici] = useState<User[]>([]);
     const [formDescription, setFormDescription] = useState('');
-    const [formPDFGuide] = useState<File | null>(null);
+    const [formPDFGuide, setFormPDFGuide] = React.useState<File | null>(null);
+    const [formImage, setFormImage] = useState<File | null>(null);
 
     React.useEffect(() => {
         setCanClose(true);
@@ -142,12 +152,12 @@ export default function Form({setCanClose, canClose, setOpen, open, allRegions, 
                                 }}
                                 size="small"
                                 fullWidth
-                                renderInput={(params) => <TextField {...params} label="Afval Type"/>}
+                                renderInput={(params) => <TextField {...params} label="Regio"/>}
                                 options={allRegions}
                                 getOptionLabel={({name}) => name}
                                 value={formRegion}
                                 // @ts-ignore
-                                onChange={(e) => setFormRegion(e.target.value as LocationGroup)}
+                                onChange={(e, v) => setFormRegion(v)}
                             />
                         </div>
                         <div className={styles.field}>
@@ -301,6 +311,68 @@ export default function Form({setCanClose, canClose, setOpen, open, allRegions, 
                                 )}
                             />
                         </FormControl>
+                        <div className={styles.field}>
+                            <Button
+                                variant="contained"
+                                component="label"
+                                sx={{'width': 240, 'fontSize': 12, 'backgroundColor': 'var(--primary-dark)',
+                                    '&:hover': {
+                                        backgroundColor: 'var(--secondary-dark)',
+                                    }}}
+                            >
+                                Handleiding (PDF)
+                                <input
+                                    type="file"
+                                    onChange={(e) => setFormPDFGuide(e.target.files ? e.target.files[0] : null)}
+                                    accept="application/pdf"
+                                    hidden
+                                />
+                            </Button>
+                            <IconButton onClick={() => setFormPDFGuide(null)}>
+                                <CloseIcon/>
+                            </IconButton>
+                        </div>
+                        <p style={{fontSize: 14}} className={styles.field}>
+                            {
+                                formPDFGuide ?
+                                    (formPDFGuide.name.length > 40 ?
+                                        formPDFGuide.name.slice(0, 37) +'...' :
+                                        formPDFGuide.name
+                                    ) :
+                                    ''
+                            }
+                        </p>
+                        <div className={styles.field}>
+                            <Button
+                                variant="contained"
+                                component="label"
+                                sx={{'width': 240, 'fontSize': 12, 'backgroundColor': 'var(--primary-dark)',
+                                    '&:hover': {
+                                        backgroundColor: 'var(--secondary-dark)',
+                                    }}}
+                            >
+                                Afbeelding
+                                <input
+                                    type="file"
+                                    onChange={(e) => setFormImage(e.target.files ? e.target.files[0] : null)}
+                                    accept="image/*"
+                                    hidden
+                                />
+                            </Button>
+                            <IconButton onClick={() => setFormImage(null)}>
+                                <CloseIcon/>
+                            </IconButton>
+                        </div>
+                        <p style={{fontSize: 14}} className={styles.field}>
+                            {
+                                formImage ?
+                                    (formImage.name.length > 40 ?
+                                        formImage.name.slice(0, 37) +'...' :
+                                        formImage.name
+                                    ) :
+                                    ''
+                            }
+                        </p>
                     </div>
                     <div className={styles.formButtons}>
                         <Button className={styles.cancel_button} onClick={handleClose}>
