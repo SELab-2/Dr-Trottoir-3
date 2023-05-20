@@ -85,37 +85,37 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
         if (id !== null) {
             getBuildingDetail(session, setBuilding, id);
         }
-    }, [id, session]);
+    }, [id, session, editPopupOpen]);
 
     // Get location group
     useEffect(() => {
         if (building) {
             getLocationGroupDetail(session, setLocation, building.data.location_group);
         }
-    }, [building, session]);
+    }, [building, session, editPopupOpen]);
 
     // Get schedules
     useEffect(() => {
         if (id !== null) {
             getBuildingDetailGarbageCollectionSchedules(session, setSchedules, id);
         }
-    }, [id, session]);
+    }, [id, session, editPopupOpen]);
 
     // Get garbage types
     useEffect(() => {
         getGarbageTypesList(session, setGarbageTypes);
-    }, [session]);
+    }, [session, editPopupOpen]);
 
     // Get issues
     useEffect(() => {
         if (id !== null) {
             getBuildingDetailIssues(session, setIssues, id);
         }
-    }, [id, session]);
+    }, [id, session, editPopupOpen]);
 
     useEffect(() => {
         getUsersList(session, setSyndici, {'syndicus__buildings': id}, {});
-    }, [id, session]);
+    }, [id, session, editPopupOpen]);
 
     useEffect(() => {
         if (session && building && location && schedules && garbageTypes && issues && syndici) {

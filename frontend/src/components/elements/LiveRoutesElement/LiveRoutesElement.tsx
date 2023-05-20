@@ -17,6 +17,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import {Carousel} from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"
 import {Fade, Modal} from "@mui/material";
+import RouteMap from '@/components/modules/routeDetail/RouteMap';
 
 const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
     height: 30,
@@ -45,12 +46,13 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
     const [workEntriesData, setWorkEntriesData] = useAuthenticatedApi<Array<ScheduleWorkEntry>>();
     const [open, setOpen] = useState(false);
     const [image, setImage] = useState("false");
+    const [hovering, setHovering] = useState<Building['id'] | null>(null);
 
     const handleClose = () => {
         setOpen(false);
     };
 
-    const handleImage = (value) => {
+    const handleImage = (value: string) => {
         setImage(value);
         setOpen(true);
         console.log(image);
@@ -110,6 +112,10 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                         }));
         }
     }, [session, scheduleAssignmentData]);
+
+    const orderedBuildings: () => Building[] = () => buildingsData?.data
+        .map((e) => (e || []))
+        .flat() || [];
 
     if (
         !scheduleDefinitionData ||
@@ -188,6 +194,7 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                                                 <div className={styles.route_images_container}>
                                                     <div className={styles.container}>
                                                         <Carousel
+                                                            showIndicators={false}
                                                             showArrows={true}
                                                             infiniteLoop={true}
                                                             showStatus={false}
@@ -207,6 +214,7 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                                                 <div className={styles.route_images_container}>
                                                     <div className={styles.container}>
                                                         <Carousel
+                                                            showIndicators={false}
                                                             showArrows={true}
                                                             infiniteLoop={true}
                                                             showStatus={false}
@@ -226,6 +234,7 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                                                 <div className={styles.route_images_container}>
                                                     <div className={styles.container}>
                                                         <Carousel
+                                                            showIndicators={false}
                                                             showArrows={true}
                                                             infiniteLoop={true}
                                                             showStatus={false}
@@ -262,6 +271,9 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                                     </Modal>
                                 </div>
                             </div>
+                        </div>
+                        <div className={styles.userAnalytics}>
+                            <RouteMap buildings={orderedBuildings()} onHovering={setHovering} hovering={hovering}/>
                         </div>
                     </div>
                 </div>
