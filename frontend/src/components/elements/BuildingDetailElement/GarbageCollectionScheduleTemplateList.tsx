@@ -19,6 +19,7 @@ export default function GarbageCollectionScheduleTemplateList({buildingId}: { bu
     const [selectedTemplate, setSelectedTemplate] = useState<GarbageCollectionScheduleTemplate | null>(null);
 
     function onDialogClose(update = false) {
+        setSelectedTemplate(null);
         setDialogOpen(false);
         if (update) updateTemplates();
     }
