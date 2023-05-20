@@ -8,13 +8,14 @@ import styles from './PublicBuildingPage.module.css';
 import PublicGarbageCollectionScheduleList from './PublicGarbageCollectionScheduleList';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
-export default function PublicBuildingPage(props: { id: number }) {
+export default function PublicBuildingPage(props: { id: string }) {
     const {id} = props;
 
     const [buildingData, setBuildingData] = useState<Object>();
 
     useEffect(()=>{
         if (id !== null) {
+            // @ts-ignore
             getBuildingDetail(null, setBuildingData, id);
         }
     }, [id]);
