@@ -16,6 +16,7 @@ import axios from 'axios';
 import {LatLng} from 'leaflet';
 import {PinDrop} from '@mui/icons-material';
 import BuildingMapSelector from '@/components/elements/ListViewElement/InsertFormElements/BuildingMapSelector';
+import CloseIcon from '@mui/icons-material/Close';
 
 type EditBuildingPopupProps = {
     buildingId: number,
@@ -42,6 +43,8 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
         React.useState<LatLng>(new LatLng(51.1576985, 4.0807745));
     const [formSyndici, setFormSyndici] = React.useState<User[]>(prevSyndici);
     const [formDescription, setFormDescription] = React.useState(prevDescription);
+    const [formPDFGuide, setFormPDFGuide] = React.useState<File | null>(null);
+    const [formImage, setFormImage] = useState<File | null>(null);
 
     useEffect(() => {
         getUsersList(session, setAllSyndici, {syndicus__id__gt: 0});
@@ -58,12 +61,28 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
     }, [open]);
 
     const handleSubmit = () => {
+        const formData = new FormData();
+        formData.append('name', formName);
+        formData.append('address', formAddress);
+        formData.append('latitude', formCoordinate.lat.toString());
+        formData.append('longitude', formCoordinate.lng.toString());
+        formData.append('description', formDescription);
+        formData.append('is_active', false.toString());
+        if (formPDFGuide !== null) {
+            formData.append('pdf_guide', formPDFGuide, formPDFGuide.name);
+        }
+        if (formImage !== null) {
+            formData.append('image', formImage, formImage.name);
+        }
+        patchBuildingDetail(session, buildingId, formData);
+        const syndics: number[] = [];
+        formSyndici.forEach((s) => {
+            if (s.syndicus) {
+                syndics.push(s.syndicus.id);
+            }
+        });
         patchBuildingDetail(session, buildingId, {
-            name: formName,
-            address: formAddress,
-            latitude: formCoordinate.lat,
-            longitude: formCoordinate.lng,
-            description: formDescription,
+            syndici: syndics,
         });
         setOpen(false);
     };
@@ -276,6 +295,68 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                                 )}
                             />
                         </FormControl>
+                        <div className={styles.field}>
+                            <Button
+                                variant="contained"
+                                component="label"
+                                sx={{'width': 240, 'fontSize': 12, 'backgroundColor': 'var(--primary-dark)',
+                                    '&:hover': {
+                                        backgroundColor: 'var(--secondary-dark)',
+                                    }}}
+                            >
+                                Handleiding (PDF)
+                                <input
+                                    type="file"
+                                    onChange={(e) => setFormPDFGuide(e.target.files ? e.target.files[0] : null)}
+                                    accept="application/pdf"
+                                    hidden
+                                />
+                            </Button>
+                            <IconButton onClick={() => setFormPDFGuide(null)}>
+                                <CloseIcon/>
+                            </IconButton>
+                        </div>
+                        <p style={{fontSize: 14}} className={styles.field}>
+                            {
+                                formPDFGuide ?
+                                    (formPDFGuide.name.length > 40 ?
+                                        formPDFGuide.name.slice(0, 37) +'...' :
+                                        formPDFGuide.name
+                                    ) :
+                                    ''
+                            }
+                        </p>
+                        <div className={styles.field}>
+                            <Button
+                                variant="contained"
+                                component="label"
+                                sx={{'width': 240, 'fontSize': 12, 'backgroundColor': 'var(--primary-dark)',
+                                    '&:hover': {
+                                        backgroundColor: 'var(--secondary-dark)',
+                                    }}}
+                            >
+                                Afbeelding
+                                <input
+                                    type="file"
+                                    onChange={(e) => setFormImage(e.target.files ? e.target.files[0] : null)}
+                                    accept="image/*"
+                                    hidden
+                                />
+                            </Button>
+                            <IconButton onClick={() => setFormImage(null)}>
+                                <CloseIcon/>
+                            </IconButton>
+                        </div>
+                        <p style={{fontSize: 14}} className={styles.field}>
+                            {
+                                formImage ?
+                                    (formImage.name.length > 40 ?
+                                        formImage.name.slice(0, 37) +'...' :
+                                        formImage.name
+                                    ) :
+                                    ''
+                            }
+                        </p>
                     </div>
                     <div className={styles.formButtons}>
                         <Button className={styles.cancel_button} onClick={handleClose}>
