@@ -45,7 +45,7 @@ const BuildingListButtonComponent = (props: ListItemProps) => {
                                 width: '100%',
                             },
                         }}
-                        badgeContent={issues ? issues.data.length : 0}
+                        badgeContent={issues ? issues.data.filter(e => !e.resolved).length : 0}
                         overlap="circular"
                         anchorOrigin={{
                             vertical: 'top',

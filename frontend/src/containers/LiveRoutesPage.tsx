@@ -34,7 +34,7 @@ export default function LiveRoutesPage() {
     const [selectedRegions, setSelectedRegions] = React.useState<LocationGroup[]>([]);
 
     const currentDay: Date = new Date();
-    const [day, setDay] = useState<number>(currentDay.getDate() - currentDay.getDay());
+    const [day, setDay] = useState<number>(currentDay.getDate());
 
     useEffect(() => {
         getLatestScheduleDefinitionsList(session, setDefinitions);
