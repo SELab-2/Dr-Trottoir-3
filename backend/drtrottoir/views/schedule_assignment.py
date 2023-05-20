@@ -104,6 +104,7 @@ class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet)
         "schedule_definition__name",
         "schedule_definition__location_group__name",
         "user__username",
+        "buildings_percentage",
     ]
 
     def get_queryset(self):

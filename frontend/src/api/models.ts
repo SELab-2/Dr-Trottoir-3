@@ -48,6 +48,10 @@ export type ScheduleAssignment = {
     assigned_date: string;
     schedule_definition: number;
     user: number;
+    buildings_count: number;
+    buildings_done: number;
+    buildings_to_do: number;
+    buildings_percentage: number;
 };
 
 export type ScheduleWorkEntry = {
