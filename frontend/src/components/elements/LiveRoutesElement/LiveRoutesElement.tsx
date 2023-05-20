@@ -32,7 +32,7 @@ const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
 }));
 
 type liveRoutesElementProps = {
-    id: number
+    id: number,
 }
 
 export default function LiveRoutesElement(props: liveRoutesElementProps) {
@@ -173,22 +173,54 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                                             <div className={styles.route_container}>
                                                 <div className={styles.route_title}>
                                                     <h4>{building.address}</h4>
-                                                    {workEntriesData?.data.filter(
-                                                                (workEntry) => workEntry.building === building.id &&
-                                                                    workEntry.schedule_assignment === scheduleAssignmentData?.data.id
-                                                            ).map(
-                                                                (workEntry) => workEntry.entry_type).includes('DE') ? <DoneIcon /> :
+                                                    {workEntriesData?.data
+                                                        .filter((workEntry) => workEntry.building === building.id &&
+                                                                    workEntry.schedule_assignment === scheduleAssignmentData?.data.id)
+                                                        .map((workEntry) => workEntry.entry_type).includes('DE') ?
+                                                        <div style={{display:'flex', gap:"20px"}}>
+                                                            <DoneIcon/>
+                                                            <div style={{margin:'auto', paddingRight:'50px'}}>
+                                                            {
+                                                                // @ts-ignore
+                                                                workEntriesData.data.filter(e =>
+                                                                    e.building === building.id && e.entry_type === "WO")
+                                                                    .at(0).creation_timestamp.split('T')[1]
+                                                            }
+                                                            </div>
+                                                        </div> :
                                                                 workEntriesData?.data.filter(
                                                                     (workEntry) => workEntry.building === building.id &&
                                                                     workEntry.schedule_assignment === scheduleAssignmentData?.data.id
                                                                 ).map(
                                                                     (workEntry) => workEntry.entry_type).includes('WO') ?
-                                                                    <PersonPinCircleIcon /> :
+                                                                    <div style={{display:'flex', gap:"20px"}}>
+                                                                        <PersonPinCircleIcon/>
+                                                                        <div style={{margin:'auto', paddingRight:'50px'}}>
+                                                                            {
+                                                                                '--:--:--'
+                                                                            }
+                                                                        </div>
+                                                                    </div> :
                                                                     workEntriesData?.data.filter(
                                                                         (workEntry) => workEntry.building === building.id &&
                                                                     workEntry.schedule_assignment === scheduleAssignmentData?.data.id
                                                                     ).map((workEntry) => workEntry.entry_type).includes('AR') ?
-                                                                        <PersonPinCircleIcon /> : <CloseIcon />
+                                                                        <div style={{display:'flex', gap:"20px"}}>
+                                                                            <PersonPinCircleIcon/>
+                                                                            <div style={{margin:'auto', paddingRight:'50px'}}>
+                                                                                {
+                                                                                    '--:--:--'
+                                                                                }
+                                                                            </div>
+                                                                        </div> :
+                                                                        <div style={{display:'flex', gap:"20px"}}>
+                                                                            <CloseIcon/>
+                                                                            <div style={{margin:'auto', paddingRight:'50px'}}>
+                                                                                {
+                                                                                    '--:--:--'
+                                                                                }
+                                                                            </div>
+                                                                        </div>
                                                     }
                                                 </div>
                                                 <div className={styles.route_images_container}>
