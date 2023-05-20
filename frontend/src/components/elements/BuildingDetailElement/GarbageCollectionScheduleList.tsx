@@ -35,7 +35,7 @@ export default function GarbageCollectionScheduleList({buildingId}: { buildingId
 
     const updateSchedules = () => getGarbageCollectionsSchedulesList(session, setSchedules, {
         building: buildingId,
-        for_day__gt: schedulesFilterDate.format('YYYY-MM-DD'),
+        for_day__gte: schedulesFilterDate.format('YYYY-MM-DD'),
     });
 
     useEffect(() => {
