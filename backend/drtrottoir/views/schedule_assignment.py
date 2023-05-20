@@ -24,31 +24,49 @@ class ScheduleAssignmentFilter(django_filters.FilterSet):
     buildings_to_do__gt = django_filters.NumberFilter(
         field_name="buildings_to_do", lookup_expr="gt"
     )
+    buildings_to_do__gte = django_filters.NumberFilter(
+        field_name="buildings_to_do", lookup_expr="gte"
+    )
     buildings_to_do__lt = django_filters.NumberFilter(
         field_name="buildings_to_do", lookup_expr="lt"
+    )
+    buildings_to_do__lte = django_filters.NumberFilter(
+        field_name="buildings_to_do", lookup_expr="lte"
     )
 
     buildings_done = django_filters.NumberFilter()
     buildings_done__gt = django_filters.NumberFilter(
         field_name="buildings_done", lookup_expr="gt"
     )
+    buildings_done__gte = django_filters.NumberFilter(
+        field_name="buildings_done", lookup_expr="gte"
+    )
     buildings_done__lt = django_filters.NumberFilter(
         field_name="buildings_done", lookup_expr="lt"
+    )
+    buildings_done__lte = django_filters.NumberFilter(
+        field_name="buildings_done", lookup_expr="lte"
     )
 
     buildings_percentage = django_filters.NumberFilter()
     buildings_percentage__gt = django_filters.NumberFilter(
         field_name="buildings_percentage", lookup_expr="gt"
     )
+    buildings_percentage__gte = django_filters.NumberFilter(
+        field_name="buildings_percentage", lookup_expr="gte"
+    )
     buildings_percentage__lt = django_filters.NumberFilter(
         field_name="buildings_percentage", lookup_expr="lt"
+    )
+    buildings_percentage__lte = django_filters.NumberFilter(
+        field_name="buildings_percentage", lookup_expr="lte"
     )
 
     class Meta:
         model = ScheduleAssignment
 
         fields = {
-            "assigned_date": ("exact", "in", "gt", "lt"),
+            "assigned_date": ("exact", "in", "gt", "gte", "lt", "lte"),
             "schedule_definition": ("exact", "in"),
             "user": ("exact", "in"),
             "schedule_definition__location_group": ("exact", "in"),
