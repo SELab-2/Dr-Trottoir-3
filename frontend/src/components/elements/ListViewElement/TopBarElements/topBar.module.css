@@ -292,7 +292,7 @@
 
     .filter_button{
         height: 30px !important;
-        width: 130px !important;
+        /*width: 130px !important;*/
         background: var(--secondary-light);
         border-radius: var(--small_corner);
         border-width: 0;
