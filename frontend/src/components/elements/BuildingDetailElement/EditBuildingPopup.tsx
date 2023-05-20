@@ -70,12 +70,10 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
         formData.append('is_active', false.toString());
         if (formPDFGuide !== null) {
             formData.append('pdf_guide', formPDFGuide, formPDFGuide.name);
-        } else {
-            patchBuildingDetail(session, buildingId, {
-                pdf_guide: null,
-            });
         }
-
+        if (formImage !== null) {
+            formData.append('image', formImage, formImage.name);
+        }
         patchBuildingDetail(session, buildingId, formData);
         const syndics: number[] = [];
         formSyndici.forEach((s) => {
