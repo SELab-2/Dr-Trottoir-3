@@ -33,6 +33,9 @@ export default function LiveRoutesPage() {
     const [sorttype, setSorttype] = React.useState('schedule_definition__name');
     const [selectedRegions, setSelectedRegions] = React.useState<LocationGroup[]>([]);
 
+    const currentDay: Date = new Date();
+    const [day, setDay] = useState<number>(currentDay.getDate() - currentDay.getDay());
+
     useEffect(() => {
         getLatestScheduleDefinitionsList(session, setDefinitions);
         getLocationGroupsList(session, setLocationGroups);
@@ -42,8 +45,9 @@ export default function LiveRoutesPage() {
     }, [session]);
 
     useEffect(() => {
+        console.log(day);
         handleSearch(false);
-    }, [session, sorttype, selectedRegions]);
+    }, [session, sorttype, selectedRegions, day]);
 
     useEffect(() => {
         const element = document.getElementById(styles.scrollable);
@@ -64,12 +68,12 @@ export default function LiveRoutesPage() {
             regionsFilter+=r.id + ',';
         });
         const todayDate = new Date();
-        const today = todayDate.toISOString().split('T')[0];
+        todayDate.setDate(day);
         getScheduleAssignmentsList(session, setAssignments, {
             search: searchEntryOverwritten,
             ordering: sorttype,
             schedule_definition__location_group__in: regionsFilter,
-            assigned_date: today,
+            assigned_date: todayDate.toISOString().split('T')[0],
         });
     };
 
@@ -81,6 +85,14 @@ export default function LiveRoutesPage() {
     }, [sorttype, selectedRegions]);
 
     const [liveRouteWidget, setLiveRouteWidget] = useState(<LoadingElement />);
+
+    const nextDay = () => {
+        setDay(day + 1);
+    };
+
+    const prevDay = () => {
+        setDay(day - 1);
+    };
 
     useEffect(() => {
         setLiveRouteWidget(<LoadingElement />);
@@ -119,6 +131,8 @@ export default function LiveRoutesPage() {
             searchEntry={searchEntry}
             setSearchEntry={setSearchEntry}
             handleSearch={handleSearch}
+            nextDay={nextDay}
+            prevDay={prevDay}
         />;
 
         return (
