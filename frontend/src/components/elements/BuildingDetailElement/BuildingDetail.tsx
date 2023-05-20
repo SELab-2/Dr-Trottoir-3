@@ -85,12 +85,19 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
         setEditPopupOpen(true);
     }
 
+    const [refreshPrivateLink, setRefreshPrivateLink] = useState(false);
+
     function buildingGenerateLink() {
         if (id !== null) {
-            postBuildingGenerateLink(session, id, undefined);
-            getBuildingDetail(session, setBuilding, id);
+            postBuildingGenerateLink(session, id, () => setRefreshPrivateLink(!refreshPrivateLink));
         }
     }
+
+    useEffect(() => {
+        if (id !== null) {
+            getBuildingDetail(session, setBuilding, id);
+        }
+    }, [refreshPrivateLink]);
 
     const router = useRouter();
 

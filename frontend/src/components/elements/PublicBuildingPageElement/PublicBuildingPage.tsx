@@ -1,32 +1,60 @@
-import {Building, PublicBuilding,} from '@/api/models';
+import {Building, GarbageCollectionSchedule, GarbageType, PublicBuilding,} from '@/api/models';
 import {
     getBuildingDetail,
 } from '@/api/api';
 import React, {useEffect, useState} from 'react';
 import {Box, Link, Tooltip} from '@mui/material';
-import styles from '../BuildingDetailElement/buildingDetail.module.css';
+import styles from './PublicBuildingPage.module.css';
 import {defaultBuildingImage} from '@/constants/images';
 import BuildingMap from '@/components/elements/BuildingDetailElement/BuildingMap';
-import GarbageCollectionScheduleList from "./GarbageCollectionScheduleList";
+import PublicGarbageCollectionScheduleList from "./PublicGarbageCollectionScheduleList";
 import LoadingElement from "@/components/elements/LoadingElement/LoadingElement";
 import {PictureAsPdf} from "@mui/icons-material";
 
 export default function PublicBuildingPage(props: { id: number }) {
     const {id} = props;
 
-    const [building, setBuilding] = useState<Building>();
+    const [buildingData, setBuildingData] = useState<Object>();
 
     useEffect(()=>{
         if (id !== null) {
-            getBuildingDetail(null, setBuilding, id);
+            getBuildingDetail(null, setBuildingData, id);
         }
     }, [id]);
 
+    const [building, setBuilding] = useState<Building | undefined>(undefined);
+    const [garbageTypes, setGarbageTypes] = useState<Array<GarbageType> | undefined>(undefined);
+    const [garbageCollectionSchedules, setGarbageCollectionSchedules] = useState<Array<GarbageCollectionSchedule> | undefined>(undefined);
 
 
+    useEffect(()=>{
+        // @ts-ignore
+        if(buildingData && buildingData.status == 200){
+            // @ts-ignore
+            setBuilding(buildingData.data.building);
+            // @ts-ignore
+            setGarbageTypes(buildingData.data.garbage_types);
+            // @ts-ignore
+            setGarbageCollectionSchedules(buildingData.data.schedules);
+        }
+    }, [buildingData]);
 
-    if (building) {
+    function isTodayOrFuture(dateString: string) {
+        // Create date object from date string
+        const inputDate = new Date(dateString);
+        inputDate.setHours(0, 0, 0, 0);  // Reset time to ensure comparison by date only
+
+        // Get today's date
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);  // Reset time to ensure comparison by date only
+
+        // Check if input date is today or in the future
+        return inputDate >= today;
+    }
+
+    if (building && garbageTypes && garbageCollectionSchedules) {
         return (
+            <div className={styles.fullWrapper}>
             <div className={styles.full}>
                 {/* Top row */}
                 <div className={styles.top_row_container}>
@@ -79,9 +107,10 @@ export default function PublicBuildingPage(props: { id: number }) {
                 <div className={styles.bottom_row_container}>
                     {/* Planning */}
                     <Box flexGrow={3} flexBasis={0}>
-                        <GarbageCollectionScheduleList buildingId={id}/>
+                        <PublicGarbageCollectionScheduleList garbageTypes={garbageTypes} garbageCollectionSchedules={garbageCollectionSchedules.filter(e => isTodayOrFuture(e.for_day))}/>
                     </Box>
                 </div>
+            </div>
             </div>
         );
     } else {
