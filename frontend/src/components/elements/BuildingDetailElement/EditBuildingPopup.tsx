@@ -43,6 +43,7 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
         React.useState<LatLng>(new LatLng(51.1576985, 4.0807745));
     const [formSyndici, setFormSyndici] = React.useState<User[]>(prevSyndici);
     const [formDescription, setFormDescription] = React.useState(prevDescription);
+    const [formPDFGuide, setFormPDFGuide] = React.useState<File | null>(null);
     const [formImage, setFormImage] = useState<File | null>(null);
 
     useEffect(() => {
@@ -60,12 +61,30 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
     }, [open]);
 
     const handleSubmit = () => {
+        const formData = new FormData();
+        formData.append('name', formName);
+        formData.append('address', formAddress);
+        formData.append('latitude', formCoordinate.lat.toString());
+        formData.append('longitude', formCoordinate.lng.toString());
+        formData.append('description', formDescription);
+        formData.append('is_active', false.toString());
+        if (formPDFGuide !== null) {
+            formData.append('pdf_guide', formPDFGuide, formPDFGuide.name);
+        } else {
+            patchBuildingDetail(session, buildingId, {
+                pdf_guide: null,
+            });
+        }
+
+        patchBuildingDetail(session, buildingId, formData);
+        const syndics: number[] = [];
+        formSyndici.forEach((s) => {
+            if (s.syndicus) {
+                syndics.push(s.syndicus.id);
+            }
+        });
         patchBuildingDetail(session, buildingId, {
-            name: formName,
-            address: formAddress,
-            latitude: formCoordinate.lat,
-            longitude: formCoordinate.lng,
-            description: formDescription,
+            syndici: syndics,
         });
         setOpen(false);
     };
@@ -278,6 +297,37 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                                 )}
                             />
                         </FormControl>
+                        <div className={styles.field}>
+                            <Button
+                                variant="contained"
+                                component="label"
+                                sx={{'width': 240, 'fontSize': 12, 'backgroundColor': 'var(--primary-dark)',
+                                    '&:hover': {
+                                        backgroundColor: 'var(--secondary-dark)',
+                                    }}}
+                            >
+                                Handleiding (PDF)
+                                <input
+                                    type="file"
+                                    onChange={(e) => setFormPDFGuide(e.target.files ? e.target.files[0] : null)}
+                                    accept="application/pdf"
+                                    hidden
+                                />
+                            </Button>
+                            <IconButton onClick={() => setFormPDFGuide(null)}>
+                                <CloseIcon/>
+                            </IconButton>
+                        </div>
+                        <p style={{fontSize: 14}} className={styles.field}>
+                            {
+                                formPDFGuide ?
+                                    (formPDFGuide.name.length > 40 ?
+                                        formPDFGuide.name.slice(0, 37) +'...' :
+                                        formPDFGuide.name
+                                    ) :
+                                    ''
+                            }
+                        </p>
                         <div className={styles.field}>
                             <Button
                                 variant="contained"

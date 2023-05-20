@@ -51,6 +51,11 @@ export default function Form({setCanClose, canClose, setOpen, open, allRegions, 
         if (formImage !== null) {
             formData.append('image', formImage, formImage.name);
         }
+        formSyndici.forEach((s) => {
+            if (s.syndicus) {
+                formData.append('syndici', s.syndicus.id.toString());
+            }
+        });
         postBuilding(session, formData);
         handleClose();
     };
