@@ -8,13 +8,15 @@ import {
 } from '@/api/api';
 import {useSession} from 'next-auth/react';
 import CloseIcon from '@mui/icons-material/Close';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Building, LocationGroup, ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry} from '@/api/models';
 import LinearProgress, {linearProgressClasses} from '@mui/material/LinearProgress';
 import {styled} from '@mui/system';
 import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
 import DoneIcon from '@mui/icons-material/Done';
 import {Carousel} from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css"
+import {Fade, Modal} from "@mui/material";
 
 const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
     height: 30,
@@ -41,6 +43,18 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
     const [buildingsData, setBuildingsData] = useAuthenticatedApi<Array<Building>>();
     const [scheduleAssignmentData, setScheduleAssignmentData] = useAuthenticatedApi<ScheduleAssignment>();
     const [workEntriesData, setWorkEntriesData] = useAuthenticatedApi<Array<ScheduleWorkEntry>>();
+    const [open, setOpen] = useState(false);
+    const [image, setImage] = useState("false");
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleImage = (value) => {
+        setImage(value);
+        setOpen(true);
+        console.log(image);
+    };
 
     useEffect(() => {
         getScheduleAssignmentDetail(session, setScheduleAssignmentData, props.id);
@@ -175,14 +189,16 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                                                     <div className={styles.container}>
                                                         <Carousel
                                                             showArrows={true}
-                                                            showIndicators={false}
                                                             infiniteLoop={true}
-                                                            dynamicHeight={false}
+                                                            showStatus={false}
+                                                            showThumbs={false}
+                                                            onClickThumb={e => console.log(e)}
                                                             className={styles.mySwiper}
                                                         >
-                                                            {workEntriesData.data.filter(e => e.entry_type === 'AR').map((item) => (
-                                                                <div className={styles.imgBox}>
-                                                                    <img src={'https://res.cloudinary.com/kizmelvin/image/upload/v1586799813/kizmelvin/persons_pigeon_nurkq2.jpg'} alt={''}/>
+                                                            {workEntriesData.data.filter(e => e.entry_type === 'AR' && e.building === building.id).map((item) => (
+                                                                <div className={styles.imag_container}
+                                                                     onClick={(e) => handleImage(item.image)}>
+                                                                    <img src={item.image} alt={''}/>
                                                                 </div>
                                                             ))}
                                                         </Carousel>
@@ -192,14 +208,16 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                                                     <div className={styles.container}>
                                                         <Carousel
                                                             showArrows={true}
-                                                            showIndicators={true}
                                                             infiniteLoop={true}
-                                                            dynamicHeight={false}
+                                                            showStatus={false}
+                                                            showThumbs={false}
+                                                            onClickThumb={e => console.log(e)}
                                                             className={styles.mySwiper}
                                                         >
-                                                            {workEntriesData.data.filter(e => e.entry_type === 'AR').map((item) => (
-                                                                <div className={styles.imgBox}>
-                                                                    <img src={'https://res.cloudinary.com/kizmelvin/image/upload/v1586799813/kizmelvin/persons_pigeon_nurkq2.jpg'} alt={''}/>
+                                                            {workEntriesData.data.filter(e => e.entry_type === 'DE' && e.building === building.id).map((item) => (
+                                                                <div className={styles.imag_container}
+                                                                     onClick={(e) => handleImage(item.image)}>
+                                                                    <img src={item.image} alt={''}/>
                                                                 </div>
                                                             ))}
                                                         </Carousel>
@@ -209,14 +227,16 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                                                     <div className={styles.container}>
                                                         <Carousel
                                                             showArrows={true}
-                                                            showIndicators={true}
                                                             infiniteLoop={true}
-                                                            dynamicHeight={false}
+                                                            showStatus={false}
+                                                            showThumbs={false}
+                                                            onClickThumb={e => console.log(e)}
                                                             className={styles.mySwiper}
                                                         >
-                                                            {workEntriesData.data.filter(e => e.entry_type === 'AR').map((item) => (
-                                                                <div className={styles.imgBox}>
-                                                                    <img src={'https://res.cloudinary.com/kizmelvin/image/upload/v1586799813/kizmelvin/persons_pigeon_nurkq2.jpg'} alt={''}/>
+                                                            {workEntriesData.data.filter(e => e.entry_type === 'WO' && e.building === building.id).map((item) => (
+                                                                <div className={styles.imag_container}
+                                                                     onClick={(e) => handleImage(item.image)}>
+                                                                    <img src={item.image} alt={''}/>
                                                                 </div>
                                                             ))}
                                                         </Carousel>
@@ -224,6 +244,22 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                                                 </div>
                                             </div>
                                     )}
+                                    <Modal
+                                        open={open}
+                                        onClose={handleClose}
+                                        closeAfterTransition
+                                        style={{display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center"}}
+                                    >
+                                        <Fade in={open} timeout={500}>
+                                            <img
+                                                src={image}
+                                                alt="asd"
+                                                style={{ maxHeight: "90%", maxWidth: "90%" }}
+                                            />
+                                        </Fade>
+                                    </Modal>
                                 </div>
                             </div>
                         </div>
