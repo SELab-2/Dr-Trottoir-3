@@ -1,20 +1,20 @@
 import React from 'react';
 import styles from '@/components/elements/ListViewElement/ListButtonElements/buttonComponent.module.css';
-import {Avatar, Button} from '@mui/material';
+import {Button} from '@mui/material';
 import {ListItemProps} from './ListButtonComponentInterface';
 import CheckIcon from '@mui/icons-material/Check';
 
 const ActiveRouteListButtonComponent = (props: ListItemProps) => {
     const isCurrent = props.data.id === props.current;
 
-    console.log(props.data)
+    console.log(props.data);
     const progress = props.data.buildingsDone/props.data.totalBuildings;
 
     return (
 
         <Button id={(isCurrent)?styles['item_button_select'] : styles['item_button']}
-                className={styles.button_default}
-                onClick={()=>props.onClick(props.data.id)}>
+            className={styles.button_default}
+            onClick={()=>props.onClick(props.data.id)}>
             <div className={styles.content_container}>
                 <div className={styles.big_item_text}>
                     {props.data.name}

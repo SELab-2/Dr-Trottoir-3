@@ -38,9 +38,8 @@ export default function ScheduleAssignmentList({buildingId}: { buildingId: numbe
     function schedulesPerWeek() {
         const fancySchedules = schedules?.data.map((schedule) => ({
             id: schedule.id,
-            for_day: dayjs(schedule.assigned_date, {locale: 'nl-be'})
+            for_day: dayjs(schedule.assigned_date, {locale: 'nl-be'}),
         })) || [];
-
 
 
         if (fancySchedules.length === 0) {

@@ -15,7 +15,7 @@ import {Building, ScheduleDefinition} from '@/api/models';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import AddBuildingPopup from '@/components/modules/routeDetail/AddBuildingPopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
-import ScheduleAssignmentList from "@/components/modules/routeDetail/ScheduleAssignmentList";
+import ScheduleAssignmentList from '@/components/modules/routeDetail/ScheduleAssignmentList';
 
 type routeDetailProps = {
     scheduleDefinitionId: ScheduleDefinition['id'] | null,
@@ -103,7 +103,7 @@ function RouteDetail({scheduleDefinitionId, updateList}: routeDetailProps) {
                             <Typography variant={'subtitle1'} noWrap>{locationGroup?.data.name}</Typography>
                         </Box>
                         <Box flexGrow={1}>
-                            <div style={{display:'flex', flex:1}}></div>
+                            <div style={{display: 'flex', flex: 1}}></div>
                             <Typography textAlign={mobileView ? 'start' : 'end'}>
                                 versie {scheduleDefinition?.data.version}
                             </Typography>

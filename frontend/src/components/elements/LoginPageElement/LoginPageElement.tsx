@@ -28,8 +28,8 @@ export default function LoginPageElement() {
                             width: 'min(250px, 100%)'},
                         '& .MuiInputBase-input': {color: 'var(--secondary-light)'},
                         '.MuiAutocomplete-inputRoot[class*="MuiOutlinedInput-root"]': {
-                            backgroundColor: '#red'
-                        }
+                            backgroundColor: '#red',
+                        },
                     }}
                     noValidate
                     autoComplete="on"
@@ -62,7 +62,7 @@ export default function LoginPageElement() {
                                         borderColor: 'var(--primary-dark)',
                                         borderRadius: '8px',
                                     },
-                                }
+                                },
                             }}
                             size="small"
                             InputProps={{
