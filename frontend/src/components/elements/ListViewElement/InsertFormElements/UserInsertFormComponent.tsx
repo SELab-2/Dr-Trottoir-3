@@ -32,7 +32,7 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, allBuild
     const [formUserType, setFormUserType] = React.useState('');
     const [formIsSuperStudent, setFormIsSuperStudent] = React.useState(false);
     const [selectedBuildings, setSelectedBuildings] = React.useState<Building[]>([]);
-    const [formRegion, setFormRegion] = React.useState<LocationGroup|null>(null);
+    const [formRegion, setFormRegion] = React.useState<LocationGroup | null>(null);
 
     const userTypes = {
         student: 'student',
@@ -64,7 +64,7 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, allBuild
                 buildings: blds,
             };
         }
-        postUser(session, postData,()=> {
+        postUser(session, postData,() => {
             setFormFirstName('');
             setFormUsername('');
             setFormRegion(null);

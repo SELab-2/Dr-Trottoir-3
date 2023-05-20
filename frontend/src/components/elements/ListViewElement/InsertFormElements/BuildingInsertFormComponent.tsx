@@ -18,6 +18,7 @@ import {PinDrop} from '@mui/icons-material';
 
 
 type FormProps = {
+    onSubmit: () => void,
     setCanClose: React.Dispatch<React.SetStateAction<boolean>>,
     canClose: boolean,
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
@@ -26,7 +27,7 @@ type FormProps = {
     open: boolean
 }
 
-export default function Form({setCanClose, canClose, setOpen, open, allRegions, allSyndici}: FormProps) {
+export default function Form({onSubmit, setCanClose, canClose, setOpen, open, allRegions, allSyndici}: FormProps) {
     const {data: session} = useSession();
 
     const handleClose = () => {
@@ -47,7 +48,16 @@ export default function Form({setCanClose, canClose, setOpen, open, allRegions, 
         if (formPDFGuide !== null) {
             formData.append('pdf_guide', formPDFGuide, formPDFGuide.name);
         }
-        postBuilding(session, formData);
+        postBuilding(session, formData, () => {
+            setFormName('');
+            setFormAddress('');
+            setFormAddressError(false);
+            setFormCoordinate(new LatLng(51.1576985, 4.0807745));
+            setFormRegion(null);
+            setFormSyndici([]);
+            setFormDescription('');
+            onSubmit();
+        });
         handleClose();
     };
 
@@ -55,7 +65,7 @@ export default function Form({setCanClose, canClose, setOpen, open, allRegions, 
     const [formAddress, setFormAddress] = useState('');
     const [formAddressError, setFormAddressError] = useState(false);
     const [formCoordinate, setFormCoordinate] = useState<LatLng>(new LatLng(51.1576985, 4.0807745));
-    const [formRegion, setFormRegion] = useState<LocationGroup>();
+    const [formRegion, setFormRegion] = useState<LocationGroup | null>(null);
     const [formSyndici, setFormSyndici] = useState<User[]>([]);
     const [formDescription, setFormDescription] = useState('');
     const [formPDFGuide] = useState<File | null>(null);

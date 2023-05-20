@@ -31,29 +31,42 @@ export default function BuildingsPage() {
 
     useEffect(() => {
         handleSearch(false);
-    }, [session, selectedRegions, sorttype]);
+    }, [selectedRegions, sorttype]);
 
     useEffect(() => {
-        const element = document.getElementById(styles.scrollable);
-        if (element !== null) {
-            element.scrollTo({top: 0, behavior: 'smooth'});
-        }
-    }, [buildings]);
+        handleSearch(false, false);
+    }, [session]);
 
-    const handleSearch = (clear: boolean = false) => {
+    const reloadPage = () => {
+        getLocationGroupsList(session, setLocationGroups);
+        getUsersList(session, setAllSyndici, {syndicus__id__gt: 0});
+        handleSearch(false, false);
+    }
+
+    const handleSearch = (clear: boolean = false, scrollTop: boolean = true) => {
         let searchEntryOverwritten: string;
         if (clear) {
             searchEntryOverwritten = '';
         } else {
             searchEntryOverwritten = searchEntry;
         }
-        getBuildingsList(session, setBuildings, {
+
+        const setBuildingList = (data:any)=>{
+            setBuildings(data);
+            const element = document.getElementById(styles.scrollable);
+            if (scrollTop  && element !== null) {
+                element.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        };
+
+        getBuildingsList(session, setBuildingList, {
             ordering: sorttype,
             search: searchEntryOverwritten,
             location_group__in: selectedRegions.map((e) => e.id).join(',')});
     };
 
     const topBar = <BuildingTopBarComponent
+        onAdd={reloadPage}
         sorttype={sorttype}
         setSorttype={setSorttype}
         selectedRegions={selectedRegions}
@@ -68,11 +81,18 @@ export default function BuildingsPage() {
 
     const [buildingWidget, setBuildingWidget] = useState(<LoadingElement />);
 
-    useEffect(() => {
+    const changeBuildingElementWidget = () => {
         setBuildingWidget(<LoadingElement />);
         if (current) {
-            setBuildingWidget(<BuildingDetail id={current}/>);
+            setBuildingWidget(<BuildingDetail id={current} onEdit={() => {
+                reloadPage();
+                changeBuildingElementWidget();
+            }} />);
         }
+    }
+
+    useEffect(() => {
+        changeBuildingElementWidget();
     }, [current]);
 
     if (buildings && locationGroups && allSyndici) {

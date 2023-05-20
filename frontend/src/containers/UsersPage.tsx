@@ -40,7 +40,7 @@ export default function UsersPage() {
         handleSearch(false);
     }, [selectedRegions, sorttype, userType]);
 
-    const reloadPage = ()=>{
+    const reloadPage = () => {
         getBuildingsList(session, setAllBuildings);
         getLocationGroupsList(session, setLocationGroups);
         handleSearch(false, false);

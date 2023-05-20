@@ -18,6 +18,7 @@ import {Clear} from '@mui/icons-material';
 
 
 type TopBarProps = {
+    onAdd: () => void,
     sorttype: string,
     setSorttype: React.Dispatch<React.SetStateAction<string>>,
     selectedRegions: LocationGroup[],
@@ -30,7 +31,7 @@ type TopBarProps = {
     allSyndici: User[],
 };
 
-export default function BuildingTopBarComponent({sorttype, setSorttype, selectedRegions, setRegion, allRegions,
+export default function BuildingTopBarComponent({onAdd, sorttype, setSorttype, selectedRegions, setRegion, allRegions,
     searchEntry, setSearchEntry, handleSearch, allSyndici}:TopBarProps) {
     const AllesSelected = selectedRegions.length >= allRegions.length;
 
@@ -183,7 +184,7 @@ export default function BuildingTopBarComponent({sorttype, setSorttype, selected
                 open={open}
                 invisible={false}
             >
-                <Form setCanClose={setCanClose} canClose={canClose} setOpen={setOpen} open={open}
+                <Form onSubmit={onAdd} setCanClose={setCanClose} canClose={canClose} setOpen={setOpen} open={open}
                     allRegions={allRegions} allSyndici={allSyndici}></Form>
             </Backdrop>
         </div>
