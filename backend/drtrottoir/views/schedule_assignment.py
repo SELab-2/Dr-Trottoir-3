@@ -1,7 +1,7 @@
 from typing import List
 
 import django_filters
-from django.db.models import Count, F
+from django.db.models import Count, F, Q
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -120,7 +120,9 @@ class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet)
 
         queryset = queryset.annotate(
             buildings_count=Count("schedule_definition__buildings", distinct=True),
-            buildings_done=Count("work_entries__building", distinct=True),
+            buildings_done=Count(
+                "work_entries", distinct=True, filter=Q(work_entries__entry_type="DE")
+            ),
             buildings_to_do=F("buildings_count") - F("buildings_done"),
             buildings_percentage=F("buildings_done") * 100 / F("buildings_count"),
         )
