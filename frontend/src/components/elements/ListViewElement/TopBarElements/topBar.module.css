@@ -255,6 +255,16 @@
         font-size: 0 !important;
     }
 
+    .filter_button_text{
+        height: 30px !important;
+        width: 40px !important;
+        background: var(--secondary-light);
+        border-radius: var(--small_corner);
+        border-width: 0;
+        text-transform: none;
+        color: var(--primary-dark);
+    }
+
     .hide_select {
         width: 0 !important;
         box-shadow: none !important;
@@ -282,13 +292,23 @@
 
     .filter_button{
         height: 30px !important;
-        width: 130px !important;
+        /*width: 130px !important;*/
         background: var(--secondary-light);
         border-radius: var(--small_corner);
         border-width: 0;
         text-transform: none;
         color: var(--primary-dark);
         font-size: 0 !important;
+    }
+
+    .filter_button_text{
+        height: 30px !important;
+        width: 130px !important;
+        background: var(--secondary-light);
+        border-radius: var(--small_corner);
+        border-width: 0;
+        text-transform: none;
+        color: var(--primary-dark);
     }
 }
 

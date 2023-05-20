@@ -106,17 +106,29 @@ export default function WeekComponent(props: schedulerProps) {
                     date.setDate(props.start + scheduleAssignmentIndex);
                     date.setHours(date.getHours() + 2);
                     newTask = {
-                        id: -1, // will be ignored by django, but required to fit type
                         user: userId,
                         assigned_date: date.toISOString().split('T')[0],
                         schedule_definition: scheduleDefinitionIndex,
+
+                        // will be ignored by django, but required to fit type
+                        id: -1,
+                        buildings_count: 0,
+                        buildings_to_do: 0,
+                        buildings_done: 0,
+                        buildings_percentage: 0,
                     };
                 } else {
                     newTask = {
-                        id: -1, // will be ignored by django, but required to fit type
                         user: userId,
                         assigned_date: scheduleAssignmentIndex,
                         schedule_definition: scheduleDefinitionIndex,
+
+                        // will be ignored by django, but required to fit type
+                        id: -1,
+                        buildings_count: 0,
+                        buildings_to_do: 0,
+                        buildings_done: 0,
+                        buildings_percentage: 0,
                     };
                 }
 
