@@ -52,7 +52,7 @@ const BuildingListButtonComponent = (props: ListItemProps) => {
                             horizontal: 'right',
                         }}
                     >
-                        <Avatar src={props.data.image ? props.data.image : 'public/media/img.png'} alt="building"
+                        <Avatar src={props.data.image ? props.data.image : 'public/media/img.png'} alt={props.data.name}
                             className={styles.image}/>
                     </Badge>
                 </div>
