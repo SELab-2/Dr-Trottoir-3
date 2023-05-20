@@ -131,8 +131,8 @@ export default function LiveRoutesPage() {
             searchEntry={searchEntry}
             setSearchEntry={setSearchEntry}
             handleSearch={handleSearch}
-            nextDay={nextDay}
-            prevDay={prevDay}
+            setDay={setDay}
+            day={day}
         />;
 
         return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
     Checkbox,
     IconButton,
@@ -16,6 +16,10 @@ import Button from '@mui/material/Button';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
 import {Clear} from '@mui/icons-material';
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import {DemoItem} from "@mui/x-date-pickers/internals/demo";
+import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 type TopBarProps = {
     sorttype: string,
@@ -27,13 +31,13 @@ type TopBarProps = {
     searchEntry: string,
     setSearchEntry: React.Dispatch<React.SetStateAction<string>>,
     handleSearch: (b: boolean) => void,
-    nextDay: any,
-    prevDay: any,
+    setDay: any,
+    day: number,
 }
 
 export default function LiveRouteTopBarComponent(
     {sorttype, setSorttype, selectedRegions, setSelectedRegions, allRegions,
-        searchEntry, setSearchEntry, handleSearch, nextDay, prevDay}:TopBarProps) {
+        searchEntry, setSearchEntry, handleSearch, setDay, day}:TopBarProps) {
     const AllesSelectedRegions = selectedRegions.length>=allRegions.length;
 
     const handleChangeRegion = (event: SelectChangeEvent<LocationGroup[]>) => {
@@ -60,7 +64,18 @@ export default function LiveRouteTopBarComponent(
         progress: 'Voortgang',
     };
 
+    const currentDay = new Date();
+    currentDay.setDate(day);
+    currentDay.setHours(currentDay.getHours() + 2);
+
     const [active, setActive] = React.useState('');
+    const [formDate, setFormDate] = useState<string>(currentDay.toISOString().split('T')[0]);
+
+    const handleChangeFormDate = (date: any) => {
+        setFormDate(date);
+        const newDay = new Date(date);
+        setDay(newDay.getDate());
+    };
 
     const handleChangeActive = (event: SelectChangeEvent) => {
         setActive(event.target.value as string);
@@ -215,12 +230,39 @@ export default function LiveRouteTopBarComponent(
                     <SensorsRoundedIcon/>
                 </Button>
                 <div style={{width: '15px'}}/>
-                <Button className={styles.filter_button_text} onClick={() => (prevDay())}>
-                    vorige
-                </Button>
-                <Button className={styles.filter_button_text} onClick={() => (nextDay())}>
-                    volgende
-                </Button>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                        sx={{
+                            '& .MuiInputLabel-root': {
+                                padding: '2px',
+                            },
+                            '& label.Mui-focused': {
+                                color: 'var(--secondary-light)',
+                                borderRadius: '8px',
+                            },
+                            '& .MuiInput-underline:after': {
+                                borderBottomColor: 'var(--secondary-light)',
+                                borderRadius: '8px',
+                            },
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: 'var(--secondary-light)',
+                                    borderRadius: '8px',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: 'var(--secondary-light)',
+                                    borderRadius: '8px',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: 'var(--secondary-light)',
+                                    borderRadius: '8px',
+                                },
+                            },
+                        }}
+                        value={dayjs(formDate)}
+                        onChange={handleChangeFormDate}
+                    />
+                </LocalizationProvider>
             </div>
         </div>
 
