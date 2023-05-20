@@ -63,12 +63,11 @@ export default function MeElement() {
                             alt="Avatar"
                             src="/static/images/avatar/1.jpg"
                             sx={{height: 128, width: 128}}
-                        />
+                        >{userData.data.first_name.at(0)}</Avatar>
                     </div>
                 </div>
                 <div className={styles.userContent}>
                     <div className={styles.userRoutes + ' ' + styles.userRoutesPadding}>
-                        <h2 className={styles.routesTitle + ' ' + styles.extraTitlePadding}>Routes</h2>
                         <div className={styles.scrollList}>
                             <div className={styles.routesItems}>
                                 <h3 className={styles.routesSubtitle + ' ' + styles.extraTitlePadding}>Gepland</h3>
@@ -137,9 +136,6 @@ export default function MeElement() {
                                 }
                             </div>
                         </div>
-                    </div>
-                    <div className={styles.userAnalytics}>
-                        <div className={styles.graph}></div>
                     </div>
                 </div>
             </div>

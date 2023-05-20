@@ -1,15 +1,11 @@
-import React from 'react';
-import {ClickAwayListener} from '@mui/base';
+import React, {useState} from 'react';
 import styles from '@/styles/forms.module.css';
 import {
     Autocomplete,
     Box,
-    Button,
+    Button, Dialog, DialogTitle,
     FormControl,
     IconButton,
-    InputLabel,
-    MenuItem,
-    Select,
     TextField,
 } from '@mui/material';
 import {LocationGroup, User} from '@/api/models';
@@ -19,7 +15,6 @@ import {LatLng} from 'leaflet';
 import BuildingMapSelector from '@/components/elements/ListViewElement/InsertFormElements/BuildingMapSelector';
 import axios from 'axios';
 import {PinDrop} from '@mui/icons-material';
-import CloseIcon from '@mui/icons-material/Close';
 
 
 type FormProps = {
@@ -28,9 +23,10 @@ type FormProps = {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
     allRegions: LocationGroup[],
     allSyndici: User[],
+    open: boolean
 }
 
-export default function Form({setCanClose, canClose, setOpen, allRegions, allSyndici}: FormProps) {
+export default function Form({setCanClose, canClose, setOpen, open, allRegions, allSyndici}: FormProps) {
     const {data: session} = useSession();
 
     const handleClose = () => {
@@ -51,30 +47,69 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allSyn
         if (formPDFGuide !== null) {
             formData.append('pdf_guide', formPDFGuide, formPDFGuide.name);
         }
+        formSyndici.forEach((s) => {
+            if (s.syndicus) {
+                formData.append('syndici', s.syndicus.id.toString());
+            }
+        });
         postBuilding(session, formData);
+
         handleClose();
     };
 
-    const [formName, setFormName] = React.useState('');
-    const [formAddress, setFormAddress] = React.useState('');
-    const [formAddressError, setFormAddressError] = React.useState(false);
-    const [formCoordinate, setFormCoordinate] = React.useState<LatLng>(new LatLng(51.1576985, 4.0807745));
-    const [formRegion, setFormRegion] = React.useState<LocationGroup>();
-    const [formSyndici, setFormSyndici] = React.useState<User[]>([]);
-    const [formDescription, setFormDescription] = React.useState('');
-    const [formPDFGuide, setFormPDFGuide] = React.useState<File | null>(null);
+    const [formName, setFormName] = useState('');
+    const [formAddress, setFormAddress] = useState('');
+    const [formAddressError, setFormAddressError] = useState(false);
+    const [formCoordinate, setFormCoordinate] = useState<LatLng>(new LatLng(51.1576985, 4.0807745));
+    const [formRegion, setFormRegion] = useState<LocationGroup>();
+    const [formSyndici, setFormSyndici] = useState<User[]>([]);
+    const [formDescription, setFormDescription] = useState('');
+    const [formPDFGuide] = useState<File | null>(null);
 
     React.useEffect(() => {
         setCanClose(true);
     });
     return (
-        <ClickAwayListener onClickAway={handleClose}>
+        <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>Gebouw toevoegen</DialogTitle>
             <div className={styles.formCenter}>
                 <div className={styles.form}>
-                    <h2 style={{color: 'black'}}>Gebouw Toevoegen</h2>
                     <div className={styles.formFields}>
                         <div className={styles.field}>
-                            <TextField fullWidth
+                            <TextField
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
+                                className={styles.input}
+                                fullWidth
                                 required
                                 label='naam'
                                 value={formName}
@@ -82,25 +117,81 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allSyn
                                 }
                             />
                         </div>
-                        <FormControl required sx={{minWidth: 150}}>
-                            <InputLabel>regio</InputLabel>
-                            <Select
-                                value={formRegion?.name}
-                                onChange={(e) => setFormRegion(e.target.value as unknown as LocationGroup)}
-                                label='regio'
-                                defaultValue=''
-                                MenuProps={{disablePortal: true}}
-                            >
-                                {allRegions.map((option) => (
-                                    <MenuItem id='menuitem' key={option.id} value={option.id}
-                                        style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
-                                        {option.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
                         <div className={styles.field}>
-                            <TextField error={formAddressError}
+                            <Autocomplete
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
+                                fullWidth
+                                renderInput={(params) => <TextField {...params} label="Afval Type"/>}
+                                options={allRegions}
+                                getOptionLabel={({name}) => name}
+                                value={formRegion}
+                                // @ts-ignore
+                                onChange={(e) => setFormRegion(e.target.value as LocationGroup)}
+                            />
+                        </div>
+                        <div className={styles.field}>
+                            <TextField
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
+                                className={styles.input}
+                                fullWidth
+                                error={formAddressError}
                                 required
                                 label='adres'
                                 value={formAddress}
@@ -127,6 +218,34 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allSyn
                         </Box>
                         <div className={styles.field}>
                             <TextField
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                className={styles.input}
                                 fullWidth
                                 required
                                 multiline
@@ -136,11 +255,14 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allSyn
                                 onChange={(e) => setFormDescription(e.target.value as string)}
                             />
                         </div>
-                        <FormControl sx={{marginBottom: 1, marginTop: 1, width: '100%'}}>
+                        <FormControl sx={{marginBottom: 1, marginTop: 1, width: 200}}>
                             <Autocomplete
-                                id="tags-standard"
+                                id="tags-outline"
+                                fullWidth
                                 multiple
                                 options={allSyndici}
+                                freeSolo={false}
+                                popupIcon={''}
                                 getOptionLabel={(option) => option.first_name[0] + '. ' + option.last_name}
                                 value={formSyndici}
                                 defaultValue={[]}
@@ -151,57 +273,51 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allSyn
                                 }}
                                 renderInput={(params) => (
                                     <TextField
+                                        sx={{
+                                            '& .MuiInputLabel-root': {
+                                                padding: '2px',
+                                            },
+                                            '& label.Mui-focused': {
+                                                color: 'var(--primary-yellow)',
+                                                borderRadius: '8px',
+                                            },
+                                            '& .MuiInput-underline:after': {
+                                                borderBottomColor: 'var(--primary-yellow)',
+                                                borderRadius: '8px',
+                                            },
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: 'var(--secondary-light)',
+                                                    borderRadius: '8px',
+                                                },
+                                                '&:hover fieldset': {
+                                                    borderColor: 'var(--secondary-light)',
+                                                    borderRadius: '8px',
+                                                },
+                                                '&.Mui-focused fieldset': {
+                                                    borderColor: 'var(--primary-yellow)',
+                                                    borderRadius: '8px',
+                                                },
+                                            },
+                                        }}
                                         {...params}
-                                        variant="standard"
                                         label="syndicus"
                                         placeholder="syndicus"
                                     />
                                 )}
                             />
                         </FormControl>
-                        <div className={styles.field}>
-                            <Button
-                                variant="contained"
-                                component="label"
-                                sx={{'width': 240, 'fontSize': 12, 'backgroundColor': 'var(--primary-dark)',
-                                    '&:hover': {
-                                        backgroundColor: 'var(--secondary-dark)',
-                                    }}}
-                            >
-                            Handleiding (PDF)
-                                <input
-                                    type="file"
-                                    onChange={(e) => setFormPDFGuide(e.target.files ? e.target.files[0] : null)}
-                                    accept="application/pdf"
-                                    hidden
-                                />
-                            </Button>
-                            <IconButton onClick={() => setFormPDFGuide(null)}>
-                                <CloseIcon/>
-                            </IconButton>
-                        </div>
-                        <p style={{fontSize: 14}} className={styles.field}>
-                            {
-                                formPDFGuide ?
-                                    (formPDFGuide.name.length > 40 ?
-                                        formPDFGuide.name.slice(0, 37) +'...' :
-                                        formPDFGuide.name
-                                    ) :
-                                    ''
-                            }
-                        </p>
                     </div>
                     <div className={styles.formButtons}>
-                        <Button variant='contained' className={styles.button} onClick={handleClose}>
-                            Cancel
+                        <Button className={styles.cancel_button} onClick={handleClose}>
+                            Annuleren
                         </Button>
-                        <Button variant='contained' className={styles.button} onClick={handleSubmitForm}
-                            style={{backgroundColor: '#E6E600'}}>
-                            Submit
+                        <Button className={styles.submit_button} onClick={handleSubmitForm}>
+                            Toevoegen
                         </Button>
                     </div>
                 </div>
             </div>
-        </ClickAwayListener>
+        </Dialog>
     );
 }
