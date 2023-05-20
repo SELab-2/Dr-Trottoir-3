@@ -76,7 +76,7 @@ function CalendarEntry(props: calendarEntryProps) {
                                         size='small'
                                         className={styles.icon}
                                         onClick={() => {
-                                            Router.push('/users/' + props.scheduleAssignment.id,
+                                            Router.push('/users/' + props.scheduleAssignment.user.id,
                                                 undefined,
                                                 {shallow: true}).then();
                                         }} >
