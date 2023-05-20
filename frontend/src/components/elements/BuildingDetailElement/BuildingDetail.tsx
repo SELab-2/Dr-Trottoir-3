@@ -9,7 +9,7 @@ import {
     getBuildingDetailGarbageCollectionSchedules,
     getBuildingDetailIssues,
     getGarbageTypesList,
-    postBuildingGenerateLink
+    postBuildingGenerateLink,
 } from '@/api/api';
 import {defaultBuildingImage} from '@/constants/images';
 import {useSession} from 'next-auth/react';
@@ -24,7 +24,7 @@ import IssueList from './IssueList';
 import GarbageCollectionScheduleList from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleList';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
-import {useRouter} from "next/router";
+import {useRouter} from 'next/router';
 
 interface IBuildingDetail {
     id: number,
@@ -106,7 +106,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
         if (id !== null) {
             getBuildingDetail(session, setBuilding, id);
             if (reload) {
-                setReload(false)
+                setReload(false);
             }
         }
     }, [id, session, setReload]);
@@ -229,7 +229,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                             <div style={{flex: '1'}}></div>
                         </div>
                         <div className={styles.building_issues_container}>
-                            <div style={{margin:'auto', display:'flex', gap: '3px', paddingRight:'5px'}}>
+                            <div style={{margin: 'auto', display: 'flex', gap: '3px', paddingRight: '5px'}}>
                                 <IconButton onClick={buildingGenerateLink}>
                                     <RefreshRoundedIcon/>
                                 </IconButton>

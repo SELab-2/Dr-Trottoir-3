@@ -6,9 +6,11 @@ from rest_framework.response import Response
 
 from drtrottoir.models import (
     Building,
+    GarbageCollectionSchedule,
+    GarbageType,
     ScheduleDefinition,
     ScheduleDefinitionBuilding,
-    Syndicus, GarbageCollectionSchedule, GarbageType,
+    Syndicus,
 )
 from drtrottoir.permissions import (
     IsStudent,
@@ -23,9 +25,10 @@ from drtrottoir.serializers import (
     BuildingSerializer,
     GarbageCollectionScheduleSerializer,
     GarbageCollectionScheduleTemplateSerializer,
+    GarbageTypeSerializer,
     IssueSerializer,
     PublicBuildingSerializer,
-    ScheduleDefinitionSerializer, GarbageTypeSerializer,
+    ScheduleDefinitionSerializer,
 )
 
 from .mixins import PermissionsByActionMixin
@@ -228,35 +231,6 @@ class BuildingViewSet(
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    # @action(
-    #     detail=False,
-    #     methods=["GET"],
-    #     # https://ihateregex.io/expr/uuid/
-    #     url_path=r"(?P<uuid>[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})",  # noqa
-    #     permission_classes=[],
-    # )
-    # def uuid_link(self, request, uuid):
-    #     try:
-    #         building = Building.objects.get(secret_link=uuid)
-    #
-    #         # schedules = GarbageCollectionSchedule.objects.filter(building=building)
-    #         #
-    #         # garbage_types = GarbageType.objects.all()
-    #
-    #     except Building.DoesNotExist:
-    #         return Response(status=status.HTTP_404_NOT_FOUND)
-    #
-    #     building_serializer = PublicBuildingSerializer(building)
-    #     # schedules_serializer = GarbageCollectionScheduleSerializer(schedules, many=True)
-    #     # garbage_types_serializer = GarbageTypeSerializer(garbage_types, many=True)
-    #
-    #     data = {
-    #         'building': building_serializer.data,
-    #         # 'schedules': schedules_serializer.data,
-    #         # 'garbage_types': garbage_types_serializer.data
-    #     }
-    #
-    #     return Response(data)
     @action(
         detail=False,
         methods=["GET"],
@@ -274,18 +248,15 @@ class BuildingViewSet(
 
         except Building.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        #
-        # serializer = PublicBuildingSerializer(building)
-        #
-        # return Response(serializer.data)
+
         building_serializer = PublicBuildingSerializer(building)
         schedules_serializer = GarbageCollectionScheduleSerializer(schedules, many=True)
         garbage_types_serializer = GarbageTypeSerializer(garbage_types, many=True)
 
         data = {
-            'building': building_serializer.data,
-            'schedules': schedules_serializer.data,
-            'garbage_types': garbage_types_serializer.data
+            "building": building_serializer.data,
+            "schedules": schedules_serializer.data,
+            "garbage_types": garbage_types_serializer.data,
         }
 
         return Response(data)
