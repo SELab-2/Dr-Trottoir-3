@@ -71,20 +71,6 @@ function CalendarEntry(props: calendarEntryProps) {
                                 </p>
                             </div>
                             <div>
-                                {!props.scheduleAssignment.linkRight || snapshot.isDragging || hover ?
-                                    <IconButton
-                                        size='small'
-                                        className={styles.icon}
-                                        onClick={() => {
-                                            Router.push('/users/' + props.scheduleAssignment.id,
-                                                undefined,
-                                                {shallow: true}).then();
-                                        }} >
-                                        <InfoRoundedIcon className={styles.icon}/>
-                                    </IconButton> : undefined
-                                }
-                            </div>
-                            <div>
                                 {(!props.scheduleAssignment.linkRight ||
                             snapshot.isDragging ||
                             hover) &&
