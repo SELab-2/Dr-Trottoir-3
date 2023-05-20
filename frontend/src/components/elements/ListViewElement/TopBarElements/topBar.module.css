@@ -254,11 +254,6 @@
         color: var(--primary-dark);
         font-size: 0 !important;
     }
-
-    .hide_select {
-        width: 0 !important;
-        box-shadow: none !important;
-    }
 }
 
 @media screen and (min-width:1200px) {
@@ -282,7 +277,7 @@
 
     .filter_button{
         height: 30px !important;
-        width: 130px !important;
+        /*width: 130px !important;*/
         background: var(--secondary-light);
         border-radius: var(--small_corner);
         border-width: 0;
