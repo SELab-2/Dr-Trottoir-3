@@ -2,14 +2,13 @@ import React, {SyntheticEvent} from 'react';
 import {
     Autocomplete,
     Button,
-    Checkbox,
+    Checkbox, Dialog, DialogTitle,
     FormControl,
     FormControlLabel,
     InputLabel, MenuItem,
     Select,
     TextField,
 } from '@mui/material';
-import {ClickAwayListener} from '@mui/base';
 import styles from '@/styles/forms.module.css';
 import {Building, LocationGroup} from '@/api/models';
 import {postUser} from '@/api/api';
@@ -22,9 +21,10 @@ type FormProps = {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
     allBuildings: Building[],
     allRegions: LocationGroup[],
+    open: boolean
 }
 
-export default function Form({onSubmit, setCanClose, canClose, setOpen, allBuildings, allRegions}: FormProps) {
+export default function Form(props: FormProps) {
     const {data: session} = useSession();
     const [formUsername, setFormUsername] = React.useState('');
     const [formFirstName, setFormFirstName] = React.useState('');
@@ -72,14 +72,14 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, allBuild
             setFormLastName('');
             setFormUserType('');
             setSelectedBuildings([]);
-            onSubmit();
+            props.onSubmit();
         });
         handleClose();
     };
 
     const handleClose = () => {
-        if (canClose) {
-            setOpen(false);
+        if (props.canClose) {
+            props.setOpen(false);
         }
     };
 
@@ -93,12 +93,47 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, allBuild
             return (
                 <>
                     <div className={styles.field}>
-                        <FormControlLabel control={<Checkbox defaultChecked={false} value={formIsSuperStudent}
+                        <FormControlLabel control={<Checkbox
+                            sx={{
+                                '&.Mui-checked': {
+                                    color: 'var(--primary-yellow)',
+                                },
+                            }}
+                            defaultChecked={false} value={formIsSuperStudent}
                             onChange={() => setFormIsSuperStudent(!formIsSuperStudent)} />}
                         label="superstudent" sx={{color: 'black'}}/>
                     </div>
                     <div className={styles.field}>
-                        <FormControl required sx={{width: '100%'}}>
+                        <FormControl sx={{
+                            '& .MuiInputLabel-root': {
+                                padding: '2px',
+                            },
+                            '& label.Mui-focused': {
+                                color: 'var(--primary-yellow)',
+                                borderRadius: '8px',
+                            },
+                            '& .MuiInput-underline:after': {
+                                borderBottomColor: 'var(--primary-yellow)',
+                                borderRadius: '8px',
+                            },
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: 'var(--secondary-light)',
+                                    borderRadius: '8px',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: 'var(--secondary-light)',
+                                    borderRadius: '8px',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: 'var(--primary-yellow)',
+                                    borderRadius: '8px',
+                                },
+                            },
+                        }}
+                        size="small"
+                        fullWidth
+                        >
                             <InputLabel>regio</InputLabel>
                             <Select
                                 value={formRegion?.name}
@@ -107,7 +142,7 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, allBuild
                                 defaultValue=''
                                 MenuProps={{disablePortal: true}}
                             >
-                                {allRegions.map((option) => (
+                                {props.allRegions.map((option) => (
                                     <MenuItem id='menuitem' key={option.id} value={option.id}
                                         style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                         {option.name}
@@ -126,16 +161,42 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, allBuild
                     <FormControl sx={{marginBottom: 1, marginTop: 1, width: '100%'}}>
                         <Autocomplete
                             multiple
-                            id="tags-standard"
-                            options={allBuildings}
+                            id="tags-outline"
+                            options={props.allBuildings}
                             getOptionLabel={(option) => option.name}
                             defaultValue={[]}
                             value={selectedBuildings}
                             onChange={handleChangeBuildings}
                             renderInput={(params) => (
                                 <TextField
+                                    sx={{
+                                        '& .MuiInputLabel-root': {
+                                            padding: '2px',
+                                        },
+                                        '& label.Mui-focused': {
+                                            color: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                        '& .MuiInput-underline:after': {
+                                            borderBottomColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: 'var(--secondary-light)',
+                                                borderRadius: '8px',
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: 'var(--secondary-light)',
+                                                borderRadius: '8px',
+                                            },
+                                            '&.Mui-focused fieldset': {
+                                                borderColor: 'var(--primary-yellow)',
+                                                borderRadius: '8px',
+                                            },
+                                        },
+                                    }}
                                     {...params}
-                                    variant="standard"
                                     label="Gebouwen"
                                     placeholder="Gebouwen"
                                 />
@@ -152,16 +213,47 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, allBuild
     };
 
     React.useEffect(() =>{
-        setCanClose(true);
+        props.setCanClose(true);
     });
     return (
-        <ClickAwayListener onClickAway={handleClose}>
+        <Dialog open={props.open} onClose={handleClose}>
+            <DialogTitle>Gebruiker toevoegen</DialogTitle>
             <div className={styles.formCenter}>
                 <div className={styles.form}>
-                    <h2 style={{color: 'black'}}>Gebruiker Toevoegen</h2>
                     <div className={styles.formFields}>
                         <div className={styles.field}>
                             <TextField
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
                                 fullWidth
                                 required
                                 label="gebruikersnaam"
@@ -171,6 +263,37 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, allBuild
                         </div>
                         <div className={styles.field}>
                             <TextField
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
                                 fullWidth
                                 required
                                 label="voornaam"
@@ -180,6 +303,37 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, allBuild
                         </div>
                         <div className={styles.field}>
                             <TextField
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
                                 fullWidth
                                 required
                                 label="achternaam"
@@ -188,7 +342,36 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, allBuild
                             />
                         </div>
                         <div className={styles.field}>
-                            <FormControl sx={{width: '100%'}} required>
+                            <FormControl sx={{
+                                '& .MuiInputLabel-root': {
+                                    padding: '2px',
+                                },
+                                '& label.Mui-focused': {
+                                    color: 'var(--primary-yellow)',
+                                    borderRadius: '8px',
+                                },
+                                '& .MuiInput-underline:after': {
+                                    borderBottomColor: 'var(--primary-yellow)',
+                                    borderRadius: '8px',
+                                },
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: 'var(--secondary-light)',
+                                        borderRadius: '8px',
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: 'var(--secondary-light)',
+                                        borderRadius: '8px',
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                },
+                            }}
+                            required
+                            size="small"
+                            fullWidth>
                                 <InputLabel>type</InputLabel>
                                 <Select
                                     value={formUserType}
@@ -211,16 +394,16 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, allBuild
 
                     </div>
                     <div className={styles.formButtons}>
-                        <Button variant="contained" className={styles.button} onClick={handleClose}>
-                            Cancel
+                        <Button className={styles.cancel_button} onClick={handleClose}>
+                            Annuleren
                         </Button>
-                        <Button variant="contained" className={styles.button} onClick={handleSubmitForm}
+                        <Button className={styles.submit_button} onClick={handleSubmitForm}
                             style={{backgroundColor: '#E6E600'}}>
-                            Submit
+                            Toevoegen
                         </Button>
                     </div>
                 </div>
             </div>
-        </ClickAwayListener>
+        </Dialog>
     );
 }

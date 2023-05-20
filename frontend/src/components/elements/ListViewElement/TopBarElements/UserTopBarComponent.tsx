@@ -238,7 +238,7 @@ export default function UserTopBarComponent({onAdd, sorttype, setSorttype, selec
                 open={open}
                 invisible={false}
             >
-                <Form onSubmit={onAdd} setCanClose={setCanClose} canClose={canClose} setOpen={setOpen}
+                <Form open={open} onSubmit={onAdd} setCanClose={setCanClose} canClose={canClose} setOpen={setOpen}
                     allBuildings={allBuildings} allRegions={allRegions}></Form>
             </Backdrop>
         </div>

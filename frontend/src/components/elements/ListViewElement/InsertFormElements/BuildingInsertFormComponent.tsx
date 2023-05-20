@@ -48,6 +48,12 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, open, al
         if (formPDFGuide !== null) {
             formData.append('pdf_guide', formPDFGuide, formPDFGuide.name);
         }
+        formSyndici.forEach((s) => {
+            if (s.syndicus) {
+                formData.append('syndici', s.syndicus.id.toString());
+            }
+        });
+
         postBuilding(session, formData, () => {
             setFormName('');
             setFormAddress('');
@@ -314,10 +320,10 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, open, al
                     </div>
                     <div className={styles.formButtons}>
                         <Button className={styles.cancel_button} onClick={handleClose}>
-                            Annuleer
+                            Annuleren
                         </Button>
                         <Button className={styles.submit_button} onClick={handleSubmitForm}>
-                            Accepteer
+                            Toevoegen
                         </Button>
                     </div>
                 </div>
