@@ -2,8 +2,11 @@
 Django command to populate the database with some predefined mock data.
 """
 import datetime
+import os
 import random
+import urllib.request
 
+from django.core.files import File
 from django.core.management.base import BaseCommand
 
 from drtrottoir.models import (
@@ -27,6 +30,12 @@ from drtrottoir.models import (
 
 def generate_email_from_name(first_name: str) -> str:
     return f"{first_name.lower()}@drtrottoir.be"
+
+
+def local_image_path_to_django_image_data(image_path: str) -> File:
+    image_url = urllib.request.urlretrieve("file://" + image_path)
+    image_data = File(open(image_url[0], "rb"))
+    return image_data
 
 
 # Date up until (inclusive) schedule assignments have an amount of schedule work entries
@@ -314,6 +323,23 @@ garbage = [
     "Nucleair",
 ]
 
+building_images = [
+    os.path.abspath(os.path.join(root, name))
+    for root, files, names in os.walk("./mock_images/buildings/")
+    for name in names
+]
+
+entrance_images = [
+    os.path.abspath(os.path.join(root, name))
+    for root, files, names in os.walk("./mock_images/entrances/")
+    for name in names
+]
+garbage_images = [
+    os.path.abspath(os.path.join(root, name))
+    for root, files, names in os.walk("./mock_images/garbage/")
+    for name in names
+]
+
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
@@ -346,12 +372,14 @@ class Command(BaseCommand):
                     building_coordinates,
                 ) in schedule_definition_building_list:
                     latitude, longitude = building_coordinates
+                    image = random.choice(building_images)
                     building = Building(
                         address=building_address,
                         name=building_name,
                         location_group=location_group,
                         latitude=latitude,
                         longitude=longitude,
+                        image=local_image_path_to_django_image_data(image),
                     )
                     building.save()
                     buildings.append(building)
@@ -563,10 +591,12 @@ class Command(BaseCommand):
             if assignment_date <= MAX_DATE_WITH_SCHEDULE_WORK_ENTRIES:
                 for index in range(len(buildings_in_schedule_definition_of_0) - 2):
                     building = buildings_in_schedule_definition_of_0[index]
+                    entrance_image = random.choice(entrance_images)
+                    garbage_image = random.choice(garbage_images)
                     work_entries.append(
                         ScheduleWorkEntry(
                             creation_timestamp=f"{date} 12:{index}0:00",
-                            image="/some/path",
+                            image=local_image_path_to_django_image_data(entrance_image),
                             creator=schedule_assignment.user,
                             building=building,
                             schedule_assignment=schedule_assignment,
@@ -576,7 +606,7 @@ class Command(BaseCommand):
                     work_entries.append(
                         ScheduleWorkEntry(
                             creation_timestamp=f"{date} 12:{index}1:00",
-                            image="/some/path",
+                            image=local_image_path_to_django_image_data(entrance_image),
                             creator=schedule_assignment.user,
                             building=building,
                             schedule_assignment=schedule_assignment,
@@ -586,7 +616,7 @@ class Command(BaseCommand):
                     work_entries.append(
                         ScheduleWorkEntry(
                             creation_timestamp=f"{date} 12:{index}2:00",
-                            image="/some/path",
+                            image=local_image_path_to_django_image_data(garbage_image),
                             creator=schedule_assignment.user,
                             building=building,
                             schedule_assignment=schedule_assignment,
@@ -596,7 +626,7 @@ class Command(BaseCommand):
                     work_entries.append(
                         ScheduleWorkEntry(
                             creation_timestamp=f"{date} 12:{index}3:00",
-                            image="/some/path",
+                            image=local_image_path_to_django_image_data(garbage_image),
                             creator=schedule_assignment.user,
                             building=building,
                             schedule_assignment=schedule_assignment,
@@ -606,7 +636,7 @@ class Command(BaseCommand):
                     work_entries.append(
                         ScheduleWorkEntry(
                             creation_timestamp=f"{date} 12:{index}4:00",
-                            image="/some/path",
+                            image=local_image_path_to_django_image_data(garbage_image),
                             creator=schedule_assignment.user,
                             building=building,
                             schedule_assignment=schedule_assignment,
@@ -616,18 +646,19 @@ class Command(BaseCommand):
                     work_entries.append(
                         ScheduleWorkEntry(
                             creation_timestamp=f"{date} 12:{index}5:00",
-                            image="/some/path",
+                            image=local_image_path_to_django_image_data(entrance_image),
                             creator=schedule_assignment.user,
                             building=building,
                             schedule_assignment=schedule_assignment,
                             entry_type="DE",
                         )
                     )
-
+                entrance_image = random.choice(entrance_images)
+                garbage_image = random.choice(garbage_images)
                 work_entries.append(
                     ScheduleWorkEntry(
                         creation_timestamp=f"{date} 13:00:00",
-                        image="/some/path",
+                        image=local_image_path_to_django_image_data(entrance_image),
                         creator=schedule_assignment.user,
                         building=buildings_in_schedule_definition_of_0[
                             len(buildings_in_schedule_definition_of_0) - 2
@@ -639,7 +670,7 @@ class Command(BaseCommand):
                 work_entries.append(
                     ScheduleWorkEntry(
                         creation_timestamp=f"{date} 13:07:00",
-                        image="/some/path",
+                        image=local_image_path_to_django_image_data(garbage_image),
                         creator=schedule_assignment.user,
                         building=buildings_in_schedule_definition_of_0[
                             len(buildings_in_schedule_definition_of_0) - 2
