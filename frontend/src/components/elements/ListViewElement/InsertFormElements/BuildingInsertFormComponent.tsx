@@ -67,6 +67,7 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, open, al
             setFormSyndici([]);
             setFormDescription('');
             setFormPDFGuide(null);
+            setFormImage(null);
             onSubmit();
         });
     handleClose();
