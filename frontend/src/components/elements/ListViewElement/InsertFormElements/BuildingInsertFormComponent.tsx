@@ -51,7 +51,7 @@ export default function Form({setCanClose, canClose, setOpen, allRegions, allSyn
         if (formPDFGuide !== null) {
             formData.append('pdf_guide', formPDFGuide, formPDFGuide.name);
         }
-        formSyndici.map((s) => {
+        formSyndici.forEach((s) => {
             if (s.syndicus) {
                 formData.append('syndici', s.syndicus.id.toString());
             }

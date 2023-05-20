@@ -77,7 +77,7 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
 
         patchBuildingDetail(session, buildingId, formData);
         const syndics: number[] = [];
-        formSyndici.map((s) => {
+        formSyndici.forEach((s) => {
             if (s.syndicus) {
                 syndics.push(s.syndicus.id);
             }
