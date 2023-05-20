@@ -22,6 +22,7 @@ export default function UsersPage() {
     const [selectedRegions, setSelectedRegions] = React.useState<LocationGroup[]>([]);
     const [userType, setUserType] = React.useState<string>('');
     const [allBuildings, setAllBuildings] = useAuthenticatedApi<Building[]>();
+    const [reload, setReload] = React.useState(false);
 
     useEffect(() => {
         getBuildingsList(session, setAllBuildings);
@@ -40,11 +41,6 @@ export default function UsersPage() {
         handleSearch(false);
     }, [selectedRegions, sorttype, userType]);
 
-    const reloadPage = () => {
-        getBuildingsList(session, setAllBuildings);
-        getLocationGroupsList(session, setLocationGroups);
-        handleSearch(false, false);
-    };
 
     const handleSearch = (clear: boolean = false, scrollTop: boolean = true) => {
         let searchEntryOverwritten: string;
@@ -55,7 +51,7 @@ export default function UsersPage() {
         }
         let regionsFilter = '';
         selectedRegions.map((r) => {
-            regionsFilter+=r.id + ',';
+            regionsFilter += r.id + ',';
         });
         let adminFilter = '';
         let syndicusFilter = '';
@@ -64,17 +60,17 @@ export default function UsersPage() {
         if (userType === 'super_student') {
             superStudentFilter = 'true';
         } else if (userType === 'admin') {
-            adminFilter='0';
+            adminFilter = '0';
         } else if (userType === 'student') {
             studentFilter = '0';
         } else if (userType === 'syndicus') {
             syndicusFilter = '0';
         }
 
-        const setUserList = (data:any)=>{
+        const setUserList = (data: any) => {
             setUsers(data);
             const element = document.getElementById(styles.scrollable);
-            if (scrollTop  && element !== null) {
+            if (scrollTop && element !== null) {
                 element.scrollTo({top: 0, behavior: 'smooth'});
             }
         };
@@ -83,12 +79,20 @@ export default function UsersPage() {
             search: searchEntryOverwritten,
             ordering: sorttype, student__location_group__in: regionsFilter,
             syndicus__id__gt: syndicusFilter, admin__id__gt: adminFilter, student__id__gt: studentFilter,
-            student__is_super_student: superStudentFilter});
+            student__is_super_student: superStudentFilter
+        });
     };
 
+    if(reload){
+        console.log(sorttype);
+        getBuildingsList(session, setAllBuildings);
+        getLocationGroupsList(session, setLocationGroups);
+        handleSearch(false, false);
+        setReload(false);
+    }
 
     const topBar = <UserTopBarComponent
-        onAdd={reloadPage}
+        onAdd={() => setReload(true)}
         sorttype={sorttype}
         setSorttype={setSorttype}
         selectedRegions={selectedRegions}
@@ -103,15 +107,15 @@ export default function UsersPage() {
         handleSearch={handleSearch}
     />;
 
-    const [userElementWidget, setUserElementWidget] = useState(<LoadingElement />);
+    const [userElementWidget, setUserElementWidget] = useState(<LoadingElement/>);
 
     const changeUserElementWidget = () => {
-        setUserElementWidget(<LoadingElement />);
+        setUserElementWidget(<LoadingElement/>);
         if (current) {
             setUserElementWidget(<UserElement id={current} onEdit={() => {
-                reloadPage();
+                setReload(true);
                 changeUserElementWidget();
-            }} />);
+            }}/>);
         }
     }
 
