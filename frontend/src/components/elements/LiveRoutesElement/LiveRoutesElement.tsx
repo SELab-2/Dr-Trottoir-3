@@ -8,12 +8,13 @@ import {
 } from '@/api/api';
 import {useSession} from 'next-auth/react';
 import CloseIcon from '@mui/icons-material/Close';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Building, LocationGroup, ScheduleAssignment, ScheduleDefinition, ScheduleWorkEntry} from '@/api/models';
 import LinearProgress, {linearProgressClasses} from '@mui/material/LinearProgress';
 import {styled} from '@mui/system';
 import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
 import DoneIcon from '@mui/icons-material/Done';
+import RouteMap from '@/components/modules/routeDetail/RouteMap';
 
 const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
     height: 30,
@@ -40,6 +41,7 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
     const [buildingsData, setBuildingsData] = useAuthenticatedApi<Array<Building>>();
     const [scheduleAssignmentData, setScheduleAssignmentData] = useAuthenticatedApi<ScheduleAssignment>();
     const [workEntriesData, setWorkEntriesData] = useAuthenticatedApi<Array<ScheduleWorkEntry>>();
+    const [hovering, setHovering] = useState<Building['id'] | null>(null);
 
     useEffect(() => {
         getScheduleAssignmentDetail(session, setScheduleAssignmentData, props.id);
@@ -95,6 +97,10 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
         }
     }, [session, scheduleAssignmentData]);
 
+    const orderedBuildings: () => Building[] = () => buildingsData?.data
+        .map((e) => (e || []))
+        .flat() || [];
+
     if (
         !scheduleDefinitionData ||
         !locationGroupData ||
@@ -149,7 +155,7 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                                 <div className={styles.routesItems}>
                                     {buildingsData.data.map((building) =>
                                         <div className={styles.routesItem}>
-                                            <h4>{building.address}</h4>
+                                            <h4>{building.name ? building.name : building.address}</h4>
 
                                             {workEntriesData?.data.filter(
                                                 (workEntry) => workEntry.building === building.id &&
@@ -174,7 +180,7 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                             </div>
                         </div>
                         <div className={styles.userAnalytics}>
-                            <div className={styles.graph}></div>
+                            <RouteMap buildings={orderedBuildings()} onHovering={setHovering} hovering={hovering}/>
                         </div>
                     </div>
                 </div>
