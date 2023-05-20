@@ -3,16 +3,18 @@
     background-color: white;
     display: flex;
     flex-direction: column;
-    min-height: 100%;
-    height: fit-content;
+    flex:1;
     width: 100%;
     color: black;
     align-items: center;
+    overflow: hidden;
 }
 
 .title {
+    display: flex;
+    flex-basis: 80px;
     font-family: 'Inter', sans-serif;
-    font-size: 20px;
+    font-size: 30px;
     padding: 20px;
 }
 
@@ -74,4 +76,12 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+}
+
+.scroll {
+    overflow: scroll;
+    width: 100%;
+    display: flex;
+    flex: 1;
+    flex-flow: column;
 }

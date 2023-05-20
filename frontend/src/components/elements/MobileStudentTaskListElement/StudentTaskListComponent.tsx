@@ -57,15 +57,14 @@ export default function StudentTaskList({userId}: StudentTaskListProps) {
         return (
             <div className={styles.outerDiv}>
                 <h1 className={styles.title}>Toegekende Routes</h1>
-                <div style={{width: '100%'}}>
+                <div className={styles.scroll}>
                     {
                         filteredAssignments.slice(0).map(([date, assignments]) => (
                             <Day date={date} key={date} assignments={assignments} definitions={definitions.data}
-                                workEntries={workEntries.data}/>
+                                 workEntries={workEntries.data}/>
                         ))
                     }
                 </div>
-
             </div>
         );
     } else {
