@@ -88,11 +88,11 @@ export default function LiveRoutesPage() {
 
     const nextDay = () => {
         setDay(day + 1);
-    }
+    };
 
     const prevDay = () => {
         setDay(day - 1);
-    }
+    };
 
     useEffect(() => {
         setLiveRouteWidget(<LoadingElement />);
