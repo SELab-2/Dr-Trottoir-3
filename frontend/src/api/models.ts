@@ -42,7 +42,6 @@ export type Building = {
     longitude: number | null,
     latitude: number | null,
     syndici: number[],
-    secret_link: string,
 };
 
 export type ScheduleAssignment = {
