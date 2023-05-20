@@ -56,7 +56,6 @@ export default function PublicGarbageCollectionScheduleList(props: {
 
     return (
         <Box className={styles.full_container}>
-            {/*<Typography variant='h5' paddingBottom={2}>Planning</Typography>*/}
             <div className={styles.scrollable_container}>
                 {schedulesPerWeek().map(({monday, sunday, schedules}, index) =>
                     <Box key={index}>

@@ -3,13 +3,10 @@ import {
     getBuildingDetail,
 } from '@/api/api';
 import React, {useEffect, useState} from 'react';
-import {Box, Link, Tooltip} from '@mui/material';
+import {Box, Tooltip} from '@mui/material';
 import styles from './PublicBuildingPage.module.css';
-import {defaultBuildingImage} from '@/constants/images';
-import BuildingMap from '@/components/elements/BuildingDetailElement/BuildingMap';
 import PublicGarbageCollectionScheduleList from './PublicGarbageCollectionScheduleList';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
-import {PictureAsPdf} from '@mui/icons-material';
 
 export default function PublicBuildingPage(props: { id: number }) {
     const {id} = props;
@@ -86,18 +83,18 @@ export default function PublicBuildingPage(props: { id: number }) {
 
                     {/* Bottom row */}
                     <div className={styles.bottom_row_containerWrapper}>
-                    <div className={styles.bottom_row_container}>
-                        {/* Planning */}
-                        <Box flexGrow={3} flexBasis={0}>
-                            <PublicGarbageCollectionScheduleList
-                                garbageTypes={garbageTypes}
-                                garbageCollectionSchedules={
-                                    garbageCollectionSchedules
-                                        .filter((e) => isTodayOrFuture(e.for_day))
-                                }
-                            />
-                        </Box>
-                    </div>
+                        <div className={styles.bottom_row_container}>
+                            {/* Planning */}
+                            <Box flexGrow={3} flexBasis={0}>
+                                <PublicGarbageCollectionScheduleList
+                                    garbageTypes={garbageTypes}
+                                    garbageCollectionSchedules={
+                                        garbageCollectionSchedules
+                                            .filter((e) => isTodayOrFuture(e.for_day))
+                                    }
+                                />
+                            </Box>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -107,22 +104,4 @@ export default function PublicBuildingPage(props: { id: number }) {
             <LoadingElement />
         );
     }
-}
-
-
-function BuildingDetailManualLink(props: { path: string | null }): JSX.Element {
-    if (!props.path || props.path.length === 0) {
-        return (
-            <div className={styles.pdf_container}>
-                <PictureAsPdf fontSize='small'/>
-                <p>Geen handleiding</p>
-            </div>
-        );
-    }
-    return (
-        <Link href={props.path} className={styles.pdf_container}>
-            Manual
-            <PictureAsPdf fontSize='small'/>
-        </Link>
-    );
 }

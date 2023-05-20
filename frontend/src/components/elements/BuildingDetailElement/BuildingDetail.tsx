@@ -78,7 +78,6 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
     const [sessionError, setSessionError] = React.useState(0);
 
     const [editPopupOpen, setEditPopupOpen] = useState(false);
-    const [reload, setReload] = useState<boolean>(false);
 
     function onOpenEditPopup() {
         setEditPopupOpen(true);
