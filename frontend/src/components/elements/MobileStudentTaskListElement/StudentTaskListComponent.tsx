@@ -118,6 +118,7 @@ const RouteEntry = ({name, totalBuildings, buildingsDone, today}: DisplayRoute) 
                     alignItems: 'center',
                     justifyContent: 'center',
                     background: 'var(--secondary-light)',
+                    boxShadow: 'none',
                     paddingLeft: '20px',
                     paddingRight: '20px',
                 }}>
