@@ -307,13 +307,22 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                             >
                                 Handleiding (PDF)
                                 <input
+                                    id={`building-${buildingId}-create-manual-pdf-button`}
                                     type="file"
                                     onChange={(e) => setFormPDFGuide(e.target.files ? e.target.files[0] : null)}
                                     accept="application/pdf"
                                     hidden
                                 />
                             </Button>
-                            <IconButton onClick={() => setFormPDFGuide(null)}>
+                            <IconButton onClick={() => {
+                                setFormPDFGuide(null);
+                                const pdfButton = document.getElementById(`manual-pdf-button-building-${buildingId}`);
+                                if (pdfButton) {
+                                    // @ts-ignore
+                                    pdfButton.value = null;
+                                }
+                            }}
+                            >
                                 <CloseIcon/>
                             </IconButton>
                         </div>
