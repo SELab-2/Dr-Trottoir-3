@@ -24,7 +24,6 @@ import IssueList from './IssueList';
 import GarbageCollectionScheduleList from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleList';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
-import {useRouter} from 'next/router';
 
 interface IBuildingDetail {
     id: number,
@@ -98,8 +97,6 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
             getBuildingDetail(session, setBuilding, id);
         }
     }, [refreshPrivateLink]);
-
-    const router = useRouter();
 
     // Get buildings data
     useEffect(() => {

@@ -13,7 +13,6 @@ export default function PublicGarbageCollectionScheduleList(props: {
     garbageTypes: Array<GarbageType>,
     garbageCollectionSchedules : Array<GarbageCollectionSchedule>
 }) {
-
     function schedulesPerWeek() {
         const fancySchedules = props.garbageCollectionSchedules.map((schedule) => ({
             id: schedule.id,

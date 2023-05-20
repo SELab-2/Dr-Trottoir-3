@@ -22,9 +22,12 @@ export default function PublicBuildingPage(props: { id: number }) {
         }
     }, [id]);
 
-    const [building, setBuilding] = useState<Building | undefined>(undefined);
-    const [garbageTypes, setGarbageTypes] = useState<Array<GarbageType> | undefined>(undefined);
-    const [garbageCollectionSchedules, setGarbageCollectionSchedules] = useState<Array<GarbageCollectionSchedule> | undefined>(undefined);
+    const [building, setBuilding] =
+        useState<Building | undefined>(undefined);
+    const [garbageTypes, setGarbageTypes] =
+        useState<Array<GarbageType> | undefined>(undefined);
+    const [garbageCollectionSchedules, setGarbageCollectionSchedules] =
+        useState<Array<GarbageCollectionSchedule> | undefined>(undefined);
 
 
     useEffect(()=>{
@@ -107,7 +110,13 @@ export default function PublicBuildingPage(props: { id: number }) {
                     <div className={styles.bottom_row_container}>
                         {/* Planning */}
                         <Box flexGrow={3} flexBasis={0}>
-                            <PublicGarbageCollectionScheduleList garbageTypes={garbageTypes} garbageCollectionSchedules={garbageCollectionSchedules.filter((e) => isTodayOrFuture(e.for_day))}/>
+                            <PublicGarbageCollectionScheduleList
+                                garbageTypes={garbageTypes}
+                                garbageCollectionSchedules={
+                                    garbageCollectionSchedules
+                                        .filter((e) => isTodayOrFuture(e.for_day))
+                                }
+                            />
                         </Box>
                     </div>
                 </div>
