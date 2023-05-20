@@ -20,8 +20,8 @@ export default function BuildingsPage() {
     const [current, setCurrent] = useState<number | null>(null);
     const [selectedRegions, setSelectedRegions] = useState<LocationGroup[]>([]);
     const [searchEntry, setSearchEntry] = useState('');
-    const [sorttype, setSorttype] = useState('Pa');
-
+    const [sorttype, setSorttype] = useState('name');
+    const [reload, setReload] = React.useState(false);
     const [allSyndici, setAllSyndici] = useAuthenticatedApi<User[]>();
 
     useEffect(() => {
@@ -37,12 +37,6 @@ export default function BuildingsPage() {
         handleSearch(false, false);
     }, [session]);
 
-    const reloadPage = () => {
-        console.log(sorttype);
-        getLocationGroupsList(session, setLocationGroups);
-        getUsersList(session, setAllSyndici, {syndicus__id__gt: 0});
-        handleSearch(false, false);
-    }
 
     const handleSearch = (clear: boolean = false, scrollTop: boolean = true) => {
         let searchEntryOverwritten: string;
@@ -66,7 +60,7 @@ export default function BuildingsPage() {
     };
 
     const topBar = <BuildingTopBarComponent
-        onAdd={reloadPage}
+        onAdd={() => setReload(true)}
         sorttype={sorttype}
         setSorttype={setSorttype}
         selectedRegions={selectedRegions}
@@ -79,13 +73,21 @@ export default function BuildingsPage() {
         allSyndici={allSyndici ? allSyndici.data: []}
     />;
 
+
+    if(reload){
+        console.log(sorttype);
+        getLocationGroupsList(session, setLocationGroups);
+        getUsersList(session, setAllSyndici, {syndicus__id__gt: 0});
+        handleSearch(false, false);
+    }
+
     const [buildingWidget, setBuildingWidget] = useState(<LoadingElement />);
 
     const changeBuildingElementWidget = () => {
         setBuildingWidget(<LoadingElement />);
         if (current) {
             setBuildingWidget(<BuildingDetail id={current} onEdit={() => {
-                reloadPage();
+                setReload(true);
                 changeBuildingElementWidget();
             }} />);
         }
