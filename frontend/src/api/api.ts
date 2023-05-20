@@ -46,6 +46,8 @@ export enum Api {
     IssueImages = 'issue_images/',
     Me = 'users/me/',
     InviteLink = 'users/invite/:id/',
+    ResetPassword = 'users/reset_password/',
+    ResetPasswordLink = 'users/reset_password/:id/',
     UserAnalytics = 'users/:id/analytics/'
 }
 
@@ -567,6 +569,15 @@ const getUserInvite = (session: Session | null, setter: ((e:any) => void), uuid:
         });
 };
 
+const getUserResetPassword = (session: Session | null, setter: ((e:any) => void), uuid: string) => {
+    getDetailsFromAPI(Api.ResetPasswordLink, session, uuid)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
+};
 
 const getIssueDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
     getDetailsFromAPI(Api.IssueDetail, session, id)
@@ -580,6 +591,26 @@ const getIssueDetail = (session: Session | null, setter: ((e:any) => void), id: 
 
 const postUserInvite = (session: Session | null, uuid: string, data: any, setter?: ((e:any) => void)) => {
     postDetailsOnAPIWithId(Api.InviteLink, session, uuid, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
+const postUserCreateResetPassword = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
+    postDetailsToAPI(Api.ResetPassword, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
+const postUserResetPassword = (session: Session | null, uuid: string, data: any, setter?: ((e:any) => void)) => {
+    postDetailsOnAPIWithId(Api.ResetPasswordLink, session, uuid, data)
         .then((e) => {
             setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
         })
@@ -997,6 +1028,7 @@ export {
     getIssueDetail,
     getMe,
     getUserInvite,
+    getUserResetPassword,
     getUserAnalytics,
 
     postGarbageCollectionScheduleTemplate,
@@ -1014,6 +1046,8 @@ export {
     postIssue,
     postIssueImage,
     postUserInvite,
+    postUserCreateResetPassword,
+    postUserResetPassword,
 
     deleteGarbageCollectionScheduleTemplate,
     deleteGarbageCollectionScheduleTemplateEntry,
