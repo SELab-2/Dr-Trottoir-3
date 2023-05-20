@@ -20,7 +20,7 @@ export default function BuildingsPage() {
     const [current, setCurrent] = useState<number | null>(null);
     const [selectedRegions, setSelectedRegions] = useState<LocationGroup[]>([]);
     const [searchEntry, setSearchEntry] = useState('');
-    const [sorttype, setSorttype] = useState('name');
+    const [sorttype, setSorttype] = useState('Pa');
 
     const [allSyndici, setAllSyndici] = useAuthenticatedApi<User[]>();
 
@@ -38,6 +38,7 @@ export default function BuildingsPage() {
     }, [session]);
 
     const reloadPage = () => {
+        console.log(sorttype);
         getLocationGroupsList(session, setLocationGroups);
         getUsersList(session, setAllSyndici, {syndicus__id__gt: 0});
         handleSearch(false, false);
@@ -58,7 +59,6 @@ export default function BuildingsPage() {
                 element.scrollTo({top: 0, behavior: 'smooth'});
             }
         };
-
         getBuildingsList(session, setBuildingList, {
             ordering: sorttype,
             search: searchEntryOverwritten,
