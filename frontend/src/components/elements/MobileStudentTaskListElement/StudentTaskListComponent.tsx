@@ -79,7 +79,7 @@ const Day = ({date, assignments, definitions, workEntries}: RoutesByDay) => {
     const mappedAssignments = assignments.map((assignment) => {
         const definition = definitions.filter((def) => def.id === assignment.schedule_definition)[0];
         const entries = workEntries.filter((entry) => entry.schedule_assignment === assignment.id);
-        // Because a building can accept multiple schedule work entries of the same type, we need to remove duplicates
+        // Because a buildings can accept multiple schedule work entries of the same type, we need to remove duplicates
         const buildingsWithEntries = new Set(entries.map((entry) => entry.building));
         return {
             id: assignment.id,
@@ -117,6 +117,7 @@ const RouteEntry = ({name, totalBuildings, buildingsDone, today}: DisplayRoute) 
                     alignItems: 'center',
                     justifyContent: 'center',
                     background: 'var(--secondary-light)',
+                    boxShadow: 'none',
                     paddingLeft: '20px',
                     paddingRight: '20px',
                 }}>

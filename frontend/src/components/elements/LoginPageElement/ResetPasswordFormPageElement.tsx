@@ -1,20 +1,13 @@
 import {useState} from 'react';
-import {signIn} from 'next-auth/react';
 import styles from './loginPageElement.module.css';
 import {Box, Button, TextField} from '@mui/material';
-import {useRouter} from 'next/router';
+import {postUserCreateResetPassword} from '@/api/api';
 
-export default function LoginPageElement() {
+export default function ResetPasswordFormPageElement() {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const router = useRouter();
-
-    async function handleLogin() {
-        signIn('credentials', {callbackUrl: '/', password: password, username: email});
-    }
 
     async function handleResetPassword() {
-        router.push('/reset-password');
+        postUserCreateResetPassword(null, {'email': email}, undefined);
     }
 
     return (
@@ -33,9 +26,6 @@ export default function LoginPageElement() {
                             color: 'black',
                             width: 'min(250px, 100%)'},
                         '& .MuiInputBase-input': {color: 'var(--secondary-light)'},
-                        '.MuiAutocomplete-inputRoot[class*="MuiOutlinedInput-root"]': {
-                            backgroundColor: '#red',
-                        },
                     }}
                     noValidate
                     autoComplete="on"
@@ -79,49 +69,8 @@ export default function LoginPageElement() {
                             label={'email'}
                             onChange={(e) => setEmail(e.target.value)}
                         />
-                        <TextField
-                            sx={{
-                                '& .MuiInputLabel-root': {
-                                    padding: '2px',
-                                },
-                                '& label.Mui-focused': {
-                                    color: 'var(--primary-yellow)',
-                                    borderRadius: '8px',
-                                },
-                                '& .MuiInput-underline:after': {
-                                    borderBottomColor: 'var(--primary-dark)',
-                                    borderRadius: '8px',
-                                },
-                                '& .MuiOutlinedInput-root': {
-                                    '& fieldset': {
-                                        borderColor: 'var(--primary-dark)',
-                                        borderRadius: '8px',
-                                    },
-                                    '&:hover fieldset': {
-                                        borderColor: 'var(--primary-dark)',
-                                        borderRadius: '8px',
-                                    },
-                                    '&.Mui-focused fieldset': {
-                                        borderColor: 'var(--primary-dark)',
-                                        borderRadius: '8px',
-                                    },
-                                },
-                            }}
-                            size="small"
-                            InputProps={{
-                                style: {height: '45px'},
-                            }}
-                            className={styles.input}
-                            fullWidth
-                            label={'password'}
-                            type={'password'}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <Button className={styles.login_button} onClick={handleLogin}>
-                            <p>login</p>
-                        </Button>
-                        <Button className={styles.reset_button} onClick={handleResetPassword}>
-                            <p>Reset Password</p>
+                        <Button className={styles.login_button} onClick={handleResetPassword}>
+                            <p>Send reset password link</p>
                         </Button>
                     </div>
                 </Box>

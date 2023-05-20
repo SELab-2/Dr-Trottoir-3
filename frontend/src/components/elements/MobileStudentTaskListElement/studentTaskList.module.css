@@ -1,10 +1,10 @@
 .outerDiv {
     font-family: 'Inter', sans-serif;
-    background-color: white;
     display: flex;
     flex-direction: column;
     flex:1;
     width: 100%;
+    max-width: 450px;
     color: black;
     align-items: center;
     overflow: hidden;

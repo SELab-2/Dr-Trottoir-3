@@ -1,23 +1,29 @@
-import {useState} from 'react';
-import {signIn} from 'next-auth/react';
+import {useEffect, useState} from 'react';
+import {useRouter} from 'next/router';
 import styles from './loginPageElement.module.css';
 import {Box, Button, TextField} from '@mui/material';
-import {useRouter} from 'next/router';
+import {User} from '@/api/models';
+import {getUserResetPassword, postUserResetPassword} from '@/api/api';
 
-export default function LoginPageElement() {
-    const [email, setEmail] = useState('');
+export default function ResetPasswordPageElement(props: { uuid: string }) {
+    const {uuid} = props;
+    const [user, setUser] = useState<{success: boolean, data: User} | undefined>(undefined);
     const [password, setPassword] = useState('');
     const router = useRouter();
 
-    async function handleLogin() {
-        signIn('credentials', {callbackUrl: '/', password: password, username: email});
-    }
+    useEffect(()=>{
+        if (uuid !== null) {
+            getUserResetPassword(null, setUser, uuid);
+        }
+    }, [uuid]);
 
     async function handleResetPassword() {
-        router.push('/reset-password');
+        postUserResetPassword(null, uuid, {'password': password}, undefined);
+
+        router.replace('/login');
     }
 
-    return (
+    return user === undefined ? <p>Loading...</p> : ( user.success ? (
         <div className={styles.full_login_page}>
             <div className={styles.login_page_image_container}>
                 <img src={'/media/logo_drtrottoir.svg'} className={styles.drtrottoirlogo}/>
@@ -33,9 +39,6 @@ export default function LoginPageElement() {
                             color: 'black',
                             width: 'min(250px, 100%)'},
                         '& .MuiInputBase-input': {color: 'var(--secondary-light)'},
-                        '.MuiAutocomplete-inputRoot[class*="MuiOutlinedInput-root"]': {
-                            backgroundColor: '#red',
-                        },
                     }}
                     noValidate
                     autoComplete="on"
@@ -76,56 +79,16 @@ export default function LoginPageElement() {
                             }}
                             className={styles.input}
                             fullWidth
-                            label={'email'}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <TextField
-                            sx={{
-                                '& .MuiInputLabel-root': {
-                                    padding: '2px',
-                                },
-                                '& label.Mui-focused': {
-                                    color: 'var(--primary-yellow)',
-                                    borderRadius: '8px',
-                                },
-                                '& .MuiInput-underline:after': {
-                                    borderBottomColor: 'var(--primary-dark)',
-                                    borderRadius: '8px',
-                                },
-                                '& .MuiOutlinedInput-root': {
-                                    '& fieldset': {
-                                        borderColor: 'var(--primary-dark)',
-                                        borderRadius: '8px',
-                                    },
-                                    '&:hover fieldset': {
-                                        borderColor: 'var(--primary-dark)',
-                                        borderRadius: '8px',
-                                    },
-                                    '&.Mui-focused fieldset': {
-                                        borderColor: 'var(--primary-dark)',
-                                        borderRadius: '8px',
-                                    },
-                                },
-                            }}
-                            size="small"
-                            InputProps={{
-                                style: {height: '45px'},
-                            }}
-                            className={styles.input}
-                            fullWidth
                             label={'password'}
                             type={'password'}
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                        <Button className={styles.login_button} onClick={handleLogin}>
-                            <p>login</p>
-                        </Button>
-                        <Button className={styles.reset_button} onClick={handleResetPassword}>
+                        <Button className={styles.login_button} onClick={handleResetPassword}>
                             <p>Reset Password</p>
                         </Button>
                     </div>
                 </Box>
             </div>
         </div>
-    );
+    ) : <p>Not found</p>);
 }
