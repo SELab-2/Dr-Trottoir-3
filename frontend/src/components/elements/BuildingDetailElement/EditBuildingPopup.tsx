@@ -16,6 +16,7 @@ import axios from 'axios';
 import {LatLng} from 'leaflet';
 import {PinDrop} from '@mui/icons-material';
 import BuildingMapSelector from '@/components/elements/ListViewElement/InsertFormElements/BuildingMapSelector';
+import CloseIcon from '@mui/icons-material/Close';
 
 type EditBuildingPopupProps = {
     buildingId: number,
@@ -42,6 +43,7 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
         React.useState<LatLng>(new LatLng(51.1576985, 4.0807745));
     const [formSyndici, setFormSyndici] = React.useState<User[]>(prevSyndici);
     const [formDescription, setFormDescription] = React.useState(prevDescription);
+    const [formImage, setFormImage] = useState<File | null>(null);
 
     useEffect(() => {
         getUsersList(session, setAllSyndici, {syndicus__id__gt: 0});
@@ -276,6 +278,37 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                                 )}
                             />
                         </FormControl>
+                        <div className={styles.field}>
+                            <Button
+                                variant="contained"
+                                component="label"
+                                sx={{'width': 240, 'fontSize': 12, 'backgroundColor': 'var(--primary-dark)',
+                                    '&:hover': {
+                                        backgroundColor: 'var(--secondary-dark)',
+                                    }}}
+                            >
+                                Afbeelding
+                                <input
+                                    type="file"
+                                    onChange={(e) => setFormImage(e.target.files ? e.target.files[0] : null)}
+                                    accept="image/*"
+                                    hidden
+                                />
+                            </Button>
+                            <IconButton onClick={() => setFormImage(null)}>
+                                <CloseIcon/>
+                            </IconButton>
+                        </div>
+                        <p style={{fontSize: 14}} className={styles.field}>
+                            {
+                                formImage ?
+                                    (formImage.name.length > 40 ?
+                                        formImage.name.slice(0, 37) +'...' :
+                                        formImage.name
+                                    ) :
+                                    ''
+                            }
+                        </p>
                     </div>
                     <div className={styles.formButtons}>
                         <Button className={styles.cancel_button} onClick={handleClose}>
