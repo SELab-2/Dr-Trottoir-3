@@ -169,7 +169,7 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, open, al
                                 }}
                                 size="small"
                                 fullWidth
-                                renderInput={(params) => <TextField {...params} label="Regio"/>}
+                                renderInput={(params) => <TextField {...params} label="regio"/>}
                                 options={allRegions}
                                 getOptionLabel={({name}) => name}
                                 value={formRegion}
