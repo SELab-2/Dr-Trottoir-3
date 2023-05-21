@@ -3,6 +3,7 @@ import styles from './listView.module.css';
 import {ApiData} from '@/api/api';
 import {LocationGroup} from '@/api/models';
 import ErrorPage from '@/containers/ErrorPage';
+import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 
 
 type ListViewComponentProps = {
@@ -76,7 +77,7 @@ export default function ListViewComponent(props: ListViewComponentProps) {
     } else {
         return (
             <>
-                TODO: LOADING SCREEN
+                <LoadingElement></LoadingElement>
             </>
         );
     }
