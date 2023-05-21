@@ -1,6 +1,5 @@
 import {useSession} from 'next-auth/react';
 import {
-    getLatestScheduleDefinitionsList,
     getLocationGroupsList, getScheduleAssignmentsList, getScheduleDefinitionsList,
     getScheduleWorkEntriesList,
     getUsersList,
