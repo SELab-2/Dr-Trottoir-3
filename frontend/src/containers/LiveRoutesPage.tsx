@@ -35,7 +35,7 @@ export default function LiveRoutesPage() {
     const [active, setActive] = React.useState('');
 
     const currentDay: Date = new Date();
-    const [day, setDay] = useState<number>(currentDay.getDate() - currentDay.getDay());
+    const [day, setDay] = useState<number>(currentDay.getDate());
 
     useEffect(() => {
         getLatestScheduleDefinitionsList(session, setDefinitions);
@@ -105,14 +105,6 @@ export default function LiveRoutesPage() {
 
     const [liveRouteWidget, setLiveRouteWidget] = useState(<LoadingElement />);
 
-    const nextDay = () => {
-        setDay(day + 1);
-    };
-
-    const prevDay = () => {
-        setDay(day - 1);
-    };
-
     useEffect(() => {
         setLiveRouteWidget(<LoadingElement />);
         if (current) {
@@ -152,8 +144,8 @@ export default function LiveRoutesPage() {
             searchEntry={searchEntry}
             setSearchEntry={setSearchEntry}
             handleSearch={handleSearch}
-            nextDay={nextDay}
-            prevDay={prevDay}
+            setDay={setDay}
+            day={day}
         />;
 
         return (

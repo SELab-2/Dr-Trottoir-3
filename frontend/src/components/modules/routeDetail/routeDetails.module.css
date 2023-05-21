@@ -1,0 +1,10 @@
+.building_data_title {
+    margin: auto;
+    margin-left: 0;
+    font-weight: 400;
+    font-size: 30px;
+    width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
