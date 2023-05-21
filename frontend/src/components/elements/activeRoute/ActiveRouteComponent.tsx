@@ -379,7 +379,7 @@ export default function ActiveRouteComponent(props: { scheduleAssignmentId: numb
     }
 
     if (activeRoutes.length === 0) {
-        return <p>No entries...</p>;
+        return <p>Geen taken uit te voeren voor deze route vandaag.</p>;
     }
 
 
