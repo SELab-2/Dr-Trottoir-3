@@ -76,7 +76,7 @@ Om een nieuwe template te maken, druk op het plusje onderaan de lijst van templa
 ![Template toevoegen](screenshots/gebouwen/11_template_add.jpg)
 In de popup kan een bestaande template geselcteerd worden om te bewerken, of kan een nieuwe naam getypt worden om de nieuwe template te maken.
 ![Template maken](screenshots/gebouwen/12_template_create.jpg)
-Klik op een bepaalde weekdag om op die die dag om aan te duiden wat er op die dag moet gebeuren.
+Klik op een bepaalde weekdag om aan te duiden wat er op die dag moet gebeuren.
 ![Template dag](screenshots/gebouwen/13_template_day.jpg)
 Duid aan welk afval moet buitengezet worden.
 ![Template afval types](screenshots/gebouwen/14_template_garbage_types.jpg)
