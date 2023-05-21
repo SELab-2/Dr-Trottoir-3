@@ -197,8 +197,8 @@ export default function Form(props: FormProps) {
                                         },
                                     }}
                                     {...params}
-                                    label="Gebouwen"
-                                    placeholder="Gebouwen"
+                                    label="gebouwen"
+                                    placeholder="gebouwen"
                                 />
                             )}
                         />
