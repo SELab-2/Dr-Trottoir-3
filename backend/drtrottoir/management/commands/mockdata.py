@@ -315,12 +315,16 @@ syndici_data = [
 ]
 
 garbage = [
-    "Rest",
-    "GFT",
-    "Glas",
-    "PMD",
-    "KGA",
-    "Nucleair",
+    "Rest (In)",
+    "Rest (Out)",
+    "GFT (In)",
+    "GFT (Out)",
+    "Glas (In)",
+    "Glas (Out)",
+    "PMD (In)",
+    "PMD (Out)",
+    "KGA (In)",
+    "KGA (Out)",
 ]
 
 building_images = [
@@ -331,12 +335,12 @@ building_images = [
 
 entrance_images = [
     os.path.abspath(os.path.join(root, name))
-    for root, files, names in os.walk("./mock_images/entrances/")
+    for root, _, names in os.walk("./mock_images/entrances/")
     for name in names
 ]
 garbage_images = [
     os.path.abspath(os.path.join(root, name))
-    for root, files, names in os.walk("./mock_images/garbage/")
+    for root, _, names in os.walk("./mock_images/garbage/")
     for name in names
 ]
 
@@ -572,27 +576,44 @@ class Command(BaseCommand):
 
             # Add garbage schedules
             for building in buildings_in_schedule_definition_of_0:
-                garbage_collection_schedule_1 = GarbageCollectionSchedule(
-                    for_day=date, building=building, garbage_type=garbage_types[0]
-                )
-                garbage_collection_schedule_2 = GarbageCollectionSchedule(
+                garbage_collection_schedule_1_in = GarbageCollectionSchedule(
                     for_day=date, building=building, garbage_type=garbage_types[1]
                 )
-                garbage_collection_schedule_1.save()
-                garbage_collection_schedule_2.save()
+                garbage_collection_schedule_1_out = GarbageCollectionSchedule(
+                    for_day=datetime.datetime.strptime(date, "%Y-%m-%d")
+                    + datetime.timedelta(days=1),
+                    building=building,
+                    garbage_type=garbage_types[0],
+                )
+                garbage_collection_schedule_2_in = GarbageCollectionSchedule(
+                    for_day=date, building=building, garbage_type=garbage_types[3]
+                )
+                garbage_collection_schedule_2_out = GarbageCollectionSchedule(
+                    for_day=datetime.datetime.strptime(date, "%Y-%m-%d")
+                    + datetime.timedelta(days=1),
+                    building=building,
+                    garbage_type=garbage_types[2],
+                )
+                garbage_collection_schedule_1_in.save()
+                garbage_collection_schedule_1_out.save()
+                garbage_collection_schedule_2_in.save()
+                garbage_collection_schedule_2_out.save()
 
             # Add work entries
             work_entries = []
 
-            # Only add entries if they happen before or during
-            # MAX_DATE_WITH_SCHEDULE_WORK_ENTRIES
-            str_year, str_month, str_day = schedule_assignment.assigned_date.split("-")
+            str_year, str_month, str_day = date.split("-")
             assignment_date = datetime.date(int(str_year), int(str_month), int(str_day))
-            if assignment_date <= MAX_DATE_WITH_SCHEDULE_WORK_ENTRIES:
-                for index in range(len(buildings_in_schedule_definition_of_0) - 2):
-                    building = buildings_in_schedule_definition_of_0[index]
-                    entrance_image = random.choice(entrance_images)
-                    garbage_image = random.choice(garbage_images)
+
+            for index, building in enumerate(buildings_in_schedule_definition_of_0):
+                entrance_image = random.choice(entrance_images)
+                garbage_image = random.choice(garbage_images)
+
+                # If assigned date is before MAX_DATE, fill them with 100%
+                # OR if assigned date is MAX_DATE then fill the first two entries fully
+                if (assignment_date < MAX_DATE_WITH_SCHEDULE_WORK_ENTRIES) or (
+                    assignment_date == MAX_DATE_WITH_SCHEDULE_WORK_ENTRIES and index < 2
+                ):
                     work_entries.append(
                         ScheduleWorkEntry(
                             creation_timestamp=f"{date} 12:{index}0:00",
@@ -606,6 +627,32 @@ class Command(BaseCommand):
                     work_entries.append(
                         ScheduleWorkEntry(
                             creation_timestamp=f"{date} 12:{index}1:00",
+                            image=local_image_path_to_django_image_data(garbage_image),
+                            creator=schedule_assignment.user,
+                            building=building,
+                            schedule_assignment=schedule_assignment,
+                            entry_type="WO",
+                        )
+                    )
+
+                    work_entries.append(
+                        ScheduleWorkEntry(
+                            creation_timestamp=f"{date} 12:{index}2:00",
+                            image=local_image_path_to_django_image_data(entrance_image),
+                            creator=schedule_assignment.user,
+                            building=building,
+                            schedule_assignment=schedule_assignment,
+                            entry_type="DE",
+                        )
+                    )
+                # If assignment_date is MAX_DATE, add AR and WO to the third entry
+                elif (
+                    assignment_date == MAX_DATE_WITH_SCHEDULE_WORK_ENTRIES
+                    and index == 2
+                ):
+                    work_entries.append(
+                        ScheduleWorkEntry(
+                            creation_timestamp=f"{date} 12:{index}0:00",
                             image=local_image_path_to_django_image_data(entrance_image),
                             creator=schedule_assignment.user,
                             building=building,
@@ -615,7 +662,7 @@ class Command(BaseCommand):
                     )
                     work_entries.append(
                         ScheduleWorkEntry(
-                            creation_timestamp=f"{date} 12:{index}2:00",
+                            creation_timestamp=f"{date} 12:{index}1:00",
                             image=local_image_path_to_django_image_data(garbage_image),
                             creator=schedule_assignment.user,
                             building=building,
@@ -623,62 +670,6 @@ class Command(BaseCommand):
                             entry_type="WO",
                         )
                     )
-                    work_entries.append(
-                        ScheduleWorkEntry(
-                            creation_timestamp=f"{date} 12:{index}3:00",
-                            image=local_image_path_to_django_image_data(garbage_image),
-                            creator=schedule_assignment.user,
-                            building=building,
-                            schedule_assignment=schedule_assignment,
-                            entry_type="WO",
-                        )
-                    )
-                    work_entries.append(
-                        ScheduleWorkEntry(
-                            creation_timestamp=f"{date} 12:{index}4:00",
-                            image=local_image_path_to_django_image_data(garbage_image),
-                            creator=schedule_assignment.user,
-                            building=building,
-                            schedule_assignment=schedule_assignment,
-                            entry_type="WO",
-                        )
-                    )
-                    work_entries.append(
-                        ScheduleWorkEntry(
-                            creation_timestamp=f"{date} 12:{index}5:00",
-                            image=local_image_path_to_django_image_data(entrance_image),
-                            creator=schedule_assignment.user,
-                            building=building,
-                            schedule_assignment=schedule_assignment,
-                            entry_type="DE",
-                        )
-                    )
-                entrance_image = random.choice(entrance_images)
-                garbage_image = random.choice(garbage_images)
-                work_entries.append(
-                    ScheduleWorkEntry(
-                        creation_timestamp=f"{date} 13:00:00",
-                        image=local_image_path_to_django_image_data(entrance_image),
-                        creator=schedule_assignment.user,
-                        building=buildings_in_schedule_definition_of_0[
-                            len(buildings_in_schedule_definition_of_0) - 2
-                        ],
-                        schedule_assignment=schedule_assignment,
-                        entry_type="AR",
-                    )
-                )
-                work_entries.append(
-                    ScheduleWorkEntry(
-                        creation_timestamp=f"{date} 13:07:00",
-                        image=local_image_path_to_django_image_data(garbage_image),
-                        creator=schedule_assignment.user,
-                        building=buildings_in_schedule_definition_of_0[
-                            len(buildings_in_schedule_definition_of_0) - 2
-                        ],
-                        schedule_assignment=schedule_assignment,
-                        entry_type="WO",
-                    )
-                )
 
             for x in work_entries:
                 x.save()

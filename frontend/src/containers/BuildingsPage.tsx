@@ -21,7 +21,7 @@ export default function BuildingsPage() {
     const [selectedRegions, setSelectedRegions] = useState<LocationGroup[]>([]);
     const [searchEntry, setSearchEntry] = useState('');
     const [sorttype, setSorttype] = useState('name');
-
+    const [reload, setReload] = React.useState(false);
     const [allSyndici, setAllSyndici] = useAuthenticatedApi<User[]>();
 
     useEffect(() => {
@@ -31,29 +31,36 @@ export default function BuildingsPage() {
 
     useEffect(() => {
         handleSearch(false);
-    }, [session, selectedRegions, sorttype]);
+    }, [selectedRegions, sorttype]);
 
     useEffect(() => {
-        const element = document.getElementById(styles.scrollable);
-        if (element !== null) {
-            element.scrollTo({top: 0, behavior: 'smooth'});
-        }
-    }, [buildings]);
+        handleSearch(false, false);
+    }, [session]);
 
-    const handleSearch = (clear: boolean = false) => {
+
+    const handleSearch = (clear: boolean = false, scrollTop: boolean = true) => {
         let searchEntryOverwritten: string;
         if (clear) {
             searchEntryOverwritten = '';
         } else {
             searchEntryOverwritten = searchEntry;
         }
-        getBuildingsList(session, setBuildings, {
+
+        const setBuildingList = (data:any)=>{
+            setBuildings(data);
+            const element = document.getElementById(styles.scrollable);
+            if (scrollTop && element !== null) {
+                element.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        };
+        getBuildingsList(session, setBuildingList, {
             ordering: sorttype,
             search: searchEntryOverwritten,
             location_group__in: selectedRegions.map((e) => e.id).join(',')});
     };
 
     const topBar = <BuildingTopBarComponent
+        onAdd={() => setReload(true)}
         sorttype={sorttype}
         setSorttype={setSorttype}
         selectedRegions={selectedRegions}
@@ -66,20 +73,36 @@ export default function BuildingsPage() {
         allSyndici={allSyndici ? allSyndici.data: []}
     />;
 
+
+    if (reload) {
+        getLocationGroupsList(session, setLocationGroups);
+        getUsersList(session, setAllSyndici, {syndicus__id__gt: 0});
+        handleSearch(false, false);
+    }
+
     const [buildingWidget, setBuildingWidget] = useState(<LoadingElement />);
 
-    useEffect(() => {
+    const changeBuildingElementWidget = () => {
         setBuildingWidget(<LoadingElement />);
         if (current) {
-            setBuildingWidget(<BuildingDetail id={current}/>);
+            setBuildingWidget(<BuildingDetail id={current} onEdit={() => {
+                setReload(true);
+                changeBuildingElementWidget();
+            }} />);
         }
+    };
+
+    useEffect(() => {
+        changeBuildingElementWidget();
     }, [current]);
 
     if (buildings && locationGroups && allSyndici) {
+        const reloadableBuildings = buildings.data.map((building) => ({...building, reload: reload, onMessage: () => setReload(false)}));
+        const listData = {success: buildings.success, status: buildings.status, data: reloadableBuildings};
         return (
             <>
                 <ListViewComponent
-                    listData={buildings}
+                    listData={listData}
                     setListData={setBuildings}
                     locationGroups={locationGroups}
                     selectedRegions={selectedRegions}

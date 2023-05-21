@@ -63,7 +63,7 @@ describe('Dummy login test', () => {
     });
     it('Tests whether the login page has a login button', async ()=> {
         const {findByText} = render(<LoginPageElement/>);
-        const loginButton = await findByText('login'); // Notice the 'await'
+        const loginButton = await findByText('Login'); // Notice the 'await'
         expect(loginButton).toBeInTheDocument();
     });
 });

@@ -52,6 +52,11 @@
     font-weight: 300;
 }
 
+.list_item_right_side{
+    display: flex;
+    flex-direction: row;
+}
+
 @media screen and (min-width:750px) {
     .content_container {
         display: flex;

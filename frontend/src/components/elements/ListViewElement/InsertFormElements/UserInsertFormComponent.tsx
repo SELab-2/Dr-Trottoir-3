@@ -15,6 +15,7 @@ import {postUser} from '@/api/api';
 import {useSession} from 'next-auth/react';
 
 type FormProps = {
+    onSubmit: () => void,
     setCanClose: React.Dispatch<React.SetStateAction<boolean>>,
     canClose: boolean,
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
@@ -31,7 +32,7 @@ export default function Form(props: FormProps) {
     const [formUserType, setFormUserType] = React.useState('');
     const [formIsSuperStudent, setFormIsSuperStudent] = React.useState(false);
     const [selectedBuildings, setSelectedBuildings] = React.useState<Building[]>([]);
-    const [formRegion, setFormRegion] = React.useState<LocationGroup>();
+    const [formRegion, setFormRegion] = React.useState<LocationGroup | null>(null);
 
     const userTypes = {
         student: 'student',
@@ -63,7 +64,16 @@ export default function Form(props: FormProps) {
                 buildings: blds,
             };
         }
-        postUser(session, postData);
+        postUser(session, postData, () => {
+            setFormFirstName('');
+            setFormUsername('');
+            setFormRegion(null);
+            setFormIsSuperStudent(false);
+            setFormLastName('');
+            setFormUserType('');
+            setSelectedBuildings([]);
+            props.onSubmit();
+        });
         handleClose();
     };
 

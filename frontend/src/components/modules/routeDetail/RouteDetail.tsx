@@ -1,6 +1,6 @@
-import {Box, Typography} from '@mui/material';
+import {Box, Tooltip, Typography} from '@mui/material';
 import BuildingList from '@/components/modules/routeDetail/BuildingList';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import RouteMap from '@/components/modules/routeDetail/RouteMap';
 import {
     getBuildingsList,
@@ -16,6 +16,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import AddBuildingPopup from '@/components/modules/routeDetail/AddBuildingPopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 import ScheduleAssignmentList from '@/components/modules/routeDetail/ScheduleAssignmentList';
+import styles from './routeDetails.module.css';
 
 type routeDetailProps = {
     scheduleDefinitionId: ScheduleDefinition['id'] | null,
@@ -93,19 +94,23 @@ function RouteDetail({scheduleDefinitionId, updateList}: routeDetailProps) {
         return (
             scheduleDefinitionId !== null ?
                 (<Box width={'100%'} display={'flex'} flexDirection={'column'} overflow={'hidden'}>
-                    <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
-                        borderRadius={'var(--small_corner)'}
+                    <Box marginBottom={2} padding='20px' bgcolor={'var(--secondary-light)'}
+                        borderRadius={'16px'}
                         display={'flex'} flexDirection={mobileView ? 'column' : 'row'}>
-                        <Box>
-                            <Typography variant={mobileView ? 'h5' : 'h4'} noWrap>
-                                {scheduleDefinition?.data.name}
-                            </Typography>
-                            <Typography variant={'subtitle1'} noWrap>{locationGroup?.data.name}</Typography>
+                        <Box display='flex' flexDirection='column' gap='10px'>
+                            <Tooltip title={scheduleDefinition?.data.name} placement="top">
+                                <h1 className={styles.building_data_title}>
+                                    {scheduleDefinition?.data.name}
+                                </h1>
+                            </Tooltip>
+                            <Tooltip title={locationGroup?.data.name} placement="right">
+                                <p>{locationGroup?.data.name}</p>
+                            </Tooltip>
                         </Box>
                         <Box flexGrow={1}>
                             <div style={{display: 'flex', flex: 1}}></div>
                             <Typography textAlign={mobileView ? 'start' : 'end'}>
-                                versie {scheduleDefinition?.data.version}
+                                <p>versie {scheduleDefinition?.data.version}</p>
                             </Typography>
                         </Box>
                     </Box>

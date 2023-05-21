@@ -19,6 +19,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 
 type FormProps = {
+    onSubmit: () => void,
     setCanClose: React.Dispatch<React.SetStateAction<boolean>>,
     canClose: boolean,
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
@@ -27,7 +28,7 @@ type FormProps = {
     open: boolean
 }
 
-export default function Form({setCanClose, canClose, setOpen, open, allRegions, allSyndici}: FormProps) {
+export default function Form({onSubmit, setCanClose, canClose, setOpen, open, allRegions, allSyndici}: FormProps) {
     const {data: session} = useSession();
 
     const handleClose = () => {
@@ -56,7 +57,19 @@ export default function Form({setCanClose, canClose, setOpen, open, allRegions, 
                 formData.append('syndici', s.syndicus.id.toString());
             }
         });
-        postBuilding(session, formData);
+
+        postBuilding(session, formData, () => {
+            setFormName('');
+            setFormAddress('');
+            setFormAddressError(false);
+            setFormCoordinate(new LatLng(51.1576985, 4.0807745));
+            setFormRegion(null);
+            setFormSyndici([]);
+            setFormDescription('');
+            setFormPDFGuide(null);
+            setFormImage(null);
+            onSubmit();
+        });
         handleClose();
     };
 
@@ -64,7 +77,7 @@ export default function Form({setCanClose, canClose, setOpen, open, allRegions, 
     const [formAddress, setFormAddress] = useState('');
     const [formAddressError, setFormAddressError] = useState(false);
     const [formCoordinate, setFormCoordinate] = useState<LatLng>(new LatLng(51.1576985, 4.0807745));
-    const [formRegion, setFormRegion] = useState<LocationGroup>();
+    const [formRegion, setFormRegion] = useState<LocationGroup | null>(null);
     const [formSyndici, setFormSyndici] = useState<User[]>([]);
     const [formDescription, setFormDescription] = useState('');
     const [formPDFGuide, setFormPDFGuide] = React.useState<File | null>(null);
@@ -73,6 +86,10 @@ export default function Form({setCanClose, canClose, setOpen, open, allRegions, 
     React.useEffect(() => {
         setCanClose(true);
     });
+
+    const pdfButtonId = `building-create-manual-pdf-button`;
+    const imgButtonId = `building-create-manual-img-button`;
+
     return (
         <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Gebouw toevoegen</DialogTitle>
@@ -322,13 +339,21 @@ export default function Form({setCanClose, canClose, setOpen, open, allRegions, 
                             >
                                 Handleiding (PDF)
                                 <input
+                                    id={pdfButtonId}
                                     type="file"
                                     onChange={(e) => setFormPDFGuide(e.target.files ? e.target.files[0] : null)}
                                     accept="application/pdf"
                                     hidden
                                 />
                             </Button>
-                            <IconButton onClick={() => setFormPDFGuide(null)}>
+                            <IconButton onClick={() => {
+                                setFormPDFGuide(null);
+                                const pdfButton = document.getElementById(pdfButtonId);
+                                if (pdfButton) {
+                                    // @ts-ignore
+                                    pdfButton.value = null;
+                                }
+                            }}>
                                 <CloseIcon/>
                             </IconButton>
                         </div>
@@ -353,13 +378,21 @@ export default function Form({setCanClose, canClose, setOpen, open, allRegions, 
                             >
                                 Afbeelding
                                 <input
+                                    id={imgButtonId}
                                     type="file"
                                     onChange={(e) => setFormImage(e.target.files ? e.target.files[0] : null)}
                                     accept="image/*"
                                     hidden
                                 />
                             </Button>
-                            <IconButton onClick={() => setFormImage(null)}>
+                            <IconButton onClick={() => {
+                                setFormImage(null);
+                                const imageButton = document.getElementById(imgButtonId);
+                                if (imageButton) {
+                                    // @ts-ignore
+                                    imageButton.value = null;
+                                }
+                            }}>
                                 <CloseIcon/>
                             </IconButton>
                         </div>
