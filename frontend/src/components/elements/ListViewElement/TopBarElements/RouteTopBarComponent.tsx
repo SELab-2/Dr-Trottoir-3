@@ -19,6 +19,7 @@ import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
 import {Clear} from '@mui/icons-material';
 
 type TopBarProps = {
+    onAdd: () => void,
     sorttype: string,
     setSorttype: React.Dispatch<React.SetStateAction<string>>
     selectedRegions: LocationGroup[],
@@ -33,7 +34,7 @@ type TopBarProps = {
     handleSearch: (b: boolean) => void,
 };
 
-export default function RouteTopBarComponent({sorttype, setSorttype, selectedRegions, setRegion, allRegions,
+export default function RouteTopBarComponent({onAdd, sorttype, setSorttype, selectedRegions, setRegion, allRegions,
     searchEntry, setSearchEntry, selectedActive, setSelectedActive, allRoutes, handleSearch}:TopBarProps) {
     const AllesSelected = selectedRegions.length>=allRegions.length;
 
@@ -225,7 +226,7 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
                 open={open}
                 invisible={false}
             >
-                <Form open={open} setCanClose={setCanClose} canClose={canClose} setOpen={setOpen}
+                <Form open={open} onSubmit={onAdd} setCanClose={setCanClose} canClose={canClose} setOpen={setOpen}
                     allRegions={allRegions} allRoutes={allRoutes}></Form>
             </Backdrop>
         </div>

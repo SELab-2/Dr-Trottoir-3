@@ -31,6 +31,7 @@ export default function RoutesPage() {
     const [searchEntry, setSearchEntry] = useState('');
     const [sorttype, setSorttype] = useState('name');
     const [selectedActive, setSelectedActive] = useState<string>('all');
+    const [reload, setReload] = React.useState(false);
 
     useEffect(() => {
         getLocationGroupsList(session, setLocationGroups);
@@ -40,19 +41,15 @@ export default function RoutesPage() {
         getLatestScheduleDefinitionsList(session, setAllRoutes);
     }, [session]);
 
+    useEffect(() => {
+        handleSearch(false, false);
+    }, [session]);
 
     useEffect(() => {
         handleSearch(false);
-    }, [session, selectedRegions, sorttype, selectedActive]);
+    }, [selectedRegions, sorttype, selectedActive]);
 
-    useEffect(() => {
-        const element = document.getElementById(styles.scrollable);
-        if (element !== null) {
-            element.scrollTo({top: 0, behavior: 'smooth'});
-        }
-    }, [routes]);
-
-    const handleSearch = (clear: boolean = false) => {
+    const handleSearch = (clear: boolean = false, scrollTop: boolean = true) => {
         let searchEntryOverwritten: string;
         if (clear) {
             searchEntryOverwritten = '';
@@ -63,20 +60,37 @@ export default function RoutesPage() {
         selectedRegions.map((r) => {
             regionsFilter += r.id + ',';
         });
+
+        const setRoutesList = (data: any) => {
+            setRoutes(data);
+            const element = document.getElementById(styles.scrollable);
+            if (scrollTop && element !== null) {
+                element.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        };
+
         if (selectedActive === 'newest') {
-            getLatestScheduleDefinitionsList(session, setRoutes, {
+            getLatestScheduleDefinitionsList(session, setRoutesList, {
                 search: searchEntryOverwritten, ordering: sorttype,
                 location_group__in: regionsFilter,
             });
         } else {
-            getScheduleDefinitionsList(session, setRoutes, {
+            getScheduleDefinitionsList(session, setRoutesList, {
                 search: searchEntryOverwritten, ordering: sorttype,
                 location_group__in: regionsFilter,
             });
         }
     };
 
+    if(reload){
+        getLatestScheduleDefinitionsList(session, setAllRoutes);
+        getLocationGroupsList(session, setLocationGroups);
+        handleSearch(false, false);
+        setReload(false);
+    }
+
     const topBar = <RouteTopBarComponent
+        onAdd={() => setReload(true)}
         sorttype={sorttype}
         setSorttype={setSorttype}
         selectedRegions={selectedRegions}
@@ -93,14 +107,18 @@ export default function RoutesPage() {
 
     const [routeWidget, setRouteWidget] = useState(<LoadingElement />);
 
-    useEffect(() => {
-        setRouteWidget(<LoadingElement />);
+    const changeRouteElementWidget = () => {
+        setRouteWidget(<LoadingElement/>);
         if (current) {
             setRouteWidget(<RouteDetail scheduleDefinitionId={current} updateList={(newSelected) => {
-                handleSearch(false);
+                handleSearch(false, false);
                 setCurrent(newSelected);
             }}/>);
         }
+    }
+
+    useEffect( () => {
+        changeRouteElementWidget();
     }, [current]);
 
     if (routes && allRoutes && locationGroups) {
