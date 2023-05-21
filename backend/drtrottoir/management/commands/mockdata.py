@@ -315,12 +315,16 @@ syndici_data = [
 ]
 
 garbage = [
-    "Rest",
-    "GFT",
-    "Glas",
-    "PMD",
-    "KGA",
-    "Nucleair",
+    "Rest (In)",
+    "Rest (Out)",
+    "GFT (In)",
+    "GFT (Out)",
+    "Glas (In)",
+    "Glas (Out)",
+    "PMD (In)",
+    "PMD (Out)",
+    "KGA (In)",
+    "KGA (Out)",
 ]
 
 building_images = [
@@ -572,14 +576,28 @@ class Command(BaseCommand):
 
             # Add garbage schedules
             for building in buildings_in_schedule_definition_of_0:
-                garbage_collection_schedule_1 = GarbageCollectionSchedule(
-                    for_day=date, building=building, garbage_type=garbage_types[0]
-                )
-                garbage_collection_schedule_2 = GarbageCollectionSchedule(
+                garbage_collection_schedule_1_in = GarbageCollectionSchedule(
                     for_day=date, building=building, garbage_type=garbage_types[1]
                 )
-                garbage_collection_schedule_1.save()
-                garbage_collection_schedule_2.save()
+                garbage_collection_schedule_1_out = GarbageCollectionSchedule(
+                    for_day=datetime.datetime.strptime(date, "%Y-%m-%d")
+                    + datetime.timedelta(days=1),
+                    building=building,
+                    garbage_type=garbage_types[0],
+                )
+                garbage_collection_schedule_2_in = GarbageCollectionSchedule(
+                    for_day=date, building=building, garbage_type=garbage_types[3]
+                )
+                garbage_collection_schedule_2_out = GarbageCollectionSchedule(
+                    for_day=datetime.datetime.strptime(date, "%Y-%m-%d")
+                    + datetime.timedelta(days=1),
+                    building=building,
+                    garbage_type=garbage_types[2],
+                )
+                garbage_collection_schedule_1_in.save()
+                garbage_collection_schedule_1_out.save()
+                garbage_collection_schedule_2_in.save()
+                garbage_collection_schedule_2_out.save()
 
             # Add work entries
             work_entries = []
