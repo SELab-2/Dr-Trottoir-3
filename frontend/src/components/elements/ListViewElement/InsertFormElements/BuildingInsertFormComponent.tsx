@@ -19,6 +19,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 
 type FormProps = {
+    onSubmit: () => void,
     setCanClose: React.Dispatch<React.SetStateAction<boolean>>,
     canClose: boolean,
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
@@ -27,7 +28,7 @@ type FormProps = {
     open: boolean
 }
 
-export default function Form({setCanClose, canClose, setOpen, open, allRegions, allSyndici}: FormProps) {
+export default function Form({onSubmit, setCanClose, canClose, setOpen, open, allRegions, allSyndici}: FormProps) {
     const {data: session} = useSession();
 
     const handleClose = () => {
@@ -56,15 +57,27 @@ export default function Form({setCanClose, canClose, setOpen, open, allRegions, 
                 formData.append('syndici', s.syndicus.id.toString());
             }
         });
-        postBuilding(session, formData);
-        handleClose();
+
+        postBuilding(session, formData, () => {
+            setFormName('');
+            setFormAddress('');
+            setFormAddressError(false);
+            setFormCoordinate(new LatLng(51.1576985, 4.0807745));
+            setFormRegion(null);
+            setFormSyndici([]);
+            setFormDescription('');
+            setFormPDFGuide(null);
+            setFormImage(null);
+            onSubmit();
+        });
+    handleClose();
     };
 
     const [formName, setFormName] = useState('');
     const [formAddress, setFormAddress] = useState('');
     const [formAddressError, setFormAddressError] = useState(false);
     const [formCoordinate, setFormCoordinate] = useState<LatLng>(new LatLng(51.1576985, 4.0807745));
-    const [formRegion, setFormRegion] = useState<LocationGroup>();
+    const [formRegion, setFormRegion] = useState<LocationGroup | null>(null);
     const [formSyndici, setFormSyndici] = useState<User[]>([]);
     const [formDescription, setFormDescription] = useState('');
     const [formPDFGuide, setFormPDFGuide] = React.useState<File | null>(null);
