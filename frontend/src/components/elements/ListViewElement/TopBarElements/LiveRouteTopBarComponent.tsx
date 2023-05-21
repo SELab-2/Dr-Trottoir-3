@@ -19,7 +19,9 @@ import {Clear} from '@mui/icons-material';
 
 type TopBarProps = {
     sorttype: string,
-    setSorttype: React.Dispatch<React.SetStateAction<string>>
+    setSorttype: React.Dispatch<React.SetStateAction<string>>,
+    active: string,
+    setActive: React.Dispatch<React.SetStateAction<string>>,
     selectedRegions: LocationGroup[],
     setSelectedRegions: React.Dispatch<React.SetStateAction<LocationGroup[]>>,
     allRegions: LocationGroup[],
@@ -32,7 +34,7 @@ type TopBarProps = {
 }
 
 export default function LiveRouteTopBarComponent(
-    {sorttype, setSorttype, selectedRegions, setSelectedRegions, allRegions,
+    {sorttype, setSorttype, active, setActive, selectedRegions, setSelectedRegions, allRegions,
         searchEntry, setSearchEntry, handleSearch, nextDay, prevDay}:TopBarProps) {
     const AllesSelectedRegions = selectedRegions.length>=allRegions.length;
 
@@ -47,7 +49,7 @@ export default function LiveRouteTopBarComponent(
                 value );
     };
 
-    const dummyTypes = [
+    const activeTypes = [
         'Alle',
         'Actief',
         'Compleet',
@@ -56,11 +58,9 @@ export default function LiveRouteTopBarComponent(
     const sorttypes = {
         schedule_definition__name: 'Naam',
         schedule_definition__location_group__name: 'Regio',
-        schedule_definition__student__name: 'Student',
-        progress: 'Voortgang',
+        user__username: 'Student',
+        buildings_percentage: 'Voortgang',
     };
-
-    const [active, setActive] = React.useState('');
 
     const handleChangeActive = (event: SelectChangeEvent) => {
         setActive(event.target.value as string);
@@ -205,7 +205,7 @@ export default function LiveRouteTopBarComponent(
                             {active}
                         </p>}
                     >
-                        {dummyTypes.map((option) => (
+                        {activeTypes.map((option) => (
                             <MenuItem key={option} value={option}
                                 style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                 {option}

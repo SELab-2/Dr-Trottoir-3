@@ -86,6 +86,10 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, open, al
     React.useEffect(() => {
         setCanClose(true);
     });
+
+    const pdfButtonId = `building-create-manual-pdf-button`;
+    const imgButtonId = `building-create-manual-img-button`;
+
     return (
         <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Gebouw toevoegen</DialogTitle>
@@ -335,13 +339,21 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, open, al
                             >
                                 Handleiding (PDF)
                                 <input
+                                    id={pdfButtonId}
                                     type="file"
                                     onChange={(e) => setFormPDFGuide(e.target.files ? e.target.files[0] : null)}
                                     accept="application/pdf"
                                     hidden
                                 />
                             </Button>
-                            <IconButton onClick={() => setFormPDFGuide(null)}>
+                            <IconButton onClick={() => {
+                                setFormPDFGuide(null);
+                                const pdfButton = document.getElementById(pdfButtonId);
+                                if (pdfButton) {
+                                    // @ts-ignore
+                                    pdfButton.value = null;
+                                }
+                            }}>
                                 <CloseIcon/>
                             </IconButton>
                         </div>
@@ -366,13 +378,21 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, open, al
                             >
                                 Afbeelding
                                 <input
+                                    id={imgButtonId}
                                     type="file"
                                     onChange={(e) => setFormImage(e.target.files ? e.target.files[0] : null)}
                                     accept="image/*"
                                     hidden
                                 />
                             </Button>
-                            <IconButton onClick={() => setFormImage(null)}>
+                            <IconButton onClick={() => {
+                                setFormImage(null);
+                                const imageButton = document.getElementById(imgButtonId);
+                                if (imageButton) {
+                                    // @ts-ignore
+                                    imageButton.value = null;
+                                }
+                            }}>
                                 <CloseIcon/>
                             </IconButton>
                         </div>

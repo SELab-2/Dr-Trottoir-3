@@ -8,6 +8,10 @@ const ActiveRouteListButtonComponent = (props: ListItemProps) => {
     const isCurrent = props.data.id === props.current;
     const progress = props.data.buildingsDone/props.data.totalBuildings;
 
+    if (props.data.id === 299) {
+        console.log(props.data.buildingsDone);
+    }
+
     return (
 
         <div className={styles.button_wrapper}>
@@ -26,7 +30,7 @@ const ActiveRouteListButtonComponent = (props: ListItemProps) => {
                             {props.data.student}
                         </div>
                     </div>
-                    <div className={styles.listItemRightSide}>
+                    <div className={styles.list_item_right_side}>
                         {conditionalCheckmark(progress === 1)}
                         <div className={styles.very_big_item_text}>
                             {Math.round(progress*100)}%

@@ -98,6 +98,9 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
         );
     }
 
+    const pdfButtonId = `building-${buildingId}-edit-manual-pdf-button`;
+    const imgButtonId = `building-${buildingId}-edit-manual-img-button`;
+
     return (
         <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Gebouw aanpassen</DialogTitle>
@@ -307,13 +310,21 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                             >
                                 Handleiding (PDF)
                                 <input
+                                    id={pdfButtonId}
                                     type="file"
                                     onChange={(e) => setFormPDFGuide(e.target.files ? e.target.files[0] : null)}
                                     accept="application/pdf"
                                     hidden
                                 />
                             </Button>
-                            <IconButton onClick={() => setFormPDFGuide(null)}>
+                            <IconButton onClick={() => {
+                                setFormPDFGuide(null);
+                                const pdfButton = document.getElementById(pdfButtonId);
+                                if (pdfButton) {
+                                    // @ts-ignore
+                                    pdfButton.value = null;
+                                }
+                            }}>
                                 <CloseIcon/>
                             </IconButton>
                         </div>
@@ -338,13 +349,21 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                             >
                                 Afbeelding
                                 <input
+                                    id={imgButtonId}
                                     type="file"
                                     onChange={(e) => setFormImage(e.target.files ? e.target.files[0] : null)}
                                     accept="image/*"
                                     hidden
                                 />
                             </Button>
-                            <IconButton onClick={() => setFormImage(null)}>
+                            <IconButton onClick={() => {
+                                setFormImage(null);
+                                const imageButton = document.getElementById(imgButtonId);
+                                if (imageButton) {
+                                    // @ts-ignore
+                                    imageButton.value = null;
+                                }
+                            }}>
                                 <CloseIcon/>
                             </IconButton>
                         </div>
