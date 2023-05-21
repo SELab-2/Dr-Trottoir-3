@@ -58,6 +58,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    margin: auto 0;
 }
 
 .statsRow {
@@ -230,4 +231,26 @@
 
 .userAnalytics {
     flex-grow: 1;
+}
+
+.building_data_title {
+    margin: auto;
+    margin-left: 0;
+    font-weight: 400;
+    font-size: 30px;
+    width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.building_item_title {
+    margin: auto;
+    margin-left: 0;
+    font-weight: 400;
+    font-size: 20px;
+    width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

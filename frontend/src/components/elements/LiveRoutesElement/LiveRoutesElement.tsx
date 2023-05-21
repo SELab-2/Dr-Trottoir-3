@@ -16,7 +16,7 @@ import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
 import DoneIcon from '@mui/icons-material/Done';
 import {Carousel} from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import {Fade, Modal} from '@mui/material';
+import {Fade, Modal, Tooltip, Typography} from '@mui/material';
 import RouteMap from '@/components/modules/routeDetail/RouteMap';
 
 const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
@@ -138,8 +138,17 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                 <div className={styles.userElement}>
                     <div className={styles.userHeader}>
                         <div className={styles.firstColumn}>
-                            <h1>{scheduleDefinitionData.data.name}</h1>
-                            <p>{locationGroupData.data.name} {scheduleAssignmentData.data.assigned_date}</p>
+                            <Tooltip title={scheduleDefinitionData.data.name} placement="top">
+                                <h1 className={styles.building_data_title}>
+                                    {scheduleDefinitionData.data.name}
+                                </h1>
+                            </Tooltip>
+                            <Tooltip title={locationGroupData.data.name} placement="right">
+                                <p>{locationGroupData.data.name}</p>
+                            </Tooltip>
+                            <Tooltip title={scheduleAssignmentData.data.assigned_date} placement="right">
+                                <p>{scheduleAssignmentData.data.assigned_date}</p>
+                            </Tooltip>
                         </div>
                         <div className={styles.stats}>
                             <p>{buildingsData.data.map((building) => {
@@ -166,13 +175,18 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                     </div>
                     <div className={styles.userContent}>
                         <div className={styles.userRoutes + ' ' + styles.userRoutesPadding}>
-                            <h2 className={styles.routesTitle + ' ' + styles.extraTitlePadding}>Route opvolgen</h2>
+                            <Typography variant='h5'>Planning</Typography>
                             <div className={styles.scrollList}>
                                 <div className={styles.routesItems}>
                                     {buildingsData.data.map((building) =>
                                         <div className={styles.route_container}>
                                             <div className={styles.route_title}>
-                                                <h4>{building.address}</h4>
+                                                <Tooltip title={building.address} placement="top">
+                                                    <h1 className={styles.building_item_title}>
+                                                        {building.address}
+                                                    </h1>
+                                                </Tooltip>
+
                                                 {workEntriesData?.data
                                                     .filter((workEntry) => workEntry.building === building.id &&
                                                                     workEntry.schedule_assignment ===
