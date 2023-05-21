@@ -70,7 +70,7 @@ export default function Form({onSubmit, setCanClose, canClose, setOpen, open, al
             setFormImage(null);
             onSubmit();
         });
-    handleClose();
+        handleClose();
     };
 
     const [formName, setFormName] = useState('');
