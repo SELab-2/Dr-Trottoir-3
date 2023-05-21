@@ -55,7 +55,6 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
     const handleImage = (value: string) => {
         setImage(value);
         setOpen(true);
-        console.log(image);
     };
 
     useEffect(() => {
@@ -249,7 +248,6 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                                                         infiniteLoop={true}
                                                         showStatus={false}
                                                         showThumbs={false}
-                                                        onClickThumb={(e) => console.log(e)}
                                                         className={styles.mySwiper}
                                                     >
                                                         {workEntriesData.data.filter((e) =>
@@ -271,7 +269,6 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                                                         infiniteLoop={true}
                                                         showStatus={false}
                                                         showThumbs={false}
-                                                        onClickThumb={(e) => console.log(e)}
                                                         className={styles.mySwiper}
                                                     >
                                                         {workEntriesData.data.filter((e) =>
@@ -293,7 +290,6 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                                                         infiniteLoop={true}
                                                         showStatus={false}
                                                         showThumbs={false}
-                                                        onClickThumb={(e) => console.log(e)}
                                                         className={styles.mySwiper}
                                                     >
                                                         {workEntriesData.data.filter((e) =>

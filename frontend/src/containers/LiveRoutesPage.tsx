@@ -69,7 +69,6 @@ export default function LiveRoutesPage() {
 
         const todayDate = new Date();
         todayDate.setDate(day);
-        console.log(active);
         if (active === 'Actief') {
             getScheduleAssignmentsList(session, setAssignments, {
                 search: searchEntryOverwritten,
@@ -118,7 +117,7 @@ export default function LiveRoutesPage() {
             const definition = definitions.data.filter((def) => def.id === e.schedule_definition)[0];
             return {
                 id: e.id,
-                name: definition.name,
+                name: definition.name ? definition.name : '',
                 totalBuildings: definition.buildings.length,
                 buildingsDone: workEntries.data.filter((we) => we.schedule_assignment === e.id).length,
                 location_group: locationGroups.data.filter((lg) => lg.id === definition.location_group)[0].name,
