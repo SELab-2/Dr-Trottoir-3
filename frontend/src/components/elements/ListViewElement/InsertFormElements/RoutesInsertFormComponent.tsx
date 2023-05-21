@@ -11,6 +11,7 @@ import {postScheduleDefinition} from '@/api/api';
 import {useSession} from 'next-auth/react';
 
 type FormProps = {
+    onSubmit: () => void,
     setCanClose: React.Dispatch<React.SetStateAction<boolean>>,
     canClose: boolean,
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
@@ -33,6 +34,10 @@ export default function Form(props: FormProps) {
             name: formName,
             version: version,
             location_group: formRegion,
+        }, () => {
+            setFormName('');
+            setFormRegion(null);
+            props.onSubmit();
         });
         handleClose();
     };
@@ -45,7 +50,7 @@ export default function Form(props: FormProps) {
 
     const [formName, setFormName] = React.useState('');
 
-    const [formRegion, setFormRegion] = React.useState<LocationGroup>();
+    const [formRegion, setFormRegion] = React.useState<LocationGroup | null>(null);
 
     React.useEffect(() =>{
         props.setCanClose(true);

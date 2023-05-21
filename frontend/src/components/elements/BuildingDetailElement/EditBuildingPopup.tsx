@@ -20,6 +20,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 type EditBuildingPopupProps = {
     buildingId: number,
+    onSubmit: () => void,
     open: boolean,
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
     prevName: string,
@@ -31,7 +32,7 @@ type EditBuildingPopupProps = {
 }
 
 export default function EditBuildingPopup({open, setOpen, prevName, prevAddress, prevLongitude, prevLatitude,
-    prevSyndici, prevDescription, buildingId}: EditBuildingPopupProps) {
+    prevSyndici, prevDescription, buildingId, onSubmit}: EditBuildingPopupProps) {
     const {data: session} = useSession();
     const [allSyndici, setAllSyndici] = useAuthenticatedApi<User[]>();
 
@@ -83,7 +84,7 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
         });
         patchBuildingDetail(session, buildingId, {
             syndici: syndics,
-        });
+        }, () => onSubmit());
         setOpen(false);
     };
 
@@ -96,6 +97,9 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
             <>Loading</>
         );
     }
+
+    const pdfButtonId = `building-${buildingId}-edit-manual-pdf-button`;
+    const imgButtonId = `building-${buildingId}-edit-manual-img-button`;
 
     return (
         <Dialog open={open} onClose={handleClose}>
@@ -306,13 +310,21 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                             >
                                 Handleiding (PDF)
                                 <input
+                                    id={pdfButtonId}
                                     type="file"
                                     onChange={(e) => setFormPDFGuide(e.target.files ? e.target.files[0] : null)}
                                     accept="application/pdf"
                                     hidden
                                 />
                             </Button>
-                            <IconButton onClick={() => setFormPDFGuide(null)}>
+                            <IconButton onClick={() => {
+                                setFormPDFGuide(null);
+                                const pdfButton = document.getElementById(pdfButtonId);
+                                if (pdfButton) {
+                                    // @ts-ignore
+                                    pdfButton.value = null;
+                                }
+                            }}>
                                 <CloseIcon/>
                             </IconButton>
                         </div>
@@ -337,13 +349,21 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                             >
                                 Afbeelding
                                 <input
+                                    id={imgButtonId}
                                     type="file"
                                     onChange={(e) => setFormImage(e.target.files ? e.target.files[0] : null)}
                                     accept="image/*"
                                     hidden
                                 />
                             </Button>
-                            <IconButton onClick={() => setFormImage(null)}>
+                            <IconButton onClick={() => {
+                                setFormImage(null);
+                                const imageButton = document.getElementById(imgButtonId);
+                                if (imageButton) {
+                                    // @ts-ignore
+                                    imageButton.value = null;
+                                }
+                            }}>
                                 <CloseIcon/>
                             </IconButton>
                         </div>

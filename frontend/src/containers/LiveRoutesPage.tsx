@@ -32,6 +32,7 @@ export default function LiveRoutesPage() {
     const [current, setCurrent] = useState<number | null>(null);
     const [sorttype, setSorttype] = React.useState('schedule_definition__name');
     const [selectedRegions, setSelectedRegions] = React.useState<LocationGroup[]>([]);
+    const [active, setActive] = React.useState('');
 
     const currentDay: Date = new Date();
     const [day, setDay] = useState<number>(currentDay.getDate());
@@ -39,15 +40,13 @@ export default function LiveRoutesPage() {
     useEffect(() => {
         getLatestScheduleDefinitionsList(session, setDefinitions);
         getLocationGroupsList(session, setLocationGroups);
-        // TODO: mockdata currently only has AR but would make more sense to be DE
-        getScheduleWorkEntriesList(session, setWorkEntries, {entry_type: 'AR'});
+        getScheduleWorkEntriesList(session, setWorkEntries, {entry_type: 'DE'});
         getUsersList(session, setStudents, {student__id__gt: 0});
     }, [session]);
 
     useEffect(() => {
-        console.log(day);
         handleSearch(false);
-    }, [session, sorttype, selectedRegions, day]);
+    }, [session, sorttype, selectedRegions, day, active]);
 
     useEffect(() => {
         const element = document.getElementById(styles.scrollable);
@@ -67,14 +66,34 @@ export default function LiveRoutesPage() {
         selectedRegions.map((r) => {
             regionsFilter+=r.id + ',';
         });
+
         const todayDate = new Date();
         todayDate.setDate(day);
-        getScheduleAssignmentsList(session, setAssignments, {
-            search: searchEntryOverwritten,
-            ordering: sorttype,
-            schedule_definition__location_group__in: regionsFilter,
-            assigned_date: todayDate.toISOString().split('T')[0],
-        });
+        console.log(active);
+        if (active === 'Actief') {
+            getScheduleAssignmentsList(session, setAssignments, {
+                search: searchEntryOverwritten,
+                ordering: sorttype,
+                schedule_definition__location_group__in: regionsFilter,
+                assigned_date: todayDate.toISOString().split('T')[0],
+                buildings_to_do__gt: 0,
+            });
+        } else if (active === 'Compleet') {
+            getScheduleAssignmentsList(session, setAssignments, {
+                search: searchEntryOverwritten,
+                ordering: sorttype,
+                schedule_definition__location_group__in: regionsFilter,
+                assigned_date: todayDate.toISOString().split('T')[0],
+                buildings_to_do: 0,
+            });
+        } else {
+            getScheduleAssignmentsList(session, setAssignments, {
+                search: searchEntryOverwritten,
+                ordering: sorttype,
+                schedule_definition__location_group__in: regionsFilter,
+                assigned_date: todayDate.toISOString().split('T')[0],
+            });
+        }
     };
 
     useEffect(() => {
@@ -101,8 +120,8 @@ export default function LiveRoutesPage() {
                 id: e.id,
                 name: definition.name,
                 totalBuildings: definition.buildings.length,
-                buildingsDone: workEntries.data.filter((e) => e.schedule_assignment === e.id).length,
-                location_group: locationGroups.data.filter((e) => e.id === definition.location_group)[0].name,
+                buildingsDone: workEntries.data.filter((we) => we.schedule_assignment === e.id).length,
+                location_group: locationGroups.data.filter((lg) => lg.id === definition.location_group)[0].name,
                 student: student ? student.first_name + ' .' + student.last_name[0].toUpperCase() : '',
             };
         });
@@ -116,6 +135,8 @@ export default function LiveRoutesPage() {
         const topBar = <LiveRouteTopBarComponent
             sorttype={sorttype}
             setSorttype={setSorttype}
+            active={active}
+            setActive={setActive}
             selectedRegions={selectedRegions}
             setSelectedRegions={setSelectedRegions}
             allRegions={locationGroups ? locationGroups.data : []}

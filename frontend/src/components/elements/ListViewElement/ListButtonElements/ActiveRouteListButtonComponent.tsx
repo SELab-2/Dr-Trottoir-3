@@ -22,6 +22,10 @@ const ActiveRouteListButtonComponent = (props: ListItemProps) => {
         getScheduleAssignmentDetail(session, setScheduleAssignment, props.data.id);
     }, [session]);
 
+    if (props.data.id === 299) {
+        console.log(props.data.buildingsDone);
+    }
+
     return (
 
         <Button id={(isCurrent)?styles['item_button_select'] : styles['item_button']}
