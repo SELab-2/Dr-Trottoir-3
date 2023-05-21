@@ -61,7 +61,7 @@ function BuildingDetailManualLink(props: { path: string | null }): JSX.Element {
 
 // eslint-disable-next-line require-jsdoc
 
-export default function BuildingDetail(props: { id: number | null }): JSX.Element {
+export default function BuildingDetail(props: { id: number | null, onEdit: () => void }): JSX.Element {
     const id = props.id;
 
     const [buildingDetail, setBuildingDetail] =
@@ -251,6 +251,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
 
                         <EditBuildingPopup
                             buildingId={buildingDetail.id}
+                            onSubmit={props.onEdit}
                             open={editPopupOpen}
                             setOpen={setEditPopupOpen}
                             prevName={buildingDetail.name}
@@ -290,7 +291,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                     </Box>
                     {/* Issues */}
                     <Box flexGrow={2} flexBasis={0}>
-                        <IssueList buildingId={id}/>
+                        <IssueList onRead={props.onEdit} buildingId={id}/>
                     </Box>
                 </div>
             </div>

@@ -17,6 +17,7 @@ import styles from '@/styles/forms.module.css';
 
 type EditUserPopupProps = {
     userId: number,
+    onSubmit: () => void,
     open: boolean,
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
     prevFirstName: string,
@@ -25,7 +26,7 @@ type EditUserPopupProps = {
     prevSyndic: Syndicus | undefined,
 }
 
-export default function EditUserPopup({userId, open, setOpen, prevFirstName, prevLastName, prevStudent,
+export default function EditUserPopup({userId, onSubmit, open, setOpen, prevFirstName, prevLastName, prevStudent,
     prevSyndic}: EditUserPopupProps) {
     const {data: session} = useSession();
 
@@ -78,7 +79,7 @@ export default function EditUserPopup({userId, open, setOpen, prevFirstName, pre
             last_name: formLastName,
             student: formStudent,
             syndicus: formSyndicus,
-        });
+        }, () => onSubmit());
         handleClose();
     };
 

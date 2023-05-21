@@ -20,6 +20,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 type EditBuildingPopupProps = {
     buildingId: number,
+    onSubmit: () => void,
     open: boolean,
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
     prevName: string,
@@ -31,7 +32,7 @@ type EditBuildingPopupProps = {
 }
 
 export default function EditBuildingPopup({open, setOpen, prevName, prevAddress, prevLongitude, prevLatitude,
-    prevSyndici, prevDescription, buildingId}: EditBuildingPopupProps) {
+    prevSyndici, prevDescription, buildingId, onSubmit}: EditBuildingPopupProps) {
     const {data: session} = useSession();
     const [allSyndici, setAllSyndici] = useAuthenticatedApi<User[]>();
 
@@ -83,7 +84,7 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
         });
         patchBuildingDetail(session, buildingId, {
             syndici: syndics,
-        });
+        }, () => onSubmit());
         setOpen(false);
     };
 
