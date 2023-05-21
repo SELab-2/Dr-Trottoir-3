@@ -131,19 +131,53 @@ De publieke pagina is nu beschikbaar.
 ## Planner
 [Terug](#gebruikers-handleiding)
 
+De planner page is waar de planning week per week opgesteld kan worden.
+
 ![](screenshots/planner/0_page.jpg)
+
+In de topbar hier kan je selecteren van welke regio je de planning wilt aanpassen.
+
 ![](screenshots/planner/1_regio_select.jpg)
 ### Ronde plannen
+
+Om een student te plannen op een bepaalde route op een bepaalde dag klik je op het hokje dat overeenkomt
+met de dag en route dat je wil plannen. Dit opent een venster waar je de student kan kiezen die deze route
+zal moeten doen.
+
 ![](screenshots/planner/2_task_add.jpg)
 ![](screenshots/planner/3_task_add_save.jpg)
+
+Geplande studenten kunnen ook verschoven worden naar een andere dag en/of route.
+
 ![](screenshots/planner/6_task_drag.jpg)
 ### Ronde herhalen
+
+Indien een bepaalde student een route voor meerdere dagen na elkaar zou moeten doen kan men ook gewoon op
+het plusje rechts boven zijn blokje klikken om hem/haar voor een extra dag te plannen.
+
 ![](screenshots/planner/4_task_extend.jpg)
 ### Ronde verwijderen
+
+Een planning van een student verwijderen kan door op het kruisje rechts boven het blokje te klikken.
+
 ![](screenshots/planner/5_task_remove.jpg)
 
 ## Live Routes
 [Terug](#gebruikers-handleiding)
 
+De Live routes pagina toont alle routes die op een bepaalde dag gedaan worden. Standaard wordt de hudige dag getoond,
+maar door op het kalender icoontje rechts boven te klikken kan men een andere dag kiezen.
+Zo kan men toekomstige en voorbije dagen ook zien wat er moet gebeuren en gebeurd is.
+
+### Filters
+Net zoals op andere paginas kan men sorteren op verschillende velden. Dit kan op de naam van de route,
+de regio, de naam van de student en hoeveel percent van de route afgewerkt is.
+
+Men kan ook filteren op regio, en op routes die nog bezig zijn of al compleet zijn.
 ![](screenshots/live_routes/0_page.jpg)
+
+### Details view
+Door op een route te klikken open je de details van deze route. Hier kan je zien wat er al gedaan is en de fotos die de
+student geupload heeft.
+
 ![](screenshots/live_routes/detail.jpg)
