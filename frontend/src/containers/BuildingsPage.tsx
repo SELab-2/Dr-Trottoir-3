@@ -75,10 +75,11 @@ export default function BuildingsPage() {
 
 
     if(reload){
-        console.log(sorttype);
         getLocationGroupsList(session, setLocationGroups);
         getUsersList(session, setAllSyndici, {syndicus__id__gt: 0});
         handleSearch(false, false);
+        setReload(false);
+
     }
 
     const [buildingWidget, setBuildingWidget] = useState(<LoadingElement />);

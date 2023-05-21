@@ -84,7 +84,6 @@ export default function UsersPage() {
     };
 
     if(reload){
-        console.log(sorttype);
         getBuildingsList(session, setAllBuildings);
         getLocationGroupsList(session, setLocationGroups);
         handleSearch(false, false);
