@@ -50,9 +50,9 @@ export default function BuildingTopBarComponent({onAdd, sorttype, setSorttype, s
     };
 
     const sorttypes = {
-        name: 'naam',
-        address: 'adres',
-        location_group__name: 'regio',
+        name: 'Naam',
+        address: 'Adres',
+        location_group__name: 'Regio',
     };
 
     const [open, setOpen] = React.useState(false);
@@ -93,6 +93,7 @@ export default function BuildingTopBarComponent({onAdd, sorttype, setSorttype, s
             <div className={styles.filters_container}>
                 <Button className={styles.filter_button}>
                     <Select
+                        style={{ fontSize: '14px' }}
                         className={styles.hide_select}
                         sx={{
                             'padding': '0',
@@ -153,7 +154,7 @@ export default function BuildingTopBarComponent({onAdd, sorttype, setSorttype, s
                         multiple
                         value={selectedRegions}
                         onChange={handleChangeRegion}
-                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>regio</p>}
+                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>Regio</p>}
                     >
                         <MenuItem key={'Alles '+((AllesSelected)?'deselecteren':'selecteren')} value={'Alles'}>
                             <Checkbox style ={{color: '#1C1C1C'}} checked={AllesSelected} />
@@ -176,7 +177,7 @@ export default function BuildingTopBarComponent({onAdd, sorttype, setSorttype, s
 
             <Button className={styles.insert_button} onMouseUp={handleToggle}>
                 <AddIcon style={{margin: '0px'}}/>
-                <p className={styles.collapse_text}>gebouw toevoegen</p>
+                <p className={styles.collapse_text}>Gebouw toevoegen</p>
             </Button>
 
             <Backdrop
