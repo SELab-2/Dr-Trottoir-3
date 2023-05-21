@@ -100,7 +100,7 @@ export default function RouteTopBarComponent({onAdd, sorttype, setSorttype, sele
                 <Button className={styles.filter_button}>
                     <Select
                         className={styles.hide_select}
-                        style={{ fontSize: '14px' }}
+                        style={{ fontSize:'14px'}}
                         sx={{
                             'padding': '0',
                             'boxShadow': '0',
@@ -182,7 +182,7 @@ export default function RouteTopBarComponent({onAdd, sorttype, setSorttype, sele
                 <Button className={styles.filter_button}>
                     <Select
                         className={styles.hide_select}
-                        style={{ fontSize: '14px' }}
+                        style={{ fontSize:'14px'}}
                         sx={{
                             'padding': '0',
                             'boxShadow': '0',

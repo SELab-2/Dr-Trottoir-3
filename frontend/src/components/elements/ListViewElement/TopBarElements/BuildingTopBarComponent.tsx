@@ -93,7 +93,7 @@ export default function BuildingTopBarComponent({onAdd, sorttype, setSorttype, s
             <div className={styles.filters_container}>
                 <Button className={styles.filter_button}>
                     <Select
-                        style={{ fontSize: '14px' }}
+                        style={{fontSize: '14px'}}
                         className={styles.hide_select}
                         sx={{
                             'padding': '0',
