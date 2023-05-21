@@ -136,8 +136,8 @@ export default function EditUserPopup({userId, onSubmit, open, setOpen, prevFirs
                                     <TextField
                                         {...params}
                                         variant="standard"
-                                        label="Gebouwen"
-                                        placeholder="Gebouwen"
+                                        label="gebouwen"
+                                        placeholder="gebouwen"
                                     />
                                 )}
                             />
