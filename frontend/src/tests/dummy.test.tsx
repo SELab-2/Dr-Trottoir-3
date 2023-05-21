@@ -1,8 +1,8 @@
 import {render} from '@testing-library/react';
-import {describe, expect, it} from '@jest/globals';
+import {describe, expect, it, beforeAll, jest} from '@jest/globals';
 import '@testing-library/jest-dom';
 import LoginPageElement from '@/components/elements/LoginPageElement/LoginPageElement';
-
+import * as nextRouter from 'next/router';
 /*
 For testing we make use of Jest, with the react-test-renderer plugin. The structure of a Jest test unit
 is as follows:
@@ -56,6 +56,11 @@ describe('Dummy async test', () => {
 });
 
 describe('Dummy login test', () => {
+    beforeAll(() => {
+        // @ts-ignore
+        // eslint-disable-next-line no-import-assign
+        nextRouter.useRouter = jest.fn();
+    });
     it('Tests whether the login page has a login button', async ()=> {
         const {findByText} = render(<LoginPageElement/>);
         const loginButton = await findByText('login'); // Notice the 'await'

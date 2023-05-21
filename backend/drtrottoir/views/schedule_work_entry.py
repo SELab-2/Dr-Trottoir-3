@@ -65,7 +65,7 @@ class ScheduleWorkEntryViewSet(
     parser_classes = (MultiPartParser,)
 
     filterset_fields = {
-        "creation_timestamp": ("exact", "in", "gt", "lt"),
+        "creation_timestamp": ("exact", "in", "gt", "gte", "lt", "lte"),
         "creator": ("exact", "in"),
         "building": ("exact", "in"),
         "schedule_assignment": ("exact", "in"),

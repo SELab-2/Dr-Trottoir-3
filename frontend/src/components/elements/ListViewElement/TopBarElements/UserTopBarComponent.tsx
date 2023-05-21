@@ -51,15 +51,15 @@ export default function UserTopBarComponent({onAdd, sorttype, setSorttype, selec
 
 
     const userTypes = {
-        student: 'studenten',
-        super_student: 'super studenten',
-        syndicus: 'syndici',
-        admin: 'admins',
+        student: 'Studenten',
+        super_student: 'Super Studenten',
+        syndicus: 'Syndici',
+        admin: 'Admins',
     };
 
     const sorttypes = {
-        first_name: 'voornaam',
-        last_name: 'familienaam',
+        first_name: 'Voornaam',
+        last_name: 'Familienaam',
     };
 
     const [open, setOpen] = React.useState(false);
@@ -102,7 +102,7 @@ export default function UserTopBarComponent({onAdd, sorttype, setSorttype, selec
             <div className={styles.filters_container}>
                 <Button className={styles.filter_button}>
                     <Select
-                        className={styles.hide_select}
+                        className={styles.collapse_text}
                         sx={{
                             'padding': '0',
                             'boxShadow': '0',
@@ -138,7 +138,7 @@ export default function UserTopBarComponent({onAdd, sorttype, setSorttype, selec
 
                 <Button className={styles.filter_button}>
                     <Select
-                        className={styles.hide_select}
+                        className={styles.collapse_text}
                         sx={{
                             'padding': '0',
                             'boxShadow': '0',
@@ -162,7 +162,7 @@ export default function UserTopBarComponent({onAdd, sorttype, setSorttype, selec
                         multiple
                         value={selectedRegions}
                         onChange={handleChangeRegion}
-                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>regio</p>}
+                        renderValue={() => <p>Regio</p>}
                     >
                         <MenuItem
                             key={'Alles '+((AllesSelectedRegions)?'deselecteren':'selecteren')}
@@ -183,9 +183,10 @@ export default function UserTopBarComponent({onAdd, sorttype, setSorttype, selec
                     </Select>
                     <FilterAltIcon/>
                 </Button>
+
                 <Button className={styles.filter_button}>
                     <Select
-                        className={styles.hide_select}
+                        className={styles.collapse_text}
                         sx={{
                             'padding': '0',
                             'boxShadow': '0',
@@ -208,12 +209,8 @@ export default function UserTopBarComponent({onAdd, sorttype, setSorttype, selec
                         value={selectedUserType}
                         onChange={(e) => setSelectedUserType(e.target.value as string)}
                         label="Sorteer op"
-                        renderValue={() =>
-                            <p className={styles.collapse_text} style={{width: '40px'}}>
-                                {(selectedUserType !== '') ? selectedUserType : 'alles'}
-                            </p>}
                     >
-                        <MenuItem key={'alles'} value={''}
+                        <MenuItem key={'alles'} value={'Alle'}
                             style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                             {'Alle'}
                         </MenuItem>
@@ -230,7 +227,7 @@ export default function UserTopBarComponent({onAdd, sorttype, setSorttype, selec
 
             <Button className={styles.insert_button} onMouseUp={handleToggle}>
                 <AddIcon style={{margin: '0px'}}/>
-                <p className={styles.collapse_text}>gebruiker toevoegen</p>
+                <p className={styles.collapse_text}>Gebruiker toevoegen</p>
             </Button>
 
             <Backdrop

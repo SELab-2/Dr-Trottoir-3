@@ -20,7 +20,7 @@ export default function UsersPage() {
     const [current, setCurrent] = useState<number | null>(null);
     const [sorttype, setSorttype] = React.useState('last_name');
     const [selectedRegions, setSelectedRegions] = React.useState<LocationGroup[]>([]);
-    const [userType, setUserType] = React.useState<string>('');
+    const [userType, setUserType] = React.useState<string>('Alle');
     const [allBuildings, setAllBuildings] = useAuthenticatedApi<Building[]>();
     const [reload, setReload] = React.useState(false);
 

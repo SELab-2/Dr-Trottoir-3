@@ -1,5 +1,5 @@
 import styles from './buildingDetail.module.css';
-import {Box, Link} from '@mui/material';
+import {Box, Link, TextField} from '@mui/material';
 import {Building, LocationGroup, User} from '@/api/models';
 import {Edit, PictureAsPdf} from '@mui/icons-material';
 import {getBuildingDetail, getLocationGroupDetail, getUsersList, useAuthenticatedApi} from '@/api/api';
@@ -9,6 +9,7 @@ import {
     getBuildingDetailGarbageCollectionSchedules,
     getBuildingDetailIssues,
     getGarbageTypesList,
+    postBuildingGenerateLink,
 } from '@/api/api';
 import {defaultBuildingImage} from '@/constants/images';
 import {useSession} from 'next-auth/react';
@@ -21,6 +22,8 @@ import EditBuildingPopup from './EditBuildingPopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 import IssueList from './IssueList';
 import GarbageCollectionScheduleList from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleList';
+import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
+import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 
 interface IBuildingDetail {
     id: number,
@@ -80,12 +83,19 @@ export default function BuildingDetail(props: { id: number | null, onEdit: () =>
         setEditPopupOpen(true);
     }
 
-    // Get building data
+    const [refreshPrivateLink, setRefreshPrivateLink] = useState(false);
+
+    function buildingGenerateLink() {
+        if (id !== null) {
+            postBuildingGenerateLink(session, id, () => setRefreshPrivateLink(!refreshPrivateLink));
+        }
+    }
+
     useEffect(() => {
         if (id !== null) {
             getBuildingDetail(session, setBuilding, id);
         }
-    }, [id, session, editPopupOpen]);
+    }, [refreshPrivateLink, id, session, editPopupOpen]);
 
     // Get location group
     useEffect(() => {
@@ -133,7 +143,7 @@ export default function BuildingDetail(props: { id: number | null, onEdit: () =>
             } else if (!syndici.success) {
                 setSessionError(syndici.status);
             } else {
-                // If all checks have passed, continue with building page
+                // If all checks have passed, continue with buildings page
                 const garbageNames: { [id: number]: string } = {};
                 for (const garbageType of garbageTypes.data) {
                     garbageNames[garbageType.id] = garbageType.name;
@@ -204,6 +214,40 @@ export default function BuildingDetail(props: { id: number | null, onEdit: () =>
                             <BuildingDetailManualLink path={buildingDetail.pdf_guide}/>
                             <div style={{flex: '1'}}></div>
                         </div>
+                        <div className={styles.building_issues_container}>
+                            <div style={{margin: 'auto', display: 'flex', gap: '3px', paddingRight: '5px'}}>
+                                <IconButton onClick={buildingGenerateLink}>
+                                    <RefreshRoundedIcon/>
+                                </IconButton>
+                                <IconButton onClick={() => navigator.clipboard.writeText(
+                                    window.location.hostname + '/buildings/' + building.data.secret_link)}>
+                                    <ContentCopyRoundedIcon/>
+                                </IconButton>
+                            </div>
+                            <TextField
+                                fullWidth
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
+                                disabled={true}
+                                value={building.data.secret_link? window.location.hostname + '/buildings/' +
+                                    building.data.secret_link: 'geen actieve link'}
+                            />
+                        </div>
 
                         <EditBuildingPopup
                             buildingId={buildingDetail.id}
@@ -247,7 +291,7 @@ export default function BuildingDetail(props: { id: number | null, onEdit: () =>
                     </Box>
                     {/* Issues */}
                     <Box flexGrow={2} flexBasis={0}>
-                        <IssueList buildingId={id}/>
+                        <IssueList onRead={props.onEdit} buildingId={id}/>
                     </Box>
                 </div>
             </div>

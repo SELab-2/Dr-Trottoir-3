@@ -59,3 +59,19 @@
     border-radius: 8px;
     text-transform: none !important;
 }
+
+.reset_button {
+    margin-top: 20px !important;
+    width: min(200px, 90%) !important;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    color: var(--primary-yellow) !important;
+    text-transform: none;
+    background-color: var(--primary-dark) !important;
+    border-radius: 8px;
+    text-transform: none !important;
+}
+
+.reset_button :hover {
+    background-color: var(--secondary-dark) !important;
+}

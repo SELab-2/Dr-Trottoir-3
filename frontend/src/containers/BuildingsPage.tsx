@@ -78,7 +78,6 @@ export default function BuildingsPage() {
         getLocationGroupsList(session, setLocationGroups);
         getUsersList(session, setAllSyndici, {syndicus__id__gt: 0});
         handleSearch(false, false);
-        setReload(false);
 
     }
 
@@ -99,10 +98,13 @@ export default function BuildingsPage() {
     }, [current]);
 
     if (buildings && locationGroups && allSyndici) {
+        const reloadableBuildings = buildings.data.map((building) => ({...building, reload: reload, onMessage: () => setReload(false)}));
+        console.log(reloadableBuildings);
+        const listData = {success: buildings.success, status: buildings.status, data: reloadableBuildings};
         return (
             <>
                 <ListViewComponent
-                    listData={buildings}
+                    listData={listData}
                     setListData={setBuildings}
                     locationGroups={locationGroups}
                     selectedRegions={selectedRegions}

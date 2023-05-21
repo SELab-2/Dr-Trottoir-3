@@ -27,5 +27,9 @@ ignore_missing_imports = true
 module = "sendgrid.*"
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = "django_filters.*"
+ignore_missing_imports = true
+
 [tool.django-stubs]
 django_settings_module = "drtrottoir.settings"

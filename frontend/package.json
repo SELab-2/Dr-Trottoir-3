@@ -63,6 +63,7 @@
     "purify-ts": "^2.0.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-responsive": "^9.0.2",
+    "react-responsive-carousel": "^3.2.23",
     "react-test-renderer": "^18.2.0",
     "react-window": "^1.8.8",
     "ts-jest": "^29.1.0",

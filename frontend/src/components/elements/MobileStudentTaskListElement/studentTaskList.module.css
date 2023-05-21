@@ -1,11 +1,11 @@
 .outerDiv {
     font-family: 'Inter', sans-serif;
-    background-color: white;
     display: flex;
     flex-direction: column;
     min-height: 100%;
     height: fit-content;
     width: 100%;
+    max-width: 450px;
     color: black;
     align-items: center;
 }

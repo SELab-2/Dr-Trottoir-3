@@ -1,3 +1,4 @@
+import uuid
 from datetime import date, timedelta
 from typing import Dict, List
 
@@ -6,6 +7,8 @@ from rest_framework import permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 from drtrottoir.models import User
 from drtrottoir.permissions import (
@@ -13,7 +16,12 @@ from drtrottoir.permissions import (
     IsSyndicus,
     user_is_superstudent_or_admin,
 )
-from drtrottoir.serializers import UserInviteSerializer, UserSerializer
+from drtrottoir.serializers import (
+    UserInviteSerializer,
+    UserResetPasswordSerializer,
+    UserSerializer,
+)
+from drtrottoir.settings import DOMAIN, SENDGRID_API_KEY, SENDGRID_FROM_MAIL
 
 from .mixins import PermissionsByActionMixin
 
@@ -148,6 +156,76 @@ class UserViewSet(ModelViewSet, PermissionsByActionMixin):
     def revoke_invite(self, request, pk=None):
         user = self.get_object()
         user.invite_link = None
+        user.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=["POST"], permission_classes=[])
+    def reset_password(self, request):
+        if SENDGRID_API_KEY == "disabled":
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        serializer = UserResetPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            user = User.objects.get(username=serializer.validated_data["email"])
+
+        except User.DoesNotExist:
+            # For security, this endpoint should not advertise an account
+            # wasn't found. Otherwise, it could be used to scan for registered
+            # email addresses.
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        link = uuid.uuid4()
+        user.reset_password_link = link
+        user.save()
+
+        message = Mail(
+            from_email=SENDGRID_FROM_MAIL,
+            to_emails=user.username,
+            subject="Dr. Trottoir Password Reset",
+            html_content=f"{DOMAIN}/reset-password/{link}",
+        )
+
+        try:
+            sg = SendGridAPIClient(SENDGRID_API_KEY)
+            sg.send(message)
+        except Exception as e:
+            print("Sendgrid failed:", e)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(
+        detail=False,
+        # https://ihateregex.io/expr/uuid/
+        url_path=r"reset_password/(?P<uuid>[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})",  # noqa
+        permission_classes=[],
+    )
+    def reset_password_link(self, request, uuid):
+        try:
+            user = User.objects.get(reset_password_link=uuid)
+
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserSerializer(user)
+
+        return Response(serializer.data)
+
+    @reset_password_link.mapping.post
+    def post_reset_password_link(self, request, uuid):
+        try:
+            user = User.objects.get(reset_password_link=uuid)
+
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserInviteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user.set_password(serializer.validated_data["password"])
+        user.reset_password_link = None
         user.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)

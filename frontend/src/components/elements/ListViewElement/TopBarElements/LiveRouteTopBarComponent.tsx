@@ -27,11 +27,13 @@ type TopBarProps = {
     searchEntry: string,
     setSearchEntry: React.Dispatch<React.SetStateAction<string>>,
     handleSearch: (b: boolean) => void,
+    nextDay: any,
+    prevDay: any,
 }
 
 export default function LiveRouteTopBarComponent(
     {sorttype, setSorttype, selectedRegions, setSelectedRegions, allRegions,
-        searchEntry, setSearchEntry, handleSearch}:TopBarProps) {
+        searchEntry, setSearchEntry, handleSearch, nextDay, prevDay}:TopBarProps) {
     const AllesSelectedRegions = selectedRegions.length>=allRegions.length;
 
     const handleChangeRegion = (event: SelectChangeEvent<LocationGroup[]>) => {
@@ -211,6 +213,13 @@ export default function LiveRouteTopBarComponent(
                         ))}
                     </Select>
                     <SensorsRoundedIcon/>
+                </Button>
+                <div style={{width: '15px'}}/>
+                <Button className={styles.filter_button_text} onClick={() => (prevDay())}>
+                    vorige
+                </Button>
+                <Button className={styles.filter_button_text} onClick={() => (nextDay())}>
+                    volgende
                 </Button>
             </div>
         </div>

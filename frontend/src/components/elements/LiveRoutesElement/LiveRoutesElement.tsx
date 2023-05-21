@@ -14,6 +14,9 @@ import LinearProgress, {linearProgressClasses} from '@mui/material/LinearProgres
 import {styled} from '@mui/system';
 import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
 import DoneIcon from '@mui/icons-material/Done';
+import {Carousel} from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import {Fade, Modal} from '@mui/material';
 import RouteMap from '@/components/modules/routeDetail/RouteMap';
 
 const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
@@ -29,7 +32,7 @@ const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
 }));
 
 type liveRoutesElementProps = {
-    id: number
+    id: number,
 }
 
 export default function LiveRoutesElement(props: liveRoutesElementProps) {
@@ -41,7 +44,19 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
     const [buildingsData, setBuildingsData] = useAuthenticatedApi<Array<Building>>();
     const [scheduleAssignmentData, setScheduleAssignmentData] = useAuthenticatedApi<ScheduleAssignment>();
     const [workEntriesData, setWorkEntriesData] = useAuthenticatedApi<Array<ScheduleWorkEntry>>();
+    const [open, setOpen] = useState(false);
+    const [image, setImage] = useState('false');
     const [hovering, setHovering] = useState<Building['id'] | null>(null);
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleImage = (value: string) => {
+        setImage(value);
+        setOpen(true);
+        console.log(image);
+    };
 
     useEffect(() => {
         getScheduleAssignmentDetail(session, setScheduleAssignmentData, props.id);
@@ -80,6 +95,7 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
             );
         }
     }, [session, scheduleDefinitionData]);
+
 
     useEffect(() => {
         if (scheduleAssignmentData) {
@@ -150,32 +166,151 @@ export default function LiveRoutesElement(props: liveRoutesElementProps) {
                     </div>
                     <div className={styles.userContent}>
                         <div className={styles.userRoutes + ' ' + styles.userRoutesPadding}>
-                            <h2 className={styles.routesTitle + ' ' + styles.extraTitlePadding}>Gebouwen</h2>
+                            <h2 className={styles.routesTitle + ' ' + styles.extraTitlePadding}>Route opvolgen</h2>
                             <div className={styles.scrollList}>
                                 <div className={styles.routesItems}>
                                     {buildingsData.data.map((building) =>
-                                        <div className={styles.routesItem}>
-                                            <h4>{building.name ? building.name : building.address}</h4>
-
-                                            {workEntriesData?.data.filter(
-                                                (workEntry) => workEntry.building === building.id &&
-                                                    workEntry.schedule_assignment === scheduleAssignmentData?.data.id
-                                            ).map(
-                                                (workEntry) => workEntry.entry_type).includes('DE') ? <DoneIcon /> :
-                                                workEntriesData?.data.filter(
-                                                    (workEntry) => workEntry.building === building.id &&
-                                                    workEntry.schedule_assignment === scheduleAssignmentData?.data.id
-                                                ).map(
-                                                    (workEntry) => workEntry.entry_type).includes('WO') ?
-                                                    <PersonPinCircleIcon /> :
+                                        <div className={styles.route_container}>
+                                            <div className={styles.route_title}>
+                                                <h4>{building.address}</h4>
+                                                {workEntriesData?.data
+                                                    .filter((workEntry) => workEntry.building === building.id &&
+                                                                    workEntry.schedule_assignment ===
+                                                        scheduleAssignmentData?.data.id)
+                                                    .map((workEntry) => workEntry.entry_type).includes('DE') ?
+                                                    <div style={{display: 'flex', gap: '20px'}}>
+                                                        <DoneIcon/>
+                                                        <div style={{margin: 'auto', paddingRight: '50px'}}>
+                                                            {
+                                                                // @ts-ignore
+                                                                workEntriesData.data.filter((e) =>
+                                                                    e.building === building.id && e.entry_type === 'WO')
+                                                                    .at(0).creation_timestamp.split('T')[1]
+                                                            }
+                                                        </div>
+                                                    </div> :
                                                     workEntriesData?.data.filter(
-                                                        (workEntry) => workEntry.building === building.id &&
-                                                    workEntry.schedule_assignment === scheduleAssignmentData?.data.id
-                                                    ).map((workEntry) => workEntry.entry_type).includes('AR') ?
-                                                        <PersonPinCircleIcon /> : <CloseIcon />
-                                            }
+                                                        (workEntry) =>
+                                                            workEntry.building === building.id &&
+                                                                    workEntry.schedule_assignment ===
+                                                            scheduleAssignmentData?.data.id
+                                                    ).map(
+                                                        (workEntry) => workEntry.entry_type).includes('WO') ?
+                                                        <div style={{display: 'flex', gap: '20px'}}>
+                                                            <PersonPinCircleIcon/>
+                                                            <div style={{margin: 'auto', paddingRight: '50px'}}>
+                                                                {
+                                                                    '--:--:--'
+                                                                }
+                                                            </div>
+                                                        </div> :
+                                                        workEntriesData?.data.filter(
+                                                            (workEntry) => workEntry.building === building.id &&
+                                                                    workEntry.schedule_assignment ===
+                                                                scheduleAssignmentData?.data.id
+                                                        ).map((workEntry) => workEntry.entry_type).includes('AR') ?
+                                                            <div style={{display: 'flex', gap: '20px'}}>
+                                                                <PersonPinCircleIcon/>
+                                                                <div style={{margin: 'auto', paddingRight: '50px'}}>
+                                                                    {
+                                                                        '--:--:--'
+                                                                    }
+                                                                </div>
+                                                            </div> :
+                                                            <div style={{display: 'flex', gap: '20px'}}>
+                                                                <CloseIcon/>
+                                                                <div style={{margin: 'auto', paddingRight: '50px'}}>
+                                                                    {
+                                                                        '--:--:--'
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                }
+                                            </div>
+                                            <div className={styles.route_images_container}>
+                                                <div className={styles.container}>
+                                                    <Carousel
+                                                        showIndicators={false}
+                                                        showArrows={true}
+                                                        infiniteLoop={true}
+                                                        showStatus={false}
+                                                        showThumbs={false}
+                                                        onClickThumb={(e) => console.log(e)}
+                                                        className={styles.mySwiper}
+                                                    >
+                                                        {workEntriesData.data.filter((e) =>
+                                                            e.entry_type === 'AR' && e.building === building.id)
+                                                            .map((item) => (
+                                                                <div className={styles.imag_container}
+                                                                    onClick={(e) => handleImage(item.image)}>
+                                                                    <img src={item.image} alt={''}/>
+                                                                </div>
+                                                            ))}
+                                                    </Carousel>
+                                                </div>
+                                            </div>
+                                            <div className={styles.route_images_container}>
+                                                <div className={styles.container}>
+                                                    <Carousel
+                                                        showIndicators={false}
+                                                        showArrows={true}
+                                                        infiniteLoop={true}
+                                                        showStatus={false}
+                                                        showThumbs={false}
+                                                        onClickThumb={(e) => console.log(e)}
+                                                        className={styles.mySwiper}
+                                                    >
+                                                        {workEntriesData.data.filter((e) =>
+                                                            e.entry_type === 'DE' && e.building === building.id)
+                                                            .map((item) => (
+                                                                <div className={styles.imag_container}
+                                                                    onClick={(e) => handleImage(item.image)}>
+                                                                    <img src={item.image} alt={''}/>
+                                                                </div>
+                                                            ))}
+                                                    </Carousel>
+                                                </div>
+                                            </div>
+                                            <div className={styles.route_images_container}>
+                                                <div className={styles.container}>
+                                                    <Carousel
+                                                        showIndicators={false}
+                                                        showArrows={true}
+                                                        infiniteLoop={true}
+                                                        showStatus={false}
+                                                        showThumbs={false}
+                                                        onClickThumb={(e) => console.log(e)}
+                                                        className={styles.mySwiper}
+                                                    >
+                                                        {workEntriesData.data.filter((e) =>
+                                                            e.entry_type === 'WO' && e.building === building.id)
+                                                            .map((item) => (
+                                                                <div className={styles.imag_container}
+                                                                    onClick={(e) => handleImage(item.image)}>
+                                                                    <img src={item.image} alt={''}/>
+                                                                </div>
+                                                            ))}
+                                                    </Carousel>
+                                                </div>
+                                            </div>
                                         </div>
                                     )}
+                                    <Modal
+                                        open={open}
+                                        onClose={handleClose}
+                                        closeAfterTransition
+                                        style={{display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'}}
+                                    >
+                                        <Fade in={open} timeout={500}>
+                                            <img
+                                                src={image}
+                                                alt="asd"
+                                                style={{maxHeight: '90%', maxWidth: '90%'}}
+                                            />
+                                        </Fade>
+                                    </Modal>
                                 </div>
                             </div>
                         </div>

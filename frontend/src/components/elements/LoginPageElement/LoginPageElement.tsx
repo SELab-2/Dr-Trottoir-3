@@ -2,13 +2,19 @@ import {useState} from 'react';
 import {signIn} from 'next-auth/react';
 import styles from './loginPageElement.module.css';
 import {Box, Button, TextField} from '@mui/material';
+import {useRouter} from 'next/router';
 
 export default function LoginPageElement() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const router = useRouter();
 
     async function handleLogin() {
         signIn('credentials', {callbackUrl: '/', password: password, username: email});
+    }
+
+    async function handleResetPassword() {
+        router.push('/reset-password');
     }
 
     return (
@@ -110,6 +116,9 @@ export default function LoginPageElement() {
                         />
                         <Button className={styles.login_button} onClick={handleLogin}>
                             <p>login</p>
+                        </Button>
+                        <Button className={styles.reset_button} onClick={handleResetPassword}>
+                            <p>Reset Password</p>
                         </Button>
                     </div>
                 </Box>

@@ -34,6 +34,10 @@ class UserInviteSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=255)
 
 
+class UserResetPasswordSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=255)
+
+
 class UserSerializer(serializers.ModelSerializer):
     student = StudentSerializer(allow_null=True)
     admin = AdminSerializer(allow_null=True)

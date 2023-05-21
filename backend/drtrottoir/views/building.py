@@ -1,9 +1,13 @@
-from rest_framework import mixins, permissions, viewsets
+import uuid
+
+from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from drtrottoir.models import (
     Building,
+    GarbageCollectionSchedule,
+    GarbageType,
     ScheduleDefinition,
     ScheduleDefinitionBuilding,
     Syndicus,
@@ -21,7 +25,9 @@ from drtrottoir.serializers import (
     BuildingSerializer,
     GarbageCollectionScheduleSerializer,
     GarbageCollectionScheduleTemplateSerializer,
+    GarbageTypeSerializer,
     IssueSerializer,
+    PublicBuildingSerializer,
     ScheduleDefinitionSerializer,
 )
 
@@ -110,6 +116,14 @@ class BuildingViewSet(
                 required permission ``drtrottoir.models.Student``
 
                 All the garbage collection schedules of this building on this given day.
+
+        /buildings/:building_id/generate_link
+            **POST:**
+                required permission:
+                    ``drtrottoir.models.Student(is_super_student=True)`` or
+                    ``drtrottoir.models.Syndicus`` if the syndicus is the
+                    syndicus of that building
+                Generate a new UUID value for the building's hidden link.
     """
 
     permission_classes = [permissions.IsAuthenticated, IsSuperstudentOrAdmin]
@@ -135,6 +149,10 @@ class BuildingViewSet(
         "retrieve_garbage_collection_schedule_list_by_building_and_date": [
             permissions.IsAuthenticated,
             IsStudent,
+        ],
+        "generate_link": [
+            permissions.IsAuthenticated,
+            IsSyndicusWithBuilding | IsSuperstudentOrAdmin,
         ],
     }
 
@@ -204,3 +222,41 @@ class BuildingViewSet(
 
         serializer = GarbageCollectionScheduleSerializer(schedules, many=True)
         return Response(serializer.data)
+
+    @action(detail=True, methods=["POST"])
+    def generate_link(self, request, pk=None):
+        building = self.get_object()
+        building.secret_link = uuid.uuid4()
+        building.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(
+        detail=False,
+        methods=["GET"],
+        # https://ihateregex.io/expr/uuid/
+        url_path=r"(?P<uuid>[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})",  # noqa
+        permission_classes=[],
+    )
+    def uuid_link(self, request, uuid):
+        try:
+            building = Building.objects.get(secret_link=uuid)
+
+            schedules = GarbageCollectionSchedule.objects.filter(building=building)
+
+            garbage_types = GarbageType.objects.all()
+
+        except Building.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        building_serializer = PublicBuildingSerializer(building)
+        schedules_serializer = GarbageCollectionScheduleSerializer(schedules, many=True)
+        garbage_types_serializer = GarbageTypeSerializer(garbage_types, many=True)
+
+        data = {
+            "building": building_serializer.data,
+            "schedules": schedules_serializer.data,
+            "garbage_types": garbage_types_serializer.data,
+        }
+
+        return Response(data)

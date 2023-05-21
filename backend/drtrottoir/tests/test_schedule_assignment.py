@@ -126,7 +126,16 @@ def test_schedule_assignment_get_existing_returns_200() -> None:
     assert response.data["user"] == user.id
     assert date_equals(response.data["assigned_date"], str(assignment.assigned_date))
 
-    expected_fields = ["id", "assigned_date", "schedule_definition", "user"]
+    expected_fields = [
+        "id",
+        "assigned_date",
+        "schedule_definition",
+        "user",
+        "buildings_count",
+        "buildings_done",
+        "buildings_to_do",
+        "buildings_percentage",
+    ]
     assert sorted(expected_fields) == sorted(list(response.data.keys()))
 
 
