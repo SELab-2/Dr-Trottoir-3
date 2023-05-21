@@ -98,7 +98,6 @@ export default function BuildingsPage() {
 
     if (buildings && locationGroups && allSyndici) {
         const reloadableBuildings = buildings.data.map((building) => ({...building, reload: reload, onMessage: () => setReload(false)}));
-        console.log(reloadableBuildings);
         const listData = {success: buildings.success, status: buildings.status, data: reloadableBuildings};
         return (
             <>
