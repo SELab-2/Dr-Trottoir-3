@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
     Checkbox,
     IconButton,
@@ -16,10 +16,15 @@ import Button from '@mui/material/Button';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
 import {Clear} from '@mui/icons-material';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import {DatePicker, LocalizationProvider} from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
 
 type TopBarProps = {
     sorttype: string,
-    setSorttype: React.Dispatch<React.SetStateAction<string>>
+    setSorttype: React.Dispatch<React.SetStateAction<string>>,
+    active: string,
+    setActive: React.Dispatch<React.SetStateAction<string>>,
     selectedRegions: LocationGroup[],
     setSelectedRegions: React.Dispatch<React.SetStateAction<LocationGroup[]>>,
     allRegions: LocationGroup[],
@@ -27,11 +32,13 @@ type TopBarProps = {
     searchEntry: string,
     setSearchEntry: React.Dispatch<React.SetStateAction<string>>,
     handleSearch: (b: boolean) => void,
+    setDay: any,
+    day: number,
 }
 
 export default function LiveRouteTopBarComponent(
-    {sorttype, setSorttype, selectedRegions, setSelectedRegions, allRegions,
-        searchEntry, setSearchEntry, handleSearch}:TopBarProps) {
+    {sorttype, setSorttype, active, setActive, selectedRegions, setSelectedRegions, allRegions,
+        searchEntry, setSearchEntry, handleSearch, setDay, day}:TopBarProps) {
     const AllesSelectedRegions = selectedRegions.length>=allRegions.length;
 
     const handleChangeRegion = (event: SelectChangeEvent<LocationGroup[]>) => {
@@ -45,19 +52,30 @@ export default function LiveRouteTopBarComponent(
                 value );
     };
 
-    const dummyTypes = [
-        'actief',
-        'compleet',
+    const activeTypes = [
+        'Alle',
+        'Actief',
+        'Compleet',
     ];
 
     const sorttypes = {
-        schedule_definition__name: 'naam',
-        schedule_definition__location_group__name: 'regio',
-        schedule_definition__student__name: 'student',
-        progress: 'voortgang',
+        schedule_definition__name: 'Naam',
+        schedule_definition__location_group__name: 'Regio',
+        user__username: 'Student',
+        buildings_percentage: 'Voortgang',
     };
 
-    const [active, setActive] = React.useState('');
+    const currentDay = new Date();
+    currentDay.setDate(day);
+    currentDay.setHours(currentDay.getHours() + 2);
+
+    const [formDate, setFormDate] = useState<string>(currentDay.toISOString().split('T')[0]);
+
+    const handleChangeFormDate = (date: any) => {
+        setFormDate(date);
+        const newDay = new Date(date);
+        setDay(newDay.getDate());
+    };
 
     const handleChangeActive = (event: SelectChangeEvent) => {
         setActive(event.target.value as string);
@@ -153,7 +171,7 @@ export default function LiveRouteTopBarComponent(
                         multiple
                         value={selectedRegions}
                         onChange={handleChangeRegion}
-                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>regio</p>}
+                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>Regio</p>}
                     >
                         <MenuItem key={'Alles '+((AllesSelectedRegions)?'deselecteren':'selecteren')}
                             value={'Alles'}>
@@ -202,10 +220,7 @@ export default function LiveRouteTopBarComponent(
                             {active}
                         </p>}
                     >
-                        <MenuItem value="">
-                            <em>Alle</em>
-                        </MenuItem>
-                        {dummyTypes.map((option) => (
+                        {activeTypes.map((option) => (
                             <MenuItem key={option} value={option}
                                 style={{wordBreak: 'break-all', whiteSpace: 'normal'}}>
                                 {option}
@@ -214,6 +229,40 @@ export default function LiveRouteTopBarComponent(
                     </Select>
                     <SensorsRoundedIcon/>
                 </Button>
+                <div style={{width: '15px'}}/>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                        sx={{
+                            '& .MuiInputLabel-root': {
+                                padding: '2px',
+                            },
+                            '& label.Mui-focused': {
+                                color: 'var(--secondary-light)',
+                                borderRadius: '8px',
+                            },
+                            '& .MuiInput-underline:after': {
+                                borderBottomColor: 'var(--secondary-light)',
+                                borderRadius: '8px',
+                            },
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: 'var(--secondary-light)',
+                                    borderRadius: '8px',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: 'var(--secondary-light)',
+                                    borderRadius: '8px',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: 'var(--secondary-light)',
+                                    borderRadius: '8px',
+                                },
+                            },
+                        }}
+                        value={dayjs(formDate)}
+                        onChange={handleChangeFormDate}
+                    />
+                </LocalizationProvider>
             </div>
         </div>
 

@@ -91,7 +91,6 @@
 
 .userContent {
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
     gap: 25px;
     width: 100%;
@@ -99,13 +98,7 @@
     flex-grow: 1;
     overflow-y: scroll;
     overflow-x: hidden;
-}
-
-@media all and (width <= 1500px) {
-    .userContent {
-        flex-direction: column;
-        flex-wrap: nowrap;
-    }
+    flex-direction: column;
 }
 
 .userRoutes {
@@ -175,14 +168,19 @@
 
 .scrollList {
     height: 100%;
-    width: 400px;
+    /*min-width: min(100%, 800px);*/
     display: flex;
-    flex-direction: column;
+    /*flex-grow: 1;*/
+    width: 100%;
+    flex-direction: row;
     gap: 25px;
 }
 
 .routesItems {
     display: flex;
     flex-direction: column;
+    /*width: min(400px, 100%);*/
+    /*flex-wrap: wrap;*/
     gap: 10px;
+    flex-grow: 1;
 }

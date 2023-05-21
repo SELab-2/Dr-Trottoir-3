@@ -1,28 +1,29 @@
 import styles from './buildingDetail.module.css';
-import {IconButton, Link, List, Modal, Tooltip, Typography} from '@mui/material';
-import {Building, GarbageCollectionSchedule, GarbageType, Issue, LocationGroup, User} from '@/api/models';
-import {PictureAsPdf, Edit} from '@mui/icons-material';
+import {Box, Link, TextField} from '@mui/material';
+import {Building, LocationGroup, User} from '@/api/models';
+import {Edit, PictureAsPdf} from '@mui/icons-material';
+import {getBuildingDetail, getLocationGroupDetail, getUsersList, useAuthenticatedApi} from '@/api/api';
+import {IconButton, Tooltip} from '@mui/material';
+import {GarbageCollectionSchedule, GarbageType, Issue} from '@/api/models';
 import {
-    getBuildingDetail,
     getBuildingDetailGarbageCollectionSchedules,
     getBuildingDetailIssues,
     getGarbageTypesList,
-    getLocationGroupDetail,
-    getUsersList,
-    useAuthenticatedApi,
+    postBuildingGenerateLink,
 } from '@/api/api';
 import {defaultBuildingImage} from '@/constants/images';
 import {useSession} from 'next-auth/react';
-import ScheduleGarbageListItem from './ScheduleGarbageListItem';
-import Button from '@mui/material/Button';
 import React, {useEffect, useState} from 'react';
-import BuildingIssueListItem from '@/components/elements/BuildingDetailElement/BuildingIssueListItem';
 import ErrorPage from '@/containers/ErrorPage';
 import BuildingMap from '@/components/elements/BuildingDetailElement/BuildingMap';
 import GarbageCollectionScheduleTemplateList
     from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleTemplateList';
-import EditBuildingPopup from '@/components/elements/BuildingDetailElement/EditBuildingPopup';
+import EditBuildingPopup from './EditBuildingPopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
+import IssueList from './IssueList';
+import GarbageCollectionScheduleList from '@/components/elements/BuildingDetailElement/GarbageCollectionScheduleList';
+import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
+import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 
 interface IBuildingDetail {
     id: number,
@@ -41,7 +42,6 @@ interface IBuildingDetail {
 
 // TODO in case there is an error, detail.status is undefined, and not a proper status code. This needs to be fixed.
 
-
 function BuildingDetailManualLink(props: { path: string | null }): JSX.Element {
     if (!props.path || props.path.length === 0) {
         return (
@@ -59,15 +59,13 @@ function BuildingDetailManualLink(props: { path: string | null }): JSX.Element {
     );
 }
 
+// eslint-disable-next-line require-jsdoc
 
-export default function BuildingDetail(props: { id: number | null }): JSX.Element {
+export default function BuildingDetail(props: { id: number | null, onEdit: () => void }): JSX.Element {
     const id = props.id;
 
     const [buildingDetail, setBuildingDetail] =
         useState<IBuildingDetail | undefined>(undefined);
-    const [issuesModalOpen, setIssuesModalOpen] = useState(false);
-    const handleIssueModalOpen = () => setIssuesModalOpen(true);
-    const handleIssueModalClose = () => setIssuesModalOpen(false);
 
     const {data: session} = useSession();
 
@@ -85,42 +83,49 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
         setEditPopupOpen(true);
     }
 
-    // Get building data
+    const [refreshPrivateLink, setRefreshPrivateLink] = useState(false);
+
+    function buildingGenerateLink() {
+        if (id !== null) {
+            postBuildingGenerateLink(session, id, () => setRefreshPrivateLink(!refreshPrivateLink));
+        }
+    }
+
     useEffect(() => {
         if (id !== null) {
             getBuildingDetail(session, setBuilding, id);
         }
-    }, [id, session]);
+    }, [refreshPrivateLink, id, session, editPopupOpen]);
 
     // Get location group
     useEffect(() => {
         if (building) {
             getLocationGroupDetail(session, setLocation, building.data.location_group);
         }
-    }, [building, session]);
+    }, [building, session, editPopupOpen]);
 
     // Get schedules
     useEffect(() => {
         if (id !== null) {
             getBuildingDetailGarbageCollectionSchedules(session, setSchedules, id);
         }
-    }, [id, session]);
+    }, [id, session, editPopupOpen]);
 
     // Get garbage types
     useEffect(() => {
         getGarbageTypesList(session, setGarbageTypes);
-    }, [session]);
+    }, [session, editPopupOpen]);
 
     // Get issues
     useEffect(() => {
         if (id !== null) {
             getBuildingDetailIssues(session, setIssues, id);
         }
-    }, [id, session]);
+    }, [id, session, editPopupOpen]);
 
     useEffect(() => {
         getUsersList(session, setSyndici, {'syndicus__buildings': id}, {});
-    }, [id, session]);
+    }, [id, session, editPopupOpen]);
 
     useEffect(() => {
         if (session && building && location && schedules && garbageTypes && issues && syndici) {
@@ -138,7 +143,7 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
             } else if (!syndici.success) {
                 setSessionError(syndici.status);
             } else {
-                // If all checks have passed, continue with building page
+                // If all checks have passed, continue with buildings page
                 const garbageNames: { [id: number]: string } = {};
                 for (const garbageType of garbageTypes.data) {
                     garbageNames[garbageType.id] = garbageType.name;
@@ -175,13 +180,6 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
     }
 
     if (building && location && schedules && garbageTypes && issues && syndici && buildingDetail) {
-        let issuesModalButtonText = `${buildingDetail.issues.length} issues remaining`;
-        if (buildingDetail.issues.length === 0) {
-            issuesModalButtonText = `No issues`;
-        } else if (buildingDetail.issues.length === 1) {
-            issuesModalButtonText = `${buildingDetail.issues.length} issue remaining`;
-        }
-
         return (
             <div className={styles.full}>
                 {/* Top row */}
@@ -215,13 +213,45 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                         <div className={styles.building_issues_container}>
                             <BuildingDetailManualLink path={buildingDetail.pdf_guide}/>
                             <div style={{flex: '1'}}></div>
-                            <Button onClick={handleIssueModalOpen} className={styles.issue_button}>
-                                {issuesModalButtonText}
-                            </Button>
+                        </div>
+                        <div className={styles.building_issues_container}>
+                            <div style={{margin: 'auto', display: 'flex', gap: '3px', paddingRight: '5px'}}>
+                                <IconButton onClick={buildingGenerateLink}>
+                                    <RefreshRoundedIcon/>
+                                </IconButton>
+                                <IconButton onClick={() => navigator.clipboard.writeText(
+                                    window.location.hostname + '/buildings/' + building.data.secret_link)}>
+                                    <ContentCopyRoundedIcon/>
+                                </IconButton>
+                            </div>
+                            <TextField
+                                fullWidth
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
+                                disabled={true}
+                                value={building.data.secret_link? window.location.hostname + '/buildings/' +
+                                    building.data.secret_link: 'geen actieve link'}
+                            />
                         </div>
 
                         <EditBuildingPopup
                             buildingId={buildingDetail.id}
+                            onSubmit={props.onEdit}
                             open={editPopupOpen}
                             setOpen={setEditPopupOpen}
                             prevName={buildingDetail.name}
@@ -249,56 +279,21 @@ export default function BuildingDetail(props: { id: number | null }): JSX.Elemen
                     </div>
                 </div>
 
-                {/* Middle row for spacing */}
-                <div className={styles.middle_row_divider}></div>
-
                 {/* Bottom row */}
                 <div className={styles.bottom_row_container}>
-                    {/* Garbage schedule list */}
-                    <div className={styles.garbage_schedule_list}>
-                        <Typography variant='h5'>
-                            Templates
-                        </Typography>
-                        {id ? <GarbageCollectionScheduleTemplateList id={id}/> : undefined}
-                        <Typography variant='h5'>
-                            Planning
-                        </Typography>
-                        <List>
-                            {buildingDetail.schedules.map((schedule) =>
-                                <ScheduleGarbageListItem
-                                    key={schedule.id}
-                                    id={schedule.id}
-                                />
-                            )}
-                        </List>
-                    </div>
-
-                    {/* Garbage schedule calendar */}
-                    <div className={styles.garbage_calendar}>
-                        Calendar here
-                    </div>
+                    {/* Templates */}
+                    <Box flexGrow={2} flexBasis={0}>
+                        <GarbageCollectionScheduleTemplateList buildingId={id}/>
+                    </Box>
+                    {/* Planning */}
+                    <Box flexGrow={3} flexBasis={0}>
+                        <GarbageCollectionScheduleList buildingId={id}/>
+                    </Box>
+                    {/* Issues */}
+                    <Box flexGrow={2} flexBasis={0}>
+                        <IssueList onRead={props.onEdit} buildingId={id}/>
+                    </Box>
                 </div>
-
-                {/* Modal for the issues */}
-                <Modal
-                    open={issuesModalOpen}
-                    onClose={handleIssueModalClose}
-                >
-                    <div className={styles.issue_modal_box}
-                        style={{
-                            background: 'var(--primary-light)',
-                            maxHeight: '400px',
-                            overflow: 'scroll',
-                        }}>
-                        <List>
-                            {
-                                buildingDetail.issues.map((issue: Issue) =>
-                                    <BuildingIssueListItem issue={issue.id} key={issue.id}/>
-                                )
-                            }
-                        </List>
-                    </div>
-                </Modal>
             </div>
         );
     } else {

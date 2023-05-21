@@ -1,5 +1,7 @@
 from typing import List
 
+import django_filters
+from django.db.models import Count, F, Q
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -13,6 +15,62 @@ from drtrottoir.permissions import (
 from drtrottoir.serializers import ScheduleAssignmentSerializer
 
 from .mixins import PermissionsByActionMixin
+
+
+class ScheduleAssignmentFilter(django_filters.FilterSet):
+    buildings_count = django_filters.NumberFilter()
+
+    buildings_to_do = django_filters.NumberFilter()
+    buildings_to_do__gt = django_filters.NumberFilter(
+        field_name="buildings_to_do", lookup_expr="gt"
+    )
+    buildings_to_do__gte = django_filters.NumberFilter(
+        field_name="buildings_to_do", lookup_expr="gte"
+    )
+    buildings_to_do__lt = django_filters.NumberFilter(
+        field_name="buildings_to_do", lookup_expr="lt"
+    )
+    buildings_to_do__lte = django_filters.NumberFilter(
+        field_name="buildings_to_do", lookup_expr="lte"
+    )
+
+    buildings_done = django_filters.NumberFilter()
+    buildings_done__gt = django_filters.NumberFilter(
+        field_name="buildings_done", lookup_expr="gt"
+    )
+    buildings_done__gte = django_filters.NumberFilter(
+        field_name="buildings_done", lookup_expr="gte"
+    )
+    buildings_done__lt = django_filters.NumberFilter(
+        field_name="buildings_done", lookup_expr="lt"
+    )
+    buildings_done__lte = django_filters.NumberFilter(
+        field_name="buildings_done", lookup_expr="lte"
+    )
+
+    buildings_percentage = django_filters.NumberFilter()
+    buildings_percentage__gt = django_filters.NumberFilter(
+        field_name="buildings_percentage", lookup_expr="gt"
+    )
+    buildings_percentage__gte = django_filters.NumberFilter(
+        field_name="buildings_percentage", lookup_expr="gte"
+    )
+    buildings_percentage__lt = django_filters.NumberFilter(
+        field_name="buildings_percentage", lookup_expr="lt"
+    )
+    buildings_percentage__lte = django_filters.NumberFilter(
+        field_name="buildings_percentage", lookup_expr="lte"
+    )
+
+    class Meta:
+        model = ScheduleAssignment
+
+        fields = {
+            "assigned_date": ("exact", "in", "gt", "gte", "lt", "lte"),
+            "schedule_definition": ("exact", "in"),
+            "user": ("exact", "in"),
+            "schedule_definition__location_group": ("exact", "in"),
+        }
 
 
 class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet):
@@ -45,6 +103,7 @@ class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet)
     """  # noqa
 
     serializer_class = ScheduleAssignmentSerializer
+    filterset_class = ScheduleAssignmentFilter
 
     permission_classes = [IsAuthenticated, IsSuperstudentOrAdmin]
     permission_classes_by_action = {
@@ -52,12 +111,6 @@ class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet)
         "list": [IsAuthenticated, IsStudent | IsSuperstudentOrAdmin],
     }
 
-    filterset_fields = {
-        "assigned_date": ("exact", "in", "gt", "lt"),
-        "schedule_definition": ("exact", "in"),
-        "user": ("exact", "in"),
-        "schedule_definition__location_group": ("exact", "in"),
-    }
     search_fields: List[str] = [
         "schedule_definition__name",
         "user__username",
@@ -69,6 +122,7 @@ class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet)
         "schedule_definition__name",
         "schedule_definition__location_group__name",
         "user__username",
+        "buildings_percentage",
     ]
 
     def get_queryset(self):
@@ -77,9 +131,21 @@ class ScheduleAssignmentViewSet(PermissionsByActionMixin, viewsets.ModelViewSet)
         regular users can only see their own.
         """
         if user_is_superstudent_or_admin(self.request.user):
-            return ScheduleAssignment.objects.all()
+            queryset = ScheduleAssignment.objects.all()
 
-        return ScheduleAssignment.objects.filter(user=self.request.user.id)
+        else:
+            queryset = ScheduleAssignment.objects.filter(user=self.request.user.id)
+
+        queryset = queryset.annotate(
+            buildings_count=Count("schedule_definition__buildings", distinct=True),
+            buildings_done=Count(
+                "work_entries", distinct=True, filter=Q(work_entries__entry_type="DE")
+            ),
+            buildings_to_do=F("buildings_count") - F("buildings_done"),
+            buildings_percentage=F("buildings_done") * 100 / F("buildings_count"),
+        )
+
+        return queryset
 
     def update(self, *args, **kwargs):
         schedule_assignment = self.get_object()

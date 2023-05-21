@@ -26,12 +26,16 @@ class StudentSerializer(serializers.ModelSerializer):
 class SyndicusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Syndicus
-        fields = ["buildings"]
+        fields = ["id", "buildings"]
         read_only_fields = ["id", "user"]
 
 
 class UserInviteSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=255)
+
+
+class UserResetPasswordSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=255)
 
 
 class UserSerializer(serializers.ModelSerializer):

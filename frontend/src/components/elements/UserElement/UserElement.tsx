@@ -1,4 +1,4 @@
-import {Avatar} from '@mui/material';
+import {Avatar, IconButton, Tooltip} from '@mui/material';
 import styles from './userElement.module.css';
 import {
     getLocationGroupDetail, getScheduleAssignmentsList,
@@ -11,7 +11,6 @@ import {useSession} from 'next-auth/react';
 import React, {useEffect, useState} from 'react';
 import {LocationGroup, ScheduleAssignment, ScheduleDefinition, User, UserAnalytics} from '@/api/models';
 import {Edit} from '@mui/icons-material';
-import Button from '@mui/material/Button';
 import EditUserPopup from '@/components/elements/UserElement/EditUserPopup';
 import LoadingElement from '@/components/elements/LoadingElement/LoadingElement';
 import {Bar} from 'react-chartjs-2';
@@ -21,13 +20,14 @@ import {
     LinearScale,
     BarElement,
     Title,
-    Tooltip,
     Legend,
 } from 'chart.js';
+import AssignmentList from '@/components/elements/UserElement/AssignmentList';
 
 
 type userElementProps = {
     id: number,
+    onEdit: () => void,
 }
 
 type ChartData = {
@@ -45,7 +45,6 @@ export default function UserElement(props: userElementProps) {
         LinearScale,
         BarElement,
         Title,
-        Tooltip,
         Legend
     );
     //
@@ -131,10 +130,26 @@ export default function UserElement(props: userElementProps) {
             return (
                 <div className={styles.userElement}>
                     <div className={styles.userHeader}>
-                        <div className={styles.firstColumn}>
-                            <div className={styles.firstColumnRow}>
-                                <h1>{userData.data.first_name}</h1>
-                                <h1>{userData.data.last_name}</h1>
+                        <div className={styles.building_general_container}>
+                            <div className={styles.building_title_container}>
+                                <Tooltip
+                                    title={userData.data.first_name + ' ' + userData.data.last_name} placement="top">
+                                    <div style={{display: 'flex', flex: 1, flexFlow: 'column'}}>
+                                        <h1 className={styles.building_data_title}>
+                                            {userData.data.first_name}
+                                        </h1>
+                                        <h1 className={styles.building_data_title}>
+                                            {userData.data.last_name}
+                                        </h1>
+                                    </div>
+                                </Tooltip>
+                                <div style={{margin: 'auto'}}>
+                                    <IconButton onClick={onOpenEditPopup}>
+                                        <Edit fontSize="small"/>
+                                    </IconButton>
+                                </div>
+                            </div>
+                            <div className={styles.building_data_container}>
                                 <p>
                                     {
                                         userData.data.admin ? 'Admin' :
@@ -143,15 +158,11 @@ export default function UserElement(props: userElementProps) {
                                                     'SuperStudent' : 'Student'
                                     }
                                 </p>
-                            </div>
-                            <div className={styles.firstColumnRow}>
                                 <p>{userData.data.student ? locationGroupData?.data.name : ''}</p>
                             </div>
-                            <Button startIcon={<Edit/>} onClick={onOpenEditPopup}>
-                                Gebruiker aanpassen
-                            </Button>
                             <EditUserPopup
                                 userId={userData.data.id}
+                                onSubmit={props.onEdit}
                                 open={editPopupOpen}
                                 setOpen={setEditPopupOpen}
                                 prevFirstName={userData.data.first_name}
@@ -160,86 +171,36 @@ export default function UserElement(props: userElementProps) {
                                 prevSyndic={userData.data.syndicus}
                             />
                         </div>
+                        <div style={{display: 'flex', flex: 7}}/>
                         <div className={styles.picture}>
                             <Avatar
                                 alt="Avatar"
                                 src="/static/images/avatar/1.jpg"
                                 sx={{height: 128, width: 128}}
-                            />
+                            >{userData.data.first_name.at(0)}</Avatar>
                         </div>
                     </div>
-                    <div className={styles.userContent}>
-                        <div className={styles.userRoutes + ' ' + styles.userRoutesPadding}>
-                            <h2 className={styles.routesTitle + ' ' + styles.extraTitlePadding}>Routes</h2>
-                            <div className={styles.scrollList}>
-                                <div className={styles.routesItems}>
-                                    <h3 className={styles.routesSubtitle + ' ' + styles.extraTitlePadding}>Gepland</h3>
-                                    {
-                                        scheduleAssignmentsData?.data
-                                            .filter((e) => {
-                                                const dateParts = e.assigned_date.split('-');
-                                                const dateObject = new Date(
-                                                    +dateParts[2],
-                                                    // @ts-ignore
-                                                    dateParts[1] - 1,
-                                                    +dateParts[0]
-                                                );
-                                                return dateObject <= new Date(Date.now());
-                                            })
-                                            .map((e) => {
-                                                return (
-                                                    <div className={styles.routesItem}>
-                                                        <h4>
-                                                            {
-                                                                // @ts-ignore
-                                                                scheduleDefinitions?.data.filter(
-                                                                    // eslint-disable-next-line max-len
-                                                                    (scheduleDefinition) => scheduleDefinition.id === e.schedule_definition
-                                                                ).at(0).name
-                                                            }
-                                                        </h4>
-                                                        <p>{e.assigned_date}</p>
-                                                    </div>
-                                                );
-                                            })
-                                    }
-                                </div>
 
-                                <div className={styles.routesItems}>
-                                    <h3 className={styles.routesSubtitle + ' ' + styles.extraTitlePadding}>
-                                        Geschiedenis
-                                    </h3>
-                                    {
-                                        scheduleAssignmentsData?.data
-                                            .filter((e) => {
-                                                const dateParts = e.assigned_date.split('-');
-                                                // @ts-ignore
-                                                const dateObject = new Date(
-                                                    +dateParts[2],
-                                                    // @ts-ignore
-                                                    dateParts[1] - 1,
-                                                    +dateParts[0]
-                                                );
-                                                return dateObject > new Date(Date.now());
-                                            })
-                                            .map((e) => {
-                                                return (
-                                                    <div className={styles.routesItem}>
-                                                        <h4>
-                                                            {
-                                                                // @ts-ignore
-                                                                // eslint-disable-next-line max-len
-                                                                scheduleDefinitions?.data.filter((scheduleDefinition) => scheduleDefinition.id === e.schedule_definition).at(0).name
-                                                            }
-                                                        </h4>
-                                                        <p>{e.assigned_date}</p>
-                                                    </div>
-                                                );
-                                            })
-                                    }
-                                </div>
-                            </div>
+
+                    <div className={styles.userContent}>
+                        <div className={styles.list_container}>
+                            <AssignmentList title={'Gepland'} schedules={scheduleAssignmentsData?.data
+                                .filter((e) => {
+                                    const today = new Date();
+                                    const date = new Date(e.assigned_date);
+                                    return today <= date;
+                                })} definitions={scheduleDefinitions.data}/>
                         </div>
+
+                        <div className={styles.list_container}>
+                            <AssignmentList title={'Geschiedenis'} schedules={scheduleAssignmentsData?.data
+                                .filter((e) => {
+                                    const today = new Date();
+                                    const date = new Date(e.assigned_date);
+                                    return today > date;
+                                })} definitions={scheduleDefinitions.data}/>
+                        </div>
+
                         <div className={styles.userAnalytics}>
                             <Bar data={chartData} options={options} />
                         </div>

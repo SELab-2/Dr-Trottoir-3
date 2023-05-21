@@ -17,6 +17,7 @@ import styles from '@/styles/forms.module.css';
 
 type EditUserPopupProps = {
     userId: number,
+    onSubmit: () => void,
     open: boolean,
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
     prevFirstName: string,
@@ -25,7 +26,7 @@ type EditUserPopupProps = {
     prevSyndic: Syndicus | undefined,
 }
 
-export default function EditUserPopup({userId, open, setOpen, prevFirstName, prevLastName, prevStudent,
+export default function EditUserPopup({userId, onSubmit, open, setOpen, prevFirstName, prevLastName, prevStudent,
     prevSyndic}: EditUserPopupProps) {
     const {data: session} = useSession();
 
@@ -78,7 +79,7 @@ export default function EditUserPopup({userId, open, setOpen, prevFirstName, pre
             last_name: formLastName,
             student: formStudent,
             syndicus: formSyndicus,
-        });
+        }, () => onSubmit());
         handleClose();
     };
 
@@ -102,7 +103,13 @@ export default function EditUserPopup({userId, open, setOpen, prevFirstName, pre
             return (
                 <>
                     <div className={styles.field}>
-                        <FormControlLabel control={<Checkbox defaultChecked={prevStudent?.is_super_student}
+                        <FormControlLabel control={<Checkbox
+                            sx={{
+                                '&.Mui-checked': {
+                                    color: 'var(--primary-yellow)',
+                                },
+                            }}
+                            defaultChecked={prevStudent?.is_super_student}
                             value={formIsSuperStudent}
                             onChange={() => {
                                 setFormIsSuperStudent(!formIsSuperStudent);
@@ -150,6 +157,37 @@ export default function EditUserPopup({userId, open, setOpen, prevFirstName, pre
                     <div className={styles.formFields}>
                         <div className={styles.field}>
                             <TextField fullWidth
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
                                 required
                                 label='voornaam'
                                 value={formFirstName}
@@ -159,6 +197,37 @@ export default function EditUserPopup({userId, open, setOpen, prevFirstName, pre
                         </div>
                         <div className={styles.field}>
                             <TextField fullWidth
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
                                 required
                                 label='achternaam'
                                 value={formLastName}
@@ -169,12 +238,11 @@ export default function EditUserPopup({userId, open, setOpen, prevFirstName, pre
                         {typeSpecificFields()}
                     </div>
                     <div className={styles.formButtons}>
-                        <Button variant='contained' className={styles.button} onClick={handleClose}>
-                            Cancel
+                        <Button className={styles.cancel_button} onClick={handleClose}>
+                            Annuleren
                         </Button>
-                        <Button variant='contained' className={styles.button} onClick={handleSubmit}
-                            style={{backgroundColor: '#E6E600'}}>
-                            Submit
+                        <Button className={styles.submit_button} onClick={handleSubmit}>
+                            Toevoegen
                         </Button>
                     </div>
                 </div>

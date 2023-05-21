@@ -2,10 +2,8 @@ import styles from './CalendarEntry.module.css';
 import {Draggable} from 'react-beautiful-dnd';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import {IconButton} from '@mui/material';
 import {memo, useEffect, useState} from 'react';
-import Router from 'next/router';
 import {getScheduleWorkEntriesList, useAuthenticatedApi} from '@/api/api';
 import {ScheduleWorkEntry} from '@/api/models';
 import {useSession} from 'next-auth/react';
@@ -69,20 +67,6 @@ function CalendarEntry(props: calendarEntryProps) {
                                             props.scheduleAssignment.user.last_name) : ''
                                     }
                                 </p>
-                            </div>
-                            <div>
-                                {!props.scheduleAssignment.linkRight || snapshot.isDragging || hover ?
-                                    <IconButton
-                                        size='small'
-                                        className={styles.icon}
-                                        onClick={() => {
-                                            Router.push('/users/' + props.scheduleAssignment.id,
-                                                undefined,
-                                                {shallow: true}).then();
-                                        }} >
-                                        <InfoRoundedIcon className={styles.icon}/>
-                                    </IconButton> : undefined
-                                }
                             </div>
                             <div>
                                 {(!props.scheduleAssignment.linkRight ||

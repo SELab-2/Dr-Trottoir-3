@@ -18,6 +18,11 @@ const BuildingListButtonComponent = (props: ListItemProps) => {
         getBuildingDetailIssues(session, setIssues, props.data.id);
     }, [props.data.id, session]);
 
+    if (isCurrent && props?.data?.reload) {
+        getBuildingDetailIssues(session, setIssues, props.data.id);
+        props.data.onMessage();
+    }
+
     return (
         <div className={styles.full}>
             <Button fullWidth={true} id={(isCurrent)?styles['item_button_select'] : styles['item_button']}
@@ -45,14 +50,15 @@ const BuildingListButtonComponent = (props: ListItemProps) => {
                                 width: '100%',
                             },
                         }}
-                        badgeContent={issues ? issues.data.length : 0}
+                        badgeContent={issues? issues.data ? issues.data.filter((e) => !e.resolved).length : 0 : 0}
                         overlap="circular"
                         anchorOrigin={{
                             vertical: 'top',
                             horizontal: 'right',
                         }}
                     >
-                        <Avatar src='public/media/img.png' alt="building" className={styles.image}/>
+                        <Avatar src={props.data.image ? props.data.image : 'public/media/img.png'} alt={props.data.name}
+                            className={styles.image}/>
                     </Badge>
                 </div>
             </Button>

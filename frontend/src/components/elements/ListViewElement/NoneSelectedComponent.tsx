@@ -5,7 +5,7 @@ type NoneSelectedProps = {
 }
 
 function NoneSelected({ElementName}: NoneSelectedProps) {
-    return (<Box padding={1} width={'100%'} display={'flex'} flexDirection={'column'}>
+    return (<Box width={'100%'} display={'flex'} flexDirection={'column'}>
         <Box padding={1} marginBottom={2} bgcolor={'var(--secondary-light)'}
             borderRadius={'var(--small_corner)'}
             display={'flex'}>

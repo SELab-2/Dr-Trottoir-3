@@ -30,6 +30,7 @@ export type GarbageCollectionSchedule = {
 };
 
 export type Building = {
+    secret_link: unknown;
     id: number;
     name: string,
     address: string;
@@ -40,6 +41,7 @@ export type Building = {
     description: string;
     longitude: number | null,
     latitude: number | null,
+    syndici: number[],
 };
 
 export type ScheduleAssignment = {
@@ -47,6 +49,10 @@ export type ScheduleAssignment = {
     assigned_date: string;
     schedule_definition: number;
     user: number;
+    buildings_count: number;
+    buildings_done: number;
+    buildings_to_do: number;
+    buildings_percentage: number;
 };
 
 export type ScheduleWorkEntry = {
@@ -102,6 +108,16 @@ export type Issue = {
     building: number,
     from_user: number,
     approval_user: number | null | undefined
+}
+
+export type PublicBuilding = {
+    name: string,
+    address: string,
+    description: string | null,
+    image: string | null,
+    longitude: number | null,
+    latitude: number | null,
+    schedule_work_entries: ScheduleWorkEntry[]
 }
 
 export type UserAnalytics = {

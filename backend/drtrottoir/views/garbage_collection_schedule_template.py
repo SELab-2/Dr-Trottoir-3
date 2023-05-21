@@ -57,7 +57,7 @@ class GarbageCollectionScheduleTemplateEntryViewSet(
     serializer_class = GarbageCollectionScheduleTemplateEntrySerializer
 
     filterset_fields = {
-        "day": ("exact", "in", "lt", "gt"),
+        "day": ("exact", "in", "lt", "lte", "gt", "gte"),
         "garbage_type": ("exact", "in"),
         "garbage_collection_schedule_template": ("exact", "in"),
     }

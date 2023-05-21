@@ -1,0 +1,14 @@
+
+.full_container {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    width: 100%;
+}
+
+.scrollable_container {
+    display: flex;
+    flex: 1;
+    overflow-y: scroll;
+    flex-flow: column;
+}

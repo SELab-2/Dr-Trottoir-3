@@ -16,9 +16,11 @@ import axios from 'axios';
 import {LatLng} from 'leaflet';
 import {PinDrop} from '@mui/icons-material';
 import BuildingMapSelector from '@/components/elements/ListViewElement/InsertFormElements/BuildingMapSelector';
+import CloseIcon from '@mui/icons-material/Close';
 
 type EditBuildingPopupProps = {
     buildingId: number,
+    onSubmit: () => void,
     open: boolean,
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
     prevName: string,
@@ -30,7 +32,7 @@ type EditBuildingPopupProps = {
 }
 
 export default function EditBuildingPopup({open, setOpen, prevName, prevAddress, prevLongitude, prevLatitude,
-    prevSyndici, prevDescription, buildingId}: EditBuildingPopupProps) {
+    prevSyndici, prevDescription, buildingId, onSubmit}: EditBuildingPopupProps) {
     const {data: session} = useSession();
     const [allSyndici, setAllSyndici] = useAuthenticatedApi<User[]>();
 
@@ -42,6 +44,8 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
         React.useState<LatLng>(new LatLng(51.1576985, 4.0807745));
     const [formSyndici, setFormSyndici] = React.useState<User[]>(prevSyndici);
     const [formDescription, setFormDescription] = React.useState(prevDescription);
+    const [formPDFGuide, setFormPDFGuide] = React.useState<File | null>(null);
+    const [formImage, setFormImage] = useState<File | null>(null);
 
     useEffect(() => {
         getUsersList(session, setAllSyndici, {syndicus__id__gt: 0});
@@ -58,13 +62,29 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
     }, [open]);
 
     const handleSubmit = () => {
-        patchBuildingDetail(session, buildingId, {
-            name: formName,
-            address: formAddress,
-            latitude: formCoordinate.lat,
-            longitude: formCoordinate.lng,
-            description: formDescription,
+        const formData = new FormData();
+        formData.append('name', formName);
+        formData.append('address', formAddress);
+        formData.append('latitude', formCoordinate.lat.toString());
+        formData.append('longitude', formCoordinate.lng.toString());
+        formData.append('description', formDescription);
+        formData.append('is_active', false.toString());
+        if (formPDFGuide !== null) {
+            formData.append('pdf_guide', formPDFGuide, formPDFGuide.name);
+        }
+        if (formImage !== null) {
+            formData.append('image', formImage, formImage.name);
+        }
+        patchBuildingDetail(session, buildingId, formData);
+        const syndics: number[] = [];
+        formSyndici.forEach((s) => {
+            if (s.syndicus) {
+                syndics.push(s.syndicus.id);
+            }
         });
+        patchBuildingDetail(session, buildingId, {
+            syndici: syndics,
+        }, () => onSubmit());
         setOpen(false);
     };
 
@@ -78,6 +98,9 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
         );
     }
 
+    const pdfButtonId = `building-${buildingId}-edit-manual-pdf-button`;
+    const imgButtonId = `building-${buildingId}-edit-manual-img-button`;
+
     return (
         <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Gebouw aanpassen</DialogTitle>
@@ -85,7 +108,40 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                 <div className={styles.form}>
                     <div className={styles.formFields}>
                         <div className={styles.field}>
-                            <TextField fullWidth
+                            <TextField
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
+                                className={styles.input}
+                                fullWidth
                                 required
                                 label='naam'
                                 value={formName}
@@ -94,7 +150,41 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                             />
                         </div>
                         <div className={styles.field}>
-                            <TextField error={formAddressError}
+                            <TextField
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                size="small"
+                                InputProps={{
+                                    style: {height: '45px'},
+                                }}
+                                className={styles.input}
+                                fullWidth
+                                error={formAddressError}
                                 required
                                 label='adres'
                                 value={formAddress}
@@ -121,6 +211,34 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                         </Box>
                         <div className={styles.field}>
                             <TextField
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        padding: '2px',
+                                    },
+                                    '& label.Mui-focused': {
+                                        color: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'var(--primary-yellow)',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--secondary-light)',
+                                            borderRadius: '8px',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--primary-yellow)',
+                                            borderRadius: '8px',
+                                        },
+                                    },
+                                }}
+                                className={styles.input}
                                 fullWidth
                                 required
                                 multiline
@@ -132,9 +250,11 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                         </div>
                         <FormControl sx={{marginBottom: 1, marginTop: 1, width: 200}}>
                             <Autocomplete
-                                id="tags-standard"
+                                id="tags-outline"
                                 multiple
                                 options={allSyndici.data}
+                                freeSolo={false}
+                                popupIcon={''}
                                 getOptionLabel={(option) => option.first_name[0] + '. ' + option.last_name}
                                 value={formSyndici}
                                 defaultValue={[]}
@@ -145,26 +265,129 @@ export default function EditBuildingPopup({open, setOpen, prevName, prevAddress,
                                 }}
                                 renderInput={(params) => (
                                     <TextField
+                                        sx={{
+                                            '& .MuiInputLabel-root': {
+                                                padding: '2px',
+                                            },
+                                            '& label.Mui-focused': {
+                                                color: 'var(--primary-yellow)',
+                                                borderRadius: '8px',
+                                            },
+                                            '& .MuiInput-underline:after': {
+                                                borderBottomColor: 'var(--primary-yellow)',
+                                                borderRadius: '8px',
+                                            },
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: 'var(--secondary-light)',
+                                                    borderRadius: '8px',
+                                                },
+                                                '&:hover fieldset': {
+                                                    borderColor: 'var(--secondary-light)',
+                                                    borderRadius: '8px',
+                                                },
+                                                '&.Mui-focused fieldset': {
+                                                    borderColor: 'var(--primary-yellow)',
+                                                    borderRadius: '8px',
+                                                },
+                                            },
+                                        }}
                                         {...params}
-                                        variant="standard"
                                         label="syndicus"
                                         placeholder="syndicus"
                                     />
                                 )}
                             />
                         </FormControl>
+                        <div className={styles.field}>
+                            <Button
+                                variant="contained"
+                                component="label"
+                                sx={{'width': 240, 'fontSize': 12, 'backgroundColor': 'var(--primary-dark)',
+                                    '&:hover': {
+                                        backgroundColor: 'var(--secondary-dark)',
+                                    }}}
+                            >
+                                Handleiding (PDF)
+                                <input
+                                    id={pdfButtonId}
+                                    type="file"
+                                    onChange={(e) => setFormPDFGuide(e.target.files ? e.target.files[0] : null)}
+                                    accept="application/pdf"
+                                    hidden
+                                />
+                            </Button>
+                            <IconButton onClick={() => {
+                                setFormPDFGuide(null);
+                                const pdfButton = document.getElementById(pdfButtonId);
+                                if (pdfButton) {
+                                    // @ts-ignore
+                                    pdfButton.value = null;
+                                }
+                            }}>
+                                <CloseIcon/>
+                            </IconButton>
+                        </div>
+                        <p style={{fontSize: 14}} className={styles.field}>
+                            {
+                                formPDFGuide ?
+                                    (formPDFGuide.name.length > 40 ?
+                                        formPDFGuide.name.slice(0, 37) +'...' :
+                                        formPDFGuide.name
+                                    ) :
+                                    ''
+                            }
+                        </p>
+                        <div className={styles.field}>
+                            <Button
+                                variant="contained"
+                                component="label"
+                                sx={{'width': 240, 'fontSize': 12, 'backgroundColor': 'var(--primary-dark)',
+                                    '&:hover': {
+                                        backgroundColor: 'var(--secondary-dark)',
+                                    }}}
+                            >
+                                Afbeelding
+                                <input
+                                    id={imgButtonId}
+                                    type="file"
+                                    onChange={(e) => setFormImage(e.target.files ? e.target.files[0] : null)}
+                                    accept="image/*"
+                                    hidden
+                                />
+                            </Button>
+                            <IconButton onClick={() => {
+                                setFormImage(null);
+                                const imageButton = document.getElementById(imgButtonId);
+                                if (imageButton) {
+                                    // @ts-ignore
+                                    imageButton.value = null;
+                                }
+                            }}>
+                                <CloseIcon/>
+                            </IconButton>
+                        </div>
+                        <p style={{fontSize: 14}} className={styles.field}>
+                            {
+                                formImage ?
+                                    (formImage.name.length > 40 ?
+                                        formImage.name.slice(0, 37) +'...' :
+                                        formImage.name
+                                    ) :
+                                    ''
+                            }
+                        </p>
                     </div>
                     <div className={styles.formButtons}>
                         <Button className={styles.cancel_button} onClick={handleClose}>
-                            Cancel
+                            Annuleer
                         </Button>
                         <Button className={styles.submit_button} onClick={handleSubmit}>
-                            Submit
+                            Accepteer
                         </Button>
                     </div>
                 </div>
             </div>
-
         </Dialog>
     );
 }

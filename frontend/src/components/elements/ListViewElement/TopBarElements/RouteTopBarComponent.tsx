@@ -19,6 +19,7 @@ import SensorsRoundedIcon from '@mui/icons-material/SensorsRounded';
 import {Clear} from '@mui/icons-material';
 
 type TopBarProps = {
+    onAdd: () => void,
     sorttype: string,
     setSorttype: React.Dispatch<React.SetStateAction<string>>
     selectedRegions: LocationGroup[],
@@ -33,7 +34,7 @@ type TopBarProps = {
     handleSearch: (b: boolean) => void,
 };
 
-export default function RouteTopBarComponent({sorttype, setSorttype, selectedRegions, setRegion, allRegions,
+export default function RouteTopBarComponent({onAdd, sorttype, setSorttype, selectedRegions, setRegion, allRegions,
     searchEntry, setSearchEntry, selectedActive, setSelectedActive, allRoutes, handleSearch}:TopBarProps) {
     const AllesSelected = selectedRegions.length>=allRegions.length;
 
@@ -54,8 +55,8 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
     };
 
     const sorttypes = {
-        name: 'naam',
-        location_group__name: 'regio',
+        name: 'Naam',
+        location_group__name: 'Regio',
         // buildings: 'aantal gebouwen',
     };
 
@@ -99,6 +100,7 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
                 <Button className={styles.filter_button}>
                     <Select
                         className={styles.hide_select}
+                        style={{fontSize: '14px'}}
                         sx={{
                             'padding': '0',
                             'boxShadow': '0',
@@ -158,7 +160,7 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
                         multiple
                         value={selectedRegions}
                         onChange={handleChangeRegion}
-                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>regio</p>}
+                        renderValue={() => <p className={styles.collapse_text} style={{width: '40px'}}>Regio</p>}
                     >
                         <MenuItem key={'Alles '+((AllesSelected)?'deselecteren':'selecteren')} value={'Alles'}>
                             <Checkbox style ={{color: '#1C1C1C'}} checked={AllesSelected} />
@@ -180,6 +182,7 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
                 <Button className={styles.filter_button}>
                     <Select
                         className={styles.hide_select}
+                        style={{fontSize: '14px'}}
                         sx={{
                             'padding': '0',
                             'boxShadow': '0',
@@ -218,14 +221,14 @@ export default function RouteTopBarComponent({sorttype, setSorttype, selectedReg
             </div>
             <Button className={styles.insert_button} onMouseUp={handleToggle}>
                 <AddIcon style={{margin: '0px'}}/>
-                <p className={styles.collapse_text}>route toevoegen</p>
+                <p className={styles.collapse_text}>Route toevoegen</p>
             </Button>
             <Backdrop
                 sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
                 open={open}
                 invisible={false}
             >
-                <Form setCanClose={setCanClose} canClose={canClose} setOpen={setOpen}
+                <Form open={open} onSubmit={onAdd} setCanClose={setCanClose} canClose={canClose} setOpen={setOpen}
                     allRegions={allRegions} allRoutes={allRoutes}></Form>
             </Backdrop>
         </div>

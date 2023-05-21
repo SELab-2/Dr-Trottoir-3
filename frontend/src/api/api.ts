@@ -26,6 +26,7 @@ export enum Api {
     BuildingDetailGarbageCollectionScheduleTemplates = 'buildings/:id/garbage_collection_schedule_templates/',
     BuildingDetailIssues = 'buildings/:id/issues/',
     BuildingDetailScheduleDefinitions = 'buildings/:id/schedule_definitions/',
+    BuildingGenerateLink = 'buildings/:id/generate_link/',
     ScheduleAssignments = 'schedule_assignments/',
     ScheduleAssignmentDetail = 'schedule_assignments/:id/',
     ScheduleWorkEntries = 'schedule_work_entries/',
@@ -45,6 +46,8 @@ export enum Api {
     IssueImages = 'issue_images/',
     Me = 'users/me/',
     InviteLink = 'users/invite/:id/',
+    ResetPassword = 'users/reset_password/',
+    ResetPasswordLink = 'users/reset_password/:id/',
     UserAnalytics = 'users/:id/analytics/'
 }
 
@@ -415,6 +418,16 @@ const getBuildingDetail = (session: Session | null, setter: ((e:any) => void), i
         });
 };
 
+const postBuildingGenerateLink = (session: Session | null, id: number, setter?: ((e:any) => void)) => {
+    postDetailsOnAPIWithId(Api.BuildingGenerateLink, session, id, {})
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
 const getBuildingDetailGarbageCollectionSchedules = (session: Session | null, setter: ((e:any) => void), id: number) => {
     getDetailsFromAPI(Api.BuildingDetailGarbageCollectionSchedules, session, id)
         .then((e) => {
@@ -556,6 +569,15 @@ const getUserInvite = (session: Session | null, setter: ((e:any) => void), uuid:
         });
 };
 
+const getUserResetPassword = (session: Session | null, setter: ((e:any) => void), uuid: string) => {
+    getDetailsFromAPI(Api.ResetPasswordLink, session, uuid)
+        .then((e) => {
+            setter({success: true, status: e.status, data: e.data});
+        })
+        .catch((e) => {
+            setter({success: false, status: e.status, data: e});
+        });
+};
 
 const getIssueDetail = (session: Session | null, setter: ((e:any) => void), id: number) => {
     getDetailsFromAPI(Api.IssueDetail, session, id)
@@ -569,6 +591,26 @@ const getIssueDetail = (session: Session | null, setter: ((e:any) => void), id: 
 
 const postUserInvite = (session: Session | null, uuid: string, data: any, setter?: ((e:any) => void)) => {
     postDetailsOnAPIWithId(Api.InviteLink, session, uuid, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
+const postUserCreateResetPassword = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
+    postDetailsToAPI(Api.ResetPassword, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
+const postUserResetPassword = (session: Session | null, uuid: string, data: any, setter?: ((e:any) => void)) => {
+    postDetailsOnAPIWithId(Api.ResetPasswordLink, session, uuid, data)
         .then((e) => {
             setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
         })
@@ -599,6 +641,16 @@ const postGarbageCollectionScheduleTemplateEntry = (session: Session | null, dat
 
 const postGarbageType = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
     postDetailsToAPI(Api.GarbageTypes, session, data)
+        .then((e) => {
+            setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
+        })
+        .catch((e) => {
+            setter ? setter({success: false, status: e.status, data: e}) : undefined;
+        });
+};
+
+const postGarbageCollectionSchedule = (session: Session | null, data: any, setter?: ((e:any) => void)) => {
+    postDetailsToAPI(Api.GarbageCollectionSchedules, session, data)
         .then((e) => {
             setter ? setter({success: true, status: e.status, data: e.data}) : undefined;
         })
@@ -976,13 +1028,16 @@ export {
     getIssueDetail,
     getMe,
     getUserInvite,
+    getUserResetPassword,
     getUserAnalytics,
 
     postGarbageCollectionScheduleTemplate,
     postGarbageCollectionScheduleTemplateEntry,
     postGarbageType,
+    postGarbageCollectionSchedule,
     postLocationGroup,
     postBuilding,
+    postBuildingGenerateLink,
     postScheduleAssignment,
     postScheduleWorkEntry,
     postScheduleDefinition,
@@ -991,6 +1046,8 @@ export {
     postIssue,
     postIssueImage,
     postUserInvite,
+    postUserCreateResetPassword,
+    postUserResetPassword,
 
     deleteGarbageCollectionScheduleTemplate,
     deleteGarbageCollectionScheduleTemplateEntry,
