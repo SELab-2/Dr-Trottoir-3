@@ -58,6 +58,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    margin: auto 0;
 }
 
 .statsRow {
@@ -154,12 +155,15 @@
     flex-direction: column;
     gap: 25px;
     overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .routesItems {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    flex: 1;
+    overflow: hidden;
 }
 
 .route_container {
@@ -170,6 +174,7 @@
     border-radius: var(--small_corner);
     gap: 10px;
     padding: 10px;
+    overflow: hidden;
 }
 
 .route_title {
@@ -194,21 +199,20 @@
     align-items: center;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 4px;
     height: 100%;
-    width: 100%;
+    width: 120px;
 }
 
 .mySwiper {
-    width: 100%;
+    display: flex;
+    flex: 1;
     height: 100%;
 }
 
 .imag_container {
     display: flex;
     height: 100%;
-    width: 100%;
-    flex-grow: 1;
+    flex: 1;
     vertical-align: center;
     justify-content: center;
     justify-items: center;
@@ -218,13 +222,35 @@
 }
 
 .imag_container img {
+    display: flex;
+    flex: 1;
     border-radius: 8px;
     overflow: hidden;
-    display: block;
-    height: 60px;
     object-fit: cover;
 }
 
 .userAnalytics {
     flex-grow: 1;
+}
+
+.building_data_title {
+    margin: auto;
+    margin-left: 0;
+    font-weight: 400;
+    font-size: 30px;
+    width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.building_item_title {
+    margin: auto;
+    margin-left: 0;
+    font-weight: 400;
+    font-size: 20px;
+    width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
