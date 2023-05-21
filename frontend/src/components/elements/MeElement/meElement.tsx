@@ -101,40 +101,6 @@ export default function MeElement() {
                                         })
                                 }
                             </div>
-
-                            <div className={styles.routesItems}>
-                                <h3 className={styles.routesSubtitle + ' ' + styles.extraTitlePadding}>
-                                    Geschiedenis
-                                </h3>
-                                {
-                                    scheduleAssignmentsData?.data
-                                        .filter((e) => {
-                                            const dateParts = e.assigned_date.split('-');
-                                            // @ts-ignore
-                                            const dateObject = new Date(
-                                                +dateParts[2],
-                                                // @ts-ignore
-                                                dateParts[1] - 1,
-                                                +dateParts[0]
-                                            );
-                                            return dateObject > new Date(Date.now());
-                                        })
-                                        .map((e) => {
-                                            return (
-                                                <div className={styles.routesItem}>
-                                                    <h4>
-                                                        {
-                                                            // @ts-ignore
-                                                            // eslint-disable-next-line max-len
-                                                            scheduleDefinitions?.data.filter((scheduleDefinition) => scheduleDefinition.id === e.schedule_definition).at(0).name
-                                                        }
-                                                    </h4>
-                                                    <p>{e.assigned_date}</p>
-                                                </div>
-                                            );
-                                        })
-                                }
-                            </div>
                         </div>
                     </div>
                 </div>

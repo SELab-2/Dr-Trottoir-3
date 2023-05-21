@@ -75,3 +75,11 @@
 .reset_button :hover {
     background-color: var(--secondary-dark) !important;
 }
+
+.buttonsWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
