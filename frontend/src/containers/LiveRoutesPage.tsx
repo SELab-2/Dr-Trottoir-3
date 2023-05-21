@@ -1,7 +1,6 @@
 import {useSession} from 'next-auth/react';
 import {
-    getLatestScheduleDefinitionsList,
-    getLocationGroupsList, getScheduleAssignmentsList,
+    getLocationGroupsList, getScheduleAssignmentsList, getScheduleDefinitionsList,
     getScheduleWorkEntriesList,
     getUsersList,
     useAuthenticatedApi,
@@ -38,7 +37,7 @@ export default function LiveRoutesPage() {
     const [day, setDay] = useState<number>(currentDay.getDate());
 
     useEffect(() => {
-        getLatestScheduleDefinitionsList(session, setDefinitions);
+        getScheduleDefinitionsList(session, setDefinitions);
         getLocationGroupsList(session, setLocationGroups);
         getScheduleWorkEntriesList(session, setWorkEntries, {entry_type: 'DE'});
         getUsersList(session, setStudents, {student__id__gt: 0});
