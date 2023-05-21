@@ -7,7 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import {useSession} from 'next-auth/react';
 import styles from '@/components/elements/BuildingDetailElement/buildingEditLists.module.css';
 
-export default function IssueList({buildingId, onRead}: { buildingId: number ,onRead: () => void}) {
+export default function IssueList({buildingId, onRead}: { buildingId: number, onRead: () => void}) {
     const {data: session} = useSession();
     const [filter, setFilter] = useState(true);
     const [issues, setIssues] = useAuthenticatedApi<Issue[]>();
@@ -17,7 +17,7 @@ export default function IssueList({buildingId, onRead}: { buildingId: number ,on
         const setIssuesAndReload = (e:any) => {
             setIssues(e);
             onRead();
-        }
+        };
         getBuildingDetailIssues(session, setIssuesAndReload, buildingId);
     }
 

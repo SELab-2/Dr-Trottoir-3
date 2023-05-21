@@ -79,11 +79,11 @@ export default function UsersPage() {
             search: searchEntryOverwritten,
             ordering: sorttype, student__location_group__in: regionsFilter,
             syndicus__id__gt: syndicusFilter, admin__id__gt: adminFilter, student__id__gt: studentFilter,
-            student__is_super_student: superStudentFilter
+            student__is_super_student: superStudentFilter,
         });
     };
 
-    if(reload){
+    if (reload) {
         getBuildingsList(session, setAllBuildings);
         getLocationGroupsList(session, setLocationGroups);
         handleSearch(false, false);
@@ -116,7 +116,7 @@ export default function UsersPage() {
                 changeUserElementWidget();
             }}/>);
         }
-    }
+    };
 
     useEffect(() => {
         changeUserElementWidget();

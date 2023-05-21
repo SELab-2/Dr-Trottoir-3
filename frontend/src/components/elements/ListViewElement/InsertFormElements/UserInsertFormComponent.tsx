@@ -64,7 +64,7 @@ export default function Form(props: FormProps) {
                 buildings: blds,
             };
         }
-        postUser(session, postData,() => {
+        postUser(session, postData, () => {
             setFormFirstName('');
             setFormUsername('');
             setFormRegion(null);

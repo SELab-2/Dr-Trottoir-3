@@ -82,7 +82,7 @@ export default function RoutesPage() {
         }
     };
 
-    if(reload){
+    if (reload) {
         getLatestScheduleDefinitionsList(session, setAllRoutes);
         getLocationGroupsList(session, setLocationGroups);
         handleSearch(false, false);
@@ -115,7 +115,7 @@ export default function RoutesPage() {
                 setCurrent(newSelected);
             }}/>);
         }
-    }
+    };
 
     useEffect( () => {
         changeRouteElementWidget();

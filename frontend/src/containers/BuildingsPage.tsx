@@ -49,7 +49,7 @@ export default function BuildingsPage() {
         const setBuildingList = (data:any)=>{
             setBuildings(data);
             const element = document.getElementById(styles.scrollable);
-            if (scrollTop  && element !== null) {
+            if (scrollTop && element !== null) {
                 element.scrollTo({top: 0, behavior: 'smooth'});
             }
         };
@@ -74,11 +74,10 @@ export default function BuildingsPage() {
     />;
 
 
-    if(reload){
+    if (reload) {
         getLocationGroupsList(session, setLocationGroups);
         getUsersList(session, setAllSyndici, {syndicus__id__gt: 0});
         handleSearch(false, false);
-
     }
 
     const [buildingWidget, setBuildingWidget] = useState(<LoadingElement />);
@@ -91,7 +90,7 @@ export default function BuildingsPage() {
                 changeBuildingElementWidget();
             }} />);
         }
-    }
+    };
 
     useEffect(() => {
         changeBuildingElementWidget();

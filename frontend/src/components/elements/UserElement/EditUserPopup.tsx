@@ -79,7 +79,7 @@ export default function EditUserPopup({userId, onSubmit, open, setOpen, prevFirs
             last_name: formLastName,
             student: formStudent,
             syndicus: formSyndicus,
-        },() => onSubmit());
+        }, () => onSubmit());
         handleClose();
     };
 

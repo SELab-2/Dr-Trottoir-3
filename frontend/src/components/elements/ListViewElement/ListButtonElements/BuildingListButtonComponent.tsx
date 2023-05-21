@@ -17,10 +17,8 @@ const BuildingListButtonComponent = (props: ListItemProps) => {
     useEffect(() => {
         getBuildingDetailIssues(session, setIssues, props.data.id);
     }, [props.data.id, session]);
-    if(isCurrent){
-        console.log(props?.data);
-    }
-    if(isCurrent && props?.data?.reload){
+
+    if (isCurrent && props?.data?.reload) {
         getBuildingDetailIssues(session, setIssues, props.data.id);
         props.data.onMessage();
     }
@@ -52,7 +50,7 @@ const BuildingListButtonComponent = (props: ListItemProps) => {
                                 width: '100%',
                             },
                         }}
-                        badgeContent={issues? issues.data ? issues.data.filter(e => !e.resolved).length : 0 : 0}
+                        badgeContent={issues? issues.data ? issues.data.filter((e) => !e.resolved).length : 0 : 0}
                         overlap="circular"
                         anchorOrigin={{
                             vertical: 'top',
