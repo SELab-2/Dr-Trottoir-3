@@ -75,4 +75,17 @@ To just run frontend, backend, or docs, run
 ```
 
 ## Rebuilding image
+
 To rebuild a docker image, add `--build`. This is necessary in some cases, for example when the dependencies changed. Docs will also only be updated when rebuilding the image.
+
+# Deploy to production
+
+For deployment, all the variables in the `.env.prod` file must be set. Then de `deploy.sh` can be used to start the production version in docker in deamon mode. 
+
+## Mock data
+
+To add the mock data to the database the following command can be used:
+```
+docker exec drtrottoir-backend-1 python manage.py mockdata password
+```
+Where password is the password for the default account.
