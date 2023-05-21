@@ -132,7 +132,7 @@ export default function Form(props: FormProps) {
                                 }}
                                 size="small"
                                 fullWidth
-                                renderInput={(params) => <TextField {...params} label="Afval Type"/>}
+                                renderInput={(params) => <TextField {...params} label="Regio"/>}
                                 options={props.allRegions}
                                 getOptionLabel={({name}) => name}
                                 value={formRegion}
