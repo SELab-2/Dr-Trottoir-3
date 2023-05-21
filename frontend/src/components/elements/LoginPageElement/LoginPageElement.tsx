@@ -76,7 +76,7 @@ export default function LoginPageElement() {
                             }}
                             className={styles.input}
                             fullWidth
-                            label={'email'}
+                            label={'Email'}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                         <TextField
@@ -113,16 +113,18 @@ export default function LoginPageElement() {
                             }}
                             className={styles.input}
                             fullWidth
-                            label={'password'}
+                            label={'Password'}
                             type={'password'}
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                        <Button className={styles.login_button} onClick={handleLogin}>
-                            <p>login</p>
-                        </Button>
-                        <Button className={styles.reset_button} onClick={handleResetPassword}>
-                            <p>Reset Password</p>
-                        </Button>
+                        <div className={styles.buttonsWrapper}>
+                            <Button className={styles.login_button} onClick={handleLogin}>
+                                <p>Login</p>
+                            </Button>
+                            <Button className={styles.reset_button} onClick={handleResetPassword}>
+                                <p>Forgot password?</p>
+                            </Button>
+                        </div>
                     </div>
                 </Box>
             </div>
