@@ -117,6 +117,7 @@ De publieke pagina is nu beschikbaar.
 
 [Terug](#gebruikers-handleiding)
 
+De routes pagina is waar definities van routes kunnen aangemaakt en aangepast worden.
 ![](screenshots/routes/0_page.jpg)
 ![](screenshots/routes/3_detail.jpg)
 ### Toevoegen
