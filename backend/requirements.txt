@@ -1,5 +1,5 @@
 asgiref==3.6.0
-Django==4.1.9
+Django==4.1.10
 djangorestframework==3.14.0
 pytz==2022.7.1
 sqlparse==0.4.4
